@@ -18,6 +18,7 @@ EMFLAGS = --emit-tsd $(TSD_OUT) \
           -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" \
           --preload-file assets
 
+
 # Platform detection for clean/setup commands
 ifeq ($(OS),Windows_NT)
     MKDIR = if not exist $(subst /,\,$(BUILD_DIR)) mkdir $(subst /,\,$(BUILD_DIR))
@@ -36,7 +37,8 @@ setup:
 
 build:
 	@echo "==============================================================================================="
-	@echo "[1/1] Building C++ into WASM Module..."
+    @$(call echo_color, "[1/1] Building C++ into WASM Module...", "Cyan")
+    Write-Host $("[1/1] Building C++ into WASM Module...") -ForegroundColor $(2)
 	$(CXX) $(SRCS) $(INC) $(CXXFLAGS) $(EMFLAGS)
 	@echo "==============================================================================================="
 
