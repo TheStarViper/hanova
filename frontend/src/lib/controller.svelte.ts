@@ -28,14 +28,24 @@ export class Container {
 	}
 
 	get width(): number {
-		return (this.max.x = this.min.x);
+		return this.max.x - this.min.x;
 	}
 
 	get height(): number {
-		return (this.max.y = this.min.y);
+		return this.max.y - this.min.y;
 	}
+
+	get center(): Pos {
+		return new Pos(this.width / 2, this.height / 2);
+	}
+}
+
+export class Boat {
+	public pos = new Pos();
+	public visible = true;
 }
 
 export class Controller {
 	public container = new Container();
+	public boat = new Boat();
 }
