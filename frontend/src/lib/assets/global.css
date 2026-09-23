@@ -11,4 +11,6 @@ body {
 	background: var(--parchment);
 
 	padding: 2rem;
+
+	font-family: "Eagle Lake", serif;
 }
