@@ -1,0 +1,14 @@
+:root {
+	--line: #261c26;
+	--parchment: #fffae5;
+}
+
+body {
+	width: 100vw;
+	height: 100vh;
+
+	overflow: hidden;
+	background: var(--parchment);
+
+	padding: 2rem;
+}
