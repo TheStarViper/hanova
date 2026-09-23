@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Controller } from "$lib/controller.svelte";
 	import { onMount } from "svelte";
+	import Boat from "./Boat.svelte";
 
 	const controller = new Controller();
 
@@ -13,10 +14,7 @@
 
 <main bind:this={containerEl}>
 	<h1>Hanova</h1>
-	<p>left: {controller.container.min.x}</p>
-	<p>right: {controller.container.min.y}</p>
-	<p>top: {controller.container.max.x}</p>
-	<p>bottom: {controller.container.max.y}</p>
+	<Boat />
 </main>
 
 <style lang="scss">
@@ -39,9 +37,9 @@
 		}
 
 		h1 {
-			text-align: right;
-			margin-top: 0.3rem;
-			margin-right: 0.6rem;
+			position: absolute;
+			right: 0.6rem;
+			top: 0.3rem;
 		}
 	}
 </style>
