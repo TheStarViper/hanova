@@ -2,6 +2,7 @@
 	import { Controller } from "$lib/controller.svelte";
 	import { onMount } from "svelte";
 	import Boat from "./Boat.svelte";
+	import Island from "./Island.svelte";
 
 	const controller = new Controller();
 
@@ -9,21 +10,21 @@
 
 	onMount(() => {
 		controller.container.update(containerEl);
+
+		controller.boat.pos.x = controller.container.center.x;
+		controller.boat.pos.y = controller.container.center.y;
+
+		controller.initIslands(16, 10);
 	});
 </script>
 
 <main bind:this={containerEl}>
 	<h1>Hanova</h1>
-	<Boat
-		targetPos={{ x: controller.boat.pos.x, y: controller.boat.pos.y }}
-		visible={controller.boat.visible}
-	/>
-	<button
-		onclick={() => {
-			controller.boat.pos.x = controller.container.center.x;
-			controller.boat.pos.y = controller.container.center.y;
-		}}>Center Boat</button
-	>
+	<Boat me={controller.boat} />
+
+	{#each controller.islands as island}
+		<Island me={island} />
+	{/each}
 </main>
 
 <style lang="scss">
@@ -31,19 +32,14 @@
 		width: 100%;
 		height: 100%;
 		position: relative;
-		outline: 2px solid var(--line);
+		overflow: hidden;
+
+		border: 2px solid var(--line);
+		outline: 1px solid var(--line);
+		outline-offset: 0.4rem;
 
 		display: flex;
 		flex-direction: column;
-
-		&::before {
-			content: "";
-			position: absolute;
-			inset: 0;
-			outline: 1px solid var(--line);
-			outline-offset: 0.4rem;
-			pointer-events: none;
-		}
 
 		h1 {
 			position: absolute;

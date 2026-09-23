@@ -7,19 +7,19 @@
 		top: number;
 		left: number;
 
-		visible: boolean;
+		hide?: boolean;
 
 		// recommended to set one of these to auto
 		width?: number;
 		height?: number;
 	}
 
-	let { svgHTML, top, left, visible, width, height }: Props = $props();
+	let { svgHTML, top, left, hide, width, height }: Props = $props();
 </script>
 
 <div
 	class="svg-wrapper"
-	style:opacity={visible ? "1" : "0"}
+	style:opacity={hide ? "0" : "1"}
 	style:top="{top}px"
 	style:left="{left}px"
 	style:width={width !== undefined ? `${width}px` : "auto"}
