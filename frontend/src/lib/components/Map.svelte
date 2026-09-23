@@ -1,5 +1,22 @@
-<main>
+<script lang="ts">
+	import { Controller } from "$lib/controller.svelte";
+	import { onMount } from "svelte";
+
+	const controller = new Controller();
+
+	let containerEl: HTMLElement;
+
+	onMount(() => {
+		controller.container.update(containerEl);
+	});
+</script>
+
+<main bind:this={containerEl}>
 	<h1>Hanova</h1>
+	<p>left: {controller.container.min.x}</p>
+	<p>right: {controller.container.min.y}</p>
+	<p>top: {controller.container.max.x}</p>
+	<p>bottom: {controller.container.max.y}</p>
 </main>
 
 <style lang="scss">
@@ -10,7 +27,7 @@
 		outline: 2px solid var(--line);
 
 		display: flex;
-		justify-content: right;
+		flex-direction: column;
 
 		&::before {
 			content: "";
@@ -22,6 +39,7 @@
 		}
 
 		h1 {
+			text-align: right;
 			margin-top: 0.3rem;
 			margin-right: 0.6rem;
 		}
