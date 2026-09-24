@@ -8,6 +8,18 @@
 	}
 
 	let { me }: Props = $props();
+
+	let hovered: boolean = $state(false);
+	let shadowOpacity = $derived(hovered ? 0.8 : 0.4);
 </script>
 
-<Sprite left={me.pos.x} top={me.pos.y} width={200}>{@html IslandSVG}</Sprite>
+<Sprite
+	left={me.pos.x}
+	top={me.pos.y}
+	width={200}
+	{shadowOpacity}
+	handlers={{
+		hover: () => (hovered = true),
+		unhover: () => (hovered = false),
+	}}>{@html IslandSVG}</Sprite
+>

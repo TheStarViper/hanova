@@ -25,6 +25,8 @@
 
 		/** z index */
 		layer?: number;
+
+		shadowOpacity?: number;
 	}
 
 	let { children, ...props }: Props = $props();
@@ -52,6 +54,7 @@
 	style:height={props.height !== undefined ? `${props.height}px` : "auto"}
 	style:z-index={props.layer ?? 0}
 	style:cursor={props.handlers?.click !== undefined ? "pointer" : ""}
+	style:--shadow-opacity={props.shadowOpacity ?? 0}
 >
 	{@render children()}
 	<span>{props.label}</span>
@@ -66,6 +69,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+
+		transition: filter 0.2s ease;
+		filter: drop-shadow(0 0 30px hsl(41 40% 60% / var(--shadow-opacity)));
 
 		span {
 			font-style: italic;
