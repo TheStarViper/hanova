@@ -15,8 +15,7 @@ EMFLAGS = --emit-tsd $(TSD_OUT) \
           -s EXPORT_ES6=1 \
           -s ENVIRONMENT="web,node" \
           -s ALLOW_MEMORY_GROWTH=1 \
-          -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" \
-          --preload-file assets
+          -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']"
 
 
 # Platform detection for clean/setup commands
