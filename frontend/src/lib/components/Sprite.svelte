@@ -51,6 +51,7 @@
 	style:width={props.width !== undefined ? `${props.width}px` : "auto"}
 	style:height={props.height !== undefined ? `${props.height}px` : "auto"}
 	style:z-index={props.layer ?? 0}
+	style:cursor={props.handlers?.click !== undefined ? "pointer" : ""}
 >
 	{@render children()}
 	<span>{props.label}</span>
