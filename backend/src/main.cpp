@@ -21,10 +21,10 @@ extern "C"{
     }
 
     int convert(int input, int input_length){
-        int output = (int*)malloc(input_length);
-        for (int i = 0; i<input_length; i++;){
-            output[i] = ~input[i]
-        }
-        return output;
+        // int output = (int*)malloc(input_length);
+        // for (int i = 0; i<input_length; i++;){
+        //     output[i] = ~input[i]
+        // }
+        // return output;
     }
 }
