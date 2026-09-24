@@ -1,11 +1,15 @@
 <!-- reusable SVG wrapper component -->
 
 <script lang="ts">
+	import type { Snippet } from "svelte";
+
 	interface Props {
-		svgHTML: string;
+		children: Snippet<[]>;
 
 		top: number;
 		left: number;
+
+		label?: string;
 
 		hide?: boolean;
 
@@ -23,15 +27,14 @@
 		layer?: number;
 	}
 
-	let { svgHTML, top, left, hide, width, height, handlers, layer }: Props =
-		$props();
+	let { children, ...props }: Props = $props();
 
 	let el: HTMLElement;
 
 	$effect(() => {
-		if (handlers === undefined) return;
+		if (props.handlers === undefined) return;
 
-		const { click, hover, unhover } = handlers;
+		const { click, hover, unhover } = props.handlers;
 
 		if (click) el.addEventListener("pointerdown", click);
 		if (hover) el.addEventListener("mouseenter", hover);
@@ -42,14 +45,15 @@
 <div
 	bind:this={el}
 	class="svg-wrapper"
-	style:opacity={hide ? "0" : "1"}
-	style:top="{top}px"
-	style:left="{left}px"
-	style:width={width !== undefined ? `${width}px` : "auto"}
-	style:height={height !== undefined ? `${height}px` : "auto"}
-	style:z-index={layer ?? 0}
+	style:opacity={props.hide ? "0" : "1"}
+	style:top="{props.top}px"
+	style:left="{props.left}px"
+	style:width={props.width !== undefined ? `${props.width}px` : "auto"}
+	style:height={props.height !== undefined ? `${props.height}px` : "auto"}
+	style:z-index={props.layer ?? 0}
 >
-	{@html svgHTML}
+	{@render children()}
+	<span>{props.label}</span>
 </div>
 
 <style lang="scss">
@@ -57,5 +61,14 @@
 		position: absolute;
 		opacity: 0;
 		transform: translate(-50%, -50%);
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		span {
+			font-style: italic;
+			user-select: none;
+		}
 	}
 </style>
