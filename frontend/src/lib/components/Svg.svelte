@@ -1,8 +1,6 @@
 <!-- reusable SVG wrapper component -->
 
 <script lang="ts">
-	import { onMount } from "svelte";
-
 	interface Props {
 		svgHTML: string;
 
@@ -20,9 +18,13 @@
 			hover?: () => void;
 			unhover?: () => void;
 		};
+
+		/** z index */
+		layer?: number;
 	}
 
-	let { svgHTML, top, left, hide, width, height, handlers }: Props = $props();
+	let { svgHTML, top, left, hide, width, height, handlers, layer }: Props =
+		$props();
 
 	let el: HTMLElement;
 
@@ -45,6 +47,7 @@
 	style:left="{left}px"
 	style:width={width !== undefined ? `${width}px` : "auto"}
 	style:height={height !== undefined ? `${height}px` : "auto"}
+	style:z-index={layer ?? 0}
 >
 	{@html svgHTML}
 </div>

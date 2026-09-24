@@ -61,12 +61,22 @@ export class Container {
 export class Boat {
 	public pos = new Pos();
 	public hide = false;
+	public directionX = $state(-1);
 
 	constructor(public container: Container) {}
 
+	public move(newPos: Pos) {
+		this.directionX = Math.sign(newPos.x - this.pos.x) || this.directionX;
+
+		this.pos.x = newPos.x;
+		this.pos.y = newPos.y;
+	}
+
 	public randomizePos() {
-		this.pos.x = Math.ceil(Math.random() * this.container.width);
-		this.pos.y = Math.ceil(Math.random() * this.container.height);
+		this.move({
+			x: Math.ceil(Math.random() * this.container.width),
+			y: Math.ceil(Math.random() * this.container.height),
+		});
 	}
 }
 

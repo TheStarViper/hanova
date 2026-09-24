@@ -28,4 +28,5 @@
 			me.randomizePos();
 		},
 	}}
+	layer={10}
 />

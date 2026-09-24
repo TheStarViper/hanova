@@ -11,8 +11,7 @@
 	onMount(() => {
 		controller.container.update(containerEl);
 
-		controller.boat.pos.x = controller.container.center.x;
-		controller.boat.pos.y = controller.container.center.y;
+		controller.boat.move(controller.container.center);
 
 		controller.initIslands(16, 10);
 	});
