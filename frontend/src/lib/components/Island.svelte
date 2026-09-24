@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IslandSVG from "$lib/assets/island.svg?raw";
-	import type { Island } from "$lib/controller.svelte";
+	import type { Island } from "$lib/island";
 	import Svg from "./Svg.svelte";
 
 	interface Props {

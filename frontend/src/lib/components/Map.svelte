@@ -1,27 +1,27 @@
 <script lang="ts">
-	import { Controller } from "$lib/controller.svelte";
+	import { World } from "$lib/world.svelte";
 	import { onMount } from "svelte";
 	import Boat from "./Boat.svelte";
 	import Island from "./Island.svelte";
 
-	const controller = new Controller();
+	const world = new World();
 
-	let containerEl: HTMLElement;
+	let viewportEl: HTMLElement;
 
 	onMount(() => {
-		controller.container.update(containerEl);
+		world.viewport.update(viewportEl);
 
-		controller.boat.move(controller.container.center);
+		world.boat.sail(world.viewport.center);
 
-		controller.initIslands(16, 10);
+		world.initIslands(16, 10);
 	});
 </script>
 
-<main bind:this={containerEl}>
+<main bind:this={viewportEl}>
 	<h1>Hanova</h1>
-	<Boat me={controller.boat} />
+	<Boat me={world.boat} />
 
-	{#each controller.islands as island}
+	{#each world.islands as island}
 		<Island me={island} />
 	{/each}
 </main>

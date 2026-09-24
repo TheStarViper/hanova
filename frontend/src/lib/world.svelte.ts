@@ -1,6 +1,9 @@
-export class Controller {
-	public container = new Container();
-	public boat = new Boat(this.container);
+import { Boat } from "./boat";
+import { Island } from "./island";
+
+export class World {
+	public viewport = new Viewport();
+	public boat = new Boat(this.viewport);
 	public islands: Island[] = $state([]);
 
 	public initIslands(seed: number, count: number) {
@@ -9,8 +12,8 @@ export class Controller {
 		this.islands = [];
 
 		while (this.islands.length < count) {
-			const x = Math.ceil(rng() * this.container.width);
-			const y = Math.ceil(rng() * this.container.height);
+			const x = Math.ceil(rng() * this.viewport.width);
+			const y = Math.ceil(rng() * this.viewport.height);
 
 			this.islands.push(new Island({ x, y }));
 		}
@@ -30,7 +33,7 @@ export class Pos {
 /**
  * The info about the <main> element
  */
-export class Container {
+export class Viewport {
 	public min = new Pos();
 	public max = new Pos();
 
@@ -58,30 +61,9 @@ export class Container {
 	}
 }
 
-export class Boat {
-	public pos = new Pos();
-	public hide = false;
-	public directionX = $state(-1);
-
-	constructor(public container: Container) {}
-
-	public move(newPos: Pos) {
-		this.directionX = Math.sign(newPos.x - this.pos.x) || this.directionX;
-
-		this.pos.x = newPos.x;
-		this.pos.y = newPos.y;
-	}
-
-	public randomizePos() {
-		this.move({
-			x: Math.ceil(Math.random() * this.container.width),
-			y: Math.ceil(Math.random() * this.container.height),
-		});
-	}
-}
-
-export class Island {
-	public constructor(public pos: Pos) {}
+export function ease(t: number): number {
+	const k = 6;
+	return (1 - Math.pow(2, -k * t)) / (1 - Math.pow(2, -k));
 }
 
 // https://github.com/cprosche/mulberry32
