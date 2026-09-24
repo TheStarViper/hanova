@@ -37,8 +37,8 @@ setup:
 
 build:
 	@echo "==============================================================================================="
-    @$(call echo_color, "[1/1] Building C++ into WASM Module...", "Cyan")
-    Write-Host $("[1/1] Building C++ into WASM Module...") -ForegroundColor $(2)
+    @echo "[1/1] Building C++ into WASM Module..."
+    #@Write-Host $("[1/1] Building C++ into WASM Module...") -ForegroundColor $(2)
 	$(CXX) $(SRCS) $(INC) $(CXXFLAGS) $(EMFLAGS)
 	@echo "==============================================================================================="
 
