@@ -1,6 +1,8 @@
 <!-- reusable SVG wrapper component -->
 
 <script lang="ts">
+	import { onMount } from "svelte";
+
 	interface Props {
 		svgHTML: string;
 
@@ -12,12 +14,31 @@
 		// recommended to set one of these to auto
 		width?: number;
 		height?: number;
+
+		handlers?: {
+			click?: () => void;
+			hover?: () => void;
+			unhover?: () => void;
+		};
 	}
 
-	let { svgHTML, top, left, hide, width, height }: Props = $props();
+	let { svgHTML, top, left, hide, width, height, handlers }: Props = $props();
+
+	let el: HTMLElement;
+
+	$effect(() => {
+		if (handlers === undefined) return;
+
+		const { click, hover, unhover } = handlers;
+
+		if (click) el.addEventListener("pointerdown", click);
+		if (hover) el.addEventListener("mouseenter", hover);
+		if (unhover) el.addEventListener("mouseleave", unhover);
+	});
 </script>
 
 <div
+	bind:this={el}
 	class="svg-wrapper"
 	style:opacity={hide ? "0" : "1"}
 	style:top="{top}px"
@@ -32,7 +53,6 @@
 	.svg-wrapper {
 		position: absolute;
 		opacity: 0;
-		pointer-events: none;
 		transform: translate(-50%, -50%);
 	}
 </style>

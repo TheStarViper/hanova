@@ -46,9 +46,5 @@
 			right: 0.6rem;
 			top: 0.3rem;
 		}
-
-		button {
-			width: 20ch;
-		}
 	}
 </style>

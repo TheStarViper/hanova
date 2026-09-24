@@ -1,6 +1,6 @@
 export class Controller {
 	public container = new Container();
-	public boat = new Boat();
+	public boat = new Boat(this.container);
 	public islands: Island[] = $state([]);
 
 	public initIslands(seed: number, count: number) {
@@ -61,6 +61,13 @@ export class Container {
 export class Boat {
 	public pos = new Pos();
 	public hide = false;
+
+	constructor(public container: Container) {}
+
+	public randomizePos() {
+		this.pos.x = Math.ceil(Math.random() * this.container.width);
+		this.pos.y = Math.ceil(Math.random() * this.container.height);
+	}
 }
 
 export class Island {

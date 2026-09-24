@@ -23,4 +23,9 @@
 	svgHTML={BoatSVG}
 	width={96}
 	hide={me.hide}
+	handlers={{
+		click: () => {
+			me.randomizePos();
+		},
+	}}
 />
