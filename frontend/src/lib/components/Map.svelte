@@ -44,6 +44,7 @@
 			position: absolute;
 			right: 0.6rem;
 			top: 0.3rem;
+			user-select: none;
 		}
 	}
 </style>

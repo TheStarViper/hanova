@@ -1,4 +1,4 @@
-import { Pos, Viewport, ease } from "$lib/world.svelte";
+import { Pos, Viewport, ease } from "$lib/utils.svelte";
 
 export class Boat {
 	public pos = new Pos();

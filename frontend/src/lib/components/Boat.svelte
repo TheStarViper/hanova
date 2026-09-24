@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BoatSVG from "$lib/assets/boat.svg?raw";
 	import type { Boat } from "$lib/boat";
-	import Svg from "./Svg.svelte";
+	import Sprite from "./Sprite.svelte";
 
 	interface Props {
 		me: Boat;
@@ -10,16 +10,16 @@
 	let { me }: Props = $props();
 </script>
 
-<Svg
+<Sprite
 	left={me.pos.x}
 	top={me.pos.y}
-	svgHTML={BoatSVG}
 	width={96}
+	label="Boat"
 	hide={me.hide}
 	handlers={{
 		click: () => {
 			me.randomizePos();
 		},
 	}}
-	layer={10}
-/>
+	layer={10}>{@html BoatSVG}</Sprite
+>
