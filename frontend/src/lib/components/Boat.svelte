@@ -16,10 +16,5 @@
 	width={96}
 	label="Boat"
 	hide={me.hide}
-	handlers={{
-		click: () => {
-			me.randomizePos();
-		},
-	}}
 	layer={10}>{@html BoatSVG}</Sprite
 >

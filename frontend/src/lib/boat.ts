@@ -58,6 +58,7 @@ export class Boat {
 		this.moveAnimID = requestAnimationFrame(animate);
 	}
 
+	/** @deprecated was once used for internal testing. dont use this lol */
 	public randomizePos() {
 		this.sail({
 			x: Math.ceil(Math.random() * this.viewport.width),

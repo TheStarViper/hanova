@@ -1,6 +1,6 @@
 import { Boat } from "./boat";
 import { Island } from "./island";
-import { Viewport, mulberry32 } from "./utils.svelte";
+import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 
 export class World {
 	public viewport = new Viewport();
@@ -16,7 +16,9 @@ export class World {
 			const x = Math.ceil(rng() * this.viewport.width);
 			const y = Math.ceil(rng() * this.viewport.height);
 
-			this.islands.push(new Island({ x, y }));
+			this.islands.push(
+				new Island({ x, y }, (endPos: Pos) => this.boat.sail(endPos)),
+			);
 		}
 	}
 }

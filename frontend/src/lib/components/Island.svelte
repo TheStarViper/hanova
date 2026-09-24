@@ -19,6 +19,7 @@
 	width={200}
 	{shadowOpacity}
 	handlers={{
+		click: me.callBoat,
 		hover: () => (hovered = true),
 		unhover: () => (hovered = false),
 	}}>{@html IslandSVG}</Sprite
