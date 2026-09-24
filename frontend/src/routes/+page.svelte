@@ -1,4 +1,7 @@
 <script lang="ts">
+	// component imports
+	import Map from "$lib/components/Map.svelte";
+
 	// svelte internal imports
 	import { onMount } from "svelte";
 
@@ -12,5 +15,4 @@
 	});
 </script>
 
-<h1>Hanova</h1>
-<p>very much WIP rn</p>
+<Map />
