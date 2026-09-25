@@ -29,7 +29,7 @@ static uint8_t* decode(const std::vector<uint8_t>& input, int* w, int* h, int* c
 emscripten::val convert_to_png(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
-    int width,height,channelz;//width height channel
+    int width,height,channelz;
     uint8_t* pixels = decode(input,&width,&height,&channelz);
     if (!pixels){return emscripten::val::null();}
 
@@ -46,7 +46,7 @@ emscripten::val convert_to_png(emscripten::val inputarray){
 emscripten::val convert_to_jpeg(emscripten::val inputarray, int quality){ //quality 1-100
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
-    int width,height,channelz;//width height channel
+    int width,height,channelz;
     uint8_t* pixels = decode(input,&width,&height,&channelz);
     if (!pixels){return emscripten::val::null();}
 
@@ -63,7 +63,7 @@ emscripten::val convert_to_jpeg(emscripten::val inputarray, int quality){ //qual
 emscripten::val convert_to_bmp(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
-    int width,height,channelz;//width height channel
+    int width,height,channelz;
     uint8_t* pixels = decode(input,&width,&height,&channelz);
     if (!pixels){return emscripten::val::null();}
 
@@ -78,14 +78,14 @@ emscripten::val convert_to_bmp(emscripten::val inputarray){
 
 int get_image_width(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
-    int width,height,channelz;//width height channel
+    int width,height,channelz;
     if (!stbi_info_from_memory(input.data(),(int)input.size(),&width,&height,&channelz)) {return -1;}
     return width;
 }
 
 int get_image_height(emscripten::val inputarray){
         std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
-    int width,height,channelz;//width height channel
+    int width,height,channelz;
     if (!stbi_info_from_memory(input.data(),(int)input.size(),&width,&height,&channelz)) {return -1;}
     return height;
 }
