@@ -13,7 +13,6 @@
 
 		hide?: boolean;
 
-		// recommended to set one of these to auto
 		width?: number;
 		height?: number;
 
@@ -55,6 +54,7 @@
 	style:z-index={props.layer ?? 0}
 	style:cursor={props.handlers?.click !== undefined ? "pointer" : ""}
 	style:--shadow-opacity={props.shadowOpacity ?? 0}
+	style:pointer-events={props.handlers?.click === undefined ? "none" : "auto"}
 >
 	{@render children()}
 	<span>{props.label}</span>

@@ -16,7 +16,7 @@
 <Sprite
 	left={me.pos.x}
 	top={me.pos.y}
-	width={200}
+	width={98}
 	{shadowOpacity}
 	handlers={{
 		click: me.callBoat,
