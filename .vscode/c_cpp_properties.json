@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/include",
+        "C:/raylib/emsdk/upstream/emscripten/system/include"
+      ],
+      "defines": [],
+      "compilerPath": "C:/raylib/emsdk/upstream/bin/clang.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "windows-clang-x64"
+    }
+  ],
+  "version": 4
+}
