@@ -2,10 +2,10 @@ import { Pos, Viewport, ease } from "$lib/utils.svelte";
 
 export class Boat {
 	public pos = new Pos();
-	public hide = false;
+	public hide = true;
 
 	/** in pixels per second */
-	public speed = 300;
+	public speed = 100;
 
 	constructor(public viewport: Viewport) {}
 

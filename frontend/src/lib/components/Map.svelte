@@ -11,9 +11,11 @@
 	onMount(() => {
 		world.viewport.update(viewportEl);
 
-		world.boat.sail(world.viewport.center);
+		world.boat.pos.x = world.viewport.center.x;
+		world.boat.pos.y = world.viewport.center.y;
+		world.boat.hide = false;
 
-		world.initIslands(16, 10);
+		world.initIslands(23, 10);
 	});
 </script>
 
