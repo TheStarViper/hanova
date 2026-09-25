@@ -8,15 +8,15 @@ INC = -Iinclude -Isrc
 
 CXXFLAGS = -O2 -std=c++20
 
-EMFLAGS = --emit-tsd $(TSD_OUT) \
-        	-o $(TARGET) \
-        	-s WASM=1 \
-        	-s MODULARIZE=1 \
-        	-s EXPORT_ES6=1 \
-        	-s ENVIRONMENT="web,node" \
-        	-s ALLOW_MEMORY_GROWTH=1 \
-        	-s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']"
-
+EMFLAGS = --bind \
+          --emit-tsd $(TSD_OUT) \
+          -o $(TARGET) \
+          -s WASM=1 \
+          -s MODULARIZE=1 \
+          -s EXPORT_ES6=1 \
+          -s ENVIRONMENT="web,node" \
+          -s ALLOW_MEMORY_GROWTH=1 \
+          -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']"
 
 # Platform detection for clean/setup commands
 ifeq ($(OS),Windows_NT)
@@ -36,8 +36,7 @@ setup:
 
 build:
 	@echo "==============================================================================================="
-    @echo "[1/1] Building C++ into WASM Module..."
-    #@Write-Host $("[1/1] Building C++ into WASM Module...") -ForegroundColor $(2)
+	@echo "[1/1] Building C++ into WASM Module..."
 	$(CXX) $(SRCS) $(INC) $(CXXFLAGS) $(EMFLAGS)
 	@echo "==============================================================================================="
 
