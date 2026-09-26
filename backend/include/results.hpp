@@ -6,7 +6,8 @@ enum Errortypes{
     UnsupportedFormat,
     FileTooLarge,
     CorruptInput,
-    EncodeFailure
+    EncodeFailure,
+    DimensionalTooBig,
 };
 
 const char* error_msg(Errortypes error);
