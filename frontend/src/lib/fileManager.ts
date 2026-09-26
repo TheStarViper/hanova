@@ -21,6 +21,7 @@ export class FileManager {
 		document.addEventListener("drop", (event: DragEvent) => {
 			event.preventDefault();
 			document.body.classList.remove("dragover");
+			document.body.classList.add("dropped");
 
 			const files: FileList | undefined = event.dataTransfer?.files;
 			if (files === undefined) return;

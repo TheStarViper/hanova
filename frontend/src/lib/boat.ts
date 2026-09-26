@@ -16,6 +16,9 @@ export class Boat {
 	 * Smoothly moves from one position to another
 	 */
 	public sail(endPos: Pos) {
+		// sailing should only happen if visible
+		if (this.hide) return;
+
 		// we don't wanna restart the animation if it's the same destination
 		if (endPos === this.targetPos) return;
 		this.targetPos = endPos;
