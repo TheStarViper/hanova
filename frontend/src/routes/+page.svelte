@@ -15,4 +15,4 @@
 	});
 </script>
 
-<Map />
+<Map {cppManager} />

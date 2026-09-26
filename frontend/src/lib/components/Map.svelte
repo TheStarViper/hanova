@@ -3,8 +3,16 @@
 	import { onMount } from "svelte";
 	import Boat from "./Boat.svelte";
 	import Island from "./Island.svelte";
+	import type { CppManager } from "$lib/cppManager";
 
-	const world = new World();
+	interface Props {
+		cppManager: CppManager;
+	}
+
+	let { cppManager }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
+	const world = new World(cppManager);
 
 	let viewportEl: HTMLElement;
 

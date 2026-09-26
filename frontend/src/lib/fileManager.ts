@@ -6,7 +6,7 @@ const ELLIPSIS = "...";
 export class FileManager {
 	public file: File | null = null;
 
-	public constructor(public dropHook?: () => void) {}
+	public constructor(public dropHook?: () => Promise<void>) {}
 
 	public init() {
 		document.addEventListener("dragover", (event: DragEvent) => {
