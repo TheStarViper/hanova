@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdint>
 #include <cstring>
+#include "results.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -12,6 +13,24 @@
 #include "stb_image_write.h"
 
 static std::vector<uint8_t> g_output;
+
+//validation guards
+Errortypes validate_input_size(const std::vector<uint8_t>& input){
+    if (input.size>MAX_INPUT_BYTES){return Errortypes::FileTooLarge;}
+    return Errortypes::None;
+}
+
+std::string validate_file_format(const std::vector<uint8_t>& input){ //verify file formats bcuz it could be a misleading file extension
+    if (input.size()<12){return "unknown";}
+    if (input[0]==0x89&&input[1]=='P'&&input[2]=='N'&&input[3]=='G'){return "png";}
+    if (input[0]==0xFF&&input[1]==0xD8){return'jpeg'};
+    if (input[0]=='B'&&input[1]=='M'){return'bmp'};
+    if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F' 
+        && input[8] == 'W' && input[9] == 'A' && input[10] == 'V' && input[11] == 'E') return "wav";
+    if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F'
+        && input[8] == 'W' && input[9] == 'E' && input[10] == 'B' && input[11] == 'P') return "webp";
+    return "unknown";
+}
 
 
 static void write_cb(void* context, void* data, int size){
@@ -29,6 +48,11 @@ static uint8_t* decode(const std::vector<uint8_t>& input, int* w, int* h, int* c
 //yo this converts to png
 emscripten::val convert_to_png(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
+
+    Errortypes size_error = validate_input_size(input);
+    if (size_error != Errortypes::None){return make_error_val(size_error);}
+
+    if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
 
     int width,height,channelz;
     uint8_t* pixels = decode(input,&width,&height,&channelz);
@@ -89,16 +113,6 @@ int get_image_height(emscripten::val inputarray){
     int width,height,channelz;
     if (!stbi_info_from_memory(input.data(),(int)input.size(),&width,&height,&channelz)) {return -1;}
     return height;
-}
-
-//validation guards
-Errortypes validate_input_size(const std::vector<uint8_t>& input){
-    if (input.size>MAX_INPUT_BYTES){return Errortypes::FileTooLarge;}
-    return Errortypes::None;
-}
-
-std::string validate_file_format(const std::vector<uint8_t>& input){
-    if (input.size()<12){return "unknown";}
 }
 
 EMSCRIPTEN_BINDINGS(image_convert_module) {

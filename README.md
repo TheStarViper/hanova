@@ -11,6 +11,18 @@ Hanova is a local web-based suite of file transformation tools that keeps all yo
 - [ ] document support
 - [ ] video support (would then make backend server to host on docker)
 
+## Supported File Formats
+
+### Images
+- png
+- jpeg
+- bmp
+### Audio
+- none
+### Docs
+- none
+> [!NOTE]
+> Video conversion locally has no access to hardware accelleration so we are unable to do it reasonably without an external server. In the future we may dable with the idea of making video formats available via self hosted docker container.
 ## Compiling yourself
 
 Prerequisites:
