@@ -1,4 +1,5 @@
 #include <emscripten/bind.h>
+#include "main.hpp"
 #include <emscripten/val.h>
 #include <vector>
 #include <cstdint>
@@ -88,6 +89,16 @@ int get_image_height(emscripten::val inputarray){
     int width,height,channelz;
     if (!stbi_info_from_memory(input.data(),(int)input.size(),&width,&height,&channelz)) {return -1;}
     return height;
+}
+
+//validation guards
+Errortypes validate_input_size(const std::vector<uint8_t>& input){
+    if (input.size>MAX_INPUT_BYTES){return Errortypes::FileTooLarge;}
+    return Errortypes::None;
+}
+
+std::string validate_file_format(const std::vector<uint8_t>& input){
+    if (input.size()<12){return "unknown";}
 }
 
 EMSCRIPTEN_BINDINGS(image_convert_module) {
