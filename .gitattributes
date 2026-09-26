@@ -1,0 +1,3 @@
+# the embeded .h deps were skewing the stats, so im telling linguist that
+# they're vendored (which is true btw)
+backend/include/stb**.h linguist-vendored
