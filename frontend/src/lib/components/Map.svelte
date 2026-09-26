@@ -8,15 +8,7 @@
 
 	let viewportEl: HTMLElement;
 
-	onMount(() => {
-		world.viewport.update(viewportEl);
-
-		world.boat.pos.x = world.viewport.center.x;
-		world.boat.pos.y = world.viewport.center.y;
-		world.boat.hide = false;
-
-		world.initIslands(23, 10);
-	});
+	onMount(() => world.init(viewportEl));
 </script>
 
 <main bind:this={viewportEl}>
