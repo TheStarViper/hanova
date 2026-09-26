@@ -2,6 +2,7 @@ import { Pos, Viewport, ease } from "$lib/utils.svelte";
 
 export class Boat {
 	public pos = new Pos();
+	public targetPos: Pos = this.pos;
 	public hide = true;
 
 	/** in pixels per second */
@@ -14,6 +15,10 @@ export class Boat {
 	 * Smoothly moves from one position to another
 	 */
 	public sail(endPos: Pos) {
+		// we don't wanna restart the animation if it's the same destination
+		if (endPos === this.targetPos) return;
+		this.targetPos = endPos;
+
 		if (this.moveAnimID !== null) {
 			cancelAnimationFrame(this.moveAnimID);
 		}
