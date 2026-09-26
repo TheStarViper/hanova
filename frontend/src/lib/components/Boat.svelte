@@ -14,7 +14,7 @@
 	left={me.pos.x}
 	top={me.pos.y}
 	width={96}
-	label="Boat"
+	label={me.name}
 	hide={me.hide}
 	layer={10}>{@html BoatSVG}</Sprite
 >

@@ -4,6 +4,7 @@ export class Boat {
 	public pos = new Pos();
 	public targetPos: Pos = this.pos;
 	public hide = true;
+	public name = "Boat";
 
 	/** in pixels per second */
 	public speed = 100;
