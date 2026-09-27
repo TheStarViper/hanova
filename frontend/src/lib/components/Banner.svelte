@@ -14,8 +14,13 @@
 	let { me }: Props = $props();
 </script>
 
-<Sprite top={me.pos.y} left={me.pos.x} width={847} layer={100} hide={me.hide}
-	>{@html BannerSvg}</Sprite
+<Sprite
+	top={me.pos.y}
+	left={me.pos.x}
+	width={847}
+	layer={100}
+	hide={me.hide}
+	shadowOpacity={0.4}>{@html BannerSvg}</Sprite
 >
 <div
 	id="banner-text-container"
@@ -25,6 +30,7 @@
 >
 	<h2>{me.text}</h2>
 </div>
+<div id="banner-overlay" class={me.hide ? "" : "hide"}></div>
 
 <style lang="scss">
 	#banner-text-container {
@@ -44,8 +50,25 @@
 
 		h2 {
 			user-select: none;
-			font-size: 2.2rem;
+			font-size: 2rem;
 			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+		}
+	}
+
+	#banner-overlay {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		z-index: 99;
+
+		background: black;
+		opacity: 0;
+		transition: opacity 0.2s ease;
+
+		pointer-events: none;
+
+		&.hide {
+			opacity: 0.4;
 		}
 	}
 </style>
