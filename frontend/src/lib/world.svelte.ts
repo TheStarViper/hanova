@@ -62,6 +62,10 @@ export class World {
 		// the user shouldn't be able to click if the banner is visible
 		if (!this.banner.hide) return;
 
+		// if a file conversion has already started, the user shouldn't be able to
+		// change it partway through
+		if (this.boat.targetPos !== this.boat.pos) return;
+
 		this.treasure.owner = me;
 		this.treasure.previousOwner = me;
 
