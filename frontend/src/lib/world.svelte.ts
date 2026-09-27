@@ -1,7 +1,8 @@
 import { Boat } from "./boat";
 import type { CppManager } from "./cppManager";
 import { FileManager } from "./fileManager";
-import { Island } from "./island";
+import { Island } from "./island.svelte";
+import { Treasure } from "./treasure.svelte";
 import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 
 export class World {
@@ -9,6 +10,7 @@ export class World {
 	boat = new Boat(this.viewport);
 	islands: Island[] = $state([]);
 	fileManager = new FileManager(async () => this.dropHook());
+	treasure = new Treasure();
 
 	constructor(public cppManager: CppManager) {}
 
@@ -44,7 +46,11 @@ export class World {
 			const y = Math.ceil(rng() * this.viewport.height);
 
 			this.islands.push(
-				new Island({ x, y }, (endPos: Pos) => this.boat.sail(endPos)),
+				new Island({ x, y }, (me: Island, endPos: Pos) => {
+					if (this.boat.hide) return;
+					this.treasure.owner = me;
+					this.boat.sail(endPos, () => (this.treasure.owner = null));
+				}),
 			);
 		}
 	}

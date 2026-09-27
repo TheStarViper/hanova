@@ -3,6 +3,7 @@
 	import { onMount } from "svelte";
 	import Boat from "./Boat.svelte";
 	import Island from "./Island.svelte";
+	import Treasure from "./Treasure.svelte";
 	import type { CppManager } from "$lib/cppManager";
 
 	interface Props {
@@ -29,6 +30,8 @@
 	{#each world.islands as island}
 		<Island me={island} />
 	{/each}
+
+	<Treasure me={world.treasure} />
 </main>
 
 <style lang="scss">

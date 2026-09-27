@@ -15,7 +15,7 @@ export class Boat {
 	/**
 	 * Smoothly moves from one position to another
 	 */
-	sail(endPos: Pos) {
+	sail(endPos: Pos, arriveHook?: () => void) {
 		// sailing should only happen if visible
 		if (this.hide) return;
 
@@ -61,6 +61,7 @@ export class Boat {
 				this.moveAnimID = requestAnimationFrame(animate);
 			} else {
 				this.moveAnimID = null;
+				arriveHook?.();
 			}
 		};
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BoatSVG from "$lib/assets/boat.svg?raw";
+	import BoatSvg from "$lib/assets/boat.svg?raw";
 	import type { Boat } from "$lib/boat";
 	import Sprite from "./Sprite.svelte";
 
@@ -16,5 +16,5 @@
 	width={96}
 	label={me.name}
 	hide={me.hide}
-	layer={10}>{@html BoatSVG}</Sprite
+	layer={10}>{@html BoatSvg}</Sprite
 >

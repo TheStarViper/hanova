@@ -40,8 +40,7 @@ export class Viewport {
 }
 
 export function ease(t: number): number {
-	const k = 6;
-	return (1 - Math.pow(2, -k * t)) / (1 - Math.pow(2, -k));
+	return t * (2 - t);
 }
 
 // https://github.com/cprosche/mulberry32
