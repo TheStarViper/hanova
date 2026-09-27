@@ -10,12 +10,7 @@ export class Treasure {
 	 */
 	previousOwner: Island | null = $state(null);
 	pos: Pos = $derived(
-		this.previousOwner === null
-			? new Pos()
-			: new Pos(
-					this.previousOwner.pos.x + this.previousOwner.treasureOffset.x,
-					this.previousOwner.pos.y + this.previousOwner.treasureOffset.y,
-				),
+		this.previousOwner === null ? new Pos() : this.previousOwner.treasurePos,
 	);
 	hide: boolean = $derived(this.owner === null);
 }
