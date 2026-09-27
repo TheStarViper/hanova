@@ -1,24 +1,30 @@
+// class imports
 import { Banner } from "./banner.svelte";
 import { Boat } from "./boat";
-import type { CppManager } from "./cppManager";
 import { FileManager } from "./fileManager";
 import { Island } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
 import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 
+// misc imports
+import type { CppManager } from "./cppManager";
+import islandData from "./islandData.json";
+
 export class World {
 	viewport = new Viewport();
 	boat = new Boat(this.viewport);
 	islands: Island[] = $state([]);
-	fileManager = new FileManager(async () => this.dropHook());
+	fileManager: FileManager;
 	treasure = new Treasure();
 	banner = new Banner(this.viewport);
 
-	constructor(public cppManager: CppManager) {}
+	constructor(public cppManager: CppManager) {
+		this.fileManager = new FileManager(cppManager, async () => this.dropHook());
+	}
 
 	init(viewportEl: HTMLElement) {
 		this.viewport.update(viewportEl);
-		this.initIslands(23, 10);
+		this.initIslands();
 		this.fileManager.init();
 	}
 
@@ -39,31 +45,24 @@ export class World {
 		this.boat.hide = false;
 	}
 
-	initIslands(seed: number, count: number) {
-		const rng = mulberry32(seed);
+	initIslands() {
+		const sailBoat = (me: Island, endPos: Pos) => {
+			// the user shouldn't be able to click if the banner is visible
+			if (!this.banner.hide) return;
 
-		this.islands = [];
+			this.treasure.owner = me;
+			this.treasure.previousOwner = me;
 
-		while (this.islands.length < count) {
-			const x = Math.ceil(rng() * this.viewport.width);
-			const y = Math.ceil(rng() * this.viewport.height);
+			this.boat.sail(endPos, () => {
+				this.banner.text = "You've found buried treasure: a PNG file!";
+				this.banner.hide = false;
+			});
+		};
 
-			this.islands.push(
-				new Island({ x, y }, (me: Island, endPos: Pos) => {
-					if (this.boat.hide) return;
-					// intentionally update both
-					this.treasure.owner = me;
-					this.treasure.previousOwner = me;
+		this.islands = islandData.islands.map((datum) => {
+			const pos = new Pos(datum.pos.x, datum.pos.y);
 
-					this.boat.sail(endPos, () => {
-						// intentionally *not* update treasure.previousOwner
-						this.treasure.owner = null;
-
-						this.banner.text = "You've found buried treasure: a PNG file!";
-						this.banner.hide = false;
-					});
-				}),
-			);
-		}
+			return new Island(datum.name, pos, datum.islandSpriteIndex, sailBoat);
+		});
 	}
 }

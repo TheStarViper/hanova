@@ -1,3 +1,5 @@
+import type { CppManager } from "./cppManager";
+
 const MAX_FILENAME_CHARS = 20;
 /** how many chars of a filename base to show after an ellipsis  */
 const TERMINAL_TERM_CHARS = 3;
@@ -5,8 +7,12 @@ const ELLIPSIS = "...";
 
 export class FileManager {
 	file: File | null = null;
+	result: Blob | null = null;
 
-	constructor(public dropHook?: () => Promise<void>) {}
+	constructor(
+		public cppManager: CppManager,
+		public dropHook?: () => Promise<void>,
+	) {}
 
 	init() {
 		document.addEventListener("dragover", (event: DragEvent) => {
