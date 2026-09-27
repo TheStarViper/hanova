@@ -1,13 +1,12 @@
 import MainModuleFactory from "./cpp/cpp_module";
 
 export class CppManager {
-	public convertToPNG: (input: Uint8Array) => Uint8Array = (
-		input: Uint8Array,
-	) => input;
+	convertToPNG: (input: Uint8Array) => Uint8Array = (input: Uint8Array) =>
+		input;
 
 	constructor() {}
 
-	public async init() {
+	async init() {
 		const Module = await MainModuleFactory();
 
 		// idk why this didn't work in affixle. I think its because there, Andrew

@@ -4,11 +4,11 @@ const TERMINAL_TERM_CHARS = 3;
 const ELLIPSIS = "...";
 
 export class FileManager {
-	public file: File | null = null;
+	file: File | null = null;
 
-	public constructor(public dropHook?: () => Promise<void>) {}
+	constructor(public dropHook?: () => Promise<void>) {}
 
-	public init() {
+	init() {
 		document.addEventListener("dragover", (event: DragEvent) => {
 			event.preventDefault();
 			document.body.classList.add("dragover");
@@ -37,7 +37,7 @@ export class FileManager {
 	}
 
 	// [TODO] finish implementing this
-	public getTrimmedFilename(input?: string): string {
+	getTrimmedFilename(input?: string): string {
 		if (input === undefined) {
 			if (this.file === null) return "";
 			input = this.file.name;

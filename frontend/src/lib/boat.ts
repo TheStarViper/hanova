@@ -1,13 +1,13 @@
 import { Pos, Viewport, ease } from "$lib/utils.svelte";
 
 export class Boat {
-	public pos = new Pos();
-	public targetPos: Pos = this.pos;
-	public hide = true;
-	public name = "Boat";
+	pos = new Pos();
+	targetPos: Pos = this.pos;
+	hide = true;
+	name = "Boat";
 
 	/** in pixels per second */
-	public speed = 100;
+	speed = 100;
 
 	constructor(public viewport: Viewport) {}
 
@@ -15,7 +15,7 @@ export class Boat {
 	/**
 	 * Smoothly moves from one position to another
 	 */
-	public sail(endPos: Pos) {
+	sail(endPos: Pos) {
 		// sailing should only happen if visible
 		if (this.hide) return;
 
@@ -68,7 +68,7 @@ export class Boat {
 	}
 
 	/** @deprecated was once used for internal testing. dont use this lol */
-	public randomizePos() {
+	randomizePos() {
 		this.sail({
 			x: Math.ceil(Math.random() * this.viewport.width),
 			y: Math.ceil(Math.random() * this.viewport.height),
