@@ -58,6 +58,9 @@ export class World {
 					this.boat.sail(endPos, () => {
 						// intentionally *not* update treasure.previousOwner
 						this.treasure.owner = null;
+
+						this.banner.text = "You've found buried treasure: a PNG file!";
+						this.banner.hide = false;
 					});
 				}),
 			);

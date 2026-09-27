@@ -50,8 +50,11 @@
 
 		h2 {
 			user-select: none;
-			font-size: 2rem;
 			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+			// approximate size of the main section of the banner
+			max-width: 700px;
+			text-align: center;
 		}
 	}
 
