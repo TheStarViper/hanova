@@ -1,4 +1,4 @@
-import type { CppManager } from "./cppManager";
+import type { CppManager, FileFormat } from "./cppManager";
 
 const MAX_FILENAME_CHARS = 20;
 /** how many chars of a filename base to show after an ellipsis  */
@@ -6,8 +6,13 @@ const TERMINAL_TERM_CHARS = 3;
 const ELLIPSIS = "...";
 
 export class FileManager {
-	file: File | null = null;
-	result: Blob | null = null;
+	file: File | undefined;
+	outFormat: FileFormat | undefined;
+
+	ok: boolean | undefined;
+
+	blob: Blob | undefined;
+	err: string | undefined;
 
 	constructor(
 		public cppManager: CppManager,
@@ -20,7 +25,7 @@ export class FileManager {
 			document.body.classList.add("dragover");
 		});
 		document.addEventListener("dragleave", (event: DragEvent) => {
-			if (event.relatedTarget === null) {
+			if (event.relatedTarget === undefined) {
 				document.body.classList.remove("dragover");
 			}
 		});
@@ -42,10 +47,58 @@ export class FileManager {
 		});
 	}
 
+	async convertTo(formatName: string) {
+		this.outFormat = this.cppManager.findFormat(formatName);
+		if (this.outFormat === undefined) {
+			throw new Error(`invalid file type ${formatName}`);
+		}
+
+		if (this.file === undefined) {
+			throw new Error("tried to convert before file was set");
+		}
+
+		const inBytes = await this.file.bytes();
+
+		// syncronous but veeeeerrryyyyyy slowwwwwww
+		// [TODO] move this to a web worker or something
+		const result = this.outFormat.func(inBytes);
+		this.ok = result.ok;
+
+		if (!result.ok) {
+			this.err = result.error;
+			return;
+		}
+
+		const outBytes = result.data;
+		console.log(`outbytes length: ${outBytes.length}`);
+
+		const blob = new Blob([outBytes], { type: this.outFormat.mimeType });
+		console.log(`blob size: ${blob.size}`);
+
+		this.blob = blob;
+	}
+
+	downloadFile() {
+		if (this.blob === undefined) {
+			throw new Error("can only download if conversion has finished");
+		}
+
+		const url = URL.createObjectURL(this.blob);
+		const outFilename = `${this.file?.name}.${this.outFormat?.ext}`;
+
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = outFilename;
+		a.click();
+		a.remove();
+
+		// URL.revokeObjectURL(url);
+	}
+
 	// [TODO] finish implementing this
 	getTrimmedFilename(input?: string): string {
 		if (input === undefined) {
-			if (this.file === null) return "";
+			if (this.file === undefined) return "";
 			input = this.file.name;
 		}
 

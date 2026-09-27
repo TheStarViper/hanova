@@ -2,7 +2,17 @@ import MainModuleFactory from "./cpp/cpp_module";
 
 export const JPEG_QUALITY = 85;
 
-export interface FileType {
+export interface SuccessObj {
+	ok: true;
+	data: Uint8Array<ArrayBuffer>;
+}
+export interface FailObj {
+	ok: false;
+	error: string;
+}
+export type ReturnObj = SuccessObj | FailObj;
+
+export interface FileFormat {
 	/** much match the name in the islandData */
 	name: string;
 
@@ -15,21 +25,18 @@ export interface FileType {
 	mimeType: string;
 
 	/** the conversion function */
-	func: (input: Uint8Array) => Uint8Array;
+	func: (input: Uint8Array) => ReturnObj;
 }
 
 export class CppManager {
-	fileTypes: FileType[] = [];
-
-	convertToPNG: (input: Uint8Array) => Uint8Array = (input: Uint8Array) =>
-		input;
+	formats: FileFormat[] = [];
 
 	constructor() {}
 
 	async init() {
 		const Module = await MainModuleFactory();
 
-		this.fileTypes = [
+		this.formats = [
 			// https://en.wikipedia.org/wiki/PNG
 			{
 				name: "PNG",
@@ -74,5 +81,9 @@ export class CppManager {
 				func: (input: Uint8Array) => Module.convert_to_hdr(input),
 			},
 		];
+	}
+
+	findFormat(name: string): FileFormat | undefined {
+		return this.formats.find((x) => x.name === name);
 	}
 }

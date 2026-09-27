@@ -44,10 +44,10 @@ export class Island {
 		public name: string,
 		public pos: Pos,
 		public islandSpriteIndex: number,
-		sailBoat: (me: Island, endPos: Pos) => void,
+		islandClickHandler: (me: Island, endPos: Pos) => void,
 	) {
 		this.callBoat = () => {
-			sailBoat(this, this.treasurePos);
+			islandClickHandler(this, this.treasurePos);
 		};
 
 		this.treasureOffset = TREASURE_OFFSET_MAPPING[islandSpriteIndex];
