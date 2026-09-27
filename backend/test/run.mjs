@@ -15,23 +15,25 @@ async function main(){
         throw new Error('Failed to read image — corrupt file or unsupported format');
     }
 
-    const view = Module.convert_to_jpeg(inputBytes, 90); // quality 90
-    if (view === null) {
-        throw new Error('Conversion failed');
+    const jpegResult = Module.convert_to_jpeg(inputBytes, 90);
+    if (!jpegResult.ok) {
+        throw new Error(`JPEG conversion failed: ${jpegResult.error}`);
     }
-    const jpegBytes = new Uint8Array(view); 
-    
+    const jpegBytes = new Uint8Array(jpegResult.data);
+
     console.log(`Output JPEG: ${jpegBytes.length} bytes`);
 
     writeFileSync('./test_output.jpg', jpegBytes);
-    console.log(' success conversion to jpg');
+    console.log('success conversion to jpg');
 
-    const pngView = Module.convert_to_png(inputBytes);
-    const pngBytes = new Uint8Array(pngView);
+    const pngResult = Module.convert_to_png(inputBytes);
+    if (!pngResult.ok) {
+        throw new Error(`PNG conversion failed: ${pngResult.error}`);
+    }
+    const pngBytes = new Uint8Array(pngResult.data);
     writeFileSync('./test_output_roundtrip.png', pngBytes);
-    console.log(` png conversion: (${pngBytes.length} bytes)`);
+    console.log(`png conversion: (${pngBytes.length} bytes)`);
 }
-
 
 main().catch((err) => {
   console.error('FAIL:', err.message);
