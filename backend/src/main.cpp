@@ -1,23 +1,6 @@
 #include <emscripten/bind.h>
 #include "main.hpp"
 #include <emscripten/val.h>
-#include <vector>
-#include <cstdint>
-#include <cstring>
-#include "results.hpp"
-#include "variables.hpp"
-#include "buffer.hpp"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
-struct STB_IMG_Guard{
-    uint8_t* pointer;
-    ~STB_IMG_Guard() {if(pointer)stbi_image_free(pointer);}
-};
 
 //validation guards
 Errortypes validate_input_size(const std::vector<uint8_t>& input){
@@ -62,14 +45,10 @@ static uint8_t* decode(const std::vector<uint8_t>& input, int* w, int* h, int* c
 
 emscripten::val process_and_encode_image(emscripten::val inputarray,int format,int quality = 100){
     static OutputBuffer out;
-    static std::vector<uint8_t> oldinput;
     int ok;
 
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
     out.clear();
-
-
-    oldinput = input;
 
     Errortypes size_error = validate_input_size(input);
     
