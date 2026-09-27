@@ -3,11 +3,10 @@
 #include "results.hpp"
 #include "buffer.hpp"
 #include "main.hpp"
+#include <emscripten/bind.h>
+#include <emscripten/val.h>
 
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
 emscripten::val convert_to_ico(emscripten::val inputarray){
@@ -30,7 +29,7 @@ emscripten::val convert_to_ico(emscripten::val inputarray){
 
     if (width>256||height>256){return make_error_val(Errortypes::DimensionalTooBig);}
 
-    int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels,width*4);
+    int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer,width*4);
     if (!ok) {return make_error_val(Errortypes::EncodeFailure);}
 
     ICOHeader header{};
