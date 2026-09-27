@@ -14,11 +14,13 @@ export class World {
 	viewport = new Viewport();
 	boat = new Boat(this.viewport);
 	islands: Island[] = $state([]);
-	fileManager = new FileManager(async () => this.dropHook());
+	fileManager: FileManager;
 	treasure = new Treasure();
 	banner = new Banner(this.viewport);
 
-	constructor(public cppManager: CppManager) {}
+	constructor(public cppManager: CppManager) {
+		this.fileManager = new FileManager(cppManager, async () => this.dropHook());
+	}
 
 	init(viewportEl: HTMLElement) {
 		this.viewport.update(viewportEl);
