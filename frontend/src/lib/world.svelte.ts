@@ -36,7 +36,9 @@ export class World {
 	spawnBoat() {
 		this.boat.pos.x = this.viewport.center.x;
 		this.boat.pos.y = this.viewport.center.y;
-		this.boat.name = this.fileManager.getTrimmedFilename();
+
+		const { base, ext } = this.fileManager.parseFilename();
+		this.boat.name = this.fileManager.displayifyFilename(base, ext);
 		this.boat.hide = false;
 	}
 

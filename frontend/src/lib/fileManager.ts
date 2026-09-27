@@ -1,8 +1,6 @@
 import type { CppManager, FileFormat } from "./cppManager";
 
 const MAX_FILENAME_CHARS = 20;
-/** how many chars of a filename base to show after an ellipsis  */
-const TERMINAL_TERM_CHARS = 3;
 const ELLIPSIS = "...";
 
 export class FileManager {
@@ -70,10 +68,8 @@ export class FileManager {
 		}
 
 		const outBytes = result.data;
-		console.log(`outbytes length: ${outBytes.length}`);
 
 		const blob = new Blob([outBytes], { type: this.outFormat.mimeType });
-		console.log(`blob size: ${blob.size}`);
 
 		this.blob = blob;
 	}
@@ -92,17 +88,14 @@ export class FileManager {
 		a.click();
 		a.remove();
 
-		// URL.revokeObjectURL(url);
+		URL.revokeObjectURL(url);
 	}
 
-	// [TODO] finish implementing this
-	getTrimmedFilename(input?: string): string {
-		if (input === undefined) {
-			if (this.file === undefined) return "";
-			input = this.file.name;
+	parseFilename(): { base: string; ext: string | undefined } {
+		if (this.file === undefined) {
+			throw new Error("can only parse filename if file is defined");
 		}
-
-		if (input.length <= MAX_FILENAME_CHARS) return input;
+		const input = this.file.name;
 
 		// group 1: everything before the final dot
 		// group 2: the final dot and everything after it, if it exists
@@ -110,23 +103,22 @@ export class FileManager {
 
 		const match = input.match(regex);
 
-		if (match === null) return "";
+		if (match === null) return { base: "file", ext: "" };
 
-		const base: string = match[0];
-		const ext: string | undefined = match[1]; // includes dot btw
+		// one-indexed because regex is weird like that
+		const base: string = match[1];
+		const ext: string | undefined = match[2]; // includes dot btw
 
-		const initialTermsChars =
-			MAX_FILENAME_CHARS - ext.length - TERMINAL_TERM_CHARS - ELLIPSIS.length;
+		return { base, ext };
+	}
 
-		const initialTerms = base.substring(0, initialTermsChars - 1);
-		const terminalTerms = base.substring(
-			base.length - 1 - TERMINAL_TERM_CHARS,
-			base.length - 1,
-		);
+	displayifyFilename(base: string, ext: string | undefined): string {
+		const maxBaseLength = MAX_FILENAME_CHARS - (ext?.length ?? 0);
 
-		// temporary bypass
-		return input;
+		if (base.length <= maxBaseLength) return base + ext;
 
-		return initialTerms + ELLIPSIS + terminalTerms + ext;
+		const truncatedBase = base.substring(0, maxBaseLength - 1);
+
+		return truncatedBase + ELLIPSIS + ext;
 	}
 }
