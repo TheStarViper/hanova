@@ -22,6 +22,7 @@ interface EmbindModule {
   convert_to_jpeg(_0: any, _1: number): any;
   convert_to_bmp(_0: any): any;
   convert_to_tga(_0: any): any;
+  convert_to_hdr(_0: any): any;
   get_image_width(_0: any): number;
   get_image_height(_0: any): number;
 }

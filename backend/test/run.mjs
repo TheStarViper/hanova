@@ -29,9 +29,27 @@ async function main(){
         throw new Error(`BMP conversion failed: ${bmpResult.error}`);
     }
     const bmpBytes = new Uint8Array(bmpResult.data);
-    console.log(`Output JPEG: ${bmpBytes.length} bytes`);
+    console.log(`Output BMP: ${bmpBytes.length} bytes`);
     writeFileSync('./test_output.bmp', bmpBytes);
     console.log('success conversion to bmp');
+
+    const tgaResult = Module.convert_to_tga(inputBytes);
+    if (!tgaResult.ok) {
+        throw new Error(`TGA conversion failed: ${tgaResult.error}`);
+    }
+    const tgaBytes = new Uint8Array(tgaResult.data);
+    console.log(`Output TGA: ${tgaBytes.length} bytes`);
+    writeFileSync('./test_output.tga', tgaBytes);
+    console.log('success conversion to tga');
+
+    const hdrResult = Module.convert_to_hdr(inputBytes);
+    if (!hdrResult.ok) {
+        throw new Error(`HDR conversion failed: ${hdrResult.error}`);
+    }
+    const hdrBytes = new Uint8Array(hdrResult.data);
+    console.log(`Output HDR: ${hdrBytes.length} bytes`);
+    writeFileSync('./test_output.hdr', hdrBytes);
+    console.log('success conversion to hdr');
 
     const pngResult = Module.convert_to_png(inputBytes);
     if (!pngResult.ok) {

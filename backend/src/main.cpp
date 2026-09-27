@@ -46,8 +46,8 @@ std::string validate_file_format(const std::vector<uint8_t>& input){ //verify fi
     if (magic_match(input,1,"PNG")){return "png";}
     if (magic_match(input,0,"FF" "D8")){return "jpeg";}
     if (magic_match(input,0,"BM")){return "bmp";}
+    if (magic_match(input,0,"#?RADIANCE")){return"hdr";}
     //fker tga doesnt have a hexadecimal signature
-    //hdr later here
     //FIX these wav and webp to use the magicmatch
     if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F' 
         && input[8] == 'W' && input[9] == 'A' && input[10] == 'V' && input[11] == 'E'){return "wav";}
@@ -67,9 +67,8 @@ emscripten::val process_and_encode_image(emscripten::val inputarray,int format,i
     int ok;
 
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
-    if (oldinput == input){
-        out.clear();
-    }
+    out.clear();
+
 
     oldinput = input;
 
@@ -96,6 +95,11 @@ emscripten::val process_and_encode_image(emscripten::val inputarray,int format,i
         case 2: //bmp
             ok = stbi_write_bmp_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
             break;
+        case 3: //tga
+            ok = stbi_write_tga_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
+            break;
+        default:
+            return make_error_val(Errortypes::UnsupportedFormat);
     }
     if (!ok) return make_error_val(Errortypes::EncodeFailure);
     return make_success_val(out.as_val());
@@ -115,6 +119,11 @@ emscripten::val convert_to_bmp(emscripten::val inputarray){
 }
 
 emscripten::val convert_to_tga(emscripten::val inputarray){
+    return process_and_encode_image(inputarray,3);
+}
+
+
+emscripten::val convert_to_hdr(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
     Errortypes size_error = validate_input_size(input);
@@ -123,42 +132,23 @@ emscripten::val convert_to_tga(emscripten::val inputarray){
     if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
 
     int width,height,channelz;
-    STB_IMG_Guard pixels = {stbi_load_from_memory(input.data(), (int)input.size(), &width, &height, &channelz, 4) };
-    if (!pixels.pointer){return make_error_val(Errortypes::CorruptInput);}
+    float* pixels = stbi_loadf_from_memory(input.data(), (int)input.size(), &width, &height, &channelz, 4);
+    if (!pixels){return make_error_val(Errortypes::CorruptInput);}
 
     Errortypes dimensional_error = validate_image_dimensions(width,height);
-    if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
+    if (dimensional_error!=Errortypes::None){
+        stbi_image_free(pixels);
+        return make_error_val(dimensional_error);
+    }
 
     static OutputBuffer out;
-    int ok = stbi_write_tga_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
-    if (!ok) return make_error_val(Errortypes::EncodeFailure);
+    out.clear();
+    int ok = stbi_write_hdr_to_func(output_buffer_write_callback, &out, width, height, 4, pixels);
+    stbi_image_free(pixels);
+    if (!ok) {return make_error_val(Errortypes::EncodeFailure);}
 
     return make_success_val(out.as_val());
 }
-
-
-//FIX hdr later it requires floating point shi or smth
-// emscripten::val convert_to_hdr(emscripten::val inputarray){
-//     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
-
-//     Errortypes size_error = validate_input_size(input);
-//     if (size_error != Errortypes::None){return make_error_val(size_error);}
-
-//     if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
-
-//     int width,height,channelz;
-//     STB_IMG_Guard pixels = {stbi_load_from_memory(input.data(), (int)input.size(), &width, &height, &channelz, 4) };
-//     if (!pixels.pointer){return make_error_val(Errortypes::CorruptInput);}
-
-//     Errortypes dimensional_error = validate_image_dimensions(width,height);
-//     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
-
-//     static OutputBuffer out;
-//     int ok = stbi_write_hdr_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
-//     if (!ok) return make_error_val(Errortypes::EncodeFailure);
-
-//     return make_success_val(out.as_val());
-// }
 
 int get_image_width(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
@@ -183,7 +173,7 @@ EMSCRIPTEN_BINDINGS(image_convert_module) {
     emscripten::function("convert_to_jpeg", &convert_to_jpeg);
     emscripten::function("convert_to_bmp", &convert_to_bmp);
     emscripten::function("convert_to_tga", &convert_to_tga);
-    // emscripten::function("convert_to_hdr", &convert_to_hdr);
+    emscripten::function("convert_to_hdr", &convert_to_hdr);
     emscripten::function("get_image_width", &get_image_width);
     emscripten::function("get_image_height", &get_image_height);
 }
