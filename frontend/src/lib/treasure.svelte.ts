@@ -3,12 +3,18 @@ import { Island } from "./island.svelte";
 
 export class Treasure {
 	owner: Island | null = $state(null);
+
+	/**
+	 * This is just to make the pos not instantly jump away when owner is set to
+	 * null, *sigh*
+	 */
+	previousOwner: Island | null = $state(null);
 	pos: Pos = $derived(
-		this.owner === null
+		this.previousOwner === null
 			? new Pos()
 			: new Pos(
-					this.owner.pos.x + this.owner.treasureOffset.x,
-					this.owner.pos.y + this.owner.treasureOffset.y,
+					this.previousOwner.pos.x + this.previousOwner.treasureOffset.x,
+					this.previousOwner.pos.y + this.previousOwner.treasureOffset.y,
 				),
 	);
 	hide: boolean = $derived(this.owner === null);

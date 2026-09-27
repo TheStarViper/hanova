@@ -48,8 +48,14 @@ export class World {
 			this.islands.push(
 				new Island({ x, y }, (me: Island, endPos: Pos) => {
 					if (this.boat.hide) return;
+					// intentionally update both
 					this.treasure.owner = me;
-					this.boat.sail(endPos, () => (this.treasure.owner = null));
+					this.treasure.previousOwner = me;
+
+					this.boat.sail(endPos, () => {
+						// intentionally *not* update treasure.previousOwner
+						this.treasure.owner = null;
+					});
 				}),
 			);
 		}
