@@ -33,6 +33,9 @@ Errortypes validate_image_dimensions(int width,int height){
     return Errortypes::None;
 }
 
+
+//matches magic identifiers in the hexadecimals in the files cuz like i dont wanna write input[0] == "X" 
+//for every character in the identifier so this just does a full keyword at one time
 bool magic_match(const std::vector<uint8_t>& input, size_t offset, const std::string& identifier){
     if (input.size()<offset+identifier.size()){return false;}
     return std::memcmp(input.data()+offset,identifier.data(),identifier.size()) ==0;
@@ -40,11 +43,12 @@ bool magic_match(const std::vector<uint8_t>& input, size_t offset, const std::st
 
 std::string validate_file_format(const std::vector<uint8_t>& input){ //verify file formats bcuz it could be a misleading file extension
     if (input.size()<12){return "unknown";}
-    if (input[0]==0x89&&input[1]=='P'&&input[2]=='N'&&input[3]=='G'){return "png";}
-    if (input[0]==0xFF&&input[1]==0xD8){return"jpeg";}
-    if (input[0]=='B'&&input[1]=='M'){return"bmp";}
+    if (magic_match(input,1,"PNG")){return "png";}
+    if (magic_match(input,0,"FF" "D8")){return "jpeg";}
+    if (magic_match(input,0,"BM")){return "bmp";}
     //fker tga doesnt have a hexadecimal signature
     //hdr later here
+    //FIX these wav and webp to use the magicmatch
     if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F' 
         && input[8] == 'W' && input[9] == 'A' && input[10] == 'V' && input[11] == 'E'){return "wav";}
     if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F'
@@ -57,8 +61,7 @@ static uint8_t* decode(const std::vector<uint8_t>& input, int* w, int* h, int* c
     return stbi_load_from_memory(input.data(), (int)input.size(),w,h,channels,4);
 }
 
-//yo this converts to png
-emscripten::val convert_to_png(emscripten::val inputarray){
+emscripten::val process_and_encode_image(emscripten::val inputarray,int format,int quality = 100){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
     Errortypes size_error = validate_input_size(input);
@@ -74,33 +77,29 @@ emscripten::val convert_to_png(emscripten::val inputarray){
     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
     static OutputBuffer out;
-    int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, width * 4);
-    if (!ok) return make_error_val(Errortypes::EncodeFailure);
+    int ok;
 
+    switch(format){
+        case 0: //png
+            ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, width * 4);
+            break;
+        case 1: //jpeg
+            ok = stbi_write_jpg_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, quality);
+            break;
+        case 2: //bmp
+            ok = stbi_write_bmp_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
+            break;
+    }
+    if (!ok) return make_error_val(Errortypes::EncodeFailure);
     return make_success_val(out.as_val());
 }
 
-//yo this convert to jpeg
+emscripten::val convert_to_png(emscripten::val inputarray){
+    return process_and_encode_image(inputarray,0);
+}
+
 emscripten::val convert_to_jpeg(emscripten::val inputarray, int quality){ //quality 1-100
-    std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
-
-    Errortypes size_error = validate_input_size(input);
-    if (size_error != Errortypes::None){return make_error_val(size_error);}
-
-    if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
-
-    int width,height,channelz;
-    STB_IMG_Guard pixels = {stbi_load_from_memory(input.data(), (int)input.size(), &width, &height, &channelz, 4) };
-    if (!pixels.pointer){return make_error_val(Errortypes::CorruptInput);}
-
-    Errortypes dimensional_error = validate_image_dimensions(width,height);
-    if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
-
-    static OutputBuffer out;
-    int ok = stbi_write_jpg_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, quality);
-    if (!ok) return make_error_val(Errortypes::EncodeFailure);
-
-    return make_success_val(out.as_val());
+    return process_and_encode_image(inputarray,1,90);
 }
 
 //convert to bmp
@@ -148,6 +147,8 @@ emscripten::val convert_to_tga(emscripten::val inputarray){
     return make_success_val(out.as_val());
 }
 
+
+//FIX hdr later it requires floating point shi or smth
 // emscripten::val convert_to_hdr(emscripten::val inputarray){
 //     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
@@ -193,7 +194,7 @@ EMSCRIPTEN_BINDINGS(image_convert_module) {
     emscripten::function("convert_to_jpeg", &convert_to_jpeg);
     emscripten::function("convert_to_bmp", &convert_to_bmp);
     emscripten::function("convert_to_tga", &convert_to_tga);
-    //emscripten::function("convert_to_hdr", &convert_to_hdr);
+    // emscripten::function("convert_to_hdr", &convert_to_hdr);
     emscripten::function("get_image_width", &get_image_width);
     emscripten::function("get_image_height", &get_image_height);
 }
