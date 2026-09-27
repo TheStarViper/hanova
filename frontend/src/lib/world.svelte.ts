@@ -45,15 +45,13 @@ export class World {
 
 	initIslands() {
 		const sailBoat = (me: Island, endPos: Pos) => {
-			if (this.boat.hide) return;
-			// intentionally update both
+			// the user shouldn't be able to click if the banner is visible
+			if (!this.banner.hide) return;
+
 			this.treasure.owner = me;
 			this.treasure.previousOwner = me;
 
 			this.boat.sail(endPos, () => {
-				// intentionally *not* update treasure.previousOwner
-				this.treasure.owner = null;
-
 				this.banner.text = "You've found buried treasure: a PNG file!";
 				this.banner.hide = false;
 			});
