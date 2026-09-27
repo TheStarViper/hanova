@@ -8,7 +8,7 @@ const ELLIPSIS = "...";
 export class FileManager {
 	file: File | null = null;
 	outFormat: FileFormat | undefined;
-	result: Blob | null = null;
+	blob: Blob | null = null;
 
 	constructor(
 		public cppManager: CppManager,
@@ -65,7 +65,24 @@ export class FileManager {
 
 		const blob = new Blob([outBytes], { type: this.outFormat.mimeType });
 
-		this.result = blob;
+		this.blob = blob;
+	}
+
+	downloadFile() {
+		if (this.blob === null) {
+			throw new Error("can only download if conversion has finished");
+		}
+
+		const url = URL.createObjectURL(this.blob);
+		const outFilename = `${this.file?.name}.${this.outFormat?.ext}`;
+
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = outFilename;
+		a.click();
+		a.remove();
+
+		URL.revokeObjectURL(url);
 	}
 
 	// [TODO] finish implementing this

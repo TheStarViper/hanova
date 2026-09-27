@@ -40,23 +40,25 @@ export class World {
 		this.boat.hide = false;
 	}
 
+	islandClickHandler(me: Island, endPos: Pos) {
+		// the user shouldn't be able to click if the banner is visible
+		if (!this.banner.hide) return;
+
+		this.treasure.owner = me;
+		this.treasure.previousOwner = me;
+
+		// intentionally NOT awaiting this even though its async
+		this.fileManager.convertTo(me.name);
+
+		this.boat.sail(endPos, () => {
+			this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat?.name} file!`;
+			this.banner.hide = false;
+
+			this.fileManager.downloadFile();
+		});
+	}
+
 	initIslands() {
-		const islandClickHandler = (me: Island, endPos: Pos) => {
-			// the user shouldn't be able to click if the banner is visible
-			if (!this.banner.hide) return;
-
-			this.treasure.owner = me;
-			this.treasure.previousOwner = me;
-
-			// intentionally NOT awaiting this even though its async
-			this.fileManager.convertTo(me.name);
-
-			this.boat.sail(endPos, () => {
-				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat?.name} file!`;
-				this.banner.hide = false;
-			});
-		};
-
 		this.islands = islandData.islands.map((datum) => {
 			const pos = new Pos(datum.pos.x, datum.pos.y);
 
@@ -64,7 +66,7 @@ export class World {
 				datum.name,
 				pos,
 				datum.islandSpriteIndex,
-				islandClickHandler,
+				(me: Island, endPos: Pos) => this.islandClickHandler(me, endPos),
 			);
 		});
 	}
