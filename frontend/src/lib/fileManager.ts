@@ -6,9 +6,13 @@ const TERMINAL_TERM_CHARS = 3;
 const ELLIPSIS = "...";
 
 export class FileManager {
-	file: File | null = null;
+	file: File | undefined;
 	outFormat: FileFormat | undefined;
-	blob: Blob | null = null;
+
+	ok: boolean | undefined;
+
+	blob: Blob | undefined;
+	err: string | undefined;
 
 	constructor(
 		public cppManager: CppManager,
@@ -21,7 +25,7 @@ export class FileManager {
 			document.body.classList.add("dragover");
 		});
 		document.addEventListener("dragleave", (event: DragEvent) => {
-			if (event.relatedTarget === null) {
+			if (event.relatedTarget === undefined) {
 				document.body.classList.remove("dragover");
 			}
 		});
@@ -49,7 +53,7 @@ export class FileManager {
 			throw new Error(`invalid file type ${formatName}`);
 		}
 
-		if (this.file === null) {
+		if (this.file === undefined) {
 			throw new Error("tried to convert before file was set");
 		}
 
@@ -58,18 +62,24 @@ export class FileManager {
 		// syncronous but veeeeerrryyyyyy slowwwwwww
 		// [TODO] move this to a web worker or something
 		const result = this.outFormat.func(inBytes);
+		this.ok = result.ok;
 
-		console.log(result);
+		if (!result.ok) {
+			this.err = result.error;
+			return;
+		}
 
-		const outBytes = new Uint8Array(result);
+		const outBytes = result.data;
+		console.log(`outbytes length: ${outBytes.length}`);
 
 		const blob = new Blob([outBytes], { type: this.outFormat.mimeType });
+		console.log(`blob size: ${blob.size}`);
 
 		this.blob = blob;
 	}
 
 	downloadFile() {
-		if (this.blob === null) {
+		if (this.blob === undefined) {
 			throw new Error("can only download if conversion has finished");
 		}
 
@@ -82,13 +92,13 @@ export class FileManager {
 		a.click();
 		a.remove();
 
-		URL.revokeObjectURL(url);
+		// URL.revokeObjectURL(url);
 	}
 
 	// [TODO] finish implementing this
 	getTrimmedFilename(input?: string): string {
 		if (input === undefined) {
-			if (this.file === null) return "";
+			if (this.file === undefined) return "";
 			input = this.file.name;
 		}
 

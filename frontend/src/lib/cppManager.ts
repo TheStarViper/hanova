@@ -2,6 +2,16 @@ import MainModuleFactory from "./cpp/cpp_module";
 
 export const JPEG_QUALITY = 85;
 
+export interface SuccessObj {
+	ok: true;
+	data: Uint8Array<ArrayBuffer>;
+}
+export interface FailObj {
+	ok: false;
+	error: string;
+}
+export type ReturnObj = SuccessObj | FailObj;
+
 export interface FileFormat {
 	/** much match the name in the islandData */
 	name: string;
@@ -15,7 +25,7 @@ export interface FileFormat {
 	mimeType: string;
 
 	/** the conversion function */
-	func: (input: Uint8Array) => Uint8Array;
+	func: (input: Uint8Array) => ReturnObj;
 }
 
 export class CppManager {

@@ -40,6 +40,23 @@ export class World {
 		this.boat.hide = false;
 	}
 
+	boatArriveHandler() {
+		this.banner.hide = false;
+
+		switch (this.fileManager.ok) {
+			case undefined:
+				this.banner.text =
+					"error: the boat arrived before the conversion finished :(";
+				break;
+			case false:
+				this.banner.text = `error: ${this.fileManager.err}`;
+				break;
+			case true:
+				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat?.name} file!`;
+				this.fileManager.downloadFile();
+		}
+	}
+
 	islandClickHandler(me: Island, endPos: Pos) {
 		// the user shouldn't be able to click if the banner is visible
 		if (!this.banner.hide) return;
@@ -50,12 +67,7 @@ export class World {
 		// intentionally NOT awaiting this even though its async
 		this.fileManager.convertTo(me.name);
 
-		this.boat.sail(endPos, () => {
-			this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat?.name} file!`;
-			this.banner.hide = false;
-
-			this.fileManager.downloadFile();
-		});
+		this.boat.sail(endPos, () => this.boatArriveHandler());
 	}
 
 	initIslands() {
