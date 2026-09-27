@@ -1,3 +1,4 @@
+import { Banner } from "./banner.svelte";
 import { Boat } from "./boat";
 import type { CppManager } from "./cppManager";
 import { FileManager } from "./fileManager";
@@ -11,6 +12,7 @@ export class World {
 	islands: Island[] = $state([]);
 	fileManager = new FileManager(async () => this.dropHook());
 	treasure = new Treasure();
+	banner = new Banner(this.viewport);
 
 	constructor(public cppManager: CppManager) {}
 
@@ -22,6 +24,7 @@ export class World {
 
 	async dropHook() {
 		this.spawnBoat();
+		this.banner.hide = true;
 
 		if (this.fileManager.file === null) throw new Error("unreachable");
 		const bytes = await this.fileManager.file.bytes();
