@@ -4,6 +4,7 @@ alias i := install
 alias b := build
 alias p := preview
 alias s := serve
+alias h := health
 
 install:
     pnpm install
@@ -13,3 +14,5 @@ preview:
     pnpm preview
 serve:
     pnpm dev
+health:
+	pnpm check

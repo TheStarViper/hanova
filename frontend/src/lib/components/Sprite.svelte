@@ -72,7 +72,7 @@
 
 		filter: drop-shadow(0 0 30px hsl(41 40% 60% / var(--shadow-opacity)));
 
-		transition-duration: 0.2s;
+		transition-duration: 0.3s;
 		transition-timing-function: ease;
 		transition-property: filter, opacity;
 

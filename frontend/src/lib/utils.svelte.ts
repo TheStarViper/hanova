@@ -1,8 +1,8 @@
 export class Pos {
-	public x: number;
-	public y: number;
+	x: number;
+	y: number;
 
-	public constructor(x: number = 0, y: number = 0) {
+	constructor(x: number = 0, y: number = 0) {
 		this.x = $state(x);
 		this.y = $state(y);
 	}
@@ -12,8 +12,8 @@ export class Pos {
  * The info about the <main> element
  */
 export class Viewport {
-	public min = new Pos();
-	public max = new Pos();
+	min = new Pos();
+	max = new Pos();
 
 	constructor() {}
 
@@ -40,8 +40,7 @@ export class Viewport {
 }
 
 export function ease(t: number): number {
-	const k = 6;
-	return (1 - Math.pow(2, -k * t)) / (1 - Math.pow(2, -k));
+	return t * (2 - t);
 }
 
 // https://github.com/cprosche/mulberry32

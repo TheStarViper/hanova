@@ -1,6 +1,6 @@
 <script lang="ts">
-	import IslandSVG from "$lib/assets/island.svg?raw";
-	import type { Island } from "$lib/island";
+	import IslandSvg from "$lib/assets/island.svg?raw";
+	import type { Island } from "$lib/island.svelte";
 	import Sprite from "./Sprite.svelte";
 
 	interface Props {
@@ -22,5 +22,5 @@
 		click: me.callBoat,
 		hover: () => (hovered = true),
 		unhover: () => (hovered = false),
-	}}>{@html IslandSVG}</Sprite
+	}}>{@html IslandSvg}</Sprite
 >

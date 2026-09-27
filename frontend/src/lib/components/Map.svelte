@@ -1,10 +1,23 @@
 <script lang="ts">
-	import { World } from "$lib/world.svelte";
-	import { onMount } from "svelte";
+	// component imports
 	import Boat from "./Boat.svelte";
 	import Island from "./Island.svelte";
+	import Treasure from "./Treasure.svelte";
 
-	const world = new World();
+	// misc imports
+	import { World } from "$lib/world.svelte";
+	import type { CppManager } from "$lib/cppManager";
+	import { onMount } from "svelte";
+	import Banner from "./Banner.svelte";
+
+	interface Props {
+		cppManager: CppManager;
+	}
+
+	let { cppManager }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
+	const world = new World(cppManager);
 
 	let viewportEl: HTMLElement;
 
@@ -14,13 +27,14 @@
 <main bind:this={viewportEl}>
 	<h1>Hanova</h1>
 
-	<h2>Drag & Drop a file to start</h2>
-
 	<Boat me={world.boat} />
 
 	{#each world.islands as island}
 		<Island me={island} />
 	{/each}
+
+	<Treasure me={world.treasure} />
+	<Banner me={world.banner} />
 </main>
 
 <style lang="scss">
@@ -37,33 +51,15 @@
 		display: flex;
 		flex-direction: column;
 
-		h1,
-		h2 {
+		h1 {
 			position: absolute;
 			user-select: none;
 			z-index: 20;
-			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 		}
 
 		h1 {
 			right: 0.6rem;
 			top: 0.3rem;
-		}
-
-		h2 {
-			top: 50%;
-			text-align: center;
-			width: 100%;
-		}
-	}
-
-	:global {
-		body.dropped h2 {
-			transform: translateY(-3rem);
-			opacity: 0;
-			transition:
-				opacity 0.2s ease,
-				transform 0.2s ease;
 		}
 	}
 </style>
