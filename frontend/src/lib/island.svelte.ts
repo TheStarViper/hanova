@@ -7,6 +7,7 @@ import Island3Svg from "$lib/assets/island3.svg?raw";
 import Island4Svg from "$lib/assets/island4.svg?raw";
 import Island5Svg from "$lib/assets/island5.svg?raw";
 import Island6Svg from "$lib/assets/island6.svg?raw";
+import type { FileFormat } from "./cppManager";
 
 export const SVG_MAPPING: Record<number, string> = {
 	1: Island1Svg,
@@ -44,10 +45,10 @@ export class Island {
 		public name: string,
 		public pos: Pos,
 		public islandSpriteIndex: number,
-		sailBoat: (me: Island, endPos: Pos) => void,
+		islandClickHandler: (me: Island, endPos: Pos) => void,
 	) {
 		this.callBoat = () => {
-			sailBoat(this, this.treasurePos);
+			islandClickHandler(this, this.treasurePos);
 		};
 
 		this.treasureOffset = TREASURE_OFFSET_MAPPING[islandSpriteIndex];

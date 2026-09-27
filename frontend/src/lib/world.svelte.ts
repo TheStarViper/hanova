@@ -31,11 +31,6 @@ export class World {
 	async dropHook() {
 		this.spawnBoat();
 		this.banner.hide = true;
-
-		if (this.fileManager.file === null) throw new Error("unreachable");
-		const bytes = await this.fileManager.file.bytes();
-		const result = this.cppManager.convertToPNG(bytes);
-		console.log(result);
 	}
 
 	spawnBoat() {
@@ -46,15 +41,18 @@ export class World {
 	}
 
 	initIslands() {
-		const sailBoat = (me: Island, endPos: Pos) => {
+		const islandClickHandler = (me: Island, endPos: Pos) => {
 			// the user shouldn't be able to click if the banner is visible
 			if (!this.banner.hide) return;
 
 			this.treasure.owner = me;
 			this.treasure.previousOwner = me;
 
+			// intentionally NOT awaiting this even though its async
+			this.fileManager.convertTo(me.name);
+
 			this.boat.sail(endPos, () => {
-				this.banner.text = "You've found buried treasure: a PNG file!";
+				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat?.name} file!`;
 				this.banner.hide = false;
 			});
 		};
@@ -62,7 +60,12 @@ export class World {
 		this.islands = islandData.islands.map((datum) => {
 			const pos = new Pos(datum.pos.x, datum.pos.y);
 
-			return new Island(datum.name, pos, datum.islandSpriteIndex, sailBoat);
+			return new Island(
+				datum.name,
+				pos,
+				datum.islandSpriteIndex,
+				islandClickHandler,
+			);
 		});
 	}
 }

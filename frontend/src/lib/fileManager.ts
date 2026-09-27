@@ -1,4 +1,4 @@
-import type { CppManager } from "./cppManager";
+import type { CppManager, FileFormat } from "./cppManager";
 
 const MAX_FILENAME_CHARS = 20;
 /** how many chars of a filename base to show after an ellipsis  */
@@ -7,6 +7,7 @@ const ELLIPSIS = "...";
 
 export class FileManager {
 	file: File | null = null;
+	outFormat: FileFormat | undefined;
 	result: Blob | null = null;
 
 	constructor(
@@ -40,6 +41,31 @@ export class FileManager {
 
 			this.dropHook?.();
 		});
+	}
+
+	async convertTo(formatName: string) {
+		this.outFormat = this.cppManager.findFormat(formatName);
+		if (this.outFormat === undefined) {
+			throw new Error(`invalid file type ${formatName}`);
+		}
+
+		if (this.file === null) {
+			throw new Error("tried to convert before file was set");
+		}
+
+		const inBytes = await this.file.bytes();
+
+		// syncronous but veeeeerrryyyyyy slowwwwwww
+		// [TODO] move this to a web worker or something
+		const result = this.outFormat.func(inBytes);
+
+		console.log(result);
+
+		const outBytes = new Uint8Array(result);
+
+		const blob = new Blob([outBytes], { type: this.outFormat.mimeType });
+
+		this.result = blob;
 	}
 
 	// [TODO] finish implementing this
