@@ -37,8 +37,7 @@ export class World {
 		this.boat.pos.x = this.viewport.center.x;
 		this.boat.pos.y = this.viewport.center.y;
 
-		const { base, ext } = this.fileManager.parseFilename();
-		this.boat.name = this.fileManager.displayifyFilename(base, ext);
+		this.boat.name = this.fileManager.displayifiedFilename;
 		this.boat.hide = false;
 	}
 

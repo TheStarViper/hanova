@@ -80,18 +80,17 @@ export class FileManager {
 		}
 
 		const url = URL.createObjectURL(this.blob);
-		const outFilename = `${this.file?.name}.${this.outFormat?.ext}`;
 
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = outFilename;
+		a.download = this.outFilename;
 		a.click();
 		a.remove();
 
 		URL.revokeObjectURL(url);
 	}
 
-	parseFilename(): { base: string; ext: string | undefined } {
+	private parseFilename(): { base: string; ext: string | undefined } {
 		if (this.file === undefined) {
 			throw new Error("can only parse filename if file is defined");
 		}
@@ -112,7 +111,9 @@ export class FileManager {
 		return { base, ext };
 	}
 
-	displayifyFilename(base: string, ext: string | undefined): string {
+	get displayifiedFilename(): string {
+		const { base, ext } = this.parseFilename();
+
 		const maxBaseLength = MAX_FILENAME_CHARS - (ext?.length ?? 0);
 
 		if (base.length <= maxBaseLength) return base + ext;
@@ -120,5 +121,15 @@ export class FileManager {
 		const truncatedBase = base.substring(0, maxBaseLength - 1);
 
 		return truncatedBase + ELLIPSIS + ext;
+	}
+
+	get outFilename(): string {
+		const { base, ext } = this.parseFilename();
+
+		if (this.outFormat === undefined) {
+			throw new Error("can't get out filename until out format is set");
+		}
+
+		return `${base}.${this.outFormat.ext}`;
 	}
 }
