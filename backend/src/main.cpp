@@ -62,9 +62,19 @@ static uint8_t* decode(const std::vector<uint8_t>& input, int* w, int* h, int* c
 }
 
 emscripten::val process_and_encode_image(emscripten::val inputarray,int format,int quality = 100){
+    static OutputBuffer out;
+    static std::vector<uint8_t> oldinput;
+    int ok;
+
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
+    if (oldinput == input){
+        out.clear();
+    }
+
+    oldinput = input;
 
     Errortypes size_error = validate_input_size(input);
+    
     if (size_error != Errortypes::None){return make_error_val(size_error);}
 
     if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
@@ -75,9 +85,6 @@ emscripten::val process_and_encode_image(emscripten::val inputarray,int format,i
 
     Errortypes dimensional_error = validate_image_dimensions(width,height);
     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
-
-    static OutputBuffer out;
-    int ok;
 
     switch(format){
         case 0: //png
