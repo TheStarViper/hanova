@@ -19,7 +19,6 @@ struct STB_IMG_Guard{
     ~STB_IMG_Guard() {if(pointer)stbi_image_free(pointer);}
 };
 
-static std::vector<uint8_t> g_output;
 
 
 //validation guards
@@ -53,14 +52,6 @@ std::string validate_file_format(const std::vector<uint8_t>& input){ //verify fi
     return "unknown";
 }
 
-
-static void write_cb(void* context, void* data, int size){
-    (void)context;
-    size_t old_size = g_output.size();
-    g_output.resize(old_size  + size);
-    memcpy(g_output.data() + old_size, data, size);
-}
-
 //this is specifically for image data like width height color channels ykykyk
 static uint8_t* decode(const std::vector<uint8_t>& input, int* w, int* h, int* channels) {
     return stbi_load_from_memory(input.data(), (int)input.size(),w,h,channels,4);
@@ -82,7 +73,7 @@ emscripten::val convert_to_png(emscripten::val inputarray){
     Errortypes dimensional_error = validate_image_dimensions(width,height);
     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
-    OutputBuffer out;
+    static OutputBuffer out;
     int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, width * 4);
     if (!ok) return make_error_val(Errortypes::EncodeFailure);
 
@@ -105,7 +96,7 @@ emscripten::val convert_to_jpeg(emscripten::val inputarray, int quality){ //qual
     Errortypes dimensional_error = validate_image_dimensions(width,height);
     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
-    OutputBuffer out;
+    static OutputBuffer out;
     int ok = stbi_write_jpg_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, quality);
     if (!ok) return make_error_val(Errortypes::EncodeFailure);
 
@@ -128,7 +119,7 @@ emscripten::val convert_to_bmp(emscripten::val inputarray){
     Errortypes dimensional_error = validate_image_dimensions(width,height);
     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
-    OutputBuffer out;
+    static OutputBuffer out;
     int ok = stbi_write_bmp_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
     if (!ok) return make_error_val(Errortypes::EncodeFailure);
 
@@ -150,7 +141,7 @@ emscripten::val convert_to_tga(emscripten::val inputarray){
     Errortypes dimensional_error = validate_image_dimensions(width,height);
     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
-    OutputBuffer out;
+    static OutputBuffer out;
     int ok = stbi_write_tga_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
     if (!ok) return make_error_val(Errortypes::EncodeFailure);
 
@@ -172,7 +163,7 @@ emscripten::val convert_to_tga(emscripten::val inputarray){
 //     Errortypes dimensional_error = validate_image_dimensions(width,height);
 //     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
-//     OutputBuffer out;
+//     static OutputBuffer out;
 //     int ok = stbi_write_hdr_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
 //     if (!ok) return make_error_val(Errortypes::EncodeFailure);
 
