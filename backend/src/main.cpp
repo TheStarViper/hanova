@@ -6,6 +6,7 @@
 #include <cstring>
 #include "results.hpp"
 #include "variables.hpp"
+#include "buffer.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -74,10 +75,10 @@ emscripten::val convert_to_png(emscripten::val inputarray){
     Errortypes dimensional_error = validate_image_dimensions(width,height);
     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
-    out; //change to global buffer
-    int ok = stbi_write_png_to_func(output_buffer_write_cb, &out, width, height, 4, pixels.ptr, w * 4);
-    if (!ok) return make_error_val(ConversionError::EncodeFailed);
- 
+    OutputBuffer out; //change to global buffer
+    int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, width * 4);
+    if (!ok) return make_error_val(Errortypes::EncodeFailure);
+
     return make_success_val(out.as_val());
 }
 
