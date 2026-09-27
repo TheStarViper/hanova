@@ -99,30 +99,12 @@ emscripten::val convert_to_png(emscripten::val inputarray){
 }
 
 emscripten::val convert_to_jpeg(emscripten::val inputarray, int quality){ //quality 1-100
-    return process_and_encode_image(inputarray,1,90);
+    return process_and_encode_image(inputarray,1,quality);
 }
 
 //convert to bmp
 emscripten::val convert_to_bmp(emscripten::val inputarray){
-    std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
-
-    Errortypes size_error = validate_input_size(input);
-    if (size_error != Errortypes::None){return make_error_val(size_error);}
-
-    if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
-
-    int width,height,channelz;
-    STB_IMG_Guard pixels = {stbi_load_from_memory(input.data(), (int)input.size(), &width, &height, &channelz, 4) };
-    if (!pixels.pointer){return make_error_val(Errortypes::CorruptInput);}
-
-    Errortypes dimensional_error = validate_image_dimensions(width,height);
-    if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
-
-    static OutputBuffer out;
-    int ok = stbi_write_bmp_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
-    if (!ok) return make_error_val(Errortypes::EncodeFailure);
-
-    return make_success_val(out.as_val());
+    return process_and_encode_image(inputarray,2);
 }
 
 emscripten::val convert_to_tga(emscripten::val inputarray){

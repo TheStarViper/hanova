@@ -15,7 +15,7 @@ async function main(){
         throw new Error('Failed to read image — corrupt file or unsupported format');
     }
 
-    const jpegResult = Module.convert_to_jpeg(inputBytes, 90);
+    const jpegResult = Module.convert_to_jpeg(inputBytes, 10);
     if (!jpegResult.ok) {
         throw new Error(`JPEG conversion failed: ${jpegResult.error}`);
     }
