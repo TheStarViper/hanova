@@ -75,7 +75,7 @@ emscripten::val convert_to_png(emscripten::val inputarray){
     Errortypes dimensional_error = validate_image_dimensions(width,height);
     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
-    OutputBuffer out; //change to global buffer
+    OutputBuffer out;
     int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, width * 4);
     if (!ok) return make_error_val(Errortypes::EncodeFailure);
 
@@ -86,45 +86,61 @@ emscripten::val convert_to_png(emscripten::val inputarray){
 emscripten::val convert_to_jpeg(emscripten::val inputarray, int quality){ //quality 1-100
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
+    Errortypes size_error = validate_input_size(input);
+    if (size_error != Errortypes::None){return make_error_val(size_error);}
+
+    if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
+
     int width,height,channelz;
-    uint8_t* pixels = decode(input,&width,&height,&channelz);
-    if (!pixels){return emscripten::val::null();}
+    STB_IMG_Guard pixels = {stbi_load_from_memory(input.data(), (int)input.size(), &width, &height, &channelz, 4) };
+    if (!pixels.pointer){return make_error_val(Errortypes::CorruptInput);}
 
+    Errortypes dimensional_error = validate_image_dimensions(width,height);
+    if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
-    g_output.clear();
-    int ok = stbi_write_jpg_to_func(write_cb,nullptr,width,height,4,pixels,quality);
-    stbi_image_free(pixels);
+    OutputBuffer out;
+    int ok = stbi_write_jpg_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, quality);
+    if (!ok) return make_error_val(Errortypes::EncodeFailure);
 
-    if (!ok){return emscripten::val::null();}
-    return emscripten::val(emscripten::typed_memory_view(g_output.size(),g_output.data()));
+    return make_success_val(out.as_val());
 }
 
 //convert to bmp
 emscripten::val convert_to_bmp(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
+    Errortypes size_error = validate_input_size(input);
+    if (size_error != Errortypes::None){return make_error_val(size_error);}
+
+    if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
+
     int width,height,channelz;
-    uint8_t* pixels = decode(input,&width,&height,&channelz);
-    if (!pixels){return emscripten::val::null();}
+    STB_IMG_Guard pixels = {stbi_load_from_memory(input.data(), (int)input.size(), &width, &height, &channelz, 4) };
+    if (!pixels.pointer){return make_error_val(Errortypes::CorruptInput);}
 
+    Errortypes dimensional_error = validate_image_dimensions(width,height);
+    if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
-    g_output.clear();
-    int ok = stbi_write_bmp_to_func(write_cb,nullptr,width,height,4,pixels);
-    stbi_image_free(pixels);
+    OutputBuffer out;
+    int ok = stbi_write_bmp_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
+    if (!ok) return make_error_val(Errortypes::EncodeFailure);
 
-    if (!ok){return emscripten::val::null();}
-    return emscripten::val(emscripten::typed_memory_view(g_output.size(),g_output.data()));
+    return make_success_val(out.as_val());
 }
 
 int get_image_width(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
+    if (validate_input_size(input) != ConversionError::None) return -1;
+
     int width,height,channelz;
     if (!stbi_info_from_memory(input.data(),(int)input.size(),&width,&height,&channelz)) {return -1;}
     return width;
 }
 
 int get_image_height(emscripten::val inputarray){
-        std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
+    std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
+    if (validate_input_size(input) != ConversionError::None) return -1;
+    
     int width,height,channelz;
     if (!stbi_info_from_memory(input.data(),(int)input.size(),&width,&height,&channelz)) {return -1;}
     return height;
