@@ -7,6 +7,7 @@
 class OutputBuffer{
     private:
         std::vector<uint8_t> data_;
+        
     public:
         void clear(){data_.clear();}
 
@@ -20,8 +21,8 @@ class OutputBuffer{
             return emscripten::val(emscripten::typed_memory_view(data_.size(),data_.data()));
         }
 
-        size_t size() const {return data_.size();}
-        const uint8_t* data() const {return data_.data();}
+        size_t size() const{return data_.size();}
+        const uint8_t* data()const {return data_.data();}
 };
 
 inline void output_buffer_write_callback(void* context,void* data,int size){

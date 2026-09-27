@@ -19,10 +19,7 @@ struct STB_IMG_Guard{
     ~STB_IMG_Guard() {if(pointer)stbi_image_free(pointer);}
 };
 
-
-
 //validation guards
-
 Errortypes validate_input_size(const std::vector<uint8_t>& input){
     if (input.size()>MAX_INPUT_BYTES){return Errortypes::FileTooLarge;}
     return Errortypes::None;
@@ -43,11 +40,13 @@ bool magic_match(const std::vector<uint8_t>& input, size_t offset, const std::st
 
 std::string validate_file_format(const std::vector<uint8_t>& input){ //verify file formats bcuz it could be a misleading file extension
     if (input.size()<12){return "unknown";}
-    if (magic_match(input,1,"PNG")){return "png";}
-    if (magic_match(input,0,"FF" "D8")){return "jpeg";}
+    if (magic_match(input,1,"PNG")){return "png";} //dropped png byte
+    if (magic_match(input,0,"\xFF\xD8")){return "jpeg";}
     if (magic_match(input,0,"BM")){return "bmp";}
     if (magic_match(input,0,"#?RADIANCE")){return"hdr";}
-    //fker tga doesnt have a hexadecimal signature
+    if (input.size() >= 18 && magic_match(input, input.size() - 18,"TRUEVISION-XFILE.")) {
+        return "tga";
+    }
     //FIX these wav and webp to use the magicmatch
     if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F' 
         && input[8] == 'W' && input[9] == 'A' && input[10] == 'V' && input[11] == 'E'){return "wav";}
