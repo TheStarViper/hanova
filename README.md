@@ -21,10 +21,20 @@ buried **treasure**: your converted file!
 
 ## Backend (C++)
 
-For the backend I(Andrew) have decided to use C++ as it is the language I'm the most familar with. I compiled the backend through emscripten to a wasm package paired with js and ts helper files so that Ethan can do the frontend more seamlessly. There are a ton of file conversion libraries that exist already and it would take an unreasonable amount of time to develop my own with the codecs and such so i opted for a prepackaged library. I have listed the libraries ive used down below, but before that, even though i used libraries for conversion there are still a ton of other things to do other than calling functions in the library that a file converter like file validation and safety functions.
+For the backend I(Andrew) have decided to use C++ as it is the language I'm the
+most familar with. I compiled the backend through emscripten to a wasm package
+paired with js and ts helper files so that Ethan can do the frontend more
+seamlessly. There are a ton of file conversion libraries that exist already and
+it would take an unreasonable amount of time to develop my own with the codecs
+and such so i opted for a prepackaged library. I have listed the libraries ive
+used down below, but before that, even though i used libraries for conversion
+there are still a ton of other things to do other than calling functions in the
+library that a file converter like file validation and safety functions.
 
 ### Libraries Used:
+
 - stb_image (png,jpeg,bmp,tga,hdr)
+
 ### Supported File Formats
 
 <details>
@@ -159,9 +169,13 @@ pnpm dev
 
 - Thanks to [Watabou](https://github.com/watabou) for making
   [Perilous Shores](watabou.itch.io/perilous-shores), which is the main design
-  inspiration, and from which most of the assets are derived. _Obligatory legal
-  disclaimer: Perilous Shores allows its output to be used
+  inspiration, and from which most of the assets are derived (e.g. islands,
+  color palette, banner). _Obligatory legal disclaimer: Perilous Shores allows
+  its output to be used
   ["as you like: copy, modify, include in your commercial rpg adventures etc. Attribution is appreciated, but not required"](https://watabou.itch.io/perilous-shores#:~:text=You%20can%20use,but%20not%20required.)._
+- Thanks to [Sean Barrett](https://github.com/nothings) for making
+  [stb](https://github.com/nothings/stb), which is used for the image conversion
+  backend.
 
 ## Contributors
 

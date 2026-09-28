@@ -10,6 +10,7 @@
 
 	let hovered: boolean = $state(false);
 	let shadowOpacity = $derived(hovered ? 0.8 : 0.4);
+	let borderColor = $derived(hovered ? "#FFC067" : undefined);
 
 	let svg = $derived(SVG_MAPPING[me.islandSpriteIndex]);
 	let width = $derived(WIDTH_MAPPING[me.islandSpriteIndex]);
@@ -20,6 +21,7 @@
 	top={me.pos.y}
 	{width}
 	{shadowOpacity}
+	{borderColor}
 	handlers={{
 		click: me.callBoat,
 		hover: () => (hovered = true),

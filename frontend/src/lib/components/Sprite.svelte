@@ -26,6 +26,7 @@
 		layer?: number;
 
 		shadowOpacity?: number;
+		borderColor?: string;
 	}
 
 	let { children, ...props }: Props = $props();
@@ -54,6 +55,7 @@
 	style:z-index={props.layer ?? 0}
 	style:cursor={props.handlers?.click !== undefined ? "pointer" : ""}
 	style:--shadow-opacity={props.shadowOpacity ?? 0}
+	style:--border-color={props.borderColor ?? "transparent"}
 	style:pointer-events={props.handlers?.click === undefined ? "none" : "auto"}
 >
 	{@render children()}
@@ -69,6 +71,14 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+
+		& > :global(:not(span)) {
+			filter: drop-shadow(2px 0 0 var(--border-color))
+				drop-shadow(-2px 0 0 var(--border-color))
+				drop-shadow(0 2px 0 var(--border-color))
+				drop-shadow(0 -2px 0 var(--border-color));
+			transition: filter 0.3s ease;
+		}
 
 		filter: drop-shadow(0 0 30px hsl(41 40% 60% / var(--shadow-opacity)));
 
