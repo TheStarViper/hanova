@@ -22,8 +22,8 @@ export class World {
 		this.fileManager = new FileManager(cppManager, async () => this.dropHook());
 	}
 
-	init(viewportEl: HTMLElement) {
-		this.viewport.update(viewportEl);
+	init() {
+		this.viewport.init();
 		this.initIslands();
 		this.fileManager.init();
 	}
