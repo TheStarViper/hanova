@@ -4,6 +4,12 @@ Hanova is a file conversion website with a nautical twist!
 
 [![Screenshot of Hanova](./frontend/src/lib/assets/screenshot.png)](https://thestarviper.github.io/hanova/)
 
+Welcome to Hanova, a (fictional) archipelago off the coast of Madagascar!
+"Hanova" is the Malagasy word for "convert", and that's exactly what these
+islands do. Drag-and-drop your file into the water, and sail it to the island
+corresponding to your desired file format. Dig at the red X, and you'll unearth
+buried **treasure**: your converted file!
+
 > [!NOTE]
 > Hanova is still under heavy development. It is in a functional state now, but
 > it isn't feature-complete, and there may be bugs. A lot of bugs.
@@ -12,14 +18,6 @@ Hanova is a file conversion website with a nautical twist!
 
 > [!TIP]
 > **<https://thestarviper.github.io/hanova/>**
-
-## About
-
-Welcome to Hanova, a (fictional) archipelago off the coast of Madagascar!
-"Hanova" is the Malagasy word for "convert", and that's exactly what these
-islands do. Drag-and-drop your file into the water, and sail it to the island
-corresponding to your desired file format. Dig at the red X, and you'll unearth
-buried **treasure**: your converted file!
 
 ## Backend (C++)
 
@@ -114,7 +112,7 @@ aesthetic: a sleek modern webpage with a small box to drop files into and a
 dropdown to select the target format. Well that's boring! It would be much more
 fun if the whole website was styled as an antique nautical map.
 
-The current version of the frontend is ~~stolen~~ inspired by
+The current version of the frontend is ~~stolen from~~ inspired by
 [Perilous Shores](https://watabou.itch.io/perilous-shores) by Watabou, and I
 made most of Hanova's assets by extracting them from Perilous Shores exports. We
 might change the art direction or use custom assets in the future.
@@ -153,7 +151,7 @@ pnpm install
 pnpm dev
 ```
 
-## **Contributers**
+## Contributors
 
 - Ethan ([@ethmarks](https://github.com/ethmarks)): Frontend in Svelte
 - Andrew ([@TheStarViper](https://github.com/TheStarViper)): Backend in C++
