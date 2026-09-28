@@ -22,6 +22,7 @@
 	{width}
 	{shadowOpacity}
 	{borderColor}
+	borderWidth={2}
 	handlers={{
 		click: me.callBoat,
 		hover: () => (hovered = true),

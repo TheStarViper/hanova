@@ -3,12 +3,13 @@
 	import Boat from "./Boat.svelte";
 	import Island from "./Island.svelte";
 	import Treasure from "./Treasure.svelte";
+	import Banner from "./Banner.svelte";
+	import Compass from "./Compass.svelte";
 
 	// misc imports
 	import { World } from "$lib/world.svelte";
 	import type { CppManager } from "$lib/cppManager";
 	import { onMount } from "svelte";
-	import Banner from "./Banner.svelte";
 
 	interface Props {
 		cppManager: CppManager;
@@ -38,6 +39,7 @@
 
 	<Treasure me={world.treasure} />
 	<Banner me={world.banner} />
+	<Compass viewport={world.viewport} />
 </main>
 
 <style lang="scss">

@@ -27,6 +27,7 @@
 
 		shadowOpacity?: number;
 		borderColor?: string;
+		borderWidth?: number;
 	}
 
 	let { children, ...props }: Props = $props();
@@ -56,7 +57,8 @@
 	style:cursor={props.handlers?.click !== undefined ? "pointer" : ""}
 	style:--shadow-opacity={props.shadowOpacity ?? 0}
 	style:--border-color={props.borderColor ?? "transparent"}
-	style:pointer-events={props.handlers?.click === undefined ? "none" : "auto"}
+	style:--border-width="{props.borderWidth ?? 1}px"
+	style:pointer-events={props.handlers === undefined ? "none" : "auto"}
 >
 	{@render children()}
 	<span>{props.label}</span>
@@ -73,10 +75,14 @@
 		align-items: center;
 
 		& > :global(:not(span)) {
-			filter: drop-shadow(2px 0 0 var(--border-color))
-				drop-shadow(-2px 0 0 var(--border-color))
-				drop-shadow(0 2px 0 var(--border-color))
-				drop-shadow(0 -2px 0 var(--border-color));
+			filter: drop-shadow(var(--border-width) 0 0 var(--border-color))
+				drop-shadow(
+					calc(var(--border-width) * -1) 0 0 var(--border-color)
+				)
+				drop-shadow(0 var(--border-width) 0 var(--border-color))
+				drop-shadow(
+					0 calc(var(--border-width) * -1) 0 var(--border-color)
+				);
 			transition: filter 0.3s ease;
 		}
 
