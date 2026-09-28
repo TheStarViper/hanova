@@ -26,6 +26,7 @@ export class World {
 		this.viewport.init();
 		this.initIslands();
 		this.fileManager.init();
+		this.banner.hide = false;
 	}
 
 	reset() {
