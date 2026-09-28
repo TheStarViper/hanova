@@ -21,8 +21,10 @@ buried **treasure**: your converted file!
 
 ## Backend (C++)
 
-insert yap here
+For the backend I(Andrew) have decided to use C++ as it is the language I'm the most familar with. I compiled the backend through emscripten to a wasm package paired with js and ts helper files so that Ethan can do the frontend more seamlessly. There are a ton of file conversion libraries that exist already and it would take an unreasonable amount of time to develop my own with the codecs and such so i opted for a prepackaged library. I have listed the libraries ive used down below, but before that, even though i used libraries for conversion there are still a ton of other things to do other than calling functions in the library that a file converter like file validation and safety functions.
 
+### Libraries Used:
+- stb_image (png,jpeg,bmp,tga,hdr)
 ### Supported File Formats
 
 <details>
@@ -31,11 +33,11 @@ insert yap here
 - [x] png
 - [x] jpeg
 - [x] bmp
-- [ ] tga
-- [ ] hdr
-- [ ] ico
+- [x] tga
+- [x] hdr
+- [ ] ico (in progress)
 - [ ] gif
-- [ ] webp
+- [ ] webp (in progress)
 - [ ] tiff
 - [ ] avif
 - [ ] heif
