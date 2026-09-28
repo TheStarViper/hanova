@@ -39,6 +39,7 @@ emscripten::val convert_to_ico(emscripten::val inputarray){
     entry.bytes_in_res = (uint32_t)out.size();
     entry.offset = sizeof(ICOHeader) + sizeof(ICODirEntry);
 
+    
     ICOout.append(&header,sizeof(header));
     ICOout.append(&entry,sizeof(entry));
     ICOout.append(out.data(),out.size());

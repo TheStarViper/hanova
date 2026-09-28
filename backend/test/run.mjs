@@ -4,7 +4,7 @@ import createModule from '../../frontend/src/lib/cpp/cpp_module.js'
 async function main(){
     const Module = await createModule();
 
-    const inputBytes = new Uint8Array(readFileSync('./backend/test/test.png'));
+    const inputBytes = new Uint8Array(readFileSync('./backend/test/smalltest.png'));
     console.log(`Input PNG: ${inputBytes.length} bytes`);
 
     const width = Module.get_image_width(inputBytes);
@@ -58,6 +58,14 @@ async function main(){
     const pngBytes = new Uint8Array(pngResult.data);
     writeFileSync('./backend/test/test_output_roundtrip.png', pngBytes);
     console.log(`png conversion: (${pngBytes.length} bytes)`);
+
+        const icoResult = Module.convert_to_ico(inputBytes);
+    if (!icoResult.ok) {
+        throw new Error(`ICO conversion failed: ${icoResult.error}`);
+    }
+    const icoBytes = new Uint8Array(icoResult.data);
+    writeFileSync('./backend/test/testoutput.ico', icoBytes);
+    console.log(`ico conversion: (${icoBytes.length} bytes)`);
 }
 
 main().catch((err) => {
