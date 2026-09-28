@@ -119,6 +119,19 @@ The current version of the frontend is ~~stolen~~ inspired by
 made most of Hanova's assets by extracting them from Perilous Shores exports. We
 might change the art direction or use custom assets in the future.
 
+### Planned Features
+
+- [ ] A compass rose that brings you to an About page
+- [ ] Boat sinks if the conversion throws an error
+- [ ] Boat points in the direction it's moving in
+- [ ] Boat spawns at the island corresponding to its original file format
+- [ ] Boat moves in circles around islands rather than beaching itself
+- [ ] Map is scrollable (and maybe zoomable)
+- [ ] Boat travel animation where it follows an auto-generated dashed line that
+      curves around obstacles
+- [ ] Smoother animations and an overall better experience
+- [ ] ...and probably more
+
 ## Compiling yourself
 
 Prerequisites:
