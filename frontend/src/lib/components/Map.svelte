@@ -21,7 +21,10 @@
 
 	let viewportEl: HTMLElement;
 
-	onMount(() => world.init(viewportEl));
+	onMount(() => {
+		world.viewport.el = viewportEl;
+		world.init();
+	});
 </script>
 
 <main bind:this={viewportEl}>

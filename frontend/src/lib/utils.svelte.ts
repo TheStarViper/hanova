@@ -12,13 +12,21 @@ export class Pos {
  * The info about the <main> element
  */
 export class Viewport {
+	el: HTMLElement | undefined;
 	min = new Pos();
 	max = new Pos();
 
 	constructor() {}
 
-	update(el: HTMLElement): void {
-		const rect = el.getBoundingClientRect();
+	init(): void {
+		this.update();
+		window.addEventListener("resize", () => this.update());
+	}
+
+	update(): void {
+		if (this.el === undefined) return;
+
+		const rect = this.el.getBoundingClientRect();
 
 		this.min.x = rect.left;
 		this.min.y = rect.top;

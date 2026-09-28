@@ -1,6 +1,6 @@
 <script lang="ts">
 	import BoatSvg from "$lib/assets/boat.svg?raw";
-	import type { Boat } from "$lib/boat";
+	import type { Boat } from "$lib/boat.svelte";
 	import Sprite from "./Sprite.svelte";
 
 	interface Props {

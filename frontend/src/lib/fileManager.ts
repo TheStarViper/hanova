@@ -46,6 +46,10 @@ export class FileManager {
 	}
 
 	async convertTo(formatName: string) {
+		this.ok = undefined;
+		this.blob = undefined;
+		this.err = undefined;
+
 		this.outFormat = this.cppManager.findFormat(formatName);
 		if (this.outFormat === undefined) {
 			throw new Error(`invalid file type ${formatName}`);
