@@ -125,6 +125,7 @@ might change the art direction or use custom assets in the future.
 - [ ] Boat sinks if the conversion throws an error
 - [ ] Boat points in the direction it's moving in
 - [ ] Boat spawns at the island corresponding to its original file format
+- [ ] Mobile support
 - [ ] Boat moves in circles around islands rather than beaching itself
 - [ ] Map is scrollable (and maybe zoomable)
 - [ ] Boat travel animation where it follows an auto-generated dashed line that
@@ -152,6 +153,14 @@ cd frontend
 pnpm install
 pnpm dev
 ```
+
+## Acknowledgements
+
+- Thanks to [Watabou](https://github.com/watabou) for making
+  [Perilous Shores](watabou.itch.io/perilous-shores), which is the main design
+  inspiration, and from which most of the assets are derived. _Obligatory legal
+  disclaimer: Perilous Shores allows its output to be used
+  ["as you like: copy, modify, include in your commercial rpg adventures etc. Attribution is appreciated, but not required"](https://watabou.itch.io/perilous-shores#:~:text=You%20can%20use,but%20not%20required.)._
 
 ## Contributors
 
