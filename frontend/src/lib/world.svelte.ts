@@ -36,7 +36,8 @@ export class World {
 	spawnBoat() {
 		this.boat.pos.x = this.viewport.center.x;
 		this.boat.pos.y = this.viewport.center.y;
-		this.boat.name = this.fileManager.getTrimmedFilename();
+
+		this.boat.name = this.fileManager.displayifiedFilename;
 		this.boat.hide = false;
 	}
 
@@ -60,6 +61,10 @@ export class World {
 	islandClickHandler(me: Island, endPos: Pos) {
 		// the user shouldn't be able to click if the banner is visible
 		if (!this.banner.hide) return;
+
+		// if a file conversion has already started, the user shouldn't be able to
+		// change it partway through
+		if (this.boat.targetPos !== this.boat.pos) return;
 
 		this.treasure.owner = me;
 		this.treasure.previousOwner = me;
