@@ -3,7 +3,7 @@ import { Pos, Viewport, ease } from "$lib/utils.svelte";
 export class Boat {
 	pos = new Pos();
 	targetPos: Pos = this.pos;
-	hide = true;
+	hide = $state(true);
 	name = "Boat";
 
 	/** in pixels per second */

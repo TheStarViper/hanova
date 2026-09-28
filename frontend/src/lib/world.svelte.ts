@@ -1,6 +1,6 @@
 // class imports
 import { Banner } from "./banner.svelte";
-import { Boat } from "./boat";
+import { Boat } from "./boat.svelte";
 import { FileManager } from "./fileManager";
 import { Island } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
@@ -22,10 +22,28 @@ export class World {
 		this.fileManager = new FileManager(cppManager, async () => this.dropHook());
 	}
 
-	init(viewportEl: HTMLElement) {
-		this.viewport.update(viewportEl);
+	init() {
+		this.viewport.init();
 		this.initIslands();
 		this.fileManager.init();
+	}
+
+	reset() {
+		this.boat.hide = true;
+		this.boat.targetPos = this.boat.pos;
+		this.boat.name = "Boat";
+
+		this.fileManager.file = undefined;
+		this.fileManager.outFormat = undefined;
+		this.fileManager.ok = undefined;
+		this.fileManager.blob = undefined;
+		this.fileManager.err = undefined;
+
+		this.treasure.hide = true;
+		this.treasure.owner = null;
+
+		this.banner.hide = false;
+		this.banner.text = "Drag & drop another file";
 	}
 
 	async dropHook() {
@@ -54,7 +72,10 @@ export class World {
 				break;
 			case true:
 				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat?.name} file!`;
+
 				this.fileManager.downloadFile();
+
+				setTimeout(() => this.reset(), 2000);
 		}
 	}
 
