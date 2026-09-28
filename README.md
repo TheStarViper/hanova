@@ -131,6 +131,7 @@ might change the art direction or use custom assets in the future.
 - [ ] Boat travel animation where it follows an auto-generated dashed line that
       curves around obstacles
 - [ ] Smoother animations and an overall better experience
+- [ ] procedural island and water generation
 - [ ] ...and probably more
 
 ## Compiling yourself

@@ -12,7 +12,7 @@ async function main(){
     console.log(`Detected dimensions: ${width}x${height}`);
     
     if (width === -1 || height === -1) {
-        throw new Error('Failed to read image — corrupt file or unsupported format');
+        throw new Error('Failed to read image, corrupt file or unsupported format');
     }
 
     const jpegResult = Module.convert_to_jpeg(inputBytes, 10);
