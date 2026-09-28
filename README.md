@@ -98,11 +98,10 @@ insert yap here
 <details>
 <summary><h3>Video</h3></summary>
 
-> [!NOTE]
-> Video conversion locally has no access to hardware accelleration so we are
-> unable to do it reasonably without an external server. In the future we may
-> dable with the idea of making video formats available via self hosted docker
-> container.
+Video conversion locally has no access to hardware accelleration so we are
+unable to do it reasonably without an external server. In the future we may
+dable with the idea of making video formats available via self hosted docker
+container.
 
 </details>
 
