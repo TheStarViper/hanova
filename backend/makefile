@@ -3,10 +3,17 @@ BUILD_DIR = ../frontend/src/lib/cpp
 TARGET = $(BUILD_DIR)/cpp_module.js
 TSD_OUT = cpp_module.d.ts
 
-SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
-INC = -Iinclude -Isrc
 
-CXXFLAGS = -O2 -std=c++20
+WEBP_SRCS = $(wildcard /libraries/libwebp/src/enc/*.c) \
+            $(wildcard /libraries/libwebp/src/dec/*.c) \
+            $(wildcard /libraries/libwebp/src/dsp/*.c) \
+            $(wildcard /libraries/libwebp/src/utils/*.c)
+
+
+SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp) $(WEBP_SRCS)
+INC = -Iinclude -Isrc -Ilibraries/libwebp/src
+
+CXXFLAGS = -O2 -std=c++20 -Iinclude/images
 
 EMFLAGS = --bind \
           --emit-tsd $(TSD_OUT) \

@@ -33,7 +33,8 @@ library that a file converter like file validation and safety functions.
 
 ### Libraries Used:
 
-- stb_image (png,jpeg,bmp,tga,hdr)
+- [stb_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
+- [libwebp](https://github.com/webmproject/libwebp) (webp)
 
 ### Supported File Formats
 
