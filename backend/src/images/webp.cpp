@@ -28,8 +28,8 @@ emscripten::val convert_to_webp(emscripten::val inputarray,float quality){ //1-1
     if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
 
     uint8_t* webp_data = nullptr;
-    size_t webp_size = WebPEncodeRGBA(pixels.pointer,width,height,width*4,quality,webp_data);
-
+    size_t webp_size = WebPEncodeRGBA(pixels.pointer,width,height,width*4,quality,&webp_data);
+    
     if (webp_size==0){
         return make_error_val(Errortypes::EncodeFailure);
         //shit
@@ -39,4 +39,9 @@ emscripten::val convert_to_webp(emscripten::val inputarray,float quality){ //1-1
     emscripten::val result = make_success_val(view);
     WebPFree(webp_data);
     return result;
+}
+
+
+EMSCRIPTEN_BINDINGS(webp_convert_module){
+    emscripten::function("convert_to_webp",&convert_to_webp);
 }

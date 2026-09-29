@@ -1,6 +1,5 @@
 #pragma once
-#include <emscripten/bind.h>
 #include <emscripten/val.h>
 #include <vector>
-#include <cstdint>
-#include <cstring>
+
+emscripten::val convert_to_webp(emscripten::val inputarray, float quality);
