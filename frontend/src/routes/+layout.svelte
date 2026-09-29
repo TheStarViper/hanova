@@ -2,7 +2,7 @@
 	import "$lib/assets/reset.css";
 	import "$lib/assets/global.css";
 	import screenshot from "$lib/assets/screenshot.png";
-	import favicon from "$lib/assets/boat.svg"
+	import favicon from "$lib/assets/boat.svg";
 
 	let { children } = $props();
 
@@ -32,4 +32,22 @@
 	<meta property="og:image" content={screenshot} />
 </svelte:head>
 
-{@render children()}
+<main id="main">
+	{@render children()}
+</main>
+
+<style lang="scss">
+	main {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		overflow: hidden;
+
+		border: 2px solid var(--line);
+		outline: 1px solid var(--line);
+		outline-offset: 0.4rem;
+
+		display: flex;
+		flex-direction: column;
+	}
+</style>
