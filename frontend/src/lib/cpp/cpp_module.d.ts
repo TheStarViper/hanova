@@ -12,7 +12,7 @@ declare var RuntimeExports: {
      * @param {Array=} argTypes
      * @param {Object=} opts
      */
-    cwrap: (ident: any, returnType?: string | undefined, argTypes?: any[] | undefined, opts?: Object | undefined) => any;
+    cwrap: (ident: any, returnType?: string | undefined, argTypes?: any[] | undefined, opts?: Object | undefined) => (...args: any[]) => any;
 };
 interface WasmModule {
 }
@@ -26,6 +26,7 @@ interface EmbindModule {
   get_image_width(_0: any): number;
   get_image_height(_0: any): number;
   convert_to_ico(_0: any): any;
+  convert_to_webp(_0: any, _1: number): any;
 }
 
 export type MainModule = WasmModule & typeof RuntimeExports & EmbindModule;

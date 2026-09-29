@@ -8,7 +8,8 @@ TSD_OUT = cpp_module.d.ts
 WEBP_SRCS = $(wildcard libraries/libwebp/src/enc/*.c) \
             $(wildcard libraries/libwebp/src/dec/*.c) \
             $(wildcard libraries/libwebp/src/dsp/*.c) \
-            $(wildcard libraries/libwebp/src/utils/*.c)
+            $(wildcard libraries/libwebp/src/utils/*.c) \
+            $(wildcard libraries/libwebp/sharpyuv/*.c)
 
 CPP_SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 
