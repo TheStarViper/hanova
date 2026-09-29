@@ -47,7 +47,7 @@
 		<a href="https://github.com/TheStarViper">Andrew</a> (C++ backend)
 	</footer>
 </article>
-<Compass {viewport} href="/" />
+<Compass {viewport} href="./" />
 
 <style lang="scss">
 	h1,
