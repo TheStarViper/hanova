@@ -12,19 +12,21 @@ export class Pos {
  * The info about the <main> element
  */
 export class Viewport {
-	el: HTMLElement | undefined;
+	el: HTMLElement | null = null;
 	min = new Pos();
 	max = new Pos();
 
 	constructor() {}
 
 	init(): void {
+		this.el = document.getElementById("main");
+
 		this.update();
 		window.addEventListener("resize", () => this.update());
 	}
 
 	update(): void {
-		if (this.el === undefined) return;
+		if (this.el === null) return;
 
 		const rect = this.el.getBoundingClientRect();
 

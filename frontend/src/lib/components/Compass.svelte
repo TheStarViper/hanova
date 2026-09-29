@@ -5,18 +5,19 @@
 
 	interface Props {
 		viewport: Viewport;
+		href: string;
 	}
 
-	let { viewport }: Props = $props();
+	let { viewport, href }: Props = $props();
 
 	let hovered = $state(false);
 	let borderColor = $derived(hovered ? "#3273dc" : undefined);
 </script>
 
-<a href="./about">
+<a {href}>
 	<Sprite
 		top={viewport.max.y - 180}
-		left={120}
+		left={viewport.max.x - 160}
 		width={202}
 		layer={5}
 		{borderColor}
