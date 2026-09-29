@@ -35,7 +35,7 @@
 
 <Treasure me={world.treasure} />
 <Banner me={world.banner} />
-<Compass viewport={world.viewport} href="./about" />
+<Compass viewport={world.viewport} href="/about" />
 
 <style lang="scss">
 	h1 {

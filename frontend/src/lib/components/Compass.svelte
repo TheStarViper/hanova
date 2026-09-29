@@ -11,7 +11,7 @@
 	let { viewport, href }: Props = $props();
 
 	let hovered = $state(false);
-	let borderColor = $derived(hovered ? "#3273dc" : undefined);
+	let borderColor = $derived(hovered ? "var(--accent)" : undefined);
 </script>
 
 <a {href}>
