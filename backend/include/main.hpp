@@ -13,6 +13,3 @@ struct STB_IMG_Guard{
     uint8_t* pointer;
     ~STB_IMG_Guard() {if(pointer)stbi_image_free(pointer);}
 };
-
-
-std::string validate_file_format(const std::vector<uint8_t>& input);

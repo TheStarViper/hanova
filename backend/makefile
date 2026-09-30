@@ -16,7 +16,7 @@ CPP_SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 WEBP_OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(WEBP_SRCS))
 CPP_OBJS  = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(CPP_SRCS))
 
-INC = -Iinclude -Isrc -Ilibraries/libwebp/src -Ilibraries/libwebp -Iinclude/images
+INC = -Iinclude -Isrc -Ilibraries/libwebp/src -Ilibraries/libwebp -Iinclude/images -Ilibraries/stb
 
 CFLAGS   = -O2
 CXXFLAGS = -O2 -std=c++20

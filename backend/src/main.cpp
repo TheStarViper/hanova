@@ -1,6 +1,7 @@
 #include <emscripten/bind.h>
 #define STB_IMAGE_IMPLEMENTATION
 
+#include "a_universal.hpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -9,77 +10,9 @@
 #include <emscripten/val.h>
 
 
-
-
-//matches magic identifiers in the hexadecimals in the files cuz like i dont wanna write input[0] == "X" 
-//for every character in the identifier so this just does a full keyword at one time
-bool magic_match(const std::vector<uint8_t>& input, size_t offset, const std::string& identifier){
-    if (input.size()<offset+identifier.size()){return false;}
-    return std::memcmp(input.data()+offset,identifier.data(),identifier.size()) ==0;
-}
-
-std::string validate_file_format(const std::vector<uint8_t>& input){ //verify file formats bcuz it could be a misleading file extension
-    if (input.size()<12){return "unknown";}
-    if (magic_match(input,1,"PNG")){return "png";} //dropped png byte
-    if (magic_match(input,0,"\xFF\xD8")){return "jpeg";}
-    if (magic_match(input,0,"BM")){return "bmp";}
-    if (magic_match(input,0,"#?RADIANCE")){return"hdr";}
-    if (input.size() >= 18 && magic_match(input, input.size() - 18,"TRUEVISION-XFILE.")) {
-        return "tga";
-    }
-    if (magic_match(input,0,"RIFF") && magic_match(input,8,"WEBP")){return "webp";} //webp is based on riff
-    
-    //FIX these wav and webp to use the magicmatch
-    if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F' 
-        && input[8] == 'W' && input[9] == 'A' && input[10] == 'V' && input[11] == 'E'){return "wav";}
-    if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F'
-        && input[8] == 'W' && input[9] == 'E' && input[10] == 'B' && input[11] == 'P'){return "webp";}
-    return "unknown";
-}
-
 //this is specifically for image data like width height color channels ykykyk
 static uint8_t* decode(const std::vector<uint8_t>& input, int* w, int* h, int* channels) {
     return stbi_load_from_memory(input.data(), (int)input.size(),w,h,channels,4);
-}
-
-emscripten::val process_and_encode_image(emscripten::val inputarray,int format,int quality = 100){
-    static OutputBuffer out;
-    int ok;
-
-    std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
-    out.clear();
-
-    Errortypes size_error = validate_input_size(input);
-    
-    if (size_error != Errortypes::None){return make_error_val(size_error);}
-
-    if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
-
-    int width,height,channelz;
-    STB_IMG_Guard pixels = {stbi_load_from_memory(input.data(), (int)input.size(), &width, &height, &channelz, 4) };
-    if (!pixels.pointer){return make_error_val(Errortypes::CorruptInput);}
-
-    Errortypes dimensional_error = validate_image_dimensions(width,height);
-    if (dimensional_error!=Errortypes::None){return make_error_val(dimensional_error);}
-
-    switch(format){
-        case 0: //png
-            ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, width * 4);
-            break;
-        case 1: //jpeg
-            ok = stbi_write_jpg_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer, quality);
-            break;
-        case 2: //bmp
-            ok = stbi_write_bmp_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
-            break;
-        case 3: //tga
-            ok = stbi_write_tga_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.pointer);
-            break;
-        default:
-            return make_error_val(Errortypes::UnsupportedFormat);
-    }
-    if (!ok) return make_error_val(Errortypes::EncodeFailure);
-    return make_success_val(out.as_val());
 }
 
 emscripten::val convert_to_png(emscripten::val inputarray){
