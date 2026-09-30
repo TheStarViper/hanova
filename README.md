@@ -48,7 +48,7 @@ library that a file converter like file validation and safety functions.
 - [x] hdr
 - [ ] ico (in progress)
 - [ ] gif
-- [ ] webp (in progress)
+- [x] webp
 - [ ] tiff
 - [ ] avif
 - [ ] heif
