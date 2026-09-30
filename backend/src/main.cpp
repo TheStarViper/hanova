@@ -37,7 +37,7 @@ std::string validate_file_format(const std::vector<uint8_t>& input){ //verify fi
     if (input.size() >= 18 && magic_match(input, input.size() - 18,"TRUEVISION-XFILE.")) {
         return "tga";
     }
-    if (magic_match(input,0,"RIFF") && magic_match(input,8,"WEBP")){return "webp";}
+    if (magic_match(input,0,"RIFF") && magic_match(input,8,"WEBP")){return "webp";} //webp is based on riff
     
     //FIX these wav and webp to use the magicmatch
     if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F' 

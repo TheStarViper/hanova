@@ -47,6 +47,7 @@ emscripten::val convert_to_ico(emscripten::val inputarray){
     return make_success_val(ICOout.as_val());
 }
 
+
 EMSCRIPTEN_BINDINGS(ico_convert_module){
     emscripten::function("convert_to_ico",&convert_to_ico);
 }
