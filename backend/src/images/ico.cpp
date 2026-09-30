@@ -10,6 +10,22 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
+//THIS IS BROKEN
 emscripten::val convert_to_ico(emscripten::val inputarray){
     static OutputBuffer out;
     static OutputBuffer ICOout;
