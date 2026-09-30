@@ -3,6 +3,7 @@
 #include "results.hpp"
 #include "buffer.hpp"
 #include "main.hpp"
+#include "validation.hpp"
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
 

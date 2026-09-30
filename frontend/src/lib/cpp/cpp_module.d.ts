@@ -27,6 +27,7 @@ interface EmbindModule {
   get_image_height(_0: any): number;
   convert_to_ico(_0: any): any;
   convert_to_webp(_0: any, _1: number): any;
+  convert_webp_to_png(_0: any): any;
 }
 
 export type MainModule = WasmModule & typeof RuntimeExports & EmbindModule;

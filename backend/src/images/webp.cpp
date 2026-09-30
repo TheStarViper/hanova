@@ -3,6 +3,7 @@
 #include "results.hpp"
 #include "buffer.hpp"
 #include "main.hpp"
+#include "validation.hpp"
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
 #include "stb_image.h"
@@ -47,7 +48,7 @@ emscripten::val convert_to_webp(emscripten::val inputarray,float quality){ //1-1
 emscripten::val convert_webp_to_png(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
-    Errortypes size_error = validate_input_size(input);=
+    Errortypes size_error = validate_input_size(input);
     if (size_error != Errortypes::None){return make_error_val(size_error);}
 
     if (validate_file_format(input) != "webp"){
@@ -68,7 +69,7 @@ emscripten::val convert_webp_to_png(emscripten::val inputarray){
     out.clear();
     int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels,width*4);
     WebPFree(pixels);
-    
+
     if (!ok) {return make_error_val(Errortypes::EncodeFailure);}
     return make_success_val(out.as_val());
 }

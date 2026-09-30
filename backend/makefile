@@ -43,6 +43,8 @@ else
     MKDIR_P = mkdir -p $(1)
 endif
 
+echo_color = powershell -Command "Write-Host $(1) -ForegroundColor $(2)"
+
 .PHONY: all setup build clean
 
 all: setup build
@@ -60,9 +62,17 @@ $(OBJ_DIR)/%.o: %.cpp
 
 build: $(CPP_OBJS) $(WEBP_OBJS)
 	@echo "==============================================================================================="
-	@echo "[1/1] Creating WASM Module..."
+	@$(call echo_color, "[1/1] Creating WASM Module...", "Cyan")
 	$(CXX) $(CPP_OBJS) $(WEBP_OBJS) $(EMFLAGS)
 	@echo "==============================================================================================="
+	@echo "==============================================================================================="
+	@echo "==============================================================================================="
+	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
+	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
+	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
+	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
+	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
+
 
 clean:
 	@$(RM)
