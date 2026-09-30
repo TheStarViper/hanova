@@ -50,7 +50,7 @@ library that a file converter like file validation and safety functions.
 - [ ] ico (in progress)
 - [ ] gif
 - [x] webp
-- [ ] tiff
+- [ ] tiff (in progress)
 - [ ] avif
 - [ ] heif
 - [ ] heic
