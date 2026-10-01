@@ -104,13 +104,8 @@ export class World {
 
 	initIslands() {
 		this.islands = ISLAND_DATA.map((datum) => {
-			const pos = new Pos(datum.pos.x, datum.pos.y);
-
-			return new Island(
-				datum.name,
-				pos,
-				datum.islandSpriteIndex,
-				(me: Island, endPos: Pos) => this.islandClickHandler(me, endPos),
+			return new Island(datum, (me: Island, endPos: Pos) =>
+				this.islandClickHandler(me, endPos),
 			);
 		});
 	}

@@ -87,20 +87,19 @@ export const ISLAND_DATA = [
 
 export class Island {
 	callBoat: () => void;
+	name: string;
+	pos: Pos;
+	sprite: IslandSprite;
 
 	constructor(
-		public name: string,
-		public pos: Pos,
-		public islandSpriteIndex: IslandSpriteIndex,
+		datum: IslandDatum,
 		islandClickHandler: (me: Island, endPos: Pos) => void,
 	) {
-		this.callBoat = () => {
-			islandClickHandler(this, this.treasurePos);
-		};
-	}
+		this.name = datum.name;
+		this.pos = datum.pos;
+		this.sprite = ISLAND_SPRITES[datum.islandSpriteIndex];
 
-	get sprite() {
-		return ISLAND_SPRITES[this.islandSpriteIndex];
+		this.callBoat = () => islandClickHandler(this, this.treasurePos);
 	}
 
 	get treasurePos() {
