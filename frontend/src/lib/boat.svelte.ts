@@ -1,47 +1,37 @@
 import { Pos, Viewport, ease } from "$lib/utils.svelte";
+import type { Route } from "./route";
+
+// [TODO] replace this with an actual conversion time estimate
+/** in milliseconds */
+export const SAIL_DURATION = 4000;
 
 export class Boat {
 	pos = new Pos();
-	targetPos: Pos = this.pos;
+	route: Route | undefined;
 	hide = $state(true);
 	name = "Boat";
-
-	/** in pixels per second */
-	speed = 100;
 
 	constructor(public viewport: Viewport) {}
 
 	private moveAnimID: number | null = null;
 	/**
 	 * Smoothly moves from one position to another
+	 *
+	 * @param route
+	 * @param duration in milliseconds
+	 * @param arriveHook runs after the animation
 	 */
-	sail(endPos: Pos, arriveHook?: () => void) {
+	sail(route: Route, duration: number, arriveHook?: () => void) {
 		// sailing should only happen if visible
 		if (this.hide) return;
 
-		// we don't wanna restart the animation if it's the same destination
-		if (endPos === this.targetPos) return;
-		this.targetPos = endPos;
+		// we don't wanna restart the animation if there's already one running
+		if (this.route !== undefined) return;
+		this.route = route;
 
-		if (this.moveAnimID !== null) {
-			cancelAnimationFrame(this.moveAnimID);
-		}
+		if (this.moveAnimID !== null) cancelAnimationFrame(this.moveAnimID);
 
-		const startPos: Pos = { x: this.pos.x, y: this.pos.y };
-
-		/** could be positive or negative */
-		const deltaPos: Pos = {
-			x: endPos.x - startPos.x,
-			y: endPos.y - startPos.y,
-		};
-
-		// I init this on the first frame
 		let startTime: number | null = null;
-
-		const distance = Math.sqrt(deltaPos.x ** 2 + deltaPos.y ** 2);
-		const duration = (distance / this.speed) * 1000;
-
-		if (distance === 0) return;
 
 		const animate = (nowTime: number) => {
 			if (startTime === null) {
@@ -54,8 +44,9 @@ export class Boat {
 			const rawProgress = Math.min(elapsed / duration, 1);
 			const progress = ease(rawProgress);
 
-			this.pos.x = startPos.x + deltaPos.x * progress;
-			this.pos.y = startPos.y + deltaPos.y * progress;
+			const newPos = route(progress);
+			this.pos.x = newPos.x;
+			this.pos.y = newPos.y;
 
 			if (progress < 1) {
 				this.moveAnimID = requestAnimationFrame(animate);
@@ -66,13 +57,5 @@ export class Boat {
 		};
 
 		this.moveAnimID = requestAnimationFrame(animate);
-	}
-
-	/** @deprecated was once used for internal testing. dont use this lol */
-	randomizePos() {
-		this.sail({
-			x: Math.ceil(Math.random() * this.viewport.width),
-			y: Math.ceil(Math.random() * this.viewport.height),
-		});
 	}
 }

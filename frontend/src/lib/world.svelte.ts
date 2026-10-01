@@ -1,6 +1,6 @@
 // class imports
 import { Banner } from "./banner.svelte";
-import { Boat } from "./boat.svelte";
+import { Boat, SAIL_DURATION } from "./boat.svelte";
 import { FileManager } from "./fileManager";
 import { Island } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
@@ -9,6 +9,7 @@ import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 // misc imports
 import type { CppManager } from "./cppManager";
 import islandData from "./islandData.json";
+import { linearRouteFactory } from "./route";
 
 export class World {
 	viewport = new Viewport();
@@ -31,7 +32,7 @@ export class World {
 
 	reset() {
 		this.boat.hide = true;
-		this.boat.targetPos = this.boat.pos;
+		this.boat.route = undefined;
 		this.boat.name = "Boat";
 
 		this.fileManager.file = undefined;
@@ -86,7 +87,7 @@ export class World {
 
 		// if a file conversion has already started, the user shouldn't be able to
 		// change it partway through
-		if (this.boat.targetPos !== this.boat.pos) return;
+		if (this.boat.route !== undefined) return;
 
 		this.treasure.owner = me;
 		this.treasure.previousOwner = me;
@@ -94,7 +95,12 @@ export class World {
 		// intentionally NOT awaiting this even though its async
 		this.fileManager.convertTo(me.name);
 
-		this.boat.sail(endPos, () => this.boatArriveHandler());
+		const route = linearRouteFactory(
+			{ x: this.boat.pos.x, y: this.boat.pos.y },
+			endPos,
+		);
+
+		this.boat.sail(route, SAIL_DURATION, () => this.boatArriveHandler());
 	}
 
 	initIslands() {

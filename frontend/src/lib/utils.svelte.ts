@@ -1,3 +1,5 @@
+import type { Route } from "./route";
+
 export class Pos {
 	x: number;
 	y: number;
@@ -61,4 +63,15 @@ export function mulberry32(seed: number) {
 		t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
 		return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 	};
+}
+
+export function calcDisplacement(route: Route): number {
+	const startPos = route(0);
+	const endPos = route(1);
+	const deltaPos: Pos = {
+		x: endPos.x - startPos.x,
+		y: endPos.y - startPos.y,
+	};
+	const displacement = Math.sqrt(deltaPos.x ** 2 + deltaPos.y ** 2);
+	return displacement;
 }
