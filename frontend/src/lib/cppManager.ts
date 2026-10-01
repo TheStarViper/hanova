@@ -1,6 +1,7 @@
 import MainModuleFactory from "./cpp/cpp_module";
 
 export const JPEG_QUALITY = 85;
+export const WEBP_QUALITY = 90;
 
 export interface SuccessObj {
 	ok: true;
@@ -79,6 +80,16 @@ export class CppManager {
 				ext: "hdr",
 				mimeType: "image/vnd.radiance",
 				func: (input: Uint8Array) => Module.convert_to_hdr(input),
+			},
+
+			// https://en.wikipedia.org/wiki/WebP
+			// best image format!
+			{
+				name: "WebP",
+				ext: "webp",
+				mimeType: "image/webp",
+				func: (input: Uint8Array) =>
+					Module.convert_to_webp(input, WEBP_QUALITY),
 			},
 		];
 	}

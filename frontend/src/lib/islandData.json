@@ -1,7 +1,7 @@
 {
 	"islands": [
 		{
-			"name": "PNG",
+			"name": "BMP",
 			"pos": { "x": 200, "y": 200 },
 			"islandSpriteIndex": 1
 		},
@@ -11,9 +11,14 @@
 			"islandSpriteIndex": 2
 		},
 		{
-			"name": "BMP",
+			"name": "PNG",
 			"pos": { "x": 220, "y": 600 },
 			"islandSpriteIndex": 3
+		},
+		{
+			"name": "WebP",
+			"pos": { "x": 950, "y": 150 },
+			"islandSpriteIndex": 4
 		}
 	]
 }
