@@ -8,55 +8,105 @@ import Island4Svg from "$lib/assets/island4.svg?raw";
 import Island5Svg from "$lib/assets/island5.svg?raw";
 import Island6Svg from "$lib/assets/island6.svg?raw";
 
-export const SVG_MAPPING: Record<number, string> = {
-	1: Island1Svg,
-	2: Island2Svg,
-	3: Island3Svg,
-	4: Island4Svg,
-	5: Island5Svg,
-	6: Island6Svg,
-};
+export interface IslandSprite {
+	svg: string;
+	width: number;
+	treasureOffset: Pos;
+	radius: number;
+}
 
-export const WIDTH_MAPPING: Record<number, number> = {
-	1: 255,
-	2: 232,
-	3: 336,
-	4: 243,
-	5: 305,
-	6: 98,
-};
+export const ISLAND_SPRITES = {
+	1: {
+		svg: Island1Svg,
+		width: 255,
+		treasureOffset: new Pos(40, -10),
+		radius: 152,
+	},
+	2: {
+		svg: Island2Svg,
+		width: 232,
+		treasureOffset: new Pos(10, 30),
+		radius: 135,
+	},
+	3: {
+		svg: Island3Svg,
+		width: 336,
+		treasureOffset: new Pos(120, -70),
+		radius: 205,
+	},
+	4: {
+		svg: Island4Svg,
+		width: 243,
+		treasureOffset: new Pos(-5, 45),
+		radius: 140,
+	},
+	5: {
+		svg: Island5Svg,
+		width: 305,
+		treasureOffset: new Pos(0, 0),
+		radius: 0,
+	},
+	6: {
+		svg: Island6Svg,
+		width: 98,
+		treasureOffset: new Pos(0, 0),
+		radius: 0,
+	},
+} as const satisfies Record<number, IslandSprite>;
 
-export const TREASURE_OFFSET_MAPPING: Record<number, Pos> = {
-	1: new Pos(40, -10),
-	2: new Pos(10, 30),
-	3: new Pos(120, -70),
-	4: new Pos(-5, 45),
-	5: new Pos(0, 0),
-	6: new Pos(0, 0),
-};
+type IslandSpriteIndex = keyof typeof ISLAND_SPRITES;
+
+export interface IslandDatum {
+	name: string;
+	pos: Pos;
+	islandSpriteIndex: IslandSpriteIndex;
+}
+
+export const ISLAND_DATA = [
+	{
+		name: "BMP",
+		pos: new Pos(200, 200),
+		islandSpriteIndex: 1,
+	},
+	{
+		name: "JPEG",
+		pos: new Pos(600, 200),
+		islandSpriteIndex: 2,
+	},
+	{
+		name: "PNG",
+		pos: new Pos(220, 600),
+		islandSpriteIndex: 3,
+	},
+	{
+		name: "WebP",
+		pos: new Pos(950, 150),
+		islandSpriteIndex: 4,
+	},
+] as const satisfies IslandDatum[];
 
 export class Island {
 	callBoat: () => void;
 
-	public treasureOffset: Pos;
-
 	constructor(
 		public name: string,
 		public pos: Pos,
-		public islandSpriteIndex: number,
+		public islandSpriteIndex: IslandSpriteIndex,
 		islandClickHandler: (me: Island, endPos: Pos) => void,
 	) {
 		this.callBoat = () => {
 			islandClickHandler(this, this.treasurePos);
 		};
+	}
 
-		this.treasureOffset = TREASURE_OFFSET_MAPPING[islandSpriteIndex];
+	get sprite() {
+		return ISLAND_SPRITES[this.islandSpriteIndex];
 	}
 
 	get treasurePos() {
 		return new Pos(
-			this.pos.x + this.treasureOffset.x,
-			this.pos.y + this.treasureOffset.y,
+			this.pos.x + this.sprite.treasureOffset.x,
+			this.pos.y + this.sprite.treasureOffset.y,
 		);
 	}
 }

@@ -2,13 +2,12 @@
 import { Banner } from "./banner.svelte";
 import { Boat, SAIL_DURATION } from "./boat.svelte";
 import { FileManager } from "./fileManager";
-import { Island } from "./island.svelte";
+import { Island, ISLAND_DATA, type IslandDatum } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
 import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 
 // misc imports
 import type { CppManager } from "./cppManager";
-import islandData from "./islandData.json";
 import { linearRouteFactory } from "./route";
 
 export class World {
@@ -104,7 +103,7 @@ export class World {
 	}
 
 	initIslands() {
-		this.islands = islandData.islands.map((datum) => {
+		this.islands = ISLAND_DATA.map((datum) => {
 			const pos = new Pos(datum.pos.x, datum.pos.y);
 
 			return new Island(
