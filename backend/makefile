@@ -2,34 +2,21 @@ CXX = em++
 CC = emcc
 BUILD_DIR = ../frontend/src/lib/cpp
 OBJ_DIR = obj
-TARGET = $(BUILD_DIR)/cpp_module.js
-TSD_OUT = cpp_module.d.ts
-
-WEBP_SRCS = $(wildcard libraries/libwebp/src/enc/*.c) \
-            $(wildcard libraries/libwebp/src/dec/*.c) \
-            $(wildcard libraries/libwebp/src/dsp/*.c) \
-            $(wildcard libraries/libwebp/src/utils/*.c) \
-            $(wildcard libraries/libwebp/sharpyuv/*.c)
-
-CPP_SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
-
-WEBP_OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(WEBP_SRCS))
-CPP_OBJS  = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(CPP_SRCS))
 
 INC = -Iinclude -Isrc -Ilibraries/libwebp/src -Ilibraries/libwebp -Iinclude/images -Ilibraries/stb
 
 CFLAGS   = -O2
 CXXFLAGS = -O2 -std=c++20
 
-EMFLAGS = --bind \
-          --emit-tsd $(TSD_OUT) \
-          -o $(TARGET) \
+COMMON_EMFLAGS = --bind \
           -s WASM=1 \
           -s MODULARIZE=1 \
           -s EXPORT_ES6=1 \
           -s ENVIRONMENT="web,node" \
           -s ALLOW_MEMORY_GROWTH=1 \
           -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']"
+
+echo_color = powershell -Command "Write-Host $(1) -ForegroundColor $(2)"
 
 ifeq ($(OS),Windows_NT)
     MKDIR = if not exist $(subst /,\,$(BUILD_DIR)) mkdir $(subst /,\,$(BUILD_DIR))
@@ -43,11 +30,32 @@ else
     MKDIR_P = mkdir -p $(1)
 endif
 
-echo_color = powershell -Command "Write-Host $(1) -ForegroundColor $(2)"
 
-.PHONY: all setup build clean
+UNIVERSAL_DEPENENCY_SRCS = src/images/a_universal.cpp src/results.cpp src/validation.cpp src/stbstuff.cpp 
 
-all: setup build
+ALL_CPP_SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
+
+CORE_CPP_SRCS = $(filter-out src/images/webp.cpp, $(ALL_CPP_SRCS))
+CORE_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(CORE_CPP_SRCS))
+CORE_TARGET = $(BUILD_DIR)/image_core_module.js
+CORE_TSD = image_core_module.d.ts
+
+
+WEBP_LIB_SRCS = $(wildcard libraries/libwebp/src/enc/*.c) \
+            $(wildcard libraries/libwebp/src/dec/*.c) \
+            $(wildcard libraries/libwebp/src/dsp/*.c) \
+            $(wildcard libraries/libwebp/src/utils/*.c) \
+            $(wildcard libraries/libwebp/sharpyuv/*.c)
+WEBP_CPP_SRCS = src/images/webp.cpp 
+WEBP_OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(WEBP_LIB_SRCS)) \
+            $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(WEBP_CPP_SRCS)) \
+            $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(UNIVERSAL_DEPENENCY_SRCS))
+WEBP_TARGET = $(BUILD_DIR)/webp_module.js
+WEBP_TSD = webp_module.d.ts
+
+.PHONY: all setup build-core build-webp clean
+
+all: setup build-core build-webp
 
 setup:
 	@$(MKDIR)
@@ -60,19 +68,19 @@ $(OBJ_DIR)/%.o: %.cpp
 	@$(call MKDIR_P,$(dir $@))
 	$(CXX) -c $< $(INC) $(CXXFLAGS) -o $@
 
-build: $(CPP_OBJS) $(WEBP_OBJS)
+build-core: $(CORE_OBJS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[1/1] Creating WASM Module...", "Cyan")
-	$(CXX) $(CPP_OBJS) $(WEBP_OBJS) $(EMFLAGS)
+	@$(call echo_color, "[1/2] Creating image_core WASM Module...", "Cyan")
+	$(CXX) $(CORE_OBJS) --emit-tsd $(CORE_TSD) -o $(CORE_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
-	@echo "==============================================================================================="
-	@echo "==============================================================================================="
-	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
-	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
-	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
-	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
-	@$(call echo_color, "SUCCESSFULLY CREATED!", "Yellow") # five so its easy to see ontop of color
+	@$(call echo_color, "[1/2] image_core SUCCESSFULLY CREATED!", "Yellow")
 
+build-webp: $(WEBP_OBJS)
+	@echo "==============================================================================================="
+	@$(call echo_color, "[2/2] Creating webp WASM Module...", "Cyan")
+	$(CXX) $(WEBP_OBJS) --emit-tsd $(WEBP_TSD) -o $(WEBP_TARGET) $(COMMON_EMFLAGS)
+	@echo "==============================================================================================="
+	@$(call echo_color, "[2/2] webp SUCCESSFULLY CREATED!", "Yellow")
 
 clean:
 	@$(RM)
