@@ -24,16 +24,62 @@ export function linearRouteFactory(startPos: Pos, endPos: Pos): Route {
  * @todo implement this
  */
 function aStar(
-	/** the starting point */
 	start: Coords,
-
-	/** the goal */
-	end: Coords,
-
-	/** which neighbor nodes to exclude, if any */
-	filter?: (cell: Coords) => boolean,
+	goal: Coords,
+	isWalkable: (cell: Coords) => boolean,
 ): Coords[] {
-	return [];
+	let open: Coords[] = [start];
+	const gScores = new Map<Coords, number>();
+	const parents = new Map<Coords, Coords>();
+	const closed = new Set<Coords>();
+
+	const heuristic = heuristicFactory(goal);
+
+	const getF = (coords: Coords): number =>
+		gScores.get(coords)! + heuristic(coords);
+
+	gScores.set(start, 0);
+
+	while (open.length > 0) {
+		open.sort((a, b) => getF(a) - getF(b));
+
+		const current = open.shift();
+		if (current === undefined) throw new Error();
+
+		if (current === goal) {
+			// we're done! yay!
+
+			let path: Coords[] = [];
+			let head = current;
+
+			while (head !== start) {
+				path.push(head);
+				head = parents.get(head)!;
+			}
+
+			return path;
+		}
+
+		if (closed.has(current)) continue;
+		closed.add(current);
+
+		const tentativeG = gScores.get(current)! + 1;
+
+		const neighbors = getNeighbors(current);
+		for (const neighbor of neighbors) {
+			if (!isWalkable(neighbor)) continue;
+
+			const previousG = gScores.get(neighbor);
+
+			if (previousG === undefined || tentativeG < previousG) {
+				gScores.set(neighbor, tentativeG);
+				parents.set(neighbor, current);
+				open.push(neighbor);
+			}
+		}
+	}
+
+	throw new Error("fully explored open set, but couldn't find goal");
 }
 
 // rn I'm only doing 4 neighbors per cell, but maybe I'll change it to 8 later
@@ -60,7 +106,6 @@ function getNeighbors(origin: Coords): Coords[] {
 
 /** x,y */
 type Coords = `${number},${number}`;
-
 const stringifyCoords = (x: number, y: number): Coords => `${x},${y}`;
 const numifyCoords = (coord: Coords) =>
 	coord.split(",").map(Number) as [number, number];
@@ -76,12 +121,11 @@ const pixelify = (coords: Coords): Pos => {
 };
 
 // based on the boat sprite
+/** pixel sizes */
 const GRID_CELL_WIDTH = 96;
 const GRID_CELL_HEIGHT = 74;
 
-function intersectionCheckFactory(
-	islands: Island[],
-): (coords: Coords) => boolean {
+function isWalkableFactory(islands: Island[]): (coords: Coords) => boolean {
 	const cache = new Map<Coords, boolean>();
 
 	return (coords: Coords) => {
@@ -90,18 +134,18 @@ function intersectionCheckFactory(
 
 		const point = pixelify(coords);
 
-		let intersecting = false;
+		let walkable = true;
 
 		for (const island of islands) {
 			const distance = Math.abs(calcDisplacement(point, island.pos));
 			if (distance < island.sprite.radius) {
-				intersecting = true;
+				walkable = false;
 				break;
 			}
 		}
 
-		cache.set(coords, intersecting);
-		return intersecting;
+		cache.set(coords, walkable);
+		return walkable;
 	};
 }
 
