@@ -25,14 +25,14 @@ export function linearRouteFactory(startPos: Pos, endPos: Pos): Route {
  */
 function aStar(
 	/** the starting point */
-	start: GridCell,
+	start: Coords,
 
 	/** the goal */
-	end: GridCell,
+	end: Coords,
 
 	/** which neighbor nodes to exclude, if any */
-	filter?: (cell: GridCell) => boolean,
-): GridCell[] {
+	filter?: (cell: Coords) => boolean,
+): Coords[] {
 	return [];
 }
 
@@ -60,57 +60,35 @@ function getNeighbors(origin: Coords): Coords[] {
 
 /** x,y */
 type Coords = `${number},${number}`;
+
 const stringifyCoords = (x: number, y: number): Coords => `${x},${y}`;
 const numifyCoords = (coord: Coords) =>
 	coord.split(",").map(Number) as [number, number];
 
-class GridCell {
-	static GRID_CELL_SIZE: { width: number; height: number } = {
-		width: 96,
-		height: 74,
-	};
+const gridify = (point: Pos): Coords => {
+	const x = Math.floor(point.x / GRID_CELL_WIDTH);
+	const y = Math.floor(point.y / GRID_CELL_HEIGHT);
+	return stringifyCoords(x, y);
+};
+const pixelify = (coords: Coords): Pos => {
+	const [x, y] = numifyCoords(coords);
+	return new Pos((x + 0.5) * GRID_CELL_WIDTH, (y + 0.5) * GRID_CELL_HEIGHT);
+};
 
-	constructor(public readonly coords: Coords) {}
-
-	g: number = Infinity;
-	h: number = 0;
-
-	get f() {
-		return this.g + this.h;
-	}
-
-	parent: GridCell | null = null;
-
-	static gridify(pos: Pos): GridCell {
-		const x = Math.floor(pos.x / this.GRID_CELL_SIZE.width);
-		const y = Math.floor(pos.y / this.GRID_CELL_SIZE.height);
-
-		const coords = stringifyCoords(x, y);
-		return new GridCell(coords);
-	}
-
-	static pixelify(cell: GridCell): Pos {
-		const [x, y] = numifyCoords(cell.coords);
-
-		return new Pos(
-			(x + 0.5) * this.GRID_CELL_SIZE.width,
-			(y + 0.5) * this.GRID_CELL_SIZE.height,
-		);
-	}
-}
+// based on the boat sprite
+const GRID_CELL_WIDTH = 96;
+const GRID_CELL_HEIGHT = 74;
 
 function intersectionCheckFactory(
 	islands: Island[],
-): (cell: GridCell) => boolean {
+): (coords: Coords) => boolean {
 	const cache = new Map<Coords, boolean>();
 
-	return (cell: GridCell) => {
-		const coords = cell.coords;
-
+	return (coords: Coords) => {
 		const cached = cache.get(coords);
 		if (cached !== undefined) return cached;
 
-		const point = GridCell.pixelify(cell);
+		const point = pixelify(coords);
 
 		let intersecting = false;
 
