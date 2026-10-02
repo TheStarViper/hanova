@@ -8,7 +8,7 @@ import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 
 // misc imports
 import type { CppManager } from "./cppManager";
-import { linearRouteFactory } from "./route";
+import { aStarRouteFactory } from "./route";
 
 export class World {
 	viewport = new Viewport();
@@ -94,9 +94,10 @@ export class World {
 		// intentionally NOT awaiting this even though its async
 		this.fileManager.convertTo(me.name);
 
-		const route = linearRouteFactory(
+		const route = aStarRouteFactory(
 			new Pos(this.boat.pos.x, this.boat.pos.y),
 			endPos,
+			this.islands,
 		);
 
 		this.boat.sail(route, SAIL_DURATION, () => this.boatArriveHandler());

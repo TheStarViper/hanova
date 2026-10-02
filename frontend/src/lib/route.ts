@@ -17,6 +17,30 @@ export function linearRouteFactory(startPos: Pos, endPos: Pos): Route {
 		);
 }
 
+export function aStarRouteFactory(
+	startPos: Pos,
+	endPos: Pos,
+	islands: Island[],
+): Route {
+	const start = gridify(startPos);
+	const goal = gridify(endPos);
+	const isWalkable = isWalkableFactory(islands);
+
+	const path = aStar(start, goal, isWalkable);
+
+	return (progress: number) => {
+		const step = Math.min(
+			Math.max(Math.floor(progress * path.length), 0),
+			path.length - 1,
+		);
+
+		const coords = path[step];
+		const pos = pixelify(coords);
+
+		return pos;
+	};
+}
+
 /**
  * I've never implemented A* or any other Official For Realsies pathfinding
  * algorithm before, so I'm excited :D
