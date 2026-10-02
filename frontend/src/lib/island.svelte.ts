@@ -30,7 +30,7 @@ export const TREASURE_OFFSET_MAPPING: Record<number, Pos> = {
 	1: new Pos(40, -10),
 	2: new Pos(10, 30),
 	3: new Pos(120, -70),
-	4: new Pos(0, 0),
+	4: new Pos(-5, 45),
 	5: new Pos(0, 0),
 	6: new Pos(0, 0),
 };
