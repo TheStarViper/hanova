@@ -35,33 +35,56 @@ function aStar(
 	return [];
 }
 
-class GridPos {
+// rn I'm only doing 4 neighbors per cell, but maybe I'll change it to 8 later
+
+// prettier-ignore
+const MOORE_NEIGHBORHOOD = [
+	[-1, -1], [0, -1], [1, -1],
+	[-1,  0],          [1,  0],
+	[-1,  1], [0,  1], [1,  1],
+];
+// prettier-ignore
+const NEUMANN_NEIGHBORHOOD = [
+						[0, -1],
+	[-1,  0],          [1,  0],
+						[0,  1],
+];
+function getNeighbors(origin: Coords): Coords[] {
+	const [originX, originY] = numifyCoords(origin);
+
+	return NEUMANN_NEIGHBORHOOD.map((offset) =>
+		stringifyCoords(originX + offset[0], originY + offset[1]),
+	);
+}
+
+/** x,y */
+type Coords = `${number},${number}`;
+const stringifyCoords = (x: number, y: number): Coords => `${x},${y}`;
+const numifyCoords = (coord: Coords) =>
+	coord.split(",").map(Number) as [number, number];
+
+class GridCell {
 	static GRID_CELL_SIZE: { width: number; height: number } = {
 		width: 96,
 		height: 74,
 	};
 
-	/**
-	 * this is just to make it so that typescript can't duck type GridPos and
-	 * normal Pos
-	 */
-	private _gridPos: number = 0;
-	constructor(
-		public x: number,
-		public y: number,
-	) {}
+	constructor(public coords: Coords) {}
 
-	static Gridify(pixelPos: Pos): GridPos {
-		const x = Math.floor(pixelPos.x / this.GRID_CELL_SIZE.width);
-		const y = Math.floor(pixelPos.y / this.GRID_CELL_SIZE.height);
+	static gridify(pos: Pos): GridCell {
+		const x = Math.floor(pos.x / this.GRID_CELL_SIZE.width);
+		const y = Math.floor(pos.y / this.GRID_CELL_SIZE.height);
 
-		return new GridPos(x, y);
+		const coords = stringifyCoords(x, y);
+		return new GridCell(coords);
 	}
 
-	static Pixelify(gridPos: GridPos): Pos {
+	static pixelify(cell: GridCell): Pos {
+		const [x, y] = numifyCoords(cell.coords);
+
 		return new Pos(
-			(gridPos.x + 0.5) * this.GRID_CELL_SIZE.width,
-			(gridPos.y + 0.5) * this.GRID_CELL_SIZE.height,
+			(x + 0.5) * this.GRID_CELL_SIZE.width,
+			(y + 0.5) * this.GRID_CELL_SIZE.height,
 		);
 	}
 }
