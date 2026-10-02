@@ -23,7 +23,7 @@ export function linearRouteFactory(startPos: Pos, endPos: Pos): Route {
  *
  * @todo implement this
  */
-function aStar(
+export function aStar(
 	start: Coords,
 	goal: Coords,
 	isWalkable: (cell: Coords) => boolean,
@@ -49,12 +49,12 @@ function aStar(
 		if (current === goal) {
 			// we're done! yay!
 
-			let path: Coords[] = [];
-			let head = current;
+			let head = goal;
+			let path: Coords[] = [head];
 
 			while (head !== start) {
-				path.push(head);
 				head = parents.get(head)!;
+				path.unshift(head);
 			}
 
 			return path;
