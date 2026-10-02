@@ -9,6 +9,7 @@ CFLAGS   = -O2
 CXXFLAGS = -O2 -std=c++20
 
 COMMON_EMFLAGS = --bind \
+          --closure 1 \
           -s WASM=1 \
           -s MODULARIZE=1 \
           -s EXPORT_ES6=1 \
@@ -31,7 +32,7 @@ else
 endif
 
 
-UNIVERSAL_DEPENENCY_SRCS = src/images/a_universal.cpp src/results.cpp src/validation.cpp src/stbstuff.cpp 
+UNIVERSAL_DEPENENCY_SRCS = src/images/a_universal.cpp src/results.cpp src/validation.cpp src/stbstuff.cpp src/main.cpp 
 
 ALL_CPP_SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 
@@ -53,9 +54,9 @@ WEBP_OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(WEBP_LIB_SRCS)) \
 WEBP_TARGET = $(BUILD_DIR)/webp_module.js
 WEBP_TSD = webp_module.d.ts
 
-.PHONY: all setup build-core build-webp clean
+.PHONY: all setup build-core build-webp clean 
 
-all: setup build-core build-webp
+all: setup build-core build-webp success
 
 setup:
 	@$(MKDIR)
@@ -73,15 +74,18 @@ build-core: $(CORE_OBJS)
 	@$(call echo_color, "[1/2] Creating image_core WASM Module...", "Cyan")
 	$(CXX) $(CORE_OBJS) --emit-tsd $(CORE_TSD) -o $(CORE_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[1/2] image_core SUCCESSFULLY CREATED!", "Yellow")
+	@$(call echo_color, "[1/2] image_core SUCCESSFULLY CREATED!", "Blue") # blue prints purple for some reason?
 
 build-webp: $(WEBP_OBJS)
 	@echo "==============================================================================================="
 	@$(call echo_color, "[2/2] Creating webp WASM Module...", "Cyan")
 	$(CXX) $(WEBP_OBJS) --emit-tsd $(WEBP_TSD) -o $(WEBP_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[2/2] webp SUCCESSFULLY CREATED!", "Yellow")
+	@$(call echo_color, "[2/2] webp SUCCESSFULLY CREATED!", "Blue")
 
 clean:
 	@$(RM)
 	@$(RM_OBJ)
+
+success:
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
