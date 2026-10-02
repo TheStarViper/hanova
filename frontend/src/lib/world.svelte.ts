@@ -95,7 +95,7 @@ export class World {
 		this.fileManager.convertTo(me.name);
 
 		const route = linearRouteFactory(
-			{ x: this.boat.pos.x, y: this.boat.pos.y },
+			new Pos(this.boat.pos.x, this.boat.pos.y),
 			endPos,
 		);
 

@@ -2,6 +2,9 @@ export class Pos {
 	x: number;
 	y: number;
 
+	/** to stop typescript from duck typing */
+	private _pixelPos: number = 0;
+
 	constructor(x: number = 0, y: number = 0) {
 		this.x = $state(x);
 		this.y = $state(y);
@@ -64,10 +67,7 @@ export function mulberry32(seed: number) {
 }
 
 export function calcDisplacement(pos1: Pos, pos2: Pos): number {
-	const deltaPos: Pos = {
-		x: pos2.x - pos1.x,
-		y: pos2.y - pos1.y,
-	};
+	const deltaPos = new Pos(pos2.x - pos1.x, pos2.y - pos1.y);
 	const displacement = Math.sqrt(deltaPos.x ** 2 + deltaPos.y ** 2);
 	return displacement;
 }
