@@ -20,6 +20,7 @@ export function linearRouteFactory(startPos: Pos, endPos: Pos): Route {
 /**
  * I've never implemented A* or any other Official For Realsies pathfinding
  * algorithm before, so I'm excited :D
+ *
  * @todo implement this
  */
 function aStar(
@@ -69,7 +70,16 @@ class GridCell {
 		height: 74,
 	};
 
-	constructor(public coords: Coords) {}
+	constructor(public readonly coords: Coords) {}
+
+	g: number = Infinity;
+	h: number = 0;
+
+	get f() {
+		return this.g + this.h;
+	}
+
+	parent: GridCell | null = null;
 
 	static gridify(pos: Pos): GridCell {
 		const x = Math.floor(pos.x / this.GRID_CELL_SIZE.width);
@@ -106,14 +116,32 @@ function intersectionCheckFactory(
 
 		for (const island of islands) {
 			const distance = Math.abs(calcDisplacement(point, island.pos));
-			if (distance >= island.sprite.radius) {
+			if (distance < island.sprite.radius) {
 				intersecting = true;
 				break;
 			}
 		}
 
 		cache.set(coords, intersecting);
-
 		return intersecting;
+	};
+}
+
+/** Manhattan distance */
+function heuristicFactory(goal: Coords): (coords: Coords) => number {
+	const cache = new Map<Coords, number>();
+
+	const [gx, gy] = numifyCoords(goal);
+
+	return (coords: Coords) => {
+		const cached = cache.get(coords);
+		if (cached !== undefined) return cached;
+
+		const [cx, cy] = numifyCoords(coords);
+
+		const distance = Math.abs(gx - cx) + Math.abs(gy - cy);
+
+		cache.set(coords, distance);
+		return distance;
 	};
 }
