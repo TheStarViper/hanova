@@ -67,7 +67,8 @@ export function mulberry32(seed: number) {
 }
 
 export function calcDisplacement(pos1: Pos, pos2: Pos): number {
-	const deltaPos = new Pos(pos2.x - pos1.x, pos2.y - pos1.y);
-	const displacement = Math.sqrt(deltaPos.x ** 2 + deltaPos.y ** 2);
+	const dx = pos2.x - pos1.x;
+	const dy = pos2.y - pos1.y;
+	const displacement = Math.sqrt(dx ** 2 + dy ** 2);
 	return displacement;
 }

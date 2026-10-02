@@ -24,14 +24,14 @@ export function linearRouteFactory(startPos: Pos, endPos: Pos): Route {
  */
 function aStar(
 	/** the starting point */
-	start: Pos,
+	start: GridCell,
 
 	/** the goal */
-	end: Pos,
+	end: GridCell,
 
 	/** which neighbor nodes to exclude, if any */
-	filter?: (point: Pos) => boolean,
-): Pos[] {
+	filter?: (cell: GridCell) => boolean,
+): GridCell[] {
 	return [];
 }
 
@@ -89,10 +89,31 @@ class GridCell {
 	}
 }
 
-function collisionCheckFactory(islands: Island[]): (point: Pos) => boolean {
-	return (point: Pos) =>
-		islands.every(
-			(island) =>
-				Math.abs(calcDisplacement(point, island.pos)) >= island.sprite.radius,
-		);
+function intersectionCheckFactory(
+	islands: Island[],
+): (cell: GridCell) => boolean {
+	const cache = new Map<Coords, boolean>();
+
+	return (cell: GridCell) => {
+		const coords = cell.coords;
+
+		const cached = cache.get(coords);
+		if (cached !== undefined) return cached;
+
+		const point = GridCell.pixelify(cell);
+
+		let intersecting = false;
+
+		for (const island of islands) {
+			const distance = Math.abs(calcDisplacement(point, island.pos));
+			if (distance >= island.sprite.radius) {
+				intersecting = true;
+				break;
+			}
+		}
+
+		cache.set(coords, intersecting);
+
+		return intersecting;
+	};
 }
