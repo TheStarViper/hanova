@@ -5,17 +5,21 @@ OBJ_DIR = obj
 
 INC = -Iinclude -Isrc -Ilibraries/libwebp/src -Ilibraries/libwebp -Iinclude/images -Ilibraries/stb
 
-CFLAGS   = -O2
-CXXFLAGS = -O2 -std=c++20
+CXXFLAGS = -Oz -std=c++20 -flto
+CFLAGS   = -Oz -flto
 
 COMMON_EMFLAGS = --bind \
-          --closure 1 \
+          -Oz \
+          -flto \
           -s WASM=1 \
           -s MODULARIZE=1 \
           -s EXPORT_ES6=1 \
           -s ENVIRONMENT="web,node" \
           -s ALLOW_MEMORY_GROWTH=1 \
-          -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']"
+          -s FILESYSTEM=0 \
+          -s ASSERTIONS=0 \
+          --strip-all \
+          --closure 1\
 
 echo_color = powershell -Command "Write-Host $(1) -ForegroundColor $(2)"
 
