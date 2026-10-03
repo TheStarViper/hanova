@@ -10,6 +10,7 @@
 	import { World } from "$lib/world.svelte";
 	import type { CppManager } from "$lib/cppManager";
 	import { onMount } from "svelte";
+	import Bezier from "./Bezier.svelte";
 
 	interface Props {
 		cppManager: CppManager;
@@ -36,6 +37,7 @@
 <Treasure me={world.treasure} />
 <Banner me={world.banner} />
 <Compass viewport={world.viewport} href="./about" />
+<Bezier curves={world.curves} />
 
 <style lang="scss">
 	h1 {
