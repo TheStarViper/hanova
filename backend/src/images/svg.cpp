@@ -11,10 +11,43 @@
 #include "validation.hpp"
 #include "stb_image_write.h"
 #include "a_universal.hpp"
+
 #define NANOSVG_IMPLEMENTATION
-#include "nanosvg/nanosvg.h"
+#include "nanosvg.h"
 #define NANOSVGRAST_IMPLEMENTATION
-#include "nanosvg/nanosvgrast.h"
+#include "nanosvgrast.h"
+
+
+//yoinked function
+static std::string base64_encode(const uint8_t* data, size_t len){
+    static const char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    std::string out;
+    out.reserve(((len + 2) / 3) * 4);
+
+    size_t i = 0;
+    while(i+3<=len){
+        uint32_t chunk = (data[i] << 16) | (data[i+1] << 8) | data[i+2];
+        out += table[(chunk >> 18) & 0x3F];
+        out += table[(chunk >> 12) & 0x3F];
+        out += table[(chunk >> 6) & 0x3F];
+        out += table[chunk & 0x3F];
+        i += 3;
+    }
+
+    if (len - i == 1) {
+        uint32_t chunk = data[i] << 16;
+        out += table[(chunk >> 18) & 0x3F];
+        out += table[(chunk >> 12) & 0x3F];
+        out += "==";
+    } else if (len - i == 2) {
+        uint32_t chunk = (data[i] << 16) | (data[i+1] << 8);
+        out += table[(chunk >> 18) & 0x3F];
+        out += table[(chunk >> 12) & 0x3F];
+        out += table[(chunk >> 6) & 0x3F];
+        out += "=";
+    }
+    return out;
+}
 
 emscripten::val convert_to_svg(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
@@ -31,5 +64,21 @@ emscripten::val convert_to_svg(emscripten::val inputarray){
     int ok = stbi_write_png_to_func(output_buffer_write_callback,&pngbuffah,width,height,4,pixels.pointer,width*4);
     if (!ok){return make_error_val(Errortypes::EncodeFailure);}
 
-    //uhmmmm 1 sec
+    std::string base64 = base64_encode(pngbuffah.data(),pngbuffah.size());
+    std::string svgText =
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + std::to_string(width) +
+        "\" height=\"" + std::to_string(height) +
+        "\" viewBox=\"0 0 " + std::to_string(width) + " " + std::to_string(height) + "\">"
+        "<image width=\"" + std::to_string(width) + "\" height=\"" + std::to_string(height) +
+        "\" href=\"data:image/png;base64," + base64 + "\"/></svg>";
+    
+    static OutputBuffer out;
+    out.clear();
+    out.append(svgText.data(), svgText.size());
+
+    return make_success_val(out.as_val());
+}
+
+EMSCRIPTEN_BINDINGS(svg_convert_module){
+    emscripten::function("convert_to_svg",&convert_to_svg);
 }

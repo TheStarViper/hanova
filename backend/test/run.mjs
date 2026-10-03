@@ -11,6 +11,7 @@ mkdirSync(OUTPUT_DIR, { recursive: true });
 const moduleLoaders = {
   core: () => import('../../frontend/src/lib/cpp/image_core_module.js'),
   webp: () => import('../../frontend/src/lib/cpp/webp_module.js'),
+  svg: () => import('../../frontend/src/lib/cpp/svg_module.js'),
 };
 
 const loadedModules = {};
@@ -32,6 +33,7 @@ const conversions = [
   {module: 'core', fn: 'convert_to_hdr',  args: [],      ext: 'hdr',  label: 'HDR' },
   {module: 'core', fn: 'convert_to_ico',  args: [],      ext: 'ico',  label: 'ICO' },
   {module: 'webp', fn: 'convert_to_webp', args: [0],   ext: 'webp', label: 'WebP' },
+  {module: 'svg', fn: 'convert_to_svg', args: [0],   ext: 'svg', label: 'SVG' },
 ]; //soyjack pointing* look at this aura
 
 
