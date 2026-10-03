@@ -38,6 +38,7 @@ endif
 
 UNIVERSAL_DEPENENCY_SRCS = src/images/a_universal.cpp src/results.cpp src/validation.cpp src/stbstuff.cpp src/main.cpp 
 
+# CORE ------------------------------------------------------------------------------------------------------------------------------
 ALL_CPP_SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 
 CORE_CPP_SRCS = $(filter-out src/images/webp.cpp, $(ALL_CPP_SRCS))
@@ -45,7 +46,7 @@ CORE_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(CORE_CPP_SRCS))
 CORE_TARGET = $(BUILD_DIR)/image_core_module.js
 CORE_TSD = image_core_module.d.ts
 
-
+# WEBP -----------------------------------------------------------------------------------------------------------------------------------------
 WEBP_LIB_SRCS = $(wildcard libraries/libwebp/src/enc/*.c) \
             $(wildcard libraries/libwebp/src/dec/*.c) \
             $(wildcard libraries/libwebp/src/dsp/*.c) \
@@ -57,6 +58,9 @@ WEBP_OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(WEBP_LIB_SRCS)) \
             $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(UNIVERSAL_DEPENENCY_SRCS))
 WEBP_TARGET = $(BUILD_DIR)/webp_module.js
 WEBP_TSD = webp_module.d.ts
+
+# SVG ----------------------------------------------------------------------------------------------------------------------------
+
 
 .PHONY: all setup build-core build-webp clean 
 

@@ -31,7 +31,7 @@ const conversions = [
   {module: 'core', fn: 'convert_to_tga',  args: [],      ext: 'tga',  label: 'TGA' },
   {module: 'core', fn: 'convert_to_hdr',  args: [],      ext: 'hdr',  label: 'HDR' },
   {module: 'core', fn: 'convert_to_ico',  args: [],      ext: 'ico',  label: 'ICO' },
-  {module: 'webp', fn: 'convert_to_webp', args: [100],   ext: 'webp', label: 'WebP' },
+  {module: 'webp', fn: 'convert_to_webp', args: [0],   ext: 'webp', label: 'WebP' },
 ]; //soyjack pointing* look at this aura
 
 
