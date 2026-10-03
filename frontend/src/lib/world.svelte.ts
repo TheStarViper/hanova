@@ -1,14 +1,15 @@
 // class imports
 import { Banner } from "./banner.svelte";
-import { Boat } from "./boat.svelte";
+import { Boat, SAIL_DURATION } from "./boat.svelte";
 import { FileManager } from "./fileManager";
-import { Island } from "./island.svelte";
+import { Island, ISLAND_DATA, type IslandDatum } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
 import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 
 // misc imports
 import type { CppManager } from "./cppManager";
-import islandData from "./islandData.json";
+import { aStarRouteFactory } from "./route";
+import type { CubicBezier } from "./bezier";
 
 export class World {
 	viewport = new Viewport();
@@ -17,6 +18,7 @@ export class World {
 	fileManager: FileManager;
 	treasure = new Treasure();
 	banner = new Banner(this.viewport);
+	curves: CubicBezier[] = $state([]);
 
 	constructor(public cppManager: CppManager) {
 		this.fileManager = new FileManager(cppManager, async () => this.dropHook());
@@ -31,7 +33,7 @@ export class World {
 
 	reset() {
 		this.boat.hide = true;
-		this.boat.targetPos = this.boat.pos;
+		this.boat.route = undefined;
 		this.boat.name = "Boat";
 
 		this.fileManager.file = undefined;
@@ -45,6 +47,8 @@ export class World {
 
 		this.banner.hide = false;
 		this.banner.text = "Drag & drop another file";
+
+		this.curves = [];
 	}
 
 	async dropHook() {
@@ -86,7 +90,7 @@ export class World {
 
 		// if a file conversion has already started, the user shouldn't be able to
 		// change it partway through
-		if (this.boat.targetPos !== this.boat.pos) return;
+		if (this.boat.route !== undefined) return;
 
 		this.treasure.owner = me;
 		this.treasure.previousOwner = me;
@@ -94,18 +98,23 @@ export class World {
 		// intentionally NOT awaiting this even though its async
 		this.fileManager.convertTo(me.name);
 
-		this.boat.sail(endPos, () => this.boatArriveHandler());
+		const otherIslands = this.islands.filter((i) => i !== me);
+
+		const [route, curves] = aStarRouteFactory(
+			new Pos(this.boat.pos.x, this.boat.pos.y),
+			endPos,
+			otherIslands,
+		);
+
+		this.curves = curves;
+
+		this.boat.sail(route, SAIL_DURATION, () => this.boatArriveHandler());
 	}
 
 	initIslands() {
-		this.islands = islandData.islands.map((datum) => {
-			const pos = new Pos(datum.pos.x, datum.pos.y);
-
-			return new Island(
-				datum.name,
-				pos,
-				datum.islandSpriteIndex,
-				(me: Island, endPos: Pos) => this.islandClickHandler(me, endPos),
+		this.islands = ISLAND_DATA.map((datum) => {
+			return new Island(datum, (me: Island, endPos: Pos) =>
+				this.islandClickHandler(me, endPos),
 			);
 		});
 	}
