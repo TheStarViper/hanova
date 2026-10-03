@@ -8,7 +8,7 @@ export type Route = (progress: number) => Pos;
 
 /** just a straight line */
 export function linearRouteFactory(startPos: Pos, endPos: Pos): Route {
-	const deltaPos = new Pos(endPos.x - startPos.x, endPos.y - startPos.y);
+	const deltaPos = { x: endPos.x - startPos.x, y: endPos.y - startPos.y };
 
 	return (progress: number) =>
 		new Pos(
@@ -29,15 +29,20 @@ export function aStarRouteFactory(
 	const path = aStar(start, goal, isWalkable);
 
 	return (progress: number) => {
-		const step = Math.min(
-			Math.max(Math.floor(progress * path.length), 0),
-			path.length - 1,
+		const scaledStep = progress * (path.length - 1);
+		const index = Math.floor(scaledStep);
+		const remainder = scaledStep - index;
+
+		const pos = pixelify(path[index]);
+
+		if (index >= path.length - 1 || remainder === 0) return pos;
+
+		const nextPos = pixelify(path[index + 1]);
+
+		return new Pos(
+			pos.x + (nextPos.x - pos.x) * remainder,
+			pos.y + (nextPos.y - pos.y) * remainder,
 		);
-
-		const coords = path[step];
-		const pos = pixelify(coords);
-
-		return pos;
 	};
 }
 
