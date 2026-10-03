@@ -35,12 +35,6 @@ export function aStarRouteFactory(
 	return [route, curves];
 }
 
-/**
- * I've never implemented A* or any other Official For Realsies pathfinding
- * algorithm before, so I'm excited :D
- *
- * @todo implement this
- */
 export function aStar(
 	start: Coords,
 	goal: Coords,

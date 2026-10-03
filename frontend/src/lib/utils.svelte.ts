@@ -28,7 +28,7 @@ export class Pos {
 	}
 
 	static reflect(a: Pos, b: Pos): Pos {
-		return this.mul(this.sub(a, b), 2);
+		return this.sub(this.mul(a, 2), b);
 	}
 }
 
