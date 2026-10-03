@@ -18,6 +18,18 @@ export class Pos {
 	static mul(p: Pos, n: number): Pos {
 		return new Pos(p.x * n, p.y * n);
 	}
+
+	static dist(a: Pos, b: Pos): number {
+		return Math.hypot(b.x - a.x, b.y - a.y);
+	}
+
+	static lerp(a: Pos, b: Pos, t: number): Pos {
+		return Pos.add(a, Pos.mul(Pos.sub(b, a), t));
+	}
+
+	static reflect(a: Pos, b: Pos): Pos {
+		return this.mul(this.sub(a, b), 2);
+	}
 }
 
 /**
@@ -73,11 +85,4 @@ export function mulberry32(seed: number) {
 		t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
 		return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 	};
-}
-
-export function calcDisplacement(pos1: Pos, pos2: Pos): number {
-	const dx = pos2.x - pos1.x;
-	const dy = pos2.y - pos1.y;
-	const displacement = Math.sqrt(dx ** 2 + dy ** 2);
-	return displacement;
 }

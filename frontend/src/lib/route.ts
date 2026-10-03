@@ -1,6 +1,6 @@
 import { bezier, pathToBezier, type CubicBezier } from "./bezier";
 import type { Island } from "./island.svelte";
-import { calcDisplacement, Pos } from "./utils.svelte";
+import { Pos } from "./utils.svelte";
 
 /**
  *  @param progress must be 0-1 normalized
@@ -9,8 +9,7 @@ export type Route = (progress: number) => Pos;
 
 /** just a straight line */
 export function linearRouteFactory(start: Pos, end: Pos): Route {
-	return (progress: number) =>
-		Pos.add(start, Pos.mul(Pos.sub(start, end), progress));
+	return (progress: number) => Pos.lerp(start, end, progress);
 }
 
 export function aStarRouteFactory(
@@ -181,7 +180,7 @@ function isWalkableFactory(islands: Island[]): (coords: Coords) => boolean {
 		let walkable = true;
 
 		for (const island of islands) {
-			const distance = Math.abs(calcDisplacement(point, island.pos));
+			const distance = Math.abs(Pos.dist(point, island.pos));
 			if (distance < island.sprite.radius) {
 				walkable = false;
 				break;
