@@ -7,14 +7,9 @@ import { calcDisplacement, Pos } from "./utils.svelte";
 export type Route = (progress: number) => Pos;
 
 /** just a straight line */
-export function linearRouteFactory(startPos: Pos, endPos: Pos): Route {
-	const deltaPos = { x: endPos.x - startPos.x, y: endPos.y - startPos.y };
-
+export function linearRouteFactory(start: Pos, end: Pos): Route {
 	return (progress: number) =>
-		new Pos(
-			startPos.x + deltaPos.x * progress,
-			startPos.y + deltaPos.y * progress,
-		);
+		Pos.add(start, Pos.mul(Pos.sub(start, end), progress));
 }
 
 export function aStarRouteFactory(
@@ -27,22 +22,20 @@ export function aStarRouteFactory(
 	const isWalkable = isWalkableFactory(islands);
 
 	const path = aStar(start, goal, isWalkable);
+	const points = path.map(pixelify);
 
 	return (progress: number) => {
 		const scaledStep = progress * (path.length - 1);
 		const index = Math.floor(scaledStep);
 		const remainder = scaledStep - index;
 
-		const pos = pixelify(path[index]);
+		const point = points[index];
 
-		if (index >= path.length - 1 || remainder === 0) return pos;
+		if (index >= path.length - 1 || remainder === 0) return point;
 
-		const nextPos = pixelify(path[index + 1]);
+		const nextPoint = points[index + 1];
 
-		return new Pos(
-			pos.x + (nextPos.x - pos.x) * remainder,
-			pos.y + (nextPos.y - pos.y) * remainder,
-		);
+		return Pos.add(point, Pos.mul(Pos.sub(nextPoint, point), remainder));
 	};
 }
 

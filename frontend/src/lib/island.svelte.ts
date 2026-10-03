@@ -103,9 +103,6 @@ export class Island {
 	}
 
 	get treasurePos() {
-		return new Pos(
-			this.pos.x + this.sprite.treasureOffset.x,
-			this.pos.y + this.sprite.treasureOffset.y,
-		);
+		return Pos.add(this.pos, this.sprite.treasureOffset);
 	}
 }

@@ -2,12 +2,21 @@ export class Pos {
 	x: number;
 	y: number;
 
-	/** to stop typescript from duck typing */
-	private _pixelPos: number = 0;
-
 	constructor(x: number = 0, y: number = 0) {
 		this.x = $state(x);
 		this.y = $state(y);
+	}
+
+	static add(a: Pos, b: Pos): Pos {
+		return new Pos(a.x + b.x, a.y + b.y);
+	}
+
+	static sub(a: Pos, b: Pos): Pos {
+		return new Pos(a.x - b.x, a.y - b.y);
+	}
+
+	static mul(p: Pos, n: number): Pos {
+		return new Pos(p.x * n, p.y * n);
 	}
 }
 
