@@ -1,6 +1,6 @@
 import { Pos } from "./utils.svelte";
 
-type CubicBezier = {
+export type CubicBezier = {
 	p0: Pos;
 	p1: Pos;
 	p2: Pos;

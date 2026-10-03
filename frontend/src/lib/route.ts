@@ -1,4 +1,4 @@
-import { bezier, pathToBezier } from "./bezier";
+import { bezier, pathToBezier, type CubicBezier } from "./bezier";
 import type { Island } from "./island.svelte";
 import { calcDisplacement, Pos } from "./utils.svelte";
 
@@ -17,7 +17,7 @@ export function aStarRouteFactory(
 	startPos: Pos,
 	endPos: Pos,
 	islands: Island[],
-): Route {
+): [Route, CubicBezier[]] {
 	const start = gridify(startPos);
 	const goal = gridify(endPos);
 	const isWalkable = isWalkableFactory(islands);
@@ -26,12 +26,14 @@ export function aStarRouteFactory(
 
 	const curves = pathToBezier(path.map(pixelify));
 
-	return (progress: number) => {
+	const route = (progress: number) => {
 		const position = progress * curves.length;
 		const index = Math.min(Math.floor(position), curves.length - 1);
 		const t = position - index;
 		return bezier(curves[index], Math.min(t, 1));
 	};
+
+	return [route, curves];
 }
 
 /**
@@ -164,8 +166,8 @@ const pixelify = (coords: Coords): Pos => {
 
 // based on the boat sprite
 /** pixel sizes */
-const GRID_CELL_WIDTH = 96;
-const GRID_CELL_HEIGHT = 74;
+const GRID_CELL_WIDTH = 96 / 2;
+const GRID_CELL_HEIGHT = 74 / 2;
 
 function isWalkableFactory(islands: Island[]): (coords: Coords) => boolean {
 	const cache = new Map<Coords, boolean>();

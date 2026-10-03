@@ -9,6 +9,7 @@ import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 // misc imports
 import type { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
+import type { CubicBezier } from "./bezier";
 
 export class World {
 	viewport = new Viewport();
@@ -17,6 +18,7 @@ export class World {
 	fileManager: FileManager;
 	treasure = new Treasure();
 	banner = new Banner(this.viewport);
+	curves: CubicBezier[] = $state([]);
 
 	constructor(public cppManager: CppManager) {
 		this.fileManager = new FileManager(cppManager, async () => this.dropHook());
@@ -45,6 +47,8 @@ export class World {
 
 		this.banner.hide = false;
 		this.banner.text = "Drag & drop another file";
+
+		this.curves = [];
 	}
 
 	async dropHook() {
@@ -96,11 +100,13 @@ export class World {
 
 		const otherIslands = this.islands.filter((i) => i !== me);
 
-		const route = aStarRouteFactory(
+		const [route, curves] = aStarRouteFactory(
 			new Pos(this.boat.pos.x, this.boat.pos.y),
 			endPos,
 			otherIslands,
 		);
+
+		this.curves = curves;
 
 		this.boat.sail(route, SAIL_DURATION, () => this.boatArriveHandler());
 	}

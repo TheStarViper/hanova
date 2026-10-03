@@ -3,7 +3,7 @@
 	import Sprite from "./Sprite.svelte";
 
 	// change this for debugging only
-	let DISPLAY_RADIUS: boolean = true;
+	let DISPLAY_RADIUS: boolean = false;
 
 	interface Props {
 		me: Island;
