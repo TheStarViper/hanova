@@ -1,3 +1,4 @@
+import { bezier, pathToBezier } from "./bezier";
 import type { Island } from "./island.svelte";
 import { calcDisplacement, Pos } from "./utils.svelte";
 
@@ -22,20 +23,14 @@ export function aStarRouteFactory(
 	const isWalkable = isWalkableFactory(islands);
 
 	const path = aStar(start, goal, isWalkable);
-	const points = path.map(pixelify);
+
+	const curves = pathToBezier(path.map(pixelify));
 
 	return (progress: number) => {
-		const scaledStep = progress * (path.length - 1);
-		const index = Math.floor(scaledStep);
-		const remainder = scaledStep - index;
-
-		const point = points[index];
-
-		if (index >= path.length - 1 || remainder === 0) return point;
-
-		const nextPoint = points[index + 1];
-
-		return Pos.add(point, Pos.mul(Pos.sub(nextPoint, point), remainder));
+		const position = progress * curves.length;
+		const index = Math.min(Math.floor(position), curves.length - 1);
+		const t = position - index;
+		return bezier(curves[index], Math.min(t, 1));
 	};
 }
 
