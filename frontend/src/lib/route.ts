@@ -57,6 +57,7 @@ export function aStar(
 	const parents = new Map<Coords, Coords>();
 	const closed = new Set<Coords>();
 
+	const inBounds = inBoundsFactory(start, goal);
 	const heuristic = heuristicFactory(goal);
 
 	const getF = (coords: Coords): number =>
@@ -91,7 +92,7 @@ export function aStar(
 
 		const neighbors = getNeighbors(current);
 		for (const neighbor of neighbors) {
-			if (!isWalkable(neighbor)) continue;
+			if (!isWalkable(neighbor) || !inBounds(neighbor)) continue;
 
 			const previousG = gScores.get(neighbor);
 
@@ -103,7 +104,31 @@ export function aStar(
 		}
 	}
 
-	throw new Error("fully explored open set, but couldn't find goal");
+	console.warn(
+		"Fully traversed the grid with A*, but couldn't find a valid path. Defaulting to crude path",
+	);
+
+	return [start, goal];
+}
+
+function inBoundsFactory(
+	coords1: Coords,
+	coords2: Coords,
+): (coords: Coords) => boolean {
+	const MARGIN = 2;
+
+	const [x1, y1] = numifyCoords(coords1);
+	const [x2, y2] = numifyCoords(coords2);
+
+	const minX = Math.min(x1, x2) - MARGIN;
+	const maxX = Math.max(x1, x2) + MARGIN;
+	const minY = Math.min(y1, y2) - MARGIN;
+	const maxY = Math.max(y1, y2) + MARGIN;
+
+	return (coords: Coords) => {
+		const [x, y] = numifyCoords(coords);
+		return x >= minX && x <= maxX && y >= minY && y <= maxY;
+	};
 }
 
 // rn I'm only doing 4 neighbors per cell, but maybe I'll change it to 8 later

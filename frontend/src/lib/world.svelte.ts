@@ -94,10 +94,12 @@ export class World {
 		// intentionally NOT awaiting this even though its async
 		this.fileManager.convertTo(me.name);
 
+		const otherIslands = this.islands.filter((i) => i !== me);
+
 		const route = aStarRouteFactory(
 			new Pos(this.boat.pos.x, this.boat.pos.y),
 			endPos,
-			this.islands,
+			otherIslands,
 		);
 
 		this.boat.sail(route, SAIL_DURATION, () => this.boatArriveHandler());
