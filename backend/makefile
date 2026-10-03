@@ -10,6 +10,7 @@ CFLAGS   = -Oz -flto
 
 COMMON_EMFLAGS = --bind \
           -Oz \
+          -flto \
           -s WASM=1 \
           -s MODULARIZE=1 \
           -s EXPORT_ES6=1 \
@@ -17,7 +18,8 @@ COMMON_EMFLAGS = --bind \
           -s ALLOW_MEMORY_GROWTH=1 \
           -s FILESYSTEM=0 \
           -s ASSERTIONS=0 \
-          --strip-all
+          --strip-all \
+          --closure 1\
 
 echo_color = powershell -Command "Write-Host $(1) -ForegroundColor $(2)"
 

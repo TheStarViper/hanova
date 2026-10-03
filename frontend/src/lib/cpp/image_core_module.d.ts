@@ -5,7 +5,6 @@ interface WasmModule {
 interface EmbindModule {
   get_image_width(_0: any): number;
   get_image_height(_0: any): number;
-  convert_to_ico(_0: any): any;
   get_image_width(_0: any): number;
   get_image_height(_0: any): number;
 }
