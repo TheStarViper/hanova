@@ -34,5 +34,11 @@ std::string validate_file_format(const std::vector<uint8_t>& input){ //verify fi
         && input[8] == 'W' && input[9] == 'A' && input[10] == 'V' && input[11] == 'E'){return "wav";}
     if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F'
         && input[8] == 'W' && input[9] == 'E' && input[10] == 'B' && input[11] == 'P'){return "webp";}
+
+
+    //svgs dont have specific places for the tags
+    size_t scanLen = input.size() < 512 ? input.size() : 512;
+    std::string head(input.begin(), input.begin() + scanLen);
+    if (head.find("<svg") != std::string::npos) return "svg";
     return "unknown";
 }
