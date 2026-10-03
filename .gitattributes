@@ -1,3 +1,0 @@
-stb_**.h linguist-vendored
-backend/obj** linguist-vendored
-frontend/src/lib/cpp/**_module.** linguist-vendored
