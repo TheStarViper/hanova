@@ -1,6 +1,6 @@
 <script lang="ts">
-	import CompassSvg from "$lib/assets/compass.svg?raw";
-	import type { Viewport } from "$lib/utils.svelte";
+	import CompassSvg from "#lib/assets/compass.svg?raw";
+	import type { Viewport } from "#lib/utils.svelte.js";
 	import Sprite from "./Sprite.svelte";
 
 	interface Props {

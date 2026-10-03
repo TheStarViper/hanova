@@ -1,7 +1,7 @@
 <script lang="ts">
-	import BannerSvg from "$lib/assets/banner.svg?raw";
+	import BannerSvg from "#lib/assets/banner.svg?raw";
 	import Sprite from "./Sprite.svelte";
-	import { Banner } from "$lib/banner.svelte";
+	import { Banner } from "#lib/banner.svelte.js";
 
 	// cuz the center of the main section (where the text ought to be visually
 	// centered) is not the same as the center of the svg

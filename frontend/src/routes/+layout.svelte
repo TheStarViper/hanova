@@ -1,8 +1,8 @@
 <script lang="ts">
-	import "$lib/assets/reset.css";
-	import "$lib/assets/global.css";
-	import screenshot from "$lib/assets/screenshot.png";
-	import favicon from "$lib/assets/boat.svg";
+	import "#lib/assets/reset.css";
+	import "#lib/assets/global.css";
+	import screenshot from "#lib/assets/screenshot.png";
+	import favicon from "#lib/assets/boat.svg";
 
 	let { children } = $props();
 
