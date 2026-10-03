@@ -35,7 +35,7 @@ library that a file converter like file validation and safety functions.
 
 - [stb_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
 - [libwebp](https://github.com/webmproject/libwebp) (webp)
-- [libtiff](https://gitlab.com/libtiff/libtiff) (tiff)
+- [nanosvg](https://github.com/memononen/nanosvg) (svg)
 
 ### Supported File Formats
 
