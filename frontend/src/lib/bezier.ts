@@ -7,36 +7,71 @@ export type CubicBezier = {
 	p3: Pos;
 };
 
-function catmullRomToBezier(
+function centripetalCatmullRomToBezier(
 	p0: Pos,
 	p1: Pos,
 	p2: Pos,
 	p3: Pos,
-	tension = 1 / 6,
 ): CubicBezier {
-	const c1 = Pos.add(p1, Pos.mul(Pos.sub(p2, p0), tension));
-	const c2 = Pos.sub(p2, Pos.mul(Pos.sub(p3, p1), tension));
+	const t0 = 0;
+	const t1 = t0 + Math.sqrt(Pos.dist(p0, p1));
+	const t2 = t1 + Math.sqrt(Pos.dist(p1, p2));
+	const t3 = t2 + Math.sqrt(Pos.dist(p2, p3));
+
+	const dt1 = t1 - t0;
+	const dt2 = t2 - t1;
+	const dt3 = t3 - t2;
+
+	const m1 = Pos.add(
+		Pos.mul(Pos.sub(p2, p1), dt1 / (dt2 * (t2 - t0))),
+		Pos.mul(Pos.sub(p1, p0), dt2 / (dt1 * (t2 - t0))),
+	);
+	const m2 = Pos.add(
+		Pos.mul(Pos.sub(p2, p1), dt3 / (dt2 * (t3 - t1))),
+		Pos.mul(Pos.sub(p3, p2), dt2 / (dt3 * (t3 - t1))),
+	);
 
 	return {
 		p0: p1,
-		p1: c1,
-		p2: c2,
+		p1: Pos.add(p1, Pos.mul(m1, dt2 / 3)),
+		p2: Pos.sub(p2, Pos.mul(m2, dt2 / 3)),
 		p3: p2,
 	};
+}
+
+function colinearSimplification(path: Pos[]): Pos[] {
+	return path.filter((current, index) => {
+		const prev = path[index - 1];
+		const next = path[index + 1];
+
+		// don't simplify away the endpoints, obv
+		if (prev === undefined || next === undefined) return true;
+
+		// on a flat horizontal line, so simplify it away
+		if (prev.x === current.x && next.x === current.x) return false;
+
+		// on a flat vertical line, so simplify it away
+		if (prev.y === current.y && next.y === current.y) return false;
+
+		return true;
+	});
 }
 
 export function pathToBezier(path: Pos[]): CubicBezier[] {
 	if (path.length < 2) return [];
 
+	path = colinearSimplification(path);
+
 	const curves: CubicBezier[] = [];
 
 	for (let i = 0; i < path.length - 1; i++) {
-		const p0 = path[Math.max(0, i - 1)];
 		const p1 = path[i];
 		const p2 = path[i + 1];
-		const p3 = path[Math.min(path.length - 1, i + 2)];
 
-		curves.push(catmullRomToBezier(p0, p1, p2, p3));
+		const p0 = i === 0 ? Pos.reflect(p1, p2) : path[i - 1];
+		const p3 = i === path.length - 2 ? Pos.reflect(p2, p1) : path[i + 2];
+
+		curves.push(centripetalCatmullRomToBezier(p0, p1, p2, p3));
 	}
 
 	return curves;
