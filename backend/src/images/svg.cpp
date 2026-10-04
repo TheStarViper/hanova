@@ -75,7 +75,31 @@ emscripten::val convert_svg_to_png(emscripten::val inputarray){
     int width = (int)image->widht;
     int height = (int)image->height;
 
-    
+    Errortypes dimensional_error = validate_image_dimensions(width,height);
+    if (dimensional_error!=Errortypes::none){
+        nsvgDelete(image);
+        return make_error_val(dimensional_error);
+    }
+
+    NSVGrasterizer* rasterizorrrr =nsvgCreateRasterizer();
+    if (!rasterizorrrr){
+        nsvgDelete(image);
+        return make_error_val(Errortypes::EncodeFailure);
+    }
+
+    std::vector<uint8_t> pixels((size_t)width*height*4);
+    nsvgRasterize(rasterizorrrr,image,0,0,1.0f,pixels.data(),width,height,width*4);
+
+    nsvgDeleteRasterizer(rasterizorrrr);
+    nsvgDelete(image);
+
+    static OutputBuffer out;
+    out.clear();
+
+    int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels,width*4);
+
+    if (!ok) {return make_error_val(Errortypes::EncodeFailure);}
+    return make_success_val(out.as_val());
 }
 
 emscripten::val convert_to_svg(emscripten::val inputarray){
