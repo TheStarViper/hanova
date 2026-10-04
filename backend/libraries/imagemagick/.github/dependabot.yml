@@ -1,0 +1,28 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    cooldown:
+      default-days: 7
+    schedule:
+      interval: "daily"
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/**"
+    cooldown:
+      default-days: 7
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "pip"
+    directories:
+      - "/**"
+    cooldown:
+      default-days: 7
+    schedule:
+      interval: "daily"
