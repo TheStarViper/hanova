@@ -49,6 +49,35 @@ static std::string base64_encode(const uint8_t* data, size_t len){
     return out;
 }
 
+emscripten::val convert_svg_to_png(emscripten::val inputarray){
+    std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
+
+    Errortypes size_error = validate_input_size(input);
+    if(size_error!=Errortypes::none){
+        return make_error_val(size_error);
+    }
+
+    if (validate_file_format(input)!="svg"){
+        return make_error_val(Errortypes::UnsupportedFormat);
+    }
+
+    std::vector<char> svgtext(input.begin(),input.end());
+    svgtext.pushback('\0');
+
+    NSVGimage* image = nsvgParse(svgtext.data(),"px",96.0f);
+    if (!image||image->width<=0||image->height<=0){
+        if (image){
+            nsvgDelete(image);
+        }
+        return make_error_val(Errortypes::CorruptInput);
+    }
+
+    int width = (int)image->widht;
+    int height = (int)image->height;
+
+    
+}
+
 emscripten::val convert_to_svg(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
     
