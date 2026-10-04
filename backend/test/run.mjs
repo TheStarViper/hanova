@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 
-const INPUT_PATH = './backend/test/test.png';
+const INPUT_PATH = './backend/test/testsmall.png';
 // const INPUT_PATH = './backend/test/smalltest.png';
 // const INPUT_PATH = './backend/test/testwebp.webp';
 const OUTPUT_DIR = './backend/test/output';
@@ -51,7 +51,7 @@ async function runConversion(inputBytes, { module, fn, args, ext, label }) {
     console.log(`FAIL  ${label.padEnd(20)}  ${result.error}`);
     return;
   }
-
+  
   const bytes = new Uint8Array(result.data);
   const outPath = `${OUTPUT_DIR}/test_output.${ext}`;
   writeFileSync(outPath, bytes);

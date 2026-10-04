@@ -41,7 +41,7 @@ UNIVERSAL_DEPENENCY_SRCS = src/images/a_universal.cpp src/results.cpp src/valida
 # CORE ------------------------------------------------------------------------------------------------------------------------------
 ALL_CPP_SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 
-CORE_CPP_SRCS = $(filter-out src/images/webp.cpp, $(ALL_CPP_SRCS))
+CORE_CPP_SRCS = $(filter-out src/images/webp.cpp src/images/svg.cpp, $(ALL_CPP_SRCS))
 CORE_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(CORE_CPP_SRCS))
 CORE_TARGET = $(BUILD_DIR)/image_core_module.js
 CORE_TSD = image_core_module.d.ts

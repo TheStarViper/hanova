@@ -6,25 +6,10 @@
 #include "validation.hpp"
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
-
+#include "a_universal.hpp"
 #include "stb_image.h"
 #include "stb_image_write.h"
 
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
-//THIS IS BROKEN
 //THIS IS BROKEN
 emscripten::val convert_to_ico(emscripten::val inputarray){
     static OutputBuffer out;
@@ -34,15 +19,13 @@ emscripten::val convert_to_ico(emscripten::val inputarray){
     out.clear();
     ICOout.clear();
 
-    Errortypes size_error = validate_input_size(input);
+    int width = 0, height = 0, channelz = 0;
+    STB_IMG_Guard pixels = {stbi_load_from_memory(input.data(), static_cast<int>(input.size()), &width, &height, &channelz, 4)};
+    Errortypes errorr = validate_image_parameters(input, width, height, channelz, pixels);
     
-    if (size_error != Errortypes::None){return make_error_val(size_error);}
-
-    if (validate_file_format(input)=="unknown"){return make_error_val(Errortypes::UnsupportedFormat);}
-
-    int width,height,channelz;
-    STB_IMG_Guard pixels = {stbi_load_from_memory(input.data(), (int)input.size(), &width, &height, &channelz, 4) };
-    if (!pixels.pointer){return make_error_val(Errortypes::CorruptInput);}
+    if (errorr != Errortypes::None) {
+        return make_error_val(errorr);
+    }
 
     if (width>256||height>256){return make_error_val(Errortypes::DimensionalTooBig);}
 
@@ -55,7 +38,6 @@ emscripten::val convert_to_ico(emscripten::val inputarray){
     entry.height = (height >=256)?0:(uint8_t)height;
     entry.bytes_in_res = (uint32_t)out.size();
     entry.offset = sizeof(ICOHeader) + sizeof(ICODirEntry);
-
     
     ICOout.append(&header,sizeof(header));
     ICOout.append(&entry,sizeof(entry));
