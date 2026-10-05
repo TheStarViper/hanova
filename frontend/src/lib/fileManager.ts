@@ -1,16 +1,73 @@
-import type { CppManager, FileFormat } from "./cppManager";
+import { type CppManager } from "./cppManager";
+import type { ReturnObj } from "./cppRunner.worker";
 
 const MAX_FILENAME_CHARS = 20;
 const ELLIPSIS = "...";
 
+export const JPEG_QUALITY = 85;
+export const WEBP_QUALITY = 90;
+
+export interface FileFormat {
+	/** file extension for the file download. Does *not* include the dot */
+	ext: string;
+
+	/**
+	 * {@link https://www.iana.org/assignments/media-types#image|Super useful resource for MIME types}
+	 */
+	mimeType: string;
+}
+
+export const FORMATS = {
+	// https://en.wikipedia.org/wiki/PNG
+	PNG: {
+		ext: "png",
+		mimeType: "image/png",
+	},
+
+	// https://en.wikipedia.org/wiki/JPEG
+	JPEG: {
+		ext: "jpg",
+		mimeType: "image/jpeg",
+	},
+
+	// https://en.wikipedia.org/wiki/BMP_file_format
+	BMP: {
+		ext: "bmp",
+		mimeType: "image/bmp",
+	},
+
+	// https://en.wikipedia.org/wiki/Truevision_TGA
+	// Ive literally never heard of this format lol
+	TGA: {
+		ext: "tga",
+
+		// apparently this mime type is unofficial and unregistered
+		mimeType: "image/x-targa",
+	},
+
+	// https://en.wikipedia.org/wiki/RGBE_image_format
+	HDR: {
+		ext: "hdr",
+		mimeType: "image/vnd.radiance",
+	},
+
+	// https://en.wikipedia.org/wiki/WebP
+	// best image format!
+	WebP: {
+		ext: "webp",
+		mimeType: "image/webp",
+	},
+} as const satisfies Record<string, FileFormat>;
+export type FormatName = keyof typeof FORMATS;
+
 export class FileManager {
 	file: File | undefined;
-	outFormat: FileFormat | undefined;
 
-	ok: boolean | undefined;
-
-	blob: Blob | undefined;
-	err: string | undefined;
+	outFormatName: FormatName | undefined;
+	get outFormat(): FileFormat | undefined {
+		if (this.outFormatName === undefined) return undefined;
+		return FORMATS[this.outFormatName];
+	}
 
 	constructor(
 		public cppManager: CppManager,
@@ -45,12 +102,8 @@ export class FileManager {
 		});
 	}
 
-	async convertTo(formatName: string) {
-		this.ok = undefined;
-		this.blob = undefined;
-		this.err = undefined;
-
-		this.outFormat = this.cppManager.findFormat(formatName);
+	async convertTo(formatName: FormatName) {
+		this.outFormatName = formatName;
 		if (this.outFormat === undefined) {
 			throw new Error(`invalid file type ${formatName}`);
 		}
@@ -61,29 +114,26 @@ export class FileManager {
 
 		const inBytes = await this.file.bytes();
 
-		// syncronous but veeeeerrryyyyyy slowwwwwww
-		// [TODO] move this to a web worker or something
-		const result = this.outFormat.func(inBytes);
-		this.ok = result.ok;
+		this.cppManager.startConversion({ inBytes, format: formatName });
+	}
 
-		if (!result.ok) {
-			this.err = result.error;
-			return;
-		}
+	/**
+	 *
+	 * @returns undefined if the conversion never finished, true if everything worked, and a string if there was an error
+	 */
+	downloadFile(): undefined | true | string {
+		const result = this.cppManager.response;
+
+		if (result === null) return undefined;
+		if (!result.ok) return result.error;
 
 		const outBytes = result.data;
 
-		const blob = new Blob([outBytes], { type: this.outFormat.mimeType });
+		const blob = new Blob([outBytes], {
+			type: FORMATS[this.outFormatName!].mimeType,
+		});
 
-		this.blob = blob;
-	}
-
-	downloadFile() {
-		if (this.blob === undefined) {
-			throw new Error("can only download if conversion has finished");
-		}
-
-		const url = URL.createObjectURL(this.blob);
+		const url = URL.createObjectURL(blob);
 
 		const a = document.createElement("a");
 		a.href = url;
@@ -92,6 +142,8 @@ export class FileManager {
 		a.remove();
 
 		URL.revokeObjectURL(url);
+
+		return true;
 	}
 
 	private parseFilename(): { base: string; ext: string | undefined } {
