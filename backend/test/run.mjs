@@ -86,7 +86,6 @@ async function main() {
     await runConversion(inputBytes,decode_conversions[0]);
   } else if (ext=='svg'){
     await runConversion(inputBytes,decode_conversions[1]);
-
     //testing
     // const core = await getModule('core');
     // const outputBytes = new Uint8Array(readFileSync(`${OUTPUT_DIR}/test_output.png`));
