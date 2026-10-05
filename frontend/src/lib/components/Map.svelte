@@ -7,8 +7,8 @@
 	import Compass from "./Compass.svelte";
 
 	// misc imports
-	import { World } from "$lib/world.svelte";
-	import type { CppManager } from "$lib/cppManager";
+	import { World } from "#lib/world.svelte.js";
+	import type { CppManager } from "#lib/cppManager.js";
 	import { onMount } from "svelte";
 	import Bezier from "./Bezier.svelte";
 

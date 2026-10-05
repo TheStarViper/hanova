@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { CubicBezier } from "$lib/bezier";
-	import type { Pos } from "$lib/utils.svelte";
+	import type { CubicBezier } from "#lib/bezier.js";
+	import type { Pos } from "#lib/utils.svelte.js";
 
 	interface Props {
 		curves: CubicBezier[] | undefined;

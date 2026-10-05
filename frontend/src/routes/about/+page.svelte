@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Compass from "$lib/components/Compass.svelte";
-	import { Viewport } from "$lib/utils.svelte";
+	import Compass from "#lib/components/Compass.svelte";
+	import { Viewport } from "#lib/utils.svelte.js";
 	import { onMount } from "svelte";
 
 	let viewport = new Viewport();
