@@ -81,7 +81,7 @@ export const ISLAND_DATA = [
 	},
 	{
 		name: "WebP",
-		pos: new Pos(950, 150),
+		pos: new Pos(1050, 150),
 		islandSpriteIndex: 4,
 	},
 ] as const satisfies IslandDatum[];
