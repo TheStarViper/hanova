@@ -1,10 +1,22 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 
-//const INPUT_PATH = './backend/test/testsmall.png';
-const INPUT_PATH = './backend/test/testsvg.svg';
-// const INPUT_PATH = './backend/test/smalltest.png';
- //const INPUT_PATH = './backend/test/testwebp.webp';
 const OUTPUT_DIR = './backend/test/output';
+
+const INPUT_TO_TEST = 'png';
+
+var input_path;
+if (INPUT_TO_TEST === 'png') {
+  input_path = './backend/test/samples/test.png';
+} else if (INPUT_TO_TEST === 'small'){
+  input_path = './backend/test/samples/testsmall.png';
+} else if (INPUT_TO_TEST === 'webp'){
+  input_path = './backend/test/samples/testwebp.webp';
+} else if (INPUT_TO_TEST === 'svg'){
+  input_path = './backend/test/samples/testsvg.svg';
+} else {
+  //fallback to png input fullsize
+  input_path = './backend/test/samples/test.png';
+}
 
 mkdirSync(OUTPUT_DIR, { recursive: true });
 

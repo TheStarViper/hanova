@@ -23,6 +23,7 @@ COMMON_EMFLAGS = --bind \
 
 echo_color = powershell -Command "Write-Host $(1) -ForegroundColor $(2)"
 
+
 ifeq ($(OS),Windows_NT)
     MKDIR = if not exist $(subst /,\,$(BUILD_DIR)) mkdir $(subst /,\,$(BUILD_DIR))
     RM = if exist $(subst /,\,$(BUILD_DIR)) rmdir /s /q $(subst /,\,$(BUILD_DIR))
@@ -109,3 +110,19 @@ clean:
 
 success:
 	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+    # just to make sure i dont miss it idk

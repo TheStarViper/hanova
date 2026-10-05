@@ -49,11 +49,11 @@ library that a file converter like file validation and safety functions.
 - [x] hdr
 - [ ] ico (in progress)
 - [ ] gif
-- [x] webp
+- [x] webp (conversion from WebP not supposed yet)
 - [ ] avif
 - [ ] heif
 - [ ] heic
-- [ ] svg
+- [x] svg (conversion from svg not supposed yet)
 - [ ] eps
 
 </details>
