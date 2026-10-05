@@ -119,8 +119,6 @@ function inBoundsFactory(
 	};
 }
 
-// rn I'm only doing 4 neighbors per cell, but maybe I'll change it to 8 later
-
 // prettier-ignore
 const MOORE_NEIGHBORHOOD = [
 	[-1, -1], [0, -1], [1, -1],
@@ -136,7 +134,7 @@ const NEUMANN_NEIGHBORHOOD = [
 function getNeighbors(origin: Coords): Coords[] {
 	const [originX, originY] = numifyCoords(origin);
 
-	return NEUMANN_NEIGHBORHOOD.map((offset) =>
+	return MOORE_NEIGHBORHOOD.map((offset) =>
 		stringifyCoords(originX + offset[0], originY + offset[1]),
 	);
 }
@@ -158,7 +156,7 @@ const pixelify = (coords: Coords): Pos => {
 };
 
 // based on the boat sprite
-/** pixel sizes */
+/** sizes in pixels */
 const GRID_CELL_WIDTH = 96 / 2;
 const GRID_CELL_HEIGHT = 74 / 2;
 
@@ -186,21 +184,22 @@ function isWalkableFactory(islands: Island[]): (coords: Coords) => boolean {
 	};
 }
 
-/** Manhattan distance */
+const LATERAL_DISTANCE = 1;
+const DIAGONAL_DISTANCE = Math.SQRT2;
+/** Octile distance */
 function heuristicFactory(goal: Coords): (coords: Coords) => number {
-	const cache = new Map<Coords, number>();
-
 	const [gx, gy] = numifyCoords(goal);
 
 	return (coords: Coords) => {
-		const cached = cache.get(coords);
-		if (cached !== undefined) return cached;
-
 		const [cx, cy] = numifyCoords(coords);
 
-		const distance = Math.abs(gx - cx) + Math.abs(gy - cy);
+		const dx = Math.abs(gx - cx);
+		const dy = Math.abs(gy - cy);
 
-		cache.set(coords, distance);
+		const distance =
+			LATERAL_DISTANCE * (dx + dy) +
+			(DIAGONAL_DISTANCE - 2 * LATERAL_DISTANCE) * Math.min(dx, dy);
+
 		return distance;
 	};
 }
