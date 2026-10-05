@@ -67,7 +67,6 @@
 <style lang="scss">
 	.svg-wrapper {
 		position: absolute;
-		opacity: 0;
 		transform: translate(-50%, -50%);
 
 		display: flex;
