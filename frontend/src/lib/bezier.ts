@@ -47,13 +47,12 @@ function colinearSimplification(path: Pos[]): Pos[] {
 		// don't simplify away the endpoints, obv
 		if (prev === undefined || next === undefined) return true;
 
-		// on a flat horizontal line, so simplify it away
-		if (prev.x === current.x && next.x === current.x) return false;
+		const d1 = Pos.sub(current, prev);
+		const d2 = Pos.sub(next, current);
 
-		// on a flat vertical line, so simplify it away
-		if (prev.y === current.y && next.y === current.y) return false;
+		const isColinear = d1.x * d2.y === d1.y * d2.x;
 
-		return true;
+		return !isColinear;
 	});
 }
 
