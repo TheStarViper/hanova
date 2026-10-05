@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Island } from "$lib/island.svelte";
+	import { Island } from "#lib/island.svelte.js";
 	import Sprite from "./Sprite.svelte";
 
 	// change this for debugging only

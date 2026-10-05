@@ -1,4 +1,4 @@
-import { Pos, Viewport, ease } from "$lib/utils.svelte";
+import { Pos, Viewport, ease } from "#lib/utils.svelte.js";
 import type { Route } from "./route";
 
 // [TODO] replace this with an actual conversion time estimate

@@ -1,12 +1,12 @@
 import { Pos } from "./utils.svelte";
 
 // svg imports
-import Island1Svg from "$lib/assets/island1.svg?raw";
-import Island2Svg from "$lib/assets/island2.svg?raw";
-import Island3Svg from "$lib/assets/island3.svg?raw";
-import Island4Svg from "$lib/assets/island4.svg?raw";
-import Island5Svg from "$lib/assets/island5.svg?raw";
-import Island6Svg from "$lib/assets/island6.svg?raw";
+import Island1Svg from "#lib/assets/island1.svg?raw";
+import Island2Svg from "#lib/assets/island2.svg?raw";
+import Island3Svg from "#lib/assets/island3.svg?raw";
+import Island4Svg from "#lib/assets/island4.svg?raw";
+import Island5Svg from "#lib/assets/island5.svg?raw";
+import Island6Svg from "#lib/assets/island6.svg?raw";
 
 export interface IslandSprite {
 	svg: string;

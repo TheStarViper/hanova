@@ -1,7 +1,7 @@
 <script lang="ts">
-	import TreasureSvg from "$lib/assets/treasure.svg?raw";
+	import TreasureSvg from "#lib/assets/treasure.svg?raw";
 	import Sprite from "./Sprite.svelte";
-	import { Treasure } from "$lib/treasure.svelte";
+	import { Treasure } from "#lib/treasure.svelte.js";
 
 	interface Props {
 		me: Treasure;

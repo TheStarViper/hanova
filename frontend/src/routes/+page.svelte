@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Map from "$lib/components/Map.svelte";
+	import Map from "#lib/components/Map.svelte";
 	import { onMount } from "svelte";
-	import { CppManager } from "$lib/cppManager";
+	import { CppManager } from "#lib/cppManager.js";
 
 	const cppManager = new CppManager();
 
