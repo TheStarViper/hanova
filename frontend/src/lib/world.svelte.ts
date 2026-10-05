@@ -37,10 +37,7 @@ export class World {
 		this.boat.name = "Boat";
 
 		this.fileManager.file = undefined;
-		this.fileManager.outFormat = undefined;
-		this.fileManager.ok = undefined;
-		this.fileManager.blob = undefined;
-		this.fileManager.err = undefined;
+		this.fileManager.outFormatName = undefined;
 
 		this.treasure.hide = true;
 		this.treasure.owner = null;
@@ -67,20 +64,20 @@ export class World {
 	boatArriveHandler() {
 		this.banner.hide = false;
 
-		switch (this.fileManager.ok) {
+		const res = this.fileManager.downloadFile();
+
+		switch (res) {
 			case undefined:
 				this.banner.text =
 					"error: the boat arrived before the conversion finished :(";
 				break;
-			case false:
-				this.banner.text = `error: ${this.fileManager.err}`;
-				break;
 			case true:
-				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat?.name} file!`;
-
-				this.fileManager.downloadFile();
-
+				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormatName} file!`;
 				setTimeout(() => this.reset(), 2000);
+				break;
+			default:
+				this.banner.text = `error: ${res}`;
+				break;
 		}
 	}
 
