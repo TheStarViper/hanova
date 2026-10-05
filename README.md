@@ -49,11 +49,11 @@ library that a file converter like file validation and safety functions.
 - [x] hdr
 - [ ] ico (in progress)
 - [ ] gif
-- [x] webp (conversion from WebP not supposed yet)
+- [x] webp (conversion _from_ WebP not supported yet)
 - [ ] avif
 - [ ] heif
 - [ ] heic
-- [x] svg (conversion from svg not supposed yet)
+- [x] svg (conversion _from_ svg not supported yet)
 - [ ] eps
 
 </details>
@@ -125,10 +125,15 @@ aesthetic: a sleek modern webpage with a small box to drop files into and a
 dropdown to select the target format. Well that's boring! It would be much more
 fun if the whole website was styled as an antique nautical map.
 
-The current version of the frontend is ~~stolen from~~ inspired by
+The current design of the frontend is ~~stolen from~~ inspired by
 [Perilous Shores](https://watabou.itch.io/perilous-shores) by Watabou, and I
 made most of Hanova's assets by extracting them from Perilous Shores exports. We
 might change the art direction or use custom assets in the future.
+
+The boat uses the A* algorithm to pathfind from its current position to the
+target island without clipping through any other islands. The generated path is
+then converted to centripetal Catmull-Rom splines, converted to cubic Beziers,
+and then used to animate the boat's travel and draw the dashed line.
 
 ### Planned Features
 
@@ -140,7 +145,7 @@ might change the art direction or use custom assets in the future.
 - [ ] Mobile support
 - [ ] Boat moves in circles around islands rather than beaching itself
 - [ ] Map is scrollable (and maybe zoomable)
-- [ ] Boat travel animation where it follows an auto-generated dashed line that
+- [x] Boat travel animation where it follows an auto-generated dashed line that
       curves around obstacles
 - [ ] Smoother animations and an overall better experience
 - [ ] procedural island and water generation
