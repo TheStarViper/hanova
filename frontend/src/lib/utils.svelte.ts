@@ -6,6 +6,30 @@ export class Pos {
 		this.x = $state(x);
 		this.y = $state(y);
 	}
+
+	static add(a: Pos, b: Pos): Pos {
+		return new Pos(a.x + b.x, a.y + b.y);
+	}
+
+	static sub(a: Pos, b: Pos): Pos {
+		return new Pos(a.x - b.x, a.y - b.y);
+	}
+
+	static mul(p: Pos, n: number): Pos {
+		return new Pos(p.x * n, p.y * n);
+	}
+
+	static dist(a: Pos, b: Pos): number {
+		return Math.hypot(b.x - a.x, b.y - a.y);
+	}
+
+	static lerp(a: Pos, b: Pos, t: number): Pos {
+		return Pos.add(a, Pos.mul(Pos.sub(b, a), t));
+	}
+
+	static reflect(a: Pos, b: Pos): Pos {
+		return this.sub(this.mul(a, 2), b);
+	}
 }
 
 /**
