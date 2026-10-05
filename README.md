@@ -2,7 +2,7 @@
 
 Hanova is a file conversion website with a nautical twist!
 
-[![Screenshot of Hanova](./frontend/src/lib/assets/screenshot.png)](https://thestarviper.github.io/hanova/)
+[![Screenshot of Hanova](./frontend/src/lib/assets/screenshot2.png)](https://thestarviper.github.io/hanova/)
 
 Welcome to Hanova, a (fictional) archipelago off the coast of Madagascar!
 "Hanova" is the Malagasy word for "transform", and that's exactly what these
