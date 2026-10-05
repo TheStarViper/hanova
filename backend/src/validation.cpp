@@ -29,6 +29,12 @@ std::string validate_file_format(const std::vector<uint8_t>& input){ //verify fi
     }
     if (magic_match(input,0,"RIFF") && magic_match(input,8,"WEBP")){return "webp";} //webp is based on riff
     
+    //svg cuz it doesnt ahve magic numbers
+    size_t svgScanLen = input.size() < 512 ? input.size() : 512;
+    std::string svgHead(input.begin(), input.begin() + svgScanLen);
+    if (svgHead.find("<svg") != std::string::npos) return "svg";
+    //end of svg
+
     //FIX these wav and webp to use the magicmatch
     if (input[0] == 'R' && input[1] == 'I' && input[2] == 'F' && input[3] == 'F' 
         && input[8] == 'W' && input[9] == 'A' && input[10] == 'V' && input[11] == 'E'){return "wav";}

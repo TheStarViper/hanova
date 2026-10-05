@@ -53,7 +53,7 @@ emscripten::val convert_svg_to_png(emscripten::val inputarray){
     std::vector<uint8_t> input = emscripten::vecFromJSArray<uint8_t>(inputarray);
 
     Errortypes size_error = validate_input_size(input);
-    if(size_error!=Errortypes::none){
+    if(size_error!=Errortypes::None){
         return make_error_val(size_error);
     }
 
@@ -62,7 +62,7 @@ emscripten::val convert_svg_to_png(emscripten::val inputarray){
     }
 
     std::vector<char> svgtext(input.begin(),input.end());
-    svgtext.pushback('\0');
+    svgtext.push_back('\0');
 
     NSVGimage* image = nsvgParse(svgtext.data(),"px",96.0f);
     if (!image||image->width<=0||image->height<=0){
@@ -72,11 +72,11 @@ emscripten::val convert_svg_to_png(emscripten::val inputarray){
         return make_error_val(Errortypes::CorruptInput);
     }
 
-    int width = (int)image->widht;
+    int width = (int)image->width;
     int height = (int)image->height;
 
     Errortypes dimensional_error = validate_image_dimensions(width,height);
-    if (dimensional_error!=Errortypes::none){
+    if (dimensional_error!=Errortypes::None){
         nsvgDelete(image);
         return make_error_val(dimensional_error);
     }
@@ -96,7 +96,7 @@ emscripten::val convert_svg_to_png(emscripten::val inputarray){
     static OutputBuffer out;
     out.clear();
 
-    int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels,width*4);
+    int ok = stbi_write_png_to_func(output_buffer_write_callback, &out, width, height, 4, pixels.data() ,width*4);
 
     if (!ok) {return make_error_val(Errortypes::EncodeFailure);}
     return make_success_val(out.as_val());
@@ -134,4 +134,5 @@ emscripten::val convert_to_svg(emscripten::val inputarray){
 
 EMSCRIPTEN_BINDINGS(svg_convert_module){
     emscripten::function("convert_to_svg",&convert_to_svg);
+    emscripten::function("convert_svg_to_png",&convert_svg_to_png);
 }
