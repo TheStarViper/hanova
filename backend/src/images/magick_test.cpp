@@ -25,7 +25,6 @@ static void ensure_init() {
         g_initialized = true;
     }
 }
-
 // Attempts a real decode via ImageMagick and reports what it finds —
 // catches corrupt/truncated files that pass a magic-byte check but
 // don't actually parse.
