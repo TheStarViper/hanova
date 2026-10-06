@@ -1,14 +1,3 @@
-
-// ImageMagick-backed format identification/validation, as a second
-// opinion beyond our own magic-byte sniffing — ImageMagick's own
-// decoders attempt a real parse, catching malformed files our sniff
-// can't (sniffing only checks the first few bytes; this actually tries
-// to read the file structure).
-//
-// Uses MagickWand (the simpler, higher-level API) rather than raw
-// MagickCore — less boilerplate for this kind of "open, inspect, close"
-// use case.
-
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
 #include <vector>
