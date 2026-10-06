@@ -19,7 +19,7 @@ COMMON_EMFLAGS = --bind \
           -s FILESYSTEM=0 \
           -s ASSERTIONS=0 \
           --strip-all \
-          --closure 1\
+          --closure 1 \
 
 echo_color = powershell -Command "Write-Host $(1) -ForegroundColor $(2)"
 
