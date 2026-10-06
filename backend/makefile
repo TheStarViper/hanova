@@ -68,9 +68,9 @@ SVG_TARGET = $(BUILD_DIR)/svg_module.js
 SVG_TSD = svg_module.d.ts
 
 # IMAGE MAGICK ----------------------------------------------------------------------------------------------------------------
-MAGICK_DIR = src/libraries/imagemagick_build
-MAGICK_LIB = src/libraries/imagemagick_build/MagickCore/.libs/libMagickCore-7.Q16HDRI.a src/libraries/imagemagick_build/MagickWand/.libs/libMagickWand-7.Q16HDRI.a
-MAGICK_INC = -Isrc/libraries/imagemagick_build -Isrc/libraries/imagemagick_build/MagickCore -Isrc/libraries/imagemagick_build/MagickWand
+MAGICK_DIR = libraries/imagemagick_build
+MAGICK_LIB = libraries/imagemagick_build/MagickCore/.libs/libMagickCore-7.Q16HDRI.a libraries/imagemagick_build/MagickWand/.libs/libMagickWand-7.Q16HDRI.a
+MAGICK_INC = -Ilibraries/imagemagick_build -Ilibraries/imagemagick_build/MagickCore -Ilibraries/imagemagick_build/MagickWand
 MAGICK_DEFINES = -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -DMAGICKCORE_CHANNEL_MASK_DEPTH=32
 MAGICK_CPP_SRCS = src/images/magick_test.cpp
 MAGICK_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(MAGICK_CPP_SRCS))

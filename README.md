@@ -36,6 +36,12 @@ library that a file converter like file validation and safety functions.
 - [stb_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
 - [libwebp](https://github.com/webmproject/libwebp) (webp)
 - [nanosvg](https://github.com/memononen/nanosvg) (svg)
+- [imagemagick](https://github.com/ImageMagick/ImageMagick) (un-used currently)
+
+### Custom Compilation
+
+A few of the libraries used dont have a precompiled binary for use as a c++ library that can be compiled to wasm through emscripten. Because of this we had to compile the library from source via emscripten so we could use it for this purpose. This took a while of troubleshooting as there is limited documentation online about how to go about this and the libraries we had to compile in this form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
+
 
 ### Supported File Formats
 
