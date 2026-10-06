@@ -67,6 +67,37 @@ SVG_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SVG_CPP_SRCS))\
 SVG_TARGET = $(BUILD_DIR)/svg_module.js
 SVG_TSD = svg_module.d.ts
 
+# IMAGE MAGICK ----------------------------------------------------------------------------------------------------------------
+MAGICK_DIR = src/libraries/imagemagick_build
+MAGICK_LIB = src/libraries/imagemagick_build/MagickCore/.libs/libMagickCore-7.Q16HDRI.a src/libraries/imagemagick_build/MagickWand/.libs/libMagickWand-7.Q16HDRI.a
+MAGICK_INC = -Isrc/libraries/imagemagick_build -Isrc/libraries/imagemagick_build/MagickCore -Isrc/libraries/imagemagick_build/MagickWand
+MAGICK_DEFINES = -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -DMAGICKCORE_CHANNEL_MASK_DEPTH=32
+MAGICK_CPP_SRCS = src/images/magick_test.cpp
+MAGICK_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(MAGICK_CPP_SRCS))
+MAGICK_TARGET = $(BUILD_DIR)/magick_module.js
+MAGICK_TSD = magick_module.d.ts
+
+MAGICK_EMFLAGS = --bind \
+          -O2 \
+          -s WASM=1 \
+          -s MODULARIZE=1 \
+          -s EXPORT_ES6=1 \
+          -s ENVIRONMENT="web,node" \
+          -s ALLOW_MEMORY_GROWTH=1 \
+          -s ASSERTIONS=0 \
+          --preload-file $(MAGICK_DIR)/config@/magick_config
+
+$(OBJ_DIR)/src/images/magick_test.o: src/images/magick_test.cpp
+	@$(call MKDIR_P,$(dir $@))
+	$(CXX) -c $< $(INC) $(MAGICK_INC) $(MAGICK_DEFINES) $(CXXFLAGS) -o $@
+
+build-magick: $(MAGICK_OBJS)
+	@echo "==============================================================================================="
+	@$(call echo_color, "Creating magick WASM Module...", "Cyan")
+	$(CXX) $(MAGICK_OBJS) $(MAGICK_LIB) --emit-tsd $(MAGICK_TSD) -o $(MAGICK_TARGET) $(MAGICK_EMFLAGS)
+	@echo "==============================================================================================="
+	@$(call echo_color, "magick SUCCESSFULLY CREATED!", "Yellow")
+
 .PHONY: all setup build-core build-webp clean 
 
 all: setup build-core build-webp build-svg success

@@ -1,26 +1,17 @@
 
+    //conversion functions
     convert_to_png - returns vector of uint8_t and takes in uint8_t vector
     convert_to_jpeg - returns vector of uint8_t and takes in uint8_t vector
     convert_to_bmp - returns vector of uint8_t and takes in uint8_t vector
-    convert_to_tga
-    convert_to_hdr
+    convert_to_tga - returns vector of uint8_t and takes in uint8_t vector
+    convert_to_hdr - returns vector of uint8_t and takes in uint8_t vector 
+    convert_to_webp - returns vector of uint8_t and takes in uint8_t vector
+    convert_webp_to_png - returns vector of uint8_t and takes in uint8_t vector
+    convert_svg_to_png - returns vector of uint8_t and takes in uint8_t vector
+    convert_to_svg - returns vector of uint8_t and takes in uint8_t vector
+
+
+
     validate_file_format  - returns string with format like 'png'/'jpeg'
     get_image_width - returns int
     get_image_height - returns int
-
-
-
-    also another note to fix all the comments labeled FIX just ctrl f it
-    NOTE TO SELF: VALIDATION FUNCTOISN IN CONVERSION FUNCTIONS ONLY CHECK IF ITS A VALID FILE VARIANT SUPPORTED BY CONVERTER NOT IF ITS THE CORRECT ONE FOR THE CONVERSION COMMAND
-
-        NOTE TO SELF: VALIDATION FUNCTOISN IN CONVERSION FUNCTIONS ONLY CHECK IF ITS A VALID FILE VARIANT SUPPORTED BY CONVERTER NOT IF ITS THE CORRECT ONE FOR THE CONVERSION COMMAND
-
-            NOTE TO SELF: VALIDATION FUNCTOISN IN CONVERSION FUNCTIONS ONLY CHECK IF ITS A VALID FILE VARIANT SUPPORTED BY CONVERTER NOT IF ITS THE CORRECT ONE FOR THE CONVERSION COMMAND
-
-                NOTE TO SELF: VALIDATION FUNCTOISN IN CONVERSION FUNCTIONS ONLY CHECK IF ITS A VALID FILE VARIANT SUPPORTED BY CONVERTER NOT IF ITS THE CORRECT ONE FOR THE CONVERSION COMMAND
-
-                    NOTE TO SELF: VALIDATION FUNCTOISN IN CONVERSION FUNCTIONS ONLY CHECK IF ITS A VALID FILE VARIANT SUPPORTED BY CONVERTER NOT IF ITS THE CORRECT ONE FOR THE CONVERSION COMMAND
-
-                        NOTE TO SELF: VALIDATION FUNCTOISN IN CONVERSION FUNCTIONS ONLY CHECK IF ITS A VALID FILE VARIANT SUPPORTED BY CONVERTER NOT IF ITS THE CORRECT ONE FOR THE CONVERSION COMMAND
-
-                            NOTE TO SELF: VALIDATION FUNCTOISN IN CONVERSION FUNCTIONS ONLY CHECK IF ITS A VALID FILE VARIANT SUPPORTED BY CONVERTER NOT IF ITS THE CORRECT ONE FOR THE CONVERSION COMMAND
