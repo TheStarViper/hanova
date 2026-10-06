@@ -30,6 +30,9 @@ int get_image_height(emscripten::val inputarray){
 }
 
 EMSCRIPTEN_BINDINGS(image_convert_module) {
+    static bool is_registered = false;
+    if (is_registered) return;
+    is_registered = true;
     emscripten::function("get_image_width", &get_image_width);
     emscripten::function("get_image_height", &get_image_height);
 }
