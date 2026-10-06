@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 
-const INPUT_PATH = './testsmall.png';
+const INPUT_PATH = './test.bmp';
 
 async function main() {
   const createModule = (await import('./magick_module.js')).default;
