@@ -42,7 +42,13 @@ UNIVERSAL_DEPENENCY_SRCS = src/images/a_universal.cpp src/results.cpp src/valida
 # CORE ------------------------------------------------------------------------------------------------------------------------------
 ALL_CPP_SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 
-CORE_CPP_SRCS = $(filter-out src/images/webp.cpp src/images/svg.cpp, $(ALL_CPP_SRCS))
+CORE_CPP_SRCS = $(filter-out \
+				 src/images/webp.cpp \
+				 src/images/svg.cpp \
+				 src/images/magick_test.cpp \
+				, $(ALL_CPP_SRCS))
+
+
 CORE_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(CORE_CPP_SRCS))
 CORE_TARGET = $(BUILD_DIR)/image_core_module.js
 CORE_TSD = image_core_module.d.ts
@@ -91,16 +97,10 @@ $(OBJ_DIR)/src/images/magick_test.o: src/images/magick_test.cpp
 	@$(call MKDIR_P,$(dir $@))
 	$(CXX) -c $< $(INC) $(MAGICK_INC) $(MAGICK_DEFINES) $(CXXFLAGS) -o $@
 
-build-magick: $(MAGICK_OBJS)
-	@echo "==============================================================================================="
-	@$(call echo_color, "Creating magick WASM Module...", "Cyan")
-	$(CXX) $(MAGICK_OBJS) $(MAGICK_LIB) --emit-tsd $(MAGICK_TSD) -o $(MAGICK_TARGET) $(MAGICK_EMFLAGS)
-	@echo "==============================================================================================="
-	@$(call echo_color, "magick SUCCESSFULLY CREATED!", "Yellow")
 
-.PHONY: all setup build-core build-webp clean 
+.PHONY: all setup build-core build-webp build-magick clean 
 
-all: setup build-core build-webp build-svg success
+all: setup build-core build-webp build-svg build-magick success
 
 setup:
 	@$(MKDIR)
@@ -115,25 +115,31 @@ $(OBJ_DIR)/%.o: %.cpp
 
 build-core: $(CORE_OBJS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[1/3] Creating image_core WASM Module...", "Cyan")
+	@$(call echo_color, "[1/4] Creating image_core WASM Module...", "Cyan")
 	$(CXX) $(CORE_OBJS) --emit-tsd $(CORE_TSD) -o $(CORE_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[1/3] image_core SUCCESSFULLY CREATED!", "Blue") # blue prints purple for some reason?
+	@$(call echo_color, "[1/4] image_core SUCCESSFULLY CREATED!", "Blue") # blue prints purple for some reason?
 
 build-webp: $(WEBP_OBJS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[2/3] Creating webp WASM Module...", "Cyan")
+	@$(call echo_color, "[2/4] Creating webp WASM Module...", "Cyan")
 	$(CXX) $(WEBP_OBJS) --emit-tsd $(WEBP_TSD) -o $(WEBP_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[2/3] webp SUCCESSFULLY CREATED!", "Blue")
+	@$(call echo_color, "[2/4] webp SUCCESSFULLY CREATED!", "Blue")
 
 build-svg: $(SVG_OBJS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[3/3] Creating svg WASM Module...", "Cyan")
+	@$(call echo_color, "[3/4] Creating svg WASM Module...", "Cyan")
 	$(CXX) $(SVG_OBJS) --emit-tsd $(SVG_TSD) -o $(SVG_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[3/3] svg SUCCESSFULLY CREATED!", "Blue")
+	@$(call echo_color, "[3/4] svg SUCCESSFULLY CREATED!", "Blue")
 
+build-magick: $(MAGICK_OBJS)
+	@echo "==============================================================================================="
+	@$(call echo_color, "[4/4] Creating magick WASM Module...", "Cyan")
+	$(CXX) $(MAGICK_OBJS) $(MAGICK_LIB) --emit-tsd $(MAGICK_TSD) -o $(MAGICK_TARGET) $(MAGICK_EMFLAGS)
+	@echo "==============================================================================================="
+	@$(call echo_color, "[4/4] magick SUCCESSFULLY CREATED!", "Blue")
 
 clean:
 	@$(RM)
@@ -141,19 +147,6 @@ clean:
 
 success:
 	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "node backend/test/run.mjs for testing", "Yellow")
+	@$(call echo_color, "node backend/test/test_magick.mjs for testing magick", "Yellow")
     # just to make sure i dont miss it idk
