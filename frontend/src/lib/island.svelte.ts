@@ -7,6 +7,7 @@ import Island3Svg from "#lib/assets/island3.svg?raw";
 import Island4Svg from "#lib/assets/island4.svg?raw";
 import Island5Svg from "#lib/assets/island5.svg?raw";
 import Island6Svg from "#lib/assets/island6.svg?raw";
+import type { FormatName } from "./fileManager";
 
 export interface IslandSprite {
 	svg: string;
@@ -57,7 +58,7 @@ export const ISLAND_SPRITES = {
 type IslandSpriteIndex = keyof typeof ISLAND_SPRITES;
 
 export interface IslandDatum {
-	name: string;
+	name: FormatName;
 	pos: Pos;
 	islandSpriteIndex: IslandSpriteIndex;
 }
@@ -80,14 +81,14 @@ export const ISLAND_DATA = [
 	},
 	{
 		name: "WebP",
-		pos: new Pos(950, 150),
+		pos: new Pos(1050, 150),
 		islandSpriteIndex: 4,
 	},
 ] as const satisfies IslandDatum[];
 
 export class Island {
 	callBoat: () => void;
-	name: string;
+	name: FormatName;
 	pos: Pos;
 	sprite: IslandSprite;
 
