@@ -41,7 +41,7 @@ export class World {
 				// an island, so it waits at least 750ms before sinking
 				const MIN_SINK_DELAY = 750;
 
-				const delay = Math.max(
+				const sinkDelay = Math.max(
 					MIN_SINK_DELAY - (Date.now() - this.fileManager.conversionStartTime!),
 					0,
 				);
@@ -49,13 +49,18 @@ export class World {
 				setTimeout(() => {
 					this.boat.sink();
 					this.curves = [];
-				}, delay);
+				}, sinkDelay);
+
+				const message = `The boat sunk! Reason: ${response.error}`;
+				const showMessageDelay = sinkDelay + 1000;
 
 				setTimeout(() => {
-					this.banner.text = `The boat sunk! Reason: ${response.error}`;
-				}, delay + 1000);
+					this.banner.text = message;
+				}, showMessageDelay);
 
-				setTimeout(() => this.reset(), delay + 3000);
+				const hideMessageDelay = sinkDelay + message.length * 30;
+
+				setTimeout(() => this.reset(), hideMessageDelay + 2000);
 			}
 		};
 	}
