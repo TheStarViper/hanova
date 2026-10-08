@@ -1,8 +1,7 @@
 import { Viewport } from "./utils.svelte";
 
 export class Banner {
-	text = $state("Drag & drop a file to start");
-	hide = $state(true);
+	text: string = $state("");
 
 	constructor(public viewport: Viewport) {}
 

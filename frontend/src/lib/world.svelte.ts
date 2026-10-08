@@ -29,7 +29,7 @@ export class World {
 		this.viewport.init();
 		this.initIslands();
 		this.fileManager.init();
-		this.banner.hide = false;
+		this.banner.text = "Drag & drop a file to start";
 
 		this.cppManager.hook = (response: WorkerResponse) => {
 			if (response.ok) {
@@ -53,7 +53,6 @@ export class World {
 
 				setTimeout(() => {
 					this.banner.text = `The boat sunk! Reason: ${response.error}`;
-					this.banner.hide = false;
 				}, delay + 1000);
 
 				setTimeout(() => this.reset(), delay + 3000);
@@ -74,7 +73,6 @@ export class World {
 		this.treasure.hide = true;
 		this.treasure.owner = null;
 
-		this.banner.hide = false;
 		this.banner.text = "Drag & drop another file";
 
 		this.curves = [];
@@ -82,7 +80,7 @@ export class World {
 
 	async dropHook() {
 		this.spawnBoat();
-		this.banner.hide = true;
+		this.banner.text = "";
 	}
 
 	spawnBoat() {
@@ -94,7 +92,7 @@ export class World {
 	}
 
 	boatArriveHandler() {
-		this.banner.hide = false;
+		this.banner.text = "";
 
 		const res = this.fileManager.downloadFile();
 
@@ -115,7 +113,7 @@ export class World {
 
 	islandClickHandler(me: Island, endPos: Pos) {
 		// the user shouldn't be able to click if the banner is visible
-		if (!this.banner.hide) return;
+		if (this.banner.text !== "") return;
 
 		// if a file conversion has already started, the user shouldn't be able to
 		// change it partway through
