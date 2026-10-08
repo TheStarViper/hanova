@@ -69,6 +69,8 @@ export class FileManager {
 		return FORMATS[this.outFormatName];
 	}
 
+	conversionStartTime: number | null = null;
+
 	constructor(
 		public cppManager: CppManager,
 		public dropHook?: () => Promise<void>,
@@ -114,6 +116,7 @@ export class FileManager {
 
 		const inBytes = await this.file.bytes();
 
+		this.conversionStartTime = Date.now();
 		this.cppManager.startConversion({ inBytes, format: formatName });
 	}
 
@@ -141,7 +144,7 @@ export class FileManager {
 		a.click();
 		a.remove();
 
-		URL.revokeObjectURL(url);
+		setTimeout(() => URL.revokeObjectURL(url), 0);
 
 		return true;
 	}

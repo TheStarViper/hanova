@@ -28,6 +28,8 @@
 		shadowOpacity?: number;
 		borderColor?: string;
 		borderWidth?: number;
+
+		sunk?: boolean;
 	}
 
 	let { children, ...props }: Props = $props();
@@ -47,7 +49,7 @@
 
 <div
 	bind:this={el}
-	class="svg-wrapper"
+	class="svg-wrapper {props.sunk ? 'sunk' : ''}"
 	style:opacity={props.hide ? "0" : "1"}
 	style:top="{props.top}px"
 	style:left="{props.left}px"
@@ -94,6 +96,21 @@
 		span {
 			font-style: italic;
 			user-select: none;
+		}
+	}
+
+	.sunk {
+		animation: sink 1s ease both;
+	}
+
+	@keyframes sink {
+		from {
+			transform: translate(-50%, -50%);
+			clip-path: xywh(0 0 100% 100%);
+		}
+		to {
+			transform: translate(-50%, 0) rotate(6deg);
+			clip-path: xywh(0 0 100% 0);
 		}
 	}
 </style>
