@@ -1,9 +1,19 @@
 <script lang="ts">
 	import type { CubicBezier } from "#lib/bezier.js";
 	import type { Pos } from "#lib/utils.svelte.js";
+	import { draw, type TransitionConfig } from "svelte/transition";
 
 	interface Props {
 		curves: CubicBezier[] | undefined;
+	}
+
+	const DRAW_DURATION = 600;
+
+	function hold(_node: Element): TransitionConfig {
+		return {
+			duration: DRAW_DURATION,
+			css: () => "",
+		};
 	}
 
 	let { curves }: Props = $props();
@@ -43,11 +53,36 @@
 		width = w;
 		height = h;
 	});
+
+	let d = $derived(makeShape(curves));
 </script>
 
 <div class="bezier-wrapper">
 	<svg viewBox="0 0 {width + 20} {height + 20}" width={width + 20}>
-		<path d={makeShape(curves)} />
+		<defs>
+			<mask id="reveal">
+				{#key d}
+					<path
+						{d}
+						fill="none"
+						stroke="white"
+						stroke-width="10"
+						transition:draw={{ duration: DRAW_DURATION }}
+					/>
+				{/key}
+			</mask>
+		</defs>
+		{#key d}
+			<path
+				{d}
+				fill="none"
+				stroke="var(--line)"
+				stroke-width="1.5"
+				stroke-dasharray="10"
+				mask="url(#reveal)"
+				out:hold
+			/>
+		{/key}
 	</svg>
 </div>
 
@@ -57,12 +92,5 @@
 		top: 0;
 		left: 0;
 		pointer-events: none;
-	}
-
-	path {
-		fill: none;
-		stroke: var(--line);
-		stroke-width: 1.5;
-		stroke-dasharray: 10;
 	}
 </style>
