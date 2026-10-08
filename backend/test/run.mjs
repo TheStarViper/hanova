@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 
 const OUTPUT_DIR = './backend/test/output';
 
-const INPUT_TO_TEST = 'png';
+const INPUT_TO_TEST = 'small';
 
 var input_path;
 if (INPUT_TO_TEST === 'png') {
