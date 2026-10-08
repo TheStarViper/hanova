@@ -9,6 +9,7 @@ export class Boat {
 	pos = new Pos();
 	route: Route | undefined;
 	hide = $state(true);
+	sunk = $state(false);
 	name = "Boat";
 
 	constructor(public viewport: Viewport) {}
@@ -57,5 +58,16 @@ export class Boat {
 		};
 
 		this.moveAnimID = requestAnimationFrame(animate);
+	}
+
+	sink() {
+		if (this.moveAnimID !== null) {
+			cancelAnimationFrame(this.moveAnimID);
+			this.moveAnimID = null;
+		}
+
+		this.sunk = true;
+
+		setTimeout(() => (this.hide = true), 1000);
 	}
 }

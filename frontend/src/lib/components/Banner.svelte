@@ -2,6 +2,7 @@
 	import BannerSvg from "#lib/assets/banner.svg?raw";
 	import Sprite from "./Sprite.svelte";
 	import { Banner } from "#lib/banner.svelte.js";
+	import { slide } from "svelte/transition";
 
 	// cuz the center of the main section (where the text ought to be visually
 	// centered) is not the same as the center of the svg
@@ -12,6 +13,8 @@
 	}
 
 	let { me }: Props = $props();
+
+	let hide = $derived(me.text === "");
 </script>
 
 <Sprite
@@ -19,18 +22,20 @@
 	left={me.pos.x}
 	width={847}
 	layer={100}
-	hide={me.hide}
+	{hide}
 	shadowOpacity={0.4}>{@html BannerSvg}</Sprite
 >
 <div
 	id="banner-text-container"
-	class={me.hide ? "hide" : ""}
+	class={hide ? "hide" : ""}
 	style:top="{me.pos.y - MAIN_BANNER_OFFSET_PX}px"
 	style:left="{me.pos.x}px"
 >
-	<h2>{me.text}</h2>
+	{#key me.text}
+		<h2 transition:slide>{me.text}</h2>
+	{/key}
 </div>
-<div id="banner-overlay" class={me.hide ? "" : "hide"}></div>
+<div id="banner-overlay" class={!hide ? "show" : ""}></div>
 
 <style lang="scss">
 	#banner-text-container {
@@ -38,14 +43,10 @@
 		transform: translate(-50%, -50%);
 		z-index: 101;
 
+		transition: opacity 0.2s ease;
+
 		&.hide {
 			opacity: 0;
-			transition: opacity 0.2s ease;
-
-			h2 {
-				transform: translateY(-1rem);
-				transition: transform 0.2s ease;
-			}
 		}
 
 		h2 {
@@ -55,6 +56,8 @@
 			// approximate size of the main section of the banner
 			max-width: 700px;
 			text-align: center;
+
+			transition: transform 0.2s ease;
 		}
 	}
 
@@ -70,7 +73,7 @@
 
 		pointer-events: none;
 
-		&.hide {
+		&.show {
 			opacity: 0.4;
 		}
 	}

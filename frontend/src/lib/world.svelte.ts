@@ -10,6 +10,7 @@ import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 import type { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
 import type { CubicBezier } from "./bezier";
+import type { WorkerResponse } from "./cppRunner.worker";
 
 export class World {
 	viewport = new Viewport();
@@ -28,21 +29,55 @@ export class World {
 		this.viewport.init();
 		this.initIslands();
 		this.fileManager.init();
-		this.banner.hide = false;
+		this.banner.text = "Drag & drop a file to start";
+
+		this.cppManager.hook = (response: WorkerResponse) => {
+			if (response.ok) {
+				console.log("converted succesfully!");
+			} else {
+				console.warn(`error: ${response.error}`);
+
+				// its kinda jarring if the boat *instantly* sinks as soon as you click
+				// an island, so it waits at least 750ms before sinking
+				const MIN_SINK_DELAY = 750;
+
+				const sinkDelay = Math.max(
+					MIN_SINK_DELAY - (Date.now() - this.fileManager.conversionStartTime!),
+					0,
+				);
+
+				setTimeout(() => {
+					this.boat.sink();
+					this.curves = [];
+				}, sinkDelay);
+
+				const message = `The boat sunk! Reason: ${response.error}`;
+				const showMessageDelay = sinkDelay + 1000;
+
+				setTimeout(() => {
+					this.banner.text = message;
+				}, showMessageDelay);
+
+				const hideMessageDelay = sinkDelay + message.length * 30;
+
+				setTimeout(() => this.reset(), hideMessageDelay + 2000);
+			}
+		};
 	}
 
 	reset() {
 		this.boat.hide = true;
 		this.boat.route = undefined;
 		this.boat.name = "Boat";
+		this.boat.sunk = false;
 
 		this.fileManager.file = undefined;
 		this.fileManager.outFormatName = undefined;
+		this.fileManager.conversionStartTime = null;
 
 		this.treasure.hide = true;
 		this.treasure.owner = null;
 
-		this.banner.hide = false;
 		this.banner.text = "Drag & drop another file";
 
 		this.curves = [];
@@ -50,7 +85,7 @@ export class World {
 
 	async dropHook() {
 		this.spawnBoat();
-		this.banner.hide = true;
+		this.banner.text = "";
 	}
 
 	spawnBoat() {
@@ -62,7 +97,7 @@ export class World {
 	}
 
 	boatArriveHandler() {
-		this.banner.hide = false;
+		this.banner.text = "";
 
 		const res = this.fileManager.downloadFile();
 
@@ -83,7 +118,7 @@ export class World {
 
 	islandClickHandler(me: Island, endPos: Pos) {
 		// the user shouldn't be able to click if the banner is visible
-		if (!this.banner.hide) return;
+		if (this.banner.text !== "") return;
 
 		// if a file conversion has already started, the user shouldn't be able to
 		// change it partway through

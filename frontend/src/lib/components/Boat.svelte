@@ -16,5 +16,8 @@
 	width={96}
 	label={me.name}
 	hide={me.hide}
-	layer={10}>{@html BoatSvg}</Sprite
+	layer={10}
+	sunk={me.sunk}
 >
+	{@html BoatSvg}
+</Sprite>
