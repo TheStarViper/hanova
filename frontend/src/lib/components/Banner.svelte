@@ -2,6 +2,7 @@
 	import BannerSvg from "#lib/assets/banner.svg?raw";
 	import Sprite from "./Sprite.svelte";
 	import { Banner } from "#lib/banner.svelte.js";
+	import { slide } from "svelte/transition";
 
 	// cuz the center of the main section (where the text ought to be visually
 	// centered) is not the same as the center of the svg
@@ -28,7 +29,9 @@
 	style:top="{me.pos.y - MAIN_BANNER_OFFSET_PX}px"
 	style:left="{me.pos.x}px"
 >
-	<h2>{me.text}</h2>
+	{#key me.text}
+		<h2 transition:slide>{me.text}</h2>
+	{/key}
 </div>
 <div id="banner-overlay" class={me.hide ? "" : "hide"}></div>
 
