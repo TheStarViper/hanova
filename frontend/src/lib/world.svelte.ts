@@ -11,6 +11,7 @@ import type { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
 import type { CubicBezier } from "./bezier";
 import type { WorkerResponse } from "./cppRunner.worker";
+import { decodeSounds, playSound, preloadSounds } from "./sound";
 
 export class World {
 	viewport = new Viewport();
@@ -31,38 +32,10 @@ export class World {
 		this.fileManager.init();
 		this.banner.text = "Drag & drop a file to start";
 
-		this.cppManager.hook = (response: WorkerResponse) => {
-			if (response.ok) {
-				console.log("converted succesfully!");
-			} else {
-				console.warn(`error: ${response.error}`);
+		this.cppManager.hook = (response: WorkerResponse) =>
+			this.conversionHandler(response);
 
-				// its kinda jarring if the boat *instantly* sinks as soon as you click
-				// an island, so it waits at least 750ms before sinking
-				const MIN_SINK_DELAY = 750;
-
-				const sinkDelay = Math.max(
-					MIN_SINK_DELAY - (Date.now() - this.fileManager.conversionStartTime!),
-					0,
-				);
-
-				setTimeout(() => {
-					this.boat.sink();
-					this.curves = [];
-				}, sinkDelay);
-
-				const message = `The boat sunk! Reason: ${response.error}`;
-				const showMessageDelay = sinkDelay + 1000;
-
-				setTimeout(() => {
-					this.banner.text = message;
-				}, showMessageDelay);
-
-				const hideMessageDelay = sinkDelay + message.length * 30;
-
-				setTimeout(() => this.reset(), hideMessageDelay + 2000);
-			}
-		};
+		preloadSounds();
 	}
 
 	reset() {
@@ -94,6 +67,41 @@ export class World {
 
 		this.boat.name = this.fileManager.displayifiedFilename;
 		this.boat.hide = false;
+
+		playSound("splash1.ogg");
+	}
+
+	conversionHandler(response: WorkerResponse) {
+		if (response.ok) {
+			console.log("converted succesfully!");
+		} else {
+			console.warn(`error: ${response.error}`);
+
+			// its kinda jarring if the boat *instantly* sinks as soon as you click
+			// an island, so it waits at least 750ms before sinking
+			const MIN_SINK_DELAY = 750;
+
+			const sinkDelay = Math.max(
+				MIN_SINK_DELAY - (Date.now() - this.fileManager.conversionStartTime!),
+				0,
+			);
+
+			setTimeout(() => {
+				this.boat.sink();
+				this.curves = [];
+			}, sinkDelay);
+
+			const message = `The boat sunk! Reason: ${response.error}`;
+			const showMessageDelay = sinkDelay + 1000;
+
+			setTimeout(() => {
+				this.banner.text = message;
+			}, showMessageDelay);
+
+			const hideMessageDelay = sinkDelay + message.length * 30;
+
+			setTimeout(() => this.reset(), hideMessageDelay + 2000);
+		}
 	}
 
 	boatArriveHandler() {
@@ -107,6 +115,8 @@ export class World {
 					"error: the boat arrived before the conversion finished :(";
 				break;
 			case true:
+				playSound("shovel1.wav");
+
 				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormatName} file!`;
 				setTimeout(() => this.reset(), 2000);
 				break;
@@ -117,6 +127,9 @@ export class World {
 	}
 
 	islandClickHandler(me: Island, endPos: Pos) {
+		// hijacking this interaction to decode the sounds
+		decodeSounds();
+
 		// the user shouldn't be able to click if the banner is visible
 		if (this.banner.text !== "") return;
 

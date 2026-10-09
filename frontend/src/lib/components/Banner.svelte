@@ -4,6 +4,7 @@
 	import { Banner } from "#lib/banner.svelte.js";
 	import { slide } from "svelte/transition";
 	import { onMount } from "svelte";
+	import { decodeSounds } from "#lib/sound.js";
 
 	// cuz the center of the main section (where the text ought to be visually
 	// centered) is not the same as the center of the svg
@@ -22,8 +23,11 @@
 	let textEl: HTMLDivElement;
 
 	onMount(() => {
-		textEl.addEventListener("click", () => {
+		textEl.addEventListener("click", async () => {
 			if (me.uploadOnClick) inputEl.click();
+
+			// hijacking this user interaction to decode the sounds
+			decodeSounds();
 		});
 		inputEl.addEventListener("change", () => handleUpload(inputEl.files));
 	});
