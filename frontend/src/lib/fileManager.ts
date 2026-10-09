@@ -1,5 +1,6 @@
 import { type CppManager } from "./cppManager";
 import type { ReturnObj } from "./cppRunner.worker";
+import { decodeSounds } from "./sound";
 
 const MAX_FILENAME_CHARS = 20;
 const ELLIPSIS = "...";
@@ -89,13 +90,14 @@ export class FileManager {
 		document.addEventListener("drop", (event: DragEvent) => {
 			event.preventDefault();
 
+			// hijacking interaction to decode sounds
+			decodeSounds();
+
 			this.handleUpload(event.dataTransfer?.files);
 		});
 	}
 
 	handleUpload(files: FileList | undefined | null) {
-		console.log(`upload handled of ${files?.length} files`);
-
 		if (files === undefined || files === null || files.length === 0) return;
 
 		document.body.classList.remove("dragover");

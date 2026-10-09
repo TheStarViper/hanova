@@ -33,6 +33,9 @@ export class Boat {
 
 		if (this.moveAnimID !== null) cancelAnimationFrame(this.moveAnimID);
 
+		// hopefully enough time for the sounds to decode
+		setTimeout(() => playSound("sail1.ogg"), 50);
+
 		let startTime: number | null = null;
 
 		const animate = (nowTime: number) => {
