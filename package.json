@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@imagemagick/magick-wasm": "^0.0.44"
+  }
+}

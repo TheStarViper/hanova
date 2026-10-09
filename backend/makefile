@@ -73,34 +73,9 @@ SVG_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SVG_CPP_SRCS))\
 SVG_TARGET = $(BUILD_DIR)/svg_module.js
 SVG_TSD = svg_module.d.ts
 
-# IMAGE MAGICK ----------------------------------------------------------------------------------------------------------------
-MAGICK_DIR = libraries/imagemagick_build
-MAGICK_LIB = libraries/imagemagick_build/MagickCore/.libs/libMagickCore-7.Q16HDRI.a libraries/imagemagick_build/MagickWand/.libs/libMagickWand-7.Q16HDRI.a
-MAGICK_INC = -Ilibraries/imagemagick_build -Ilibraries/imagemagick_build/MagickCore -Ilibraries/imagemagick_build/MagickWand
-MAGICK_DEFINES = -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -DMAGICKCORE_CHANNEL_MASK_DEPTH=32
-MAGICK_CPP_SRCS = src/images/magick_test.cpp
-MAGICK_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(MAGICK_CPP_SRCS))
-MAGICK_TARGET = $(BUILD_DIR)/magick_module.js
-MAGICK_TSD = magick_module.d.ts
+.PHONY: all setup build-core build-webp clean 
 
-MAGICK_EMFLAGS = --bind \
-          -O2 \
-          -s WASM=1 \
-          -s MODULARIZE=1 \
-          -s EXPORT_ES6=1 \
-          -s ENVIRONMENT="web,node" \
-          -s ALLOW_MEMORY_GROWTH=1 \
-          -s ASSERTIONS=0 \
-          --preload-file $(MAGICK_DIR)/config@/magick_config
-
-$(OBJ_DIR)/src/images/magick_test.o: src/images/magick_test.cpp
-	@$(call MKDIR_P,$(dir $@))
-	$(CXX) -c $< $(INC) $(MAGICK_INC) $(MAGICK_DEFINES) $(CXXFLAGS) -o $@
-
-
-.PHONY: all setup build-core build-webp build-magick clean 
-
-all: setup build-core build-webp build-svg build-magick success
+all: setup build-core build-webp build-svg success
 
 setup:
 	@$(MKDIR)
@@ -133,13 +108,6 @@ build-svg: $(SVG_OBJS)
 	$(CXX) $(SVG_OBJS) --emit-tsd $(SVG_TSD) -o $(SVG_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
 	@$(call echo_color, "[3/4] svg SUCCESSFULLY CREATED!", "Blue")
-
-build-magick: $(MAGICK_OBJS)
-	@echo "==============================================================================================="
-	@$(call echo_color, "[4/4] Creating magick WASM Module...", "Cyan")
-	$(CXX) $(MAGICK_OBJS) $(MAGICK_LIB) --emit-tsd $(MAGICK_TSD) -o $(MAGICK_TARGET) $(MAGICK_EMFLAGS)
-	@echo "==============================================================================================="
-	@$(call echo_color, "[4/4] magick SUCCESSFULLY CREATED!", "Blue")
 
 clean:
 	@$(RM)
