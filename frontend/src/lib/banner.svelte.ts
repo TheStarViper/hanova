@@ -2,7 +2,10 @@ import { Viewport } from "./utils.svelte";
 
 export class Banner {
 	text: string = $state("");
-	uploadOnClick: boolean = true;
+
+	get uploadOnClick(): boolean {
+		return this.text.includes("Drag & drop");
+	}
 
 	constructor(public viewport: Viewport) {}
 

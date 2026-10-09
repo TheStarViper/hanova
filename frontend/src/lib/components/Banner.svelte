@@ -22,7 +22,9 @@
 	let textEl: HTMLDivElement;
 
 	onMount(() => {
-		textEl.addEventListener("click", () => inputEl.click());
+		textEl.addEventListener("click", () => {
+			if (me.uploadOnClick) inputEl.click();
+		});
 		inputEl.addEventListener("change", () => handleUpload(inputEl.files));
 	});
 </script>
@@ -43,6 +45,7 @@
 	class={hide ? "hide" : ""}
 	style:top="{me.pos.y - MAIN_BANNER_OFFSET_PX}px"
 	style:left="{me.pos.x}px"
+	style:cursor={me.uploadOnClick ? "pointer" : "default"}
 >
 	{#key me.text}
 		<h2 transition:slide>{me.text}</h2>
@@ -57,8 +60,6 @@
 		z-index: 101;
 
 		transition: opacity 0.2s ease;
-
-		cursor: pointer;
 
 		&.hide {
 			opacity: 0;
