@@ -67,6 +67,8 @@ export class World {
 
 		this.boat.name = this.fileManager.displayifiedFilename;
 		this.boat.hide = false;
+
+		playSound("splash1.ogg");
 	}
 
 	conversionHandler(response: WorkerResponse) {

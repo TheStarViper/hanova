@@ -17,6 +17,9 @@ export const SOUNDS = [
 
 	// https://freesound.org/people/maryhelena.clark/sounds/554439/
 	"sail1.ogg",
+
+	// https://freesound.org/people/Sheyvan/sounds/519006/
+	"splash1.ogg",
 ] as const satisfies string[];
 export type Sound = (typeof SOUNDS)[number];
 
