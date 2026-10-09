@@ -1,5 +1,6 @@
 import { Pos, Viewport, ease } from "#lib/utils.svelte.js";
 import type { Route } from "./route";
+import { playSound } from "./sound";
 
 // [TODO] replace this with an actual conversion time estimate
 /** in milliseconds */
@@ -65,6 +66,8 @@ export class Boat {
 			cancelAnimationFrame(this.moveAnimID);
 			this.moveAnimID = null;
 		}
+
+		playSound("bubble2.wav");
 
 		this.sunk = true;
 
