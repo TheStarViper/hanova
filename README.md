@@ -101,18 +101,6 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 </details>
 
 <details>
-<summary><h3>3D files</h3></summary>
-
-- [ ] obj
-- [ ] fbx
-- [ ] stl
-- [ ] step
-- [ ] glb
-- [ ] blend
-
-</details>
-
-<details>
 <summary><h3>Video</h3></summary>
 
 Video conversion locally has no access to hardware accelleration so we are
