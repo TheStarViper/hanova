@@ -11,6 +11,9 @@ import { asset } from "$app/paths";
 export const SOUNDS = [
 	// https://freesound.org/people/BMacZero/sounds/96125/
 	"bubble2.wav",
+
+	// https://freesound.org/people/f3bbbo/sounds/651293/
+	"shovel1.wav",
 ] as const satisfies string[];
 export type Sound = (typeof SOUNDS)[number];
 

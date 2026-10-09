@@ -11,7 +11,7 @@ import type { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
 import type { CubicBezier } from "./bezier";
 import type { WorkerResponse } from "./cppRunner.worker";
-import { decodeSounds, preloadSounds } from "./sound";
+import { decodeSounds, playSound, preloadSounds } from "./sound";
 
 export class World {
 	viewport = new Viewport();
@@ -113,6 +113,8 @@ export class World {
 					"error: the boat arrived before the conversion finished :(";
 				break;
 			case true:
+				playSound("shovel1.wav");
+
 				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormatName} file!`;
 				setTimeout(() => this.reset(), 2000);
 				break;
