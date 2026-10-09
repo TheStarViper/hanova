@@ -35,7 +35,11 @@
 {/each}
 
 <Treasure me={world.treasure} />
-<Banner me={world.banner} />
+<Banner
+	me={world.banner}
+	handleUpload={(files: FileList | undefined | null) =>
+		world.fileManager.handleUpload(files)}
+/>
 <Compass viewport={world.viewport} href="./about" />
 <Bezier curves={world.curves} />
 

@@ -88,20 +88,27 @@ export class FileManager {
 		});
 		document.addEventListener("drop", (event: DragEvent) => {
 			event.preventDefault();
-			document.body.classList.remove("dragover");
-			document.body.classList.add("dropped");
 
-			const files: FileList | undefined = event.dataTransfer?.files;
-			if (files === undefined) return;
-			if (files.length > 1) {
-				console.warn(
-					"Only dropping a single file is supported rn. Defaulting to first file.",
-				);
-			}
-			this.file = files[0];
-
-			this.dropHook?.();
+			this.handleUpload(event.dataTransfer?.files);
 		});
+	}
+
+	handleUpload(files: FileList | undefined | null) {
+		console.log(`upload handled of ${files?.length} files`);
+
+		if (files === undefined || files === null || files.length === 0) return;
+
+		document.body.classList.remove("dragover");
+		document.body.classList.add("dropped");
+
+		if (files.length > 1) {
+			console.warn(
+				"Only dropping a single file is supported rn. Defaulting to first file.",
+			);
+		}
+		this.file = files[0];
+
+		this.dropHook?.();
 	}
 
 	async convertTo(formatName: FormatName) {

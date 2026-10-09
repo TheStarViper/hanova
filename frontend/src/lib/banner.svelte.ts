@@ -2,6 +2,7 @@ import { Viewport } from "./utils.svelte";
 
 export class Banner {
 	text: string = $state("");
+	uploadOnClick: boolean = true;
 
 	constructor(public viewport: Viewport) {}
 

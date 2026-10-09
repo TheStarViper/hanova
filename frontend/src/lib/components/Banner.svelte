@@ -3,6 +3,7 @@
 	import Sprite from "./Sprite.svelte";
 	import { Banner } from "#lib/banner.svelte.js";
 	import { slide } from "svelte/transition";
+	import { onMount } from "svelte";
 
 	// cuz the center of the main section (where the text ought to be visually
 	// centered) is not the same as the center of the svg
@@ -10,12 +11,23 @@
 
 	interface Props {
 		me: Banner;
+		handleUpload: (files: FileList | undefined | null) => void;
 	}
 
-	let { me }: Props = $props();
+	let { me, handleUpload }: Props = $props();
 
 	let hide = $derived(me.text === "");
+
+	let inputEl: HTMLInputElement;
+	let textEl: HTMLDivElement;
+
+	onMount(() => {
+		textEl.addEventListener("click", () => inputEl.click());
+		inputEl.addEventListener("change", () => handleUpload(inputEl.files));
+	});
 </script>
+
+<input id="fileInput" type="file" bind:this={inputEl} style="display: none;" />
 
 <Sprite
 	top={me.pos.y}
@@ -27,6 +39,7 @@
 >
 <div
 	id="banner-text-container"
+	bind:this={textEl}
 	class={hide ? "hide" : ""}
 	style:top="{me.pos.y - MAIN_BANNER_OFFSET_PX}px"
 	style:left="{me.pos.x}px"
@@ -44,6 +57,8 @@
 		z-index: 101;
 
 		transition: opacity 0.2s ease;
+
+		cursor: pointer;
 
 		&.hide {
 			opacity: 0;
@@ -76,5 +91,9 @@
 		&.show {
 			opacity: 0.4;
 		}
+	}
+
+	#fileInput {
+		display: none;
 	}
 </style>
