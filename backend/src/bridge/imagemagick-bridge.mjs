@@ -18,3 +18,27 @@ export async function init_imagemagick(){
         throw new Error(`Failed to init imagemagick wasm module: ${error.message}`);
     }
 }
+
+export async function process_image(inputpath,outputpath,processorfunc){
+    await init_imagemagick();
+
+    const inputbytes = fs.readFileSync(inputpath);
+
+    magickModule.ImageMagick.read(new Uint8array(inputbytes),async(image)=>{
+        await processorfunc(image,magickModule);
+
+        image.write((outputbytes)=>{
+            fs.writeFileSync(outputpath,Buffer.from(outputbytes));
+        },magickModule.MagickFormat.Auto);
+    });
+}
+
+export const {
+  ImageMagick,
+  Magick,
+  MagickFormat,
+  MagickColor,
+  MagickGeometry,
+  Channels,
+  EvaluateOperator,
+} = magickModule;
