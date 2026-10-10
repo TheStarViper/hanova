@@ -33,6 +33,12 @@ export class Boat {
 
 		if (this.moveAnimID !== null) cancelAnimationFrame(this.moveAnimID);
 
+		const shouldMoveViewport =
+			this.pos.x > -this.viewport.offset.x &&
+			this.pos.x < -this.viewport.offset.x + this.viewport.width &&
+			this.pos.y > -this.viewport.offset.y &&
+			this.pos.y < -this.viewport.offset.y + this.viewport.height;
+
 		// hopefully enough time for the sounds to decode
 		setTimeout(() => playSound("sail1.ogg"), 50);
 
@@ -51,8 +57,10 @@ export class Boat {
 
 			const newPos = route(progress);
 
-			this.viewport.offset.x -= newPos.x - this.pos.x;
-			this.viewport.offset.y -= newPos.y - this.pos.y;
+			if (shouldMoveViewport) {
+				this.viewport.offset.x -= newPos.x - this.pos.x;
+				this.viewport.offset.y -= newPos.y - this.pos.y;
+			}
 
 			this.pos.x = newPos.x;
 			this.pos.y = newPos.y;
