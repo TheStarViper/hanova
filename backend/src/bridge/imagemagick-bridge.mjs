@@ -23,6 +23,7 @@ const FORMATS = {
     '.bmp': magickModule.MagickFormat.Bmp,
     '.webp': magickModule.MagickFormat.WebP,
     '.gif': magickModule.MagickFormat.Gif,
+    '.avif': magickModule.MagickFormat.Avif,
 };
 
 export async function process_image(inputpath, outputpath, processorfunc) {

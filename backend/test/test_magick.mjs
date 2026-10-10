@@ -7,14 +7,14 @@ async function test(){
   await init_imagemagick();
   console.log(`ImageMagick Ver: ${ImageMagick.version}`);
 
-  await process_image('./backend/test/samples/test.webp','output.png',(image,lib)=>{
+  await process_image('./backend/test/samples/test.png','output.avif',(image,lib)=>{
     const geometry = new lib.MagickGeometry(800,600);
     geometry.greater = true;
 
     image.resize(geometry);
     image.quality = 90;
   });
-  console.log('Image successfully processed and saved as output.png!');
+  console.log('Image successfully processed and saved as output');
 }
 
 test().catch((error)=>{
