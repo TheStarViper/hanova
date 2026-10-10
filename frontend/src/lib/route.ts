@@ -103,7 +103,7 @@ function inBoundsFactory(
 	coords1: Coords,
 	coords2: Coords,
 ): (coords: Coords) => boolean {
-	const MARGIN = 2;
+	const MARGIN = 10;
 
 	const [x1, y1] = numifyCoords(coords1);
 	const [x2, y2] = numifyCoords(coords2);

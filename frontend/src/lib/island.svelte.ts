@@ -83,7 +83,7 @@ export const ISLAND_DATA = [
 	},
 	{
 		name: "JPEG",
-		pos: new Pos(630, 150),
+		pos: new Pos(630, 100),
 		islandSpriteIndex: 5,
 	},
 	{
