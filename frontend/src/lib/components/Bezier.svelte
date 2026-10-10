@@ -19,8 +19,7 @@
 		};
 	}
 
-	const formatPos = (pos: Pos) =>
-		`${pos.x + viewportOffset.x} ${pos.y + viewportOffset.y}`;
+	const formatPos = (pos: Pos) => `${pos.x} ${pos.y}`;
 
 	const makeM = (curve: CubicBezier) => `M ${formatPos(curve.p0)}`;
 
@@ -60,7 +59,11 @@
 </script>
 
 <div class="bezier-wrapper">
-	<svg viewBox="0 0 {width + 20} {height + 20}" width={width + 20}>
+	<svg
+		viewBox="0 0 {width + 20} {height + 20}"
+		width={width + 20}
+		transform="translate({viewportOffset.x},{viewportOffset.y})"
+	>
 		<defs>
 			<mask id="reveal">
 				{#key d}
