@@ -45,7 +45,12 @@
 <Boat me={world.boat} {viewportOffset} />
 
 {#each world.islands as island}
-	<Island me={island} {viewportOffset} {debugging} />
+	<Island
+		me={island}
+		{viewportOffset}
+		{debugging}
+		allowHover={world.banner.hide}
+	/>
 {/each}
 {#if debugging}
 	<DebuggingGrid {viewportOffset} />

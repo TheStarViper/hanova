@@ -7,13 +7,14 @@
 		me: Island;
 		viewportOffset: Pos;
 		debugging: boolean;
+		allowHover: boolean;
 	}
 
-	let { me, viewportOffset, debugging }: Props = $props();
+	let { me, viewportOffset, debugging, allowHover }: Props = $props();
 
 	let hovered: boolean = $state(false);
-	let shadowOpacity = $derived(hovered ? 0.8 : 0.4);
-	let borderColor = $derived(hovered ? "#FFC067" : undefined);
+	let shadowOpacity = $derived(hovered && allowHover ? 0.8 : 0.4);
+	let borderColor = $derived(hovered && allowHover ? "#FFC067" : undefined);
 </script>
 
 <Sprite
@@ -25,7 +26,7 @@
 	{borderColor}
 	borderWidth={2}
 	handlers={{
-		click: me.callBoat,
+		click: allowHover ? me.callBoat : undefined,
 		hover: () => (hovered = true),
 		unhover: () => (hovered = false),
 	}}
