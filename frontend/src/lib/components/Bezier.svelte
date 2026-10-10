@@ -13,38 +13,9 @@
 	const DRAW_DURATION = 600;
 	const PADDING = 20;
 
-	function hold(_node: Element): TransitionConfig {
-		return {
-			duration: DRAW_DURATION,
-			css: () => "",
-		};
-	}
-
-	const formatPos = (pos: Pos) => `${pos.x} ${pos.y}`;
-
-	const makeM = (curve: CubicBezier) => `M ${formatPos(curve.p0)}`;
-
-	const makeC = (curve: CubicBezier): string => {
-		const points = [curve.p1, curve.p2, curve.p3].map(formatPos);
-		return `C ${points.join(", ")}`;
-	};
-
-	const makeShape = (curves: CubicBezier[] | undefined): string => {
-		if (curves === undefined || curves.length === 0) return "";
-
-		const m = makeM(curves[0]);
-		const c = curves.map(makeC).join("\n");
-
-		return `${m}\n${c}`;
-	};
-
-	let minX = $state(0);
-	let minY = $state(0);
-	let width = $state(0);
-	let height = $state(0);
-
-	$effect(() => {
-		if (curves === undefined || curves.length === 0) return;
+	let { minX, minY, width, height } = $derived.by(() => {
+		if (curves === undefined || curves.length === 0)
+			return { minX: 0, minY: 0, width: 0, height: 0 };
 
 		let min_x = Infinity;
 		let min_y = Infinity;
@@ -61,16 +32,43 @@
 			}
 		}
 
-		minX = min_x - PADDING / 2;
-		minY = min_y - PADDING / 2;
-		width = max_x - min_x + PADDING;
-		height = max_y - min_y + PADDING;
+		return {
+			minX: min_x - PADDING / 2,
+			minY: min_y - PADDING / 2,
+			width: max_x - min_x + PADDING,
+			height: max_y - min_y + PADDING,
+		};
 	});
 
-	let d = $derived(makeShape(curves));
+	let d = $derived.by(() => {
+		if (curves === undefined || curves.length === 0) return "";
 
-	let translateX = $derived(viewportOffset.x + minX);
-	let translateY = $derived(viewportOffset.y + minY);
+		const formatPos = (pos: Pos) => `${pos.x} ${pos.y}`;
+		const makeM = (curve: CubicBezier) => `M ${formatPos(curve.p0)}`;
+		const makeC = (curve: CubicBezier): string => {
+			const points = [curve.p1, curve.p2, curve.p3].map(formatPos);
+			return `C ${points.join(", ")}`;
+		};
+
+		const m = makeM(curves[0]);
+		const c = curves.map(makeC).join("\n");
+
+		return `${m}\n${c}`;
+	});
+
+	let offset = $derived({
+		x: viewportOffset.x + minX,
+		y: viewportOffset.y + minY,
+	});
+
+	/**
+	 * little helper function to prevent the display path from disappearing
+	 * while the mask path is doing the draw transition
+	 */
+	const hold = (_node: Element): TransitionConfig => ({
+		duration: DRAW_DURATION,
+		css: () => "",
+	});
 </script>
 
 <div class="bezier-wrapper">
@@ -78,7 +76,7 @@
 		viewBox="{minX} {minY} {width} {height}"
 		{width}
 		{height}
-		style="transform: translate({translateX}px, {translateY}px);"
+		style="transform: translate({offset.x}px, {offset.y}px);"
 	>
 		<defs>
 			<mask id="reveal">
