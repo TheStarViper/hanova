@@ -26,7 +26,7 @@ export const ISLAND_SPRITES = {
 		spawnOffset: new Pos(-80, 80),
 		radius: 152,
 	},
-	// used for jpeg
+	// used for svg
 	2: {
 		svg: Island2Svg,
 		width: 232,
@@ -50,11 +50,12 @@ export const ISLAND_SPRITES = {
 		spawnOffset: new Pos(-120, 120),
 		radius: 140,
 	},
+	// used for jpeg
 	5: {
 		svg: Island5Svg,
 		width: 305,
 		treasureOffset: new Pos(110, 0),
-		spawnOffset: new Pos(-180, 150),
+		spawnOffset: new Pos(100, 150),
 		radius: 175,
 	},
 	6: {
@@ -82,7 +83,7 @@ export const ISLAND_DATA = [
 	},
 	{
 		name: "JPEG",
-		pos: new Pos(600, 200),
+		pos: new Pos(630, 150),
 		islandSpriteIndex: 5,
 	},
 	{
