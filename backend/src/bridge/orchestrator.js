@@ -31,17 +31,45 @@ const conversions_transition_table = [
         [null,null,null,null,null,null,null],//svg
 ];
 
+function search_path(start,target){
+    if (start===target){return[];}
 
-export async function convert_file(format,bytes,quality){
-    //have code here to identify the input format
+    const queue = [[start,[]]];
+    const visited = new Set([start]);
 
+    while (queue.length>0){
+        const[currentindex,path]=queue.shift();
+        for (let nextindex=0;nextindex<FORMATS.length;nextindex++){
+            const func = conversions_transition_table[currentindex][nextindex];
+            if (func&&!visited.has(nextindex)){
+                const newstep = {from: FORMATS[currentindex], to: FORMATS[nextindex], func};
+                const newpath = [...path,newstep];
 
-    switch(format){
-        case "png":
+                //path found
+                if (nextindex===target_index){
+                    return newpath;
+                }
 
-            break;
-        default:
-
-            break;
+                visited.add(nextindex);
+                queue.push([nextindex,newpath]);
+            }
+        }
     }
+    return null; //no path found
+}
+
+export async function convert_file(target_format,bytes,quality){
+    //have code here to identify the input format
+    let current_index=INDEX[/*get the identified input format*/];
+    let target_index = INDEX[target_format];
+
+    if (current_index === undefined){throw new Error(`Unsupported Input Format: "${/*get the identified input format*/}"`);}
+    if (target_index === undefined){throw new Error(`Unsupported Output Format: "${FORMATS[target_index]}"`);}
+    
+    const path = search_path(current_index,target_index);
+
+    return path.reduce((currentdata,step)=>{
+        console.log(`Converting ${step.from} -> ${step.to}...`);
+        return step.fn(currentdata);
+    },data);
 }
