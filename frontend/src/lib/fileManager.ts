@@ -16,6 +16,8 @@ export interface FileFormat {
 	 * {@link https://www.iana.org/assignments/media-types#image|Super useful resource for MIME types}
 	 */
 	mimeType: string;
+
+	validExtensions: string[];
 }
 
 export const FORMATS = {
@@ -23,18 +25,21 @@ export const FORMATS = {
 	PNG: {
 		ext: "png",
 		mimeType: "image/png",
+		validExtensions: ["png"],
 	},
 
 	// https://en.wikipedia.org/wiki/JPEG
 	JPEG: {
-		ext: "jpg",
+		ext: "jpeg",
 		mimeType: "image/jpeg",
+		validExtensions: ["jpg", "jpeg"],
 	},
 
 	// https://en.wikipedia.org/wiki/BMP_file_format
 	BMP: {
 		ext: "bmp",
 		mimeType: "image/bmp",
+		validExtensions: ["bmp"],
 	},
 
 	// https://en.wikipedia.org/wiki/Truevision_TGA
@@ -44,12 +49,15 @@ export const FORMATS = {
 
 		// apparently this mime type is unofficial and unregistered
 		mimeType: "image/x-targa",
+
+		validExtensions: ["tga", "icb", "vda", "vst"],
 	},
 
 	// https://en.wikipedia.org/wiki/RGBE_image_format
 	HDR: {
 		ext: "hdr",
 		mimeType: "image/vnd.radiance",
+		validExtensions: ["hdr"],
 	},
 
 	// https://en.wikipedia.org/wiki/WebP
@@ -57,6 +65,7 @@ export const FORMATS = {
 	WebP: {
 		ext: "webp",
 		mimeType: "image/webp",
+		validExtensions: ["webp"],
 	},
 } as const satisfies Record<string, FileFormat>;
 export type FormatName = keyof typeof FORMATS;
@@ -179,6 +188,19 @@ export class FileManager {
 		return { base, ext };
 	}
 
+	getInputFormat(): FileFormat | undefined {
+		const { ext } = this.parseFilename();
+		if (ext === undefined) return undefined;
+
+		const format = Object.values(FORMATS).find((format) => {
+			const extensions = format.validExtensions.map((e) => e.toLowerCase());
+
+			return extensions.includes(ext.substring(1).toLowerCase());
+		});
+
+		return format;
+	}
+
 	get displayifiedFilename(): string {
 		const { base, ext } = this.parseFilename();
 
@@ -192,7 +214,7 @@ export class FileManager {
 	}
 
 	get outFilename(): string {
-		const { base, ext } = this.parseFilename();
+		const { base } = this.parseFilename();
 
 		if (this.outFormat === undefined) {
 			throw new Error("can't get out filename until out format is set");

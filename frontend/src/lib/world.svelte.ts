@@ -1,7 +1,7 @@
 // class imports
 import { Banner } from "./banner.svelte";
 import { Boat, SAIL_DURATION } from "./boat.svelte";
-import { FileManager } from "./fileManager";
+import { FileManager, FORMATS } from "./fileManager";
 import { Island, ISLAND_DATA, type IslandDatum } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
 import { Pos, Viewport, mulberry32 } from "./utils.svelte";
@@ -61,9 +61,19 @@ export class World {
 		this.banner.text = "";
 	}
 
+	private getSpawnOffset(): Pos | undefined {
+		const inFormat = this.fileManager.getInputFormat();
+		if (inFormat === undefined) return undefined;
+
+		const offset = Island.findSpawnOffsetForFormat(inFormat);
+		return offset;
+	}
+
 	spawnBoat() {
-		this.boat.pos.x = this.viewport.center.x;
-		this.boat.pos.y = this.viewport.center.y;
+		const spawnOffset = this.getSpawnOffset() ?? this.viewport.center;
+
+		this.boat.pos.x = spawnOffset.x;
+		this.boat.pos.y = spawnOffset.y;
 
 		this.boat.name = this.fileManager.displayifiedFilename;
 		this.boat.hide = false;
