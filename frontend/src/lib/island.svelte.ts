@@ -53,9 +53,9 @@ export const ISLAND_SPRITES = {
 	5: {
 		svg: Island5Svg,
 		width: 305,
-		treasureOffset: new Pos(0, 0),
-		spawnOffset: new Pos(0, 0),
-		radius: 0,
+		treasureOffset: new Pos(110, 0),
+		spawnOffset: new Pos(-180, 150),
+		radius: 175,
 	},
 	6: {
 		svg: Island6Svg,
@@ -83,7 +83,7 @@ export const ISLAND_DATA = [
 	{
 		name: "JPEG",
 		pos: new Pos(600, 200),
-		islandSpriteIndex: 2,
+		islandSpriteIndex: 5,
 	},
 	{
 		name: "PNG",
@@ -94,6 +94,11 @@ export const ISLAND_DATA = [
 		name: "WebP",
 		pos: new Pos(1050, 150),
 		islandSpriteIndex: 4,
+	},
+	{
+		name: "SVG",
+		pos: new Pos(400, -200),
+		islandSpriteIndex: 2,
 	},
 ] as const satisfies IslandDatum[];
 

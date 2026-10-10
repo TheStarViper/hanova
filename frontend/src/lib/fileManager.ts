@@ -67,6 +67,13 @@ export const FORMATS = {
 		mimeType: "image/webp",
 		validExtensions: ["webp"],
 	},
+
+	// https://en.wikipedia.org/wiki/SVG
+	SVG: {
+		ext: "svg",
+		mimeType: "image/svg+xml",
+		validExtensions: ["svg"],
+	},
 } as const satisfies Record<string, FileFormat>;
 export type FormatName = keyof typeof FORMATS;
 
