@@ -40,6 +40,8 @@ export class Viewport {
 	min = new Pos();
 	max = new Pos();
 
+	offset = new Pos(0, 0);
+
 	constructor() {}
 
 	init(): void {

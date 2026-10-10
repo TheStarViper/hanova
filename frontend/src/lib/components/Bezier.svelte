@@ -5,7 +5,10 @@
 
 	interface Props {
 		curves: CubicBezier[] | undefined;
+		viewportOffset: Pos;
 	}
+
+	let { curves, viewportOffset }: Props = $props();
 
 	const DRAW_DURATION = 600;
 
@@ -16,9 +19,8 @@
 		};
 	}
 
-	let { curves }: Props = $props();
-
-	const formatPos = (pos: Pos) => `${pos.x} ${pos.y}`;
+	const formatPos = (pos: Pos) =>
+		`${pos.x + viewportOffset.x} ${pos.y + viewportOffset.y}`;
 
 	const makeM = (curve: CubicBezier) => `M ${formatPos(curve.p0)}`;
 

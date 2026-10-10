@@ -5,6 +5,7 @@
 	import { slide } from "svelte/transition";
 	import { onMount } from "svelte";
 	import { decodeSounds } from "#lib/sound.js";
+	import { Pos } from "#lib/utils.svelte.js";
 
 	// cuz the center of the main section (where the text ought to be visually
 	// centered) is not the same as the center of the svg
@@ -38,6 +39,7 @@
 <Sprite
 	top={me.pos.y}
 	left={me.pos.x}
+	viewportOffset={new Pos()}
 	width={847}
 	layer={100}
 	{hide}
