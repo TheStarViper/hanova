@@ -26,6 +26,14 @@
 	onMount(() => {
 		world.init();
 	});
+
+	$effect(() => {
+		document.body.style.cursor = world.viewport.canDrag
+			? world.viewport.userIsDragging
+				? "grabbing"
+				: "grab"
+			: "unset";
+	});
 </script>
 
 <h1>Hanova</h1>

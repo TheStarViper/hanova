@@ -12,4 +12,8 @@ export class Banner {
 	get pos() {
 		return this.viewport.center;
 	}
+
+	get hide() {
+		return this.text === "";
+	}
 }

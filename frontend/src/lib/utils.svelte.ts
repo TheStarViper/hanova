@@ -42,13 +42,21 @@ export class Viewport {
 
 	offset = new Pos(0, 0);
 
+	canDrag = $state(false);
+	userIsDragging = $state(false);
+	private dragStartX = 0;
+	private dragStartY = 0;
+
 	constructor() {}
 
 	init(): void {
 		this.el = document.getElementById("main");
 
 		this.update();
+
 		window.addEventListener("resize", () => this.update());
+
+		this.initDragListeners();
 	}
 
 	update(): void {
@@ -72,6 +80,36 @@ export class Viewport {
 
 	get center(): Pos {
 		return new Pos(this.width / 2, this.height / 2);
+	}
+
+	private resetDrag() {
+		this.userIsDragging = false;
+	}
+
+	initDragListeners() {
+		this.resetDrag();
+
+		window.addEventListener("pointerdown", (event) => {
+			if (!this.canDrag) return;
+
+			this.userIsDragging = true;
+			this.dragStartX = event.clientX;
+			this.dragStartY = event.clientY;
+		});
+		window.addEventListener("pointerup", () => this.resetDrag());
+		window.addEventListener("pointercancel", () => this.resetDrag());
+		window.addEventListener("pointermove", (event) => {
+			if (!this.userIsDragging) return;
+
+			const dragDeltaX = event.clientX - this.dragStartX;
+			const dragDeltaY = event.clientY - this.dragStartY;
+
+			this.offset.x += dragDeltaX;
+			this.offset.y += dragDeltaY;
+
+			this.dragStartX = event.clientX;
+			this.dragStartY = event.clientY;
+		});
 	}
 }
 

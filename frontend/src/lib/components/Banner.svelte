@@ -18,8 +18,6 @@
 
 	let { me, handleUpload }: Props = $props();
 
-	let hide = $derived(me.text === "");
-
 	let inputEl: HTMLInputElement;
 	let textEl: HTMLDivElement;
 
@@ -42,13 +40,13 @@
 	viewportOffset={new Pos()}
 	width={847}
 	layer={100}
-	{hide}
+	hide={me.hide}
 	shadowOpacity={0.4}>{@html BannerSvg}</Sprite
 >
 <div
 	id="banner-text-container"
 	bind:this={textEl}
-	class={hide ? "hide" : ""}
+	class={me.hide ? "hide" : ""}
 	style:top="{me.pos.y - MAIN_BANNER_OFFSET_PX}px"
 	style:left="{me.pos.x}px"
 	style:cursor={me.uploadOnClick ? "pointer" : "default"}
@@ -57,7 +55,7 @@
 		<h2 transition:slide>{me.text}</h2>
 	{/key}
 </div>
-<div id="banner-overlay" class={!hide ? "show" : ""}></div>
+<div id="banner-overlay" class={!me.hide ? "show" : ""}></div>
 
 <style lang="scss">
 	#banner-text-container {
