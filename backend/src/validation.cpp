@@ -35,3 +35,7 @@ std::string validate_file_format(const std::vector<uint8_t>& input){ //verify fi
     //end of svg
     return "unknown";
 }
+
+EMSCRIPTEN_BINDINGS(validation_module) {
+    emscripten::function("validate_file_format", &validate_file_format);
+}

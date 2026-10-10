@@ -1,6 +1,6 @@
 CXX = em++
 CC = emcc
-BUILD_DIR = ../frontend/src/lib/cpp
+BUILD_DIR = ./build
 OBJ_DIR = obj
 
 INC = -Iinclude -Isrc -Ilibraries/libwebp/src -Ilibraries/libwebp -Iinclude/images -Ilibraries/stb -Ilibraries/nanosvg
@@ -90,24 +90,24 @@ $(OBJ_DIR)/%.o: %.cpp
 
 build-core: $(CORE_OBJS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[1/4] Creating image_core WASM Module...", "Cyan")
+	@$(call echo_color, "[1/3] Creating image_core WASM Module...", "Cyan")
 	$(CXX) $(CORE_OBJS) --emit-tsd $(CORE_TSD) -o $(CORE_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[1/4] image_core SUCCESSFULLY CREATED!", "Blue") # blue prints purple for some reason?
+	@$(call echo_color, "[1/3] image_core SUCCESSFULLY CREATED!", "Blue") # blue prints purple for some reason?
 
 build-webp: $(WEBP_OBJS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[2/4] Creating webp WASM Module...", "Cyan")
+	@$(call echo_color, "[2/3] Creating webp WASM Module...", "Cyan")
 	$(CXX) $(WEBP_OBJS) --emit-tsd $(WEBP_TSD) -o $(WEBP_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[2/4] webp SUCCESSFULLY CREATED!", "Blue")
+	@$(call echo_color, "[2/3] webp SUCCESSFULLY CREATED!", "Blue")
 
 build-svg: $(SVG_OBJS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[3/4] Creating svg WASM Module...", "Cyan")
+	@$(call echo_color, "[3/3] Creating svg WASM Module...", "Cyan")
 	$(CXX) $(SVG_OBJS) --emit-tsd $(SVG_TSD) -o $(SVG_TARGET) $(COMMON_EMFLAGS)
 	@echo "==============================================================================================="
-	@$(call echo_color, "[3/4] svg SUCCESSFULLY CREATED!", "Blue")
+	@$(call echo_color, "[3/3] svg SUCCESSFULLY CREATED!", "Blue")
 
 clean:
 	@$(RM)
