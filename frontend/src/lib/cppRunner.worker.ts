@@ -24,11 +24,13 @@ export type ReturnObj = SuccessObj | FailObj;
 
 export interface WorkerRequest {
 	inBytes: Bytes;
+	inFormat: FormatName | undefined;
 	outFormat: FormatName;
 }
 export type WorkerResponse = ReturnObj;
 
 type OutFuncMapping = Record<FormatName, (input: Bytes) => ReturnObj>;
+type PrepFuncMapping = Partial<Record<FormatName, (input: Bytes) => ReturnObj>>;
 
 interface Modules {
 	image: ImageModule;
@@ -51,10 +53,32 @@ async function getModules(): Promise<Modules> {
 }
 
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
-	const inBytes = event.data.inBytes;
+	let inBytes = event.data.inBytes;
+	const inFormat = event.data.inFormat;
 	const outFormat = event.data.outFormat;
 
 	const modules = await getModules();
+
+	const prepFuncMapping: PrepFuncMapping = {
+		WebP: (input: Bytes) => modules.webp.convert_webp_to_png(input),
+		SVG: (input: Bytes) => modules.svg.convert_svg_to_png(input),
+	};
+
+	if (inFormat !== undefined) {
+		const prepFunc = prepFuncMapping[inFormat];
+		if (prepFunc) {
+			const prepResult = prepFunc(inBytes);
+
+			if (prepResult.ok) {
+				inBytes = prepResult.data;
+			} else {
+				// if the preprocessing threw an error, then just return early with
+				// that error
+				self.postMessage(prepResult);
+				return;
+			}
+		}
+	}
 
 	const outFuncMapping: OutFuncMapping = {
 		PNG: (input: Bytes) => modules.image.convert_to_png(input),
@@ -67,7 +91,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	};
 
 	// syncronous and very slow, but we're in a worker so who cares
-	const result = outFuncMapping[outFormat](inBytes);
+	const outResult = outFuncMapping[outFormat](inBytes);
 
-	self.postMessage(result);
+	self.postMessage(outResult);
 };

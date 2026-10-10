@@ -140,9 +140,14 @@ export class FileManager {
 		}
 
 		const inBytes = await this.file.bytes();
+		const inFormat = this.getInputFormatName();
 
 		this.conversionStartTime = Date.now();
-		this.cppManager.startConversion({ inBytes, format: formatName });
+		this.cppManager.startConversion({
+			inBytes,
+			outFormat: formatName,
+			inFormat,
+		});
 	}
 
 	/**
@@ -195,17 +200,17 @@ export class FileManager {
 		return { base, ext };
 	}
 
-	getInputFormat(): FileFormat | undefined {
+	getInputFormatName(): FormatName | undefined {
 		const { ext } = this.parseFilename();
 		if (ext === undefined) return undefined;
 
-		const format = Object.values(FORMATS).find((format) => {
+		const name = (Object.keys(FORMATS) as FormatName[]).find((name) => {
+			const format = FORMATS[name];
 			const extensions = format.validExtensions.map((e) => e.toLowerCase());
-
 			return extensions.includes(ext.substring(1).toLowerCase());
 		});
 
-		return format;
+		return name;
 	}
 
 	get displayifiedFilename(): string {

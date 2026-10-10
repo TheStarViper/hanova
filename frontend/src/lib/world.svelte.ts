@@ -65,10 +65,10 @@ export class World {
 	}
 
 	private getSpawnOffset(): Pos | undefined {
-		const inFormat = this.fileManager.getInputFormat();
-		if (inFormat === undefined) return undefined;
+		const inFormatName = this.fileManager.getInputFormatName();
+		if (inFormatName === undefined) return undefined;
 
-		const offset = Island.findSpawnOffsetForFormat(inFormat);
+		const offset = Island.findSpawnOffsetForFormat(inFormatName);
 		return offset;
 	}
 

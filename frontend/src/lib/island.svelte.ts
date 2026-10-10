@@ -124,9 +124,9 @@ export class Island {
 		return Pos.add(this.pos, this.sprite.treasureOffset);
 	}
 
-	static findSpawnOffsetForFormat(format: FileFormat): Pos | undefined {
+	static findSpawnOffsetForFormat(formatName: FormatName): Pos | undefined {
 		const islandDatum = ISLAND_DATA.find(
-			(datum) => datum.name.toLowerCase() === format.ext.toLowerCase(),
+			(datum) => datum.name.toLowerCase() === formatName.toLowerCase(),
 		);
 		if (islandDatum === undefined) return undefined;
 
