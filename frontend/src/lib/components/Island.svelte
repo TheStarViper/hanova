@@ -3,15 +3,13 @@
 	import type { Pos } from "#lib/utils.svelte.js";
 	import Sprite from "./Sprite.svelte";
 
-	// change this for debugging only
-	let DISPLAY_RADIUS: boolean = false;
-
 	interface Props {
 		me: Island;
 		viewportOffset: Pos;
+		debugging: boolean;
 	}
 
-	let { me, viewportOffset }: Props = $props();
+	let { me, viewportOffset, debugging }: Props = $props();
 
 	let hovered: boolean = $state(false);
 	let shadowOpacity = $derived(hovered ? 0.8 : 0.4);
@@ -35,10 +33,10 @@
 >
 <div
 	class="radius for-debugging-purposes-only"
-	style:left="{me.pos.x}px"
-	style:top="{me.pos.y}px"
+	style:left="{me.pos.x + viewportOffset.x}px"
+	style:top="{me.pos.y + viewportOffset.y}px"
 	style:--radius="{me.sprite.radius}px"
-	style:display={DISPLAY_RADIUS ? "flex" : "none"}
+	style:display={debugging ? "flex" : "none"}
 ></div>
 
 <style lang="scss">

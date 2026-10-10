@@ -157,8 +157,8 @@ const pixelify = (coords: Coords): Pos => {
 
 // based on the boat sprite
 /** sizes in pixels */
-const GRID_CELL_WIDTH = 96 / 2;
-const GRID_CELL_HEIGHT = 74 / 2;
+export const GRID_CELL_WIDTH = 96 / 2;
+export const GRID_CELL_HEIGHT = 74 / 2;
 
 function isWalkableFactory(islands: Island[]): (coords: Coords) => boolean {
 	const cache = new Map<Coords, boolean>();

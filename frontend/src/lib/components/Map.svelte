@@ -11,6 +11,10 @@
 	import type { CppManager } from "#lib/cppManager.js";
 	import { onMount } from "svelte";
 	import Bezier from "./Bezier.svelte";
+	import DebuggingGrid from "./DebuggingGrid.svelte";
+
+	// for various dev-only debugging visuals
+	const debugging = false;
 
 	interface Props {
 		cppManager: CppManager;
@@ -41,8 +45,11 @@
 <Boat me={world.boat} {viewportOffset} />
 
 {#each world.islands as island}
-	<Island me={island} {viewportOffset} />
+	<Island me={island} {viewportOffset} {debugging} />
 {/each}
+{#if debugging}
+	<DebuggingGrid {viewportOffset} />
+{/if}
 
 <Treasure me={world.treasure} {viewportOffset} />
 <Banner
