@@ -1,12 +1,20 @@
-import WebpModuleFactory from "./cpp/webp_module";
-import ImagecoreModuleFactory from "./cpp/image_core_module";
-import SvgModuleFactory from "./cpp/svg_module";
+import ImageModuleFactory, {
+	type MainModule as ImageModule,
+} from "./cpp/image_core_module";
+import WebpModuleFactory, {
+	type MainModule as WebpModule,
+} from "./cpp/webp_module";
+import SvgModuleFactory, {
+	type MainModule as SvgModule,
+} from "./cpp/svg_module";
 
 import { type FormatName, JPEG_QUALITY, WEBP_QUALITY } from "./fileManager";
 
+type Bytes = Uint8Array<ArrayBuffer>;
+
 export interface SuccessObj {
 	ok: true;
-	data: Uint8Array<ArrayBuffer>;
+	data: Bytes;
 }
 export interface FailObj {
 	ok: false;
@@ -15,45 +23,51 @@ export interface FailObj {
 export type ReturnObj = SuccessObj | FailObj;
 
 export interface WorkerRequest {
-	inBytes: Uint8Array;
-	format: FormatName;
+	inBytes: Bytes;
+	outFormat: FormatName;
 }
 export type WorkerResponse = ReturnObj;
 
-type FuncMapping = Record<FormatName, (input: Uint8Array) => ReturnObj>;
+type OutFuncMapping = Record<FormatName, (input: Bytes) => ReturnObj>;
 
-let funcMappingCache: FuncMapping | null = null;
+interface Modules {
+	image: ImageModule;
+	webp: WebpModule;
+	svg: SvgModule;
+}
 
-async function getFuncMapping(): Promise<FuncMapping> {
-	if (funcMappingCache !== null) return funcMappingCache;
+let moduleCache: Modules | null = null;
 
-	const ImageModule = await ImagecoreModuleFactory();
-	const WebpModule = await WebpModuleFactory();
-	const SvgModule = await SvgModuleFactory();
+async function getModules(): Promise<Modules> {
+	if (moduleCache !== null) return moduleCache;
 
-	funcMappingCache = {
-		PNG: (input: Uint8Array) => ImageModule.convert_to_png(input),
-		JPEG: (input: Uint8Array) =>
-			ImageModule.convert_to_jpeg(input, JPEG_QUALITY),
-		BMP: (input: Uint8Array) => ImageModule.convert_to_bmp(input),
-		TGA: (input: Uint8Array) => ImageModule.convert_to_tga(input),
-		HDR: (input: Uint8Array) => ImageModule.convert_to_hdr(input),
-		WebP: (input: Uint8Array) =>
-			WebpModule.convert_to_webp(input, WEBP_QUALITY),
-		SVG: (input: Uint8Array) => SvgModule.convert_to_svg(input),
+	moduleCache = {
+		image: await ImageModuleFactory(),
+		webp: await WebpModuleFactory(),
+		svg: await SvgModuleFactory(),
 	};
 
-	return funcMappingCache;
+	return moduleCache;
 }
 
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 	const inBytes = event.data.inBytes;
-	const format = event.data.format;
+	const outFormat = event.data.outFormat;
 
-	const funcMapping = await getFuncMapping();
+	const modules = await getModules();
+
+	const outFuncMapping: OutFuncMapping = {
+		PNG: (input: Bytes) => modules.image.convert_to_png(input),
+		JPEG: (input: Bytes) => modules.image.convert_to_jpeg(input, JPEG_QUALITY),
+		BMP: (input: Bytes) => modules.image.convert_to_bmp(input),
+		TGA: (input: Bytes) => modules.image.convert_to_tga(input),
+		HDR: (input: Bytes) => modules.image.convert_to_hdr(input),
+		WebP: (input: Bytes) => modules.webp.convert_to_webp(input, WEBP_QUALITY),
+		SVG: (input: Bytes) => modules.svg.convert_to_svg(input),
+	};
 
 	// syncronous and very slow, but we're in a worker so who cares
-	const result = funcMapping[format](inBytes);
+	const result = outFuncMapping[outFormat](inBytes);
 
 	self.postMessage(result);
 };
