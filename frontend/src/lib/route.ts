@@ -15,11 +15,11 @@ export function linearRouteFactory(start: Pos, end: Pos): Route {
 export function aStarRouteFactory(
 	startPos: Pos,
 	endPos: Pos,
-	islands: Island[],
+	otherIslands: Island[],
 ): [Route, CubicBezier[]] {
 	const start = gridify(startPos);
 	const goal = gridify(endPos);
-	const isWalkable = isWalkableFactory(islands);
+	const isWalkable = isWalkableFactory(otherIslands);
 
 	const path = aStar(start, goal, isWalkable);
 
@@ -145,7 +145,7 @@ const stringifyCoords = (x: number, y: number): Coords => `${x},${y}`;
 const numifyCoords = (coord: Coords) =>
 	coord.split(",").map(Number) as [number, number];
 
-const gridify = (point: Pos): Coords => {
+export const gridify = (point: Pos): Coords => {
 	const x = Math.floor(point.x / GRID_CELL_WIDTH);
 	const y = Math.floor(point.y / GRID_CELL_HEIGHT);
 	return stringifyCoords(x, y);
@@ -160,7 +160,9 @@ const pixelify = (coords: Coords): Pos => {
 export const GRID_CELL_WIDTH = 96 / 2;
 export const GRID_CELL_HEIGHT = 74 / 2;
 
-function isWalkableFactory(islands: Island[]): (coords: Coords) => boolean {
+export function isWalkableFactory(
+	islands: Island[],
+): (coords: Coords) => boolean {
 	const cache = new Map<Coords, boolean>();
 
 	return (coords: Coords) => {

@@ -1,17 +1,34 @@
-import { aStar } from "./route";
+import { describe, expect, it } from "vitest";
+import { aStar, gridify, isWalkableFactory } from "./route";
+import { Island, ISLAND_DATA } from "./island.svelte";
+import { Pos } from "./utils.svelte";
 
-const start = "5,8";
-const end = "11,20";
-const walkable = (coords: `${number},${number}`) => coords !== "10,8";
+const islands = ISLAND_DATA.map((datum) => new Island(datum, () => {}));
 
-console.log("starting search...");
-const t1 = Date.now();
+describe("Islands pathfindable", () => {
+	describe.each<Island>(islands)(
+		"$name",
+		({ name, pos: originPos, sprite: originSprite }) => {
+			const start = gridify(Pos.add(originPos, originSprite.spawnOffset));
 
-const route = aStar(start, end, walkable);
+			it.each<Island>(islands)(
+				"can pathfind to $name",
+				({ name: targetName, pos: targetPos, sprite: targetSprite }) => {
+					const goal = gridify(Pos.add(targetPos, targetSprite.treasureOffset));
 
-const t2 = Date.now();
-console.log("finished search!");
+					const otherIslands = islands.filter(
+						(island) => island.name !== targetName,
+					);
+					const isWalkable = isWalkableFactory(otherIslands);
 
-console.log(route);
+					/** this is the path that A* will fall back on */
+					const crudePath = [start, goal];
 
-console.log(`took ${(t2 - t1) / 1000} seconds`);
+					const path = aStar(start, goal, isWalkable);
+
+					expect(path).not.toEqual(crudePath);
+				},
+			);
+		},
+	);
+});
