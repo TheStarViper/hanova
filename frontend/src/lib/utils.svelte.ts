@@ -111,6 +111,37 @@ export class Viewport {
 			this.dragStartY = event.clientY;
 		});
 	}
+
+	private recenterAnimID: number | null = null;
+	recenterTo(endPos: Pos) {
+		if (this.recenterAnimID !== null) cancelAnimationFrame(this.recenterAnimID);
+
+		const duration = 1000;
+		const startPos = new Pos(this.offset.x, this.offset.y);
+		const delta = Pos.sub(endPos, startPos);
+
+		let startTime: number | null = null;
+
+		const animate = (nowTime: number) => {
+			if (startTime === null) {
+				startTime = nowTime;
+			}
+
+			const elapsed = nowTime - startTime;
+
+			/** normalized between 0 and 1 */
+			const rawProgress = Math.min(elapsed / duration, 1);
+			const progress = ease(rawProgress);
+
+			this.offset.x = startPos.x + delta.x * progress;
+			this.offset.y = startPos.y + delta.y * progress;
+
+			this.recenterAnimID =
+				progress < 1 ? requestAnimationFrame(animate) : null;
+		};
+
+		this.recenterAnimID = requestAnimationFrame(animate);
+	}
 }
 
 export function ease(t: number): number {

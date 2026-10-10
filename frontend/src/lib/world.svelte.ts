@@ -78,8 +78,12 @@ export class World {
 		this.boat.pos.x = spawnOffset.x;
 		this.boat.pos.y = spawnOffset.y;
 
-		this.viewport.offset.x = this.boat.pos.x;
-		this.viewport.offset.y = this.viewport.height / 2 - this.boat.pos.y;
+		this.viewport.recenterTo(
+			new Pos(
+				this.viewport.center.x - this.boat.pos.x,
+				this.viewport.center.y - this.boat.pos.y,
+			),
+		);
 
 		this.boat.name = this.fileManager.displayifiedFilename;
 		this.boat.hide = false;
