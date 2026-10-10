@@ -141,7 +141,7 @@ and then used to animate the boat's travel and draw the dashed line.
 - [x] Sounds
 - [x] Boat sinks if the conversion throws an error
 - [ ] Boat points in the direction it's moving in
-- [ ] Boat spawns at the island corresponding to its original file format
+- [x] Boat spawns at the island corresponding to its original file format
 - [ ] Mobile support
 - [ ] Boat moves in circles around islands rather than beaching itself
 - [ ] Map is scrollable (and maybe zoomable)
