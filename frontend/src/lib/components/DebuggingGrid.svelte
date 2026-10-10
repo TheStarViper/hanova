@@ -31,7 +31,10 @@ which is helpful when deciding where to place islands
 		height: 100vh;
 
 		background-image:
+			// grid lines
 			linear-gradient(to right, red 2px, transparent 2px),
-			linear-gradient(to bottom, red 2px, transparent 2px);
+			linear-gradient(to bottom, red 2px, transparent 2px),
+			// cell centers
+			radial-gradient(circle at 50% 50%, blue 2px, transparent 2px);
 	}
 </style>
