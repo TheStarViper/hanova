@@ -1,44 +1,54 @@
 import fs from 'node:fs';
-import {createRequire} from 'node:module';
-import * as magickModule from '@imagemagick/magick-wasm'
+import { extname } from 'node:path';
+import { createRequire } from 'node:module';
+import * as magickModule from '@imagemagick/magick-wasm';
 
 const require = createRequire(import.meta.url);
 let isinit = false;
 
-export async function init_imagemagick(){
-    if (isinit) {return;}
+export async function init_imagemagick() {
+    if (isinit) return;
 
-    try{
-        const wasmpath = require.resolve('@imagemagick/magick-wasm/dist/magick.wasm');
-        const wasmbytes = fs.readFileSync(wasmpath);
+    const wasmPath = require.resolve('@imagemagick/magick-wasm/magick.wasm');
+    const wasmBytes = fs.readFileSync(wasmPath);
 
-        await magickModule.initializeImageMagick(wasmbytes);
-        isinit=true;
-    } catch (error){
-        throw new Error(`Failed to init imagemagick wasm module: ${error.message}`);
-    }
+    await magickModule.initializeImageMagick(wasmBytes);
+    isinit = true;
 }
 
-export async function process_image(inputpath,outputpath,processorfunc){
+const FORMATS = {
+    '.png': magickModule.MagickFormat.Png,
+    '.jpg': magickModule.MagickFormat.Jpeg,
+    '.jpeg': magickModule.MagickFormat.Jpeg,
+    '.bmp': magickModule.MagickFormat.Bmp,
+    '.webp': magickModule.MagickFormat.WebP,
+    '.gif': magickModule.MagickFormat.Gif,
+};
+
+export async function process_image(inputpath, outputpath, processorfunc) {
     await init_imagemagick();
 
     const inputbytes = fs.readFileSync(inputpath);
+    const format = FORMATS[extname(outputpath).toLowerCase()];
+    if (!format) throw new Error(`Unsupported output extension: ${outputpath}`);
 
-    magickModule.ImageMagick.read(new Uint8array(inputbytes),async(image)=>{
-        await processorfunc(image,magickModule);
-
-        image.write((outputbytes)=>{
-            fs.writeFileSync(outputpath,Buffer.from(outputbytes));
-        },magickModule.MagickFormat.Auto);
+    let output;
+    await magickModule.ImageMagick.read(new Uint8Array(inputbytes), async (image) => {
+        await processorfunc(image, magickModule);
+        image.write(format, (data) => {
+            output = Buffer.from(data);
+        });
     });
+
+    fs.writeFileSync(outputpath, output);
 }
 
 export const {
-  ImageMagick,
-  Magick,
-  MagickFormat,
-  MagickColor,
-  MagickGeometry,
-  Channels,
-  EvaluateOperator,
+    ImageMagick,
+    Magick,
+    MagickFormat,
+    MagickColor,
+    MagickGeometry,
+    Channels,
+    EvaluateOperator,
 } = magickModule;
