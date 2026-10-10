@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Island } from "#lib/island.svelte.js";
+	import type { Pos } from "#lib/utils.svelte.js";
 	import Sprite from "./Sprite.svelte";
 
 	// change this for debugging only
@@ -7,9 +8,10 @@
 
 	interface Props {
 		me: Island;
+		viewportOffset: Pos;
 	}
 
-	let { me }: Props = $props();
+	let { me, viewportOffset }: Props = $props();
 
 	let hovered: boolean = $state(false);
 	let shadowOpacity = $derived(hovered ? 0.8 : 0.4);
@@ -19,6 +21,7 @@
 <Sprite
 	left={me.pos.x}
 	top={me.pos.y}
+	{viewportOffset}
 	width={me.sprite.width}
 	{shadowOpacity}
 	{borderColor}

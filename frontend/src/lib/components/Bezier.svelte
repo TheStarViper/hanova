@@ -5,7 +5,10 @@
 
 	interface Props {
 		curves: CubicBezier[] | undefined;
+		viewportOffset: Pos;
 	}
+
+	let { curves, viewportOffset }: Props = $props();
 
 	const DRAW_DURATION = 600;
 
@@ -15,8 +18,6 @@
 			css: () => "",
 		};
 	}
-
-	let { curves }: Props = $props();
 
 	const formatPos = (pos: Pos) => `${pos.x} ${pos.y}`;
 
@@ -58,7 +59,11 @@
 </script>
 
 <div class="bezier-wrapper">
-	<svg viewBox="0 0 {width + 20} {height + 20}" width={width + 20}>
+	<svg
+		viewBox="0 0 {width + 20} {height + 20}"
+		width={width + 20}
+		transform="translate({viewportOffset.x},{viewportOffset.y})"
+	>
 		<defs>
 			<mask id="reveal">
 				{#key d}

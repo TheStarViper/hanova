@@ -5,6 +5,7 @@
 	import { slide } from "svelte/transition";
 	import { onMount } from "svelte";
 	import { decodeSounds } from "#lib/sound.js";
+	import { Pos } from "#lib/utils.svelte.js";
 
 	// cuz the center of the main section (where the text ought to be visually
 	// centered) is not the same as the center of the svg
@@ -16,8 +17,6 @@
 	}
 
 	let { me, handleUpload }: Props = $props();
-
-	let hide = $derived(me.text === "");
 
 	let inputEl: HTMLInputElement;
 	let textEl: HTMLDivElement;
@@ -38,15 +37,16 @@
 <Sprite
 	top={me.pos.y}
 	left={me.pos.x}
+	viewportOffset={new Pos()}
 	width={847}
 	layer={100}
-	{hide}
+	hide={me.hide}
 	shadowOpacity={0.4}>{@html BannerSvg}</Sprite
 >
 <div
 	id="banner-text-container"
 	bind:this={textEl}
-	class={hide ? "hide" : ""}
+	class={me.hide ? "hide" : ""}
 	style:top="{me.pos.y - MAIN_BANNER_OFFSET_PX}px"
 	style:left="{me.pos.x}px"
 	style:cursor={me.uploadOnClick ? "pointer" : "default"}
@@ -55,7 +55,7 @@
 		<h2 transition:slide>{me.text}</h2>
 	{/key}
 </div>
-<div id="banner-overlay" class={!hide ? "show" : ""}></div>
+<div id="banner-overlay" class={!me.hide ? "show" : ""}></div>
 
 <style lang="scss">
 	#banner-text-container {

@@ -31,6 +31,7 @@ export class World {
 		this.initIslands();
 		this.fileManager.init();
 		this.banner.text = "Drag & drop a file to start";
+		this.viewport.canDrag = false;
 
 		this.cppManager.hook = (response: WorkerResponse) =>
 			this.conversionHandler(response);
@@ -52,6 +53,7 @@ export class World {
 		this.treasure.owner = null;
 
 		this.banner.text = "Drag & drop another file";
+		this.viewport.canDrag = false;
 
 		this.curves = [];
 	}
@@ -59,6 +61,7 @@ export class World {
 	async dropHook() {
 		this.spawnBoat();
 		this.banner.text = "";
+		this.viewport.canDrag = true;
 	}
 
 	private getSpawnOffset(): Pos | undefined {
@@ -99,6 +102,7 @@ export class World {
 			setTimeout(() => {
 				this.boat.sink();
 				this.curves = [];
+				this.viewport.canDrag = false;
 			}, sinkDelay);
 
 			const message = `The boat sunk! Reason: ${response.error}`;
@@ -115,8 +119,6 @@ export class World {
 	}
 
 	boatArriveHandler() {
-		this.banner.text = "";
-
 		const res = this.fileManager.downloadFile();
 
 		switch (res) {
@@ -134,6 +136,8 @@ export class World {
 				this.banner.text = `error: ${res}`;
 				break;
 		}
+
+		this.viewport.canDrag = false;
 	}
 
 	islandClickHandler(me: Island, endPos: Pos) {
