@@ -50,6 +50,10 @@ export class Boat {
 			const progress = ease(rawProgress);
 
 			const newPos = route(progress);
+
+			this.viewport.offset.x -= newPos.x - this.pos.x;
+			this.viewport.offset.y -= newPos.y - this.pos.y;
+
 			this.pos.x = newPos.x;
 			this.pos.y = newPos.y;
 
