@@ -6,6 +6,14 @@ import * as magickModule from '@imagemagick/magick-wasm';
 const require = createRequire(import.meta.url);
 let isinit = false;
 
+export class ImageError extends Error {
+    constructor(code, message) {
+        super(message);
+        this.name = 'ImageError';
+        this.code = code;
+    }
+}
+
 export async function init_imagemagick() {
     if (isinit) return;
 
@@ -60,8 +68,8 @@ const FORMATS = {
     '.mrw': magickModule.MagickFormat.Mrw,
 };
 
-function summarize_errors(){
-    const m = /^(\w+)\s*(?:`([^']*)')?/.exec(err?.message ?? '');
+function summarize_errors(error){
+    const m = /^(\w+)\s*(?:`([^']*)')?/.exec(error?.message ?? '');
     const code = m?.[1] ?? 'Unknown';
     const detail = m?.[2] || '';
 
@@ -69,11 +77,11 @@ function summarize_errors(){
         case 'NoEncodeDelegateForThisImageFormat': 
             return new ImageError(code, `Can't write ${detail}: format is read-only or not in this build`);
         case 'NoDecodeDelegateForThisImageFormat':
-            return new ImageError(code,'');
+            return new ImageError(code,`Can't read ${detail}: format is not supported`);
         case 'WidthOrHeightExceedsLimit':
-            return new ImageError(code,'');
+            return new ImageError(code,`Image is too large for this format (ICO max is 256x256)`);
         default:
-            return new ImageError(code,err?.message ?? String(err));
+            return new ImageError(code,error?.message ?? String(error));
     }
 }
 
@@ -85,13 +93,16 @@ export async function process_image(inputpath, outputpath, processorfunc) {
     if (!format) throw new Error(`Unsupported output extension: ${outputpath}`);
 
     let output;
-    await magickModule.ImageMagick.read(new Uint8Array(inputbytes), async (image) => {
-        await processorfunc(image, magickModule);
-        image.write(format, (data) => {
-            output = Buffer.from(data);
+    try{
+        await magickModule.ImageMagick.read(new Uint8Array(inputbytes), async (image) => {
+            await processorfunc(image, magickModule);
+            image.write(format, (data) => {
+                output = Buffer.from(data);
+            });
         });
-    });
-
+    } catch(error) {
+        throw summarize_errors(error);
+    }
     fs.writeFileSync(outputpath, output);
 }
 

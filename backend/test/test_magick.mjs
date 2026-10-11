@@ -7,7 +7,7 @@ async function test(){
   await init_imagemagick();
   console.log(`ImageMagick Ver: ${ImageMagick.ver}`);
 
-  await process_image('./backend/test/samples/test.png','output.',(image,lib)=>{
+  await process_image('./backend/test/samples/test.png','output.x3f',(image,lib)=>{
     const geometry = new lib.MagickGeometry(800,600);
     geometry.greater = true;
 
@@ -18,5 +18,5 @@ async function test(){
 }
 
 test().catch((error)=>{
-  console.error("error",error);
+  console.error(`${error.code ?? 'error'}: ${error.message}`);
 });
