@@ -15,6 +15,33 @@ export class ConvertError extends Error {
     }
 }
 
+export function simplifyerror(error){
+    if (error instanceof ConvertError) return error.message;
+
+    if (typeof error ==='number'){
+        return `C++ exception thrown (pointer ${error}); build with -fexceptions or catch it in C++`;
+    }
+
+    if (typeof error ==='string'){
+        return error;
+    }
+
+    const message = String(error?.message??error);
+    
+    const magick = /^(\w+)\s*(?:`([^']*)')?\s*@/.exec(message); //icl i have 0 idea wtf this line does
+    if (magick) return `${magick[1]}${magick[2] ? ` (${magick[2]})` : ''}`;
+
+    if (error?.name==='BindingError'||error?.name==='UnboundTypeError'){
+        return `embind: ${message.split('\n')[0]}`;
+    }
+
+    if (error?.code &&error?.syscall){
+        return `${error.code}: ${error.syscall} ${error.path ?? ''}`.trim();
+    }
+
+    return `${error?.name??'Error'}: ${message.split('\n')[0]}`;
+}
+
 export const FORMATS = ['png',
                  'jpg',
                  'bmp',
@@ -114,8 +141,16 @@ export function createconverter(cppmodule){
 
         let data = bytes;
         for (const step of path){
-            console.log(`Converting ${step.from} -> ${step.to}...`);
-            data = await step.func(data,quality);
+            try {
+                console.log(`Converting ${step.from} -> ${step.to}...`);
+                data = await step.func(data,quality);
+            } catch(error) {
+                throw new ConvertError(
+                    'StepFailed',
+                    `${step.from} -> ${step.to} failed: ${simplifyerror(error)}`,
+                    { step: `${step.from} -> ${step.to}`, cause: error }
+                );
+            }
         }
         return data;
     }

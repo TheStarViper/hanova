@@ -7,11 +7,17 @@ import { createconverter } from '../src/bridge/orchestrator.mjs';
 function makeFake(detectedFormat) {
     const tag = (label) => (bytes) => [...bytes, label];
     return {
-        validate_file_format: () => detectedFormat,
-        stb_convert: (bytes, to) => [...bytes, `stb:${to}`],
-        convert_to_webp: tag('webp_enc'),
-        convert_webp_to_png: tag('webp_dec'),
-        convert_svg_to_png: tag('svg_rast'),
+        core: {
+            validate_file_format: () => detectedFormat,
+            stb_convert: (bytes, to) => [...bytes, `stb:${to}`],
+        },
+        webp: {
+            convert_to_webp: tag('webp_enc'),
+            convert_webp_to_png: tag('webp_dec'),
+        },
+        svg: {
+            convert_svg_to_png: tag('svg_rast'),
+        },
     };
 }
 
