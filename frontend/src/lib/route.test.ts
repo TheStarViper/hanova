@@ -5,14 +5,14 @@ import { Pos } from "./utils.svelte";
 
 const islands = ISLAND_DATA.map((datum) => new Island(datum, () => {}));
 
-describe("Islands pathfindable", () => {
+describe("Can pathfind", () => {
 	describe.each<Island>(islands)(
-		"$name",
+		"from $name",
 		({ name, pos: originPos, sprite: originSprite }) => {
 			const start = gridify(Pos.add(originPos, originSprite.spawnOffset));
 
 			it.each<Island>(islands)(
-				"can pathfind to $name",
+				"to $name",
 				({ name: targetName, pos: targetPos, sprite: targetSprite }) => {
 					const goal = gridify(Pos.add(targetPos, targetSprite.treasureOffset));
 
