@@ -1,14 +1,19 @@
 import { readFileSync } from 'fs';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, join} from 'path';
+import createcore from '../../build/image_core_module.js';
+import createwebp from '../../build/webp_module.js';
+import createsvg from '../../build/svg_module.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const wasmPath = join(__dirname, '../../build/image_core_module.wasm');
-
-const wasmBuffer = readFileSync(wasmPath);
-const importObject = { /*idk what to put here ngl*/ };
-const { instance } = await WebAssembly.instantiate(wasmBuffer, importObject);
-const cppmodule = instance.exports;
+export class ConvertError extends Error {
+    constructor(code, message,{step,cause}={}) {
+        super(message);
+        this.name = 'ConvertError';
+        this.code = code;
+        this.step = step;
+        this.cause = cause;
+    }
+}
 
 export const FORMATS = ['png',
                  'jpg',
@@ -25,7 +30,6 @@ const ALIASES = {jpeg:'jpg', //formats that are the same with diff extensions
                  targa:'tga'}; 
 
 const N = FORMATS.length;
-const table = Array.from({length:N},()=>Array(N).fill(null));
 
 
 
@@ -54,7 +58,6 @@ export function createconverter(cppmodule){
 
 
     //nanosvg
-    register('png','svg',(bytes,q)=>cppmodule.convert_to_svg(bytes),1); //FIX using cppmodule isntead of svgmodule
     register('svg','png',(bytes)=>cppmodule.convert_svg_to_png(bytes)); //FIX using cppmodule isntead of svgmodule
 
     function search_path(start,target){
@@ -78,7 +81,7 @@ export function createconverter(cppmodule){
 
             for (let next = 0;next<N;next++){
                 const cell = table[cur][next];
-                if(cell**distance[cur]+cell.cost<distance[next]){
+                if(cell&&distance[cur]+cell.cost<distance[next]){
                     distance[next] = distance[cur] + cell.cost;
                     prev[next] = [cur,cell];
                 }
@@ -93,22 +96,31 @@ export function createconverter(cppmodule){
     }
 
     async function convert_image(target_format,bytes,quality){
-        const detected_format = cppmodule.validate_file_format(bytes);
+        let detected_format = cppmodule.validate_file_format(bytes);
+
+        detected_format = ALIASES[detected_format]??detected_format;
+        target_format = ALIASES[target_format]??target_format;
 
         let current_index=INDEX[detected_format];
         let target_index = INDEX[target_format];
 
         if (current_index === undefined){throw new Error(`Unsupported Input Format: "${detected_format}"`);}
-        if (target_index === undefined){throw new Error(`Unsupported Output Format: "${FORMATS[target_format]}"`);}
+        if (target_index === undefined){throw new Error(`Unsupported Output Format: "${target_format}"`);}
         
         const path = search_path(current_index,target_index);
         if (!path){
             throw new Error(`No conversion path found "${detected_format}"->"${FORMATS[target_index]}"`);
         }
 
-        return path.reduce((currentdata,step)=>{
+        let data = bytes;
+        for (const step of path){
             console.log(`Converting ${step.from} -> ${step.to}...`);
-            return step.func(currentdata,quality);
-        },data);
+            data = await step.func(data,quality);
+        }
+        return data;
     }
+    return {convert_image,search_path};
 }
+
+const [core, webp, svg] = await Promise.all([createcore(), createwebp(), createsvg()]);
+export const { convert_image } = createconverter({ core, webp, svg });
