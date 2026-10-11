@@ -5,9 +5,9 @@ const MODULE_DIR = join(dirname(fileURLToPath(import.meta.url)), '../../frontend
 
 async function test(){
   await init_imagemagick();
-  console.log(`ImageMagick Ver: ${ImageMagick.version}`);
+  console.log(`ImageMagick Ver: ${ImageMagick.ver}`);
 
-  await process_image('./backend/test/samples/test.png','output.avif',(image,lib)=>{
+  await process_image('./backend/test/samples/test.png','output.',(image,lib)=>{
     const geometry = new lib.MagickGeometry(800,600);
     geometry.greater = true;
 
