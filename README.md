@@ -2,7 +2,7 @@
 
 Hanova is a file conversion website with a nautical twist!
 
-[![Screenshot of Hanova](./frontend/src/lib/assets/screenshot2.png)](https://thestarviper.github.io/hanova/)
+[![Screenshot of Hanova](./frontend/src/lib/assets/screenshot3.png)](https://thestarviper.github.io/hanova/)
 
 Welcome to Hanova, a (fictional) archipelago off the coast of Madagascar!
 "Hanova" is the Malagasy word for "transform", and that's exactly what these
@@ -129,6 +129,10 @@ The current design of the frontend is ~~stolen from~~ inspired by
 [Perilous Shores](https://watabou.itch.io/perilous-shores) by Watabou, and I
 made most of Hanova's assets by extracting them from Perilous Shores exports. We
 might change the art direction or use custom assets in the future.
+
+### Pathfinding
+
+![Debugging mode, where the pathfinding grid and island collision boundaries are drawn in red and overlayed on the rest of the map](./frontend/src/lib/assets/debug_screenshot.png)
 
 The boat uses the A* algorithm to pathfind from its current position to the
 target island without clipping through any other islands. The generated path is
