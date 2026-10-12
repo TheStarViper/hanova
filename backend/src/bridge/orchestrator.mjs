@@ -79,6 +79,21 @@ const N = FORMATS.length;
 
 
 export function createconverter({core,webp,svg,magick}){
+    const unwrap = (r)=>{
+        if (Array.isArray(r)||r instanceof Uint8Array){return r};
+        if (r&&r.ok===false){
+            throw new Error(`native conversion failed: ${r.error ?? r.errorType ?? 'unknown error'}`);
+        }
+
+        if (r?.data instanceof Uint8Array){
+            const out= r.data.slice();
+            r.delete?.();
+            return out;
+        }
+        throw new Error(`unexpected native result: ${Object.keys(r ?? {})}`);
+    }
+
+
     console.log('core keys:', Object.keys(core ?? {}));
     const table = Array.from({length:N},()=>Array(N).fill(null));
     
@@ -100,19 +115,19 @@ export function createconverter({core,webp,svg,magick}){
     for (const from of Object.keys(STB_ENCODER)) {
         for (const to of Object.keys(STB_ENCODER)) {
             if (from !== to) {
-                register(from, to, (bytes, q) => core[STB_ENCODER[to]](bytes, q), 1);
+                register(from, to, (bytes, q) => unwrap(core[STB_ENCODER[to]](bytes, q)), 1);
             }
         }
     }
 
 
     //libwebp
-    register('png','webp',(bytes,q)=>webp.convert_to_webp(bytes,q),1);
-    register('webp','png',(bytes)=>webp.convert_webp_to_png(bytes));
+    register('png','webp', (bytes, q)=> unwrap(webp.convert_to_webp(bytes, q)), 1);
+    register('webp','png', (bytes) =>unwrap(webp.convert_webp_to_png(bytes)), 1);
 
 
     //nanosvg
-    register('svg','png',(bytes)=>svg.convert_svg_to_png(bytes));
+    register('svg','png', (bytes)=> unwrap(svg.convert_svg_to_png(bytes)), 1);
 
     //magick
 
