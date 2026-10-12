@@ -61,6 +61,7 @@ const N = FORMATS.length;
 
 
 export function createconverter(cppmodule){
+    console.log('core keys:', Object.keys(core ?? {}));
     const table = Array.from({length:N},()=>Array(N).fill(null));
     function register(from,to,func,cost=1){
         if(INDEX[from]===undefined||INDEX[to]===undefined){
@@ -73,19 +74,19 @@ export function createconverter(cppmodule){
     for (const from of STB){
         for (const to of STB){
             if (from!=to){
-                register(from,to,(bytes,q)=>cppmodule.stb_convert(bytes,to,q),1); //FIX make stb_convert a real function
+                register(from,to,(bytes,q)=>core.stb_convert(bytes,to,q),1); //FIX make stb_convert a real function
             }
         }
     }
 
 
     //libwebp
-    register('png','webp',(bytes,q)=>cppmodule.convert_to_webp(bytes,q),1); //FIX using cppmodule isntead of webpmodule
-    register('webp','png',(bytes)=>cppmodule.convert_webp_to_png(bytes)); //FIX using cppmodule isntead of webpmodule
+    register('png','webp',(bytes,q)=>webp.convert_to_webp(bytes,q),1); //FIX using cppmodule isntead of webpmodule
+    register('webp','png',(bytes)=>webp.convert_webp_to_png(bytes)); //FIX using cppmodule isntead of webpmodule
 
 
     //nanosvg
-    register('svg','png',(bytes)=>cppmodule.convert_svg_to_png(bytes)); //FIX using cppmodule isntead of svgmodule
+    register('svg','png',(bytes)=>svg.convert_svg_to_png(bytes)); //FIX using cppmodule isntead of svgmodule
 
     function search_path(start,target){
         if (start===target){return[];}
@@ -123,7 +124,7 @@ export function createconverter(cppmodule){
     }
 
     async function convert_image(target_format,bytes,quality){
-        let detected_format = cppmodule.validate_file_format(bytes);
+        let detected_format = core.validate_file_format(bytes);
 
         detected_format = ALIASES[detected_format]??detected_format;
         target_format = ALIASES[target_format]??target_format;
