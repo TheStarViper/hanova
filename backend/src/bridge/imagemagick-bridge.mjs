@@ -23,22 +23,22 @@ export async function init_imagemagick() {
     await magickModule.initializeImageMagick(wasmBytes);
     isinit = true;
 }
-
 export const MAGICK_BY_NAME = {
-    gif:  MagickFormat.Gif,
-    avif: MagickFormat.Avif,
-    tiff: MagickFormat.Tiff,
-    ico:  MagickFormat.Ico,
-    heic: MagickFormat.Heic,
-    jxl:  MagickFormat.Jxl,
-    qoi:  MagickFormat.Qoi,
-    psd:  MagickFormat.Psd,
+    png:  magickModule.MagickFormat.Png,
+    gif:  magickModule.MagickFormat.Gif,
+    avif: magickModule.MagickFormat.Avif,
+    tiff: magickModule.MagickFormat.Tiff,
+    ico:  magickModule.MagickFormat.Ico,
+    heic: magickModule.MagickFormat.Heic,
+    jxl:  magickModule.MagickFormat.Jxl,
+    qoi:  magickModule.MagickFormat.Qoi,
+    psd:  magickModule.MagickFormat.Psd,
 };
 
 export const MAGICK_PROCESSORS = {
     ico: (image) => {
         if (image.width > 256 || image.height > 256) {
-            image.resize(new MagickGeometry(256, 256));
+            image.resize(new magickModule.MagickGeometry(256, 256));
         }
     },
 };
@@ -47,7 +47,7 @@ export async function convert_bytes(bytes, format, quality, processor) {
     await init_imagemagick();
     let output;
     try {
-        ImageMagick.read(bytes, (image) => {
+        magickModule.ImageMagick.read(bytes, (image) => {
             if (quality != null) image.quality = quality;
             if (processor) processor(image);
             image.write(format, (data) => {
@@ -64,7 +64,7 @@ export async function detect_format(bytes) {
     await init_imagemagick();
     try {
         let name = 'unknown';
-        ImageMagick.read(bytes, (image) => { name = String(image.format).toLowerCase(); });
+        magickModule.ImageMagick.read(bytes, (image) => { name = String(image.format).toLowerCase(); });
         return name;
     } catch {
         return 'unknown';

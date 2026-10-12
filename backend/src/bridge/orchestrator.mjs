@@ -64,7 +64,7 @@ export const FORMATS = ['png',
                  'heic',
                  'jxl',
                  'qoi',
-                 'psd',
+                 'psd'
 ];
 
 const INDEX = Object.fromEntries(FORMATS.map((f,i)=>[f,i]));
@@ -175,6 +175,10 @@ export function createconverter({core,webp,svg,magick}){
     async function convert_image(target_format,bytes,quality){
         let detected_format = core.validate_file_format(bytes);
 
+        if (detected_format==='unknown'&&magick){
+            detected_format = await magick.detect_format(bytes);
+        }
+        
         detected_format = ALIASES[detected_format]??detected_format;
         target_format = ALIASES[target_format]??target_format;
 
