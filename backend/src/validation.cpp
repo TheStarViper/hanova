@@ -1,8 +1,5 @@
 #include "validation.hpp"
 #include "variables.hpp"
-#include <emscripten/val.h>
-#include <emscripten/bind.h>
-
 Errortypes validate_input_size(const std::vector<uint8_t>& input){
     if (input.size()>MAX_INPUT_BYTES){return Errortypes::FileTooLarge;}
     return Errortypes::None;

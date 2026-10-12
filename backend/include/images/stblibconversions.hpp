@@ -8,4 +8,3 @@ emscripten::val convert_to_jpeg(emscripten::val inputarray, int quality);
 emscripten::val convert_to_bmp(emscripten::val inputarray);
 emscripten::val convert_to_tga(emscripten::val inputarray);
 emscripten::val convert_to_hdr(emscripten::val inputarray);
-emscripten::val stb_convert(emscripten::val data,std::string to,int quality);

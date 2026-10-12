@@ -48,20 +48,10 @@ emscripten::val convert_to_hdr(emscripten::val inputarray){
     return make_success_val(out.as_val());
 }
 
-emscripten::val stb_convert(emscripten::val data,std::string to,int quality){
-    if (to == "png"){return convert_to_png(data);}
-    else if (to =="jpg"){return convert_to_jpeg(data,quality);}
-    else if (to == "hdr"){return convert_to_hdr(data);}
-    else if (to == "tga"){return convert_to_tga(data);}
-    else if (to == "bmp"){return convert_to_bmp(data);}
-    return make_error_val(Errortypes::EncodeFailure);
-}
-
 EMSCRIPTEN_BINDINGS(image_convert_module) {
     emscripten::function("convert_to_png", &convert_to_png);
     emscripten::function("convert_to_jpeg", &convert_to_jpeg);
     emscripten::function("convert_to_bmp", &convert_to_bmp);
     emscripten::function("convert_to_tga", &convert_to_tga);
     emscripten::function("convert_to_hdr", &convert_to_hdr);
-    emscripten::function("stb_convert", &stb_convert);
 }
