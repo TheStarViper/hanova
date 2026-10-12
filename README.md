@@ -36,7 +36,7 @@ library that a file converter like file validation and safety functions.
 - [stb_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
 - [libwebp](https://github.com/webmproject/libwebp) (webp)
 - [nanosvg](https://github.com/memononen/nanosvg) (svg)
-- [imagemagick](https://github.com/ImageMagick/ImageMagick) (un-used currently)
+- [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image formats)
 
 ### Custom Compilation
 

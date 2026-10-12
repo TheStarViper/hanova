@@ -60,7 +60,7 @@ const N = FORMATS.length;
 
 
 
-export function createconverter(cppmodule){
+export function createconverter({core,webp,svg}){
     console.log('core keys:', Object.keys(core ?? {}));
     const table = Array.from({length:N},()=>Array(N).fill(null));
     function register(from,to,func,cost=1){
@@ -70,23 +70,30 @@ export function createconverter(cppmodule){
         table[INDEX[from]][INDEX[to]]={func,cost};
     }
 
-    const STB = ['png','jpg','bmp','tga','hdr'];//conversions from STB
-    for (const from of STB){
-        for (const to of STB){
-            if (from!=to){
-                register(from,to,(bytes,q)=>core.stb_convert(bytes,to,q),1); //FIX make stb_convert a real function
+    const STB_ENCODER = {
+        png: 'convert_to_png',
+        jpg: 'convert_to_jpeg',
+        bmp: 'convert_to_bmp',
+        tga: 'convert_to_tga',
+        hdr: 'convert_to_hdr'
+    };
+
+    for (const from of Object.keys(STB_ENCODER)) {
+        for (const to of Object.keys(STB_ENCODER)) {
+            if (from !== to) {
+                register(from, to, (bytes, q) => core[STB_ENCODER[to]](bytes, q), 1);
             }
         }
     }
 
 
     //libwebp
-    register('png','webp',(bytes,q)=>webp.convert_to_webp(bytes,q),1); //FIX using cppmodule isntead of webpmodule
-    register('webp','png',(bytes)=>webp.convert_webp_to_png(bytes)); //FIX using cppmodule isntead of webpmodule
+    register('png','webp',(bytes,q)=>webp.convert_to_webp(bytes,q),1);
+    register('webp','png',(bytes)=>webp.convert_webp_to_png(bytes));
 
 
     //nanosvg
-    register('svg','png',(bytes)=>svg.convert_svg_to_png(bytes)); //FIX using cppmodule isntead of svgmodule
+    register('svg','png',(bytes)=>svg.convert_svg_to_png(bytes));
 
     function search_path(start,target){
         if (start===target){return[];}

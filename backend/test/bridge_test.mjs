@@ -8,9 +8,13 @@ function makeFake(detectedFormat) {
     const tag = (label) => (bytes) => [...bytes, label];
     return {
         core: {
-            validate_file_format: () => detectedFormat,
-            stb_convert: (bytes, to) => [...bytes, `stb:${to}`],
-        },
+                validate_file_format: () => detectedFormat,
+                convert_to_png:  (b) => [...b, 'stb:png'],
+                convert_to_jpeg: (b) => [...b, 'stb:jpg'],
+                convert_to_bmp:  (b) => [...b, 'stb:bmp'],
+                convert_to_tga:  (b) => [...b, 'stb:tga'],
+                convert_to_hdr:  (b) => [...b, 'stb:hdr'],
+            },
         webp: {
             convert_to_webp: tag('webp_enc'),
             convert_webp_to_png: tag('webp_dec'),
@@ -53,5 +57,5 @@ test('aliases: jpeg target works', async () => {
 
 test('unknown format errors', async () => {
     const { convert_image } = createconverter(makeFake('png'));
-    await assert.rejects(convert_image('gif', [], 80), /Unsupported output/);
+    await assert.rejects(convert_image('gif', [], 80), /Unsupported output/i);
 });
