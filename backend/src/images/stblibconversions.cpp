@@ -54,6 +54,7 @@ emscripten::val stb_convert(emscripten::val data,std::string to,int quality){
     else if (to == "hdr"){return convert_to_hdr(data);}
     else if (to == "tga"){return convert_to_tga(data);}
     else if (to == "bmp"){return convert_to_bmp(data);}
+    return make_error_val(Errortypes::EncodeFailure);
 }
 
 EMSCRIPTEN_BINDINGS(image_convert_module) {
