@@ -1,30 +1,32 @@
 <script lang="ts">
 	import { Island } from "#lib/island.svelte.js";
+	import type { Pos } from "#lib/utils.svelte.js";
 	import Sprite from "./Sprite.svelte";
-
-	// change this for debugging only
-	let DISPLAY_RADIUS: boolean = false;
 
 	interface Props {
 		me: Island;
+		viewportOffset: Pos;
+		debugging: boolean;
+		allowHover: boolean;
 	}
 
-	let { me }: Props = $props();
+	let { me, viewportOffset, debugging, allowHover }: Props = $props();
 
 	let hovered: boolean = $state(false);
-	let shadowOpacity = $derived(hovered ? 0.8 : 0.4);
-	let borderColor = $derived(hovered ? "#FFC067" : undefined);
+	let shadowOpacity = $derived(hovered && allowHover ? 0.8 : 0.4);
+	let borderColor = $derived(hovered && allowHover ? "#FFC067" : undefined);
 </script>
 
 <Sprite
 	left={me.pos.x}
 	top={me.pos.y}
+	{viewportOffset}
 	width={me.sprite.width}
 	{shadowOpacity}
 	{borderColor}
 	borderWidth={2}
 	handlers={{
-		click: me.callBoat,
+		click: allowHover ? me.callBoat : undefined,
 		hover: () => (hovered = true),
 		unhover: () => (hovered = false),
 	}}
@@ -32,10 +34,10 @@
 >
 <div
 	class="radius for-debugging-purposes-only"
-	style:left="{me.pos.x}px"
-	style:top="{me.pos.y}px"
+	style:left="{me.pos.x + viewportOffset.x}px"
+	style:top="{me.pos.y + viewportOffset.y}px"
 	style:--radius="{me.sprite.radius}px"
-	style:display={DISPLAY_RADIUS ? "flex" : "none"}
+	style:display={debugging ? "flex" : "none"}
 ></div>
 
 <style lang="scss">

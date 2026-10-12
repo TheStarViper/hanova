@@ -1,7 +1,7 @@
 // class imports
 import { Banner } from "./banner.svelte";
 import { Boat, SAIL_DURATION } from "./boat.svelte";
-import { FileManager } from "./fileManager";
+import { FileManager, FORMATS } from "./fileManager";
 import { Island, ISLAND_DATA, type IslandDatum } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
 import { Pos, Viewport, mulberry32 } from "./utils.svelte";
@@ -10,6 +10,8 @@ import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 import type { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
 import type { CubicBezier } from "./bezier";
+import type { WorkerResponse } from "./cppRunner.worker";
+import { decodeSounds, playSound, preloadSounds } from "./sound";
 
 export class World {
 	viewport = new Viewport();
@@ -28,65 +30,130 @@ export class World {
 		this.viewport.init();
 		this.initIslands();
 		this.fileManager.init();
-		this.banner.hide = false;
+		this.banner.text = "Drag & drop a file to start";
+		this.viewport.canDrag = false;
+
+		this.cppManager.hook = (response: WorkerResponse) =>
+			this.conversionHandler(response);
+
+		preloadSounds();
 	}
 
 	reset() {
 		this.boat.hide = true;
 		this.boat.route = undefined;
 		this.boat.name = "Boat";
+		this.boat.sunk = false;
 
 		this.fileManager.file = undefined;
-		this.fileManager.outFormat = undefined;
-		this.fileManager.ok = undefined;
-		this.fileManager.blob = undefined;
-		this.fileManager.err = undefined;
+		this.fileManager.outFormatName = undefined;
+		this.fileManager.conversionStartTime = null;
 
 		this.treasure.hide = true;
 		this.treasure.owner = null;
 
-		this.banner.hide = false;
 		this.banner.text = "Drag & drop another file";
+		this.viewport.canDrag = false;
 
 		this.curves = [];
 	}
 
 	async dropHook() {
 		this.spawnBoat();
-		this.banner.hide = true;
+		this.banner.text = "";
+		this.viewport.canDrag = true;
+	}
+
+	private getSpawnOffset(): Pos | undefined {
+		const inFormatName = this.fileManager.getInputFormatName();
+		if (inFormatName === undefined) return undefined;
+
+		const offset = Island.findSpawnOffsetForFormat(inFormatName);
+		return offset;
 	}
 
 	spawnBoat() {
-		this.boat.pos.x = this.viewport.center.x;
-		this.boat.pos.y = this.viewport.center.y;
+		const spawnOffset = this.getSpawnOffset() ?? this.viewport.center;
+
+		this.boat.pos.x = spawnOffset.x;
+		this.boat.pos.y = spawnOffset.y;
+
+		this.viewport.recenterTo(
+			new Pos(
+				this.viewport.center.x - this.boat.pos.x,
+				this.viewport.center.y - this.boat.pos.y,
+			),
+		);
 
 		this.boat.name = this.fileManager.displayifiedFilename;
 		this.boat.hide = false;
+
+		playSound("splash1.ogg");
+	}
+
+	conversionHandler(response: WorkerResponse) {
+		if (response.ok) {
+			console.log("converted succesfully!");
+		} else {
+			console.warn(`error: ${response.error}`);
+
+			// its kinda jarring if the boat *instantly* sinks as soon as you click
+			// an island, so it waits at least 750ms before sinking
+			const MIN_SINK_DELAY = 750;
+
+			const sinkDelay = Math.max(
+				MIN_SINK_DELAY - (Date.now() - this.fileManager.conversionStartTime!),
+				0,
+			);
+
+			setTimeout(() => {
+				this.boat.sink();
+				this.curves = [];
+				this.viewport.canDrag = false;
+			}, sinkDelay);
+
+			const message = `The boat sunk! Reason: ${response.error}`;
+			const showMessageDelay = sinkDelay + 1000;
+
+			setTimeout(() => {
+				this.banner.text = message;
+			}, showMessageDelay);
+
+			const hideMessageDelay = sinkDelay + message.length * 30;
+
+			setTimeout(() => this.reset(), hideMessageDelay + 2000);
+		}
 	}
 
 	boatArriveHandler() {
-		this.banner.hide = false;
+		const res = this.fileManager.downloadFile();
 
-		switch (this.fileManager.ok) {
+		switch (res) {
 			case undefined:
 				this.banner.text =
 					"error: the boat arrived before the conversion finished :(";
 				break;
-			case false:
-				this.banner.text = `error: ${this.fileManager.err}`;
-				break;
 			case true:
-				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat?.name} file!`;
+				playSound("shovel1.wav");
 
-				this.fileManager.downloadFile();
-
+				this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormatName} file!`;
 				setTimeout(() => this.reset(), 2000);
+				break;
+			default:
+				this.banner.text = `error: ${res}`;
+				break;
 		}
+
+		this.viewport.canDrag = false;
+		this.viewport.userIsDragging = false;
 	}
 
 	islandClickHandler(me: Island, endPos: Pos) {
+		// hijacking this interaction to decode the sounds
+		decodeSounds();
+
 		// the user shouldn't be able to click if the banner is visible
-		if (!this.banner.hide) return;
+		if (this.banner.text !== "") return;
 
 		// if a file conversion has already started, the user shouldn't be able to
 		// change it partway through

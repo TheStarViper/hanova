@@ -2,6 +2,10 @@
 	import BannerSvg from "#lib/assets/banner.svg?raw";
 	import Sprite from "./Sprite.svelte";
 	import { Banner } from "#lib/banner.svelte.js";
+	import { slide } from "svelte/transition";
+	import { onMount } from "svelte";
+	import { decodeSounds } from "#lib/sound.js";
+	import { Pos } from "#lib/utils.svelte.js";
 
 	// cuz the center of the main section (where the text ought to be visually
 	// centered) is not the same as the center of the svg
@@ -9,14 +13,31 @@
 
 	interface Props {
 		me: Banner;
+		handleUpload: (files: FileList | undefined | null) => void;
 	}
 
-	let { me }: Props = $props();
+	let { me, handleUpload }: Props = $props();
+
+	let inputEl: HTMLInputElement;
+	let textEl: HTMLDivElement;
+
+	onMount(() => {
+		textEl.addEventListener("click", async () => {
+			if (me.uploadOnClick) inputEl.click();
+
+			// hijacking this user interaction to decode the sounds
+			decodeSounds();
+		});
+		inputEl.addEventListener("change", () => handleUpload(inputEl.files));
+	});
 </script>
+
+<input id="fileInput" type="file" bind:this={inputEl} style="display: none;" />
 
 <Sprite
 	top={me.pos.y}
 	left={me.pos.x}
+	viewportOffset={new Pos()}
 	width={847}
 	layer={100}
 	hide={me.hide}
@@ -24,13 +45,17 @@
 >
 <div
 	id="banner-text-container"
+	bind:this={textEl}
 	class={me.hide ? "hide" : ""}
 	style:top="{me.pos.y - MAIN_BANNER_OFFSET_PX}px"
 	style:left="{me.pos.x}px"
+	style:cursor={me.uploadOnClick ? "pointer" : "default"}
 >
-	<h2>{me.text}</h2>
+	{#key me.text}
+		<h2 transition:slide>{me.text}</h2>
+	{/key}
 </div>
-<div id="banner-overlay" class={me.hide ? "" : "hide"}></div>
+<div id="banner-overlay" class={!me.hide ? "show" : ""}></div>
 
 <style lang="scss">
 	#banner-text-container {
@@ -38,14 +63,10 @@
 		transform: translate(-50%, -50%);
 		z-index: 101;
 
+		transition: opacity 0.2s ease;
+
 		&.hide {
 			opacity: 0;
-			transition: opacity 0.2s ease;
-
-			h2 {
-				transform: translateY(-1rem);
-				transition: transform 0.2s ease;
-			}
 		}
 
 		h2 {
@@ -55,6 +76,8 @@
 			// approximate size of the main section of the banner
 			max-width: 700px;
 			text-align: center;
+
+			transition: transform 0.2s ease;
 		}
 	}
 
@@ -70,8 +93,12 @@
 
 		pointer-events: none;
 
-		&.hide {
+		&.show {
 			opacity: 0.4;
 		}
+	}
+
+	#fileInput {
+		display: none;
 	}
 </style>

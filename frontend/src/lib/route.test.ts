@@ -1,17 +1,36 @@
-import { aStar } from "./route";
+import { describe, expect, it } from "vitest";
+import { aStar, gridify, isWalkableFactory } from "./route";
+import { Island, ISLAND_DATA } from "./island.svelte";
+import { Pos } from "./utils.svelte";
 
-const start = "5,8";
-const end = "11,20";
-const walkable = (coords: `${number},${number}`) => coords !== "10,8";
+const islands = ISLAND_DATA.map((datum) => new Island(datum, () => {}));
 
-console.log("starting search...");
-const t1 = Date.now();
+describe("Can pathfind", () => {
+	describe.each<Island>(islands)(
+		"from $name",
+		({ name: originName, pos: originPos, sprite: originSprite }) => {
+			const start = gridify(Pos.add(originPos, originSprite.spawnOffset));
 
-const route = aStar(start, end, walkable);
+			it.each<Island>(islands)(
+				"to $name",
+				({ name: targetName, pos: targetPos, sprite: targetSprite }) => {
+					const goal = gridify(Pos.add(targetPos, targetSprite.treasureOffset));
 
-const t2 = Date.now();
-console.log("finished search!");
+					const otherIslands = islands.filter(
+						(island) => island.name !== targetName,
+					);
+					const isWalkable = isWalkableFactory(otherIslands);
 
-console.log(route);
+					const path = aStar(start, goal, isWalkable);
 
-console.log(`took ${(t2 - t1) / 1000} seconds`);
+					// the fallback path always has length 2, and all non-trivial paths
+					// ought to be more complex than that
+					expect(
+						path,
+						`Can't pathfind from ${originName} to ${targetName}`,
+					).length.greaterThan(2);
+				},
+			);
+		},
+	);
+});

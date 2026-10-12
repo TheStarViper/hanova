@@ -15,11 +15,11 @@ export function linearRouteFactory(start: Pos, end: Pos): Route {
 export function aStarRouteFactory(
 	startPos: Pos,
 	endPos: Pos,
-	islands: Island[],
+	otherIslands: Island[],
 ): [Route, CubicBezier[]] {
 	const start = gridify(startPos);
 	const goal = gridify(endPos);
-	const isWalkable = isWalkableFactory(islands);
+	const isWalkable = isWalkableFactory(otherIslands);
 
 	const path = aStar(start, goal, isWalkable);
 
@@ -103,7 +103,7 @@ function inBoundsFactory(
 	coords1: Coords,
 	coords2: Coords,
 ): (coords: Coords) => boolean {
-	const MARGIN = 2;
+	const MARGIN = 10;
 
 	const [x1, y1] = numifyCoords(coords1);
 	const [x2, y2] = numifyCoords(coords2);
@@ -145,7 +145,7 @@ const stringifyCoords = (x: number, y: number): Coords => `${x},${y}`;
 const numifyCoords = (coord: Coords) =>
 	coord.split(",").map(Number) as [number, number];
 
-const gridify = (point: Pos): Coords => {
+export const gridify = (point: Pos): Coords => {
 	const x = Math.floor(point.x / GRID_CELL_WIDTH);
 	const y = Math.floor(point.y / GRID_CELL_HEIGHT);
 	return stringifyCoords(x, y);
@@ -157,10 +157,12 @@ const pixelify = (coords: Coords): Pos => {
 
 // based on the boat sprite
 /** sizes in pixels */
-const GRID_CELL_WIDTH = 96 / 2;
-const GRID_CELL_HEIGHT = 74 / 2;
+export const GRID_CELL_WIDTH = 96 / 2;
+export const GRID_CELL_HEIGHT = 74 / 2;
 
-function isWalkableFactory(islands: Island[]): (coords: Coords) => boolean {
+export function isWalkableFactory(
+	islands: Island[],
+): (coords: Coords) => boolean {
 	const cache = new Map<Coords, boolean>();
 
 	return (coords: Coords) => {

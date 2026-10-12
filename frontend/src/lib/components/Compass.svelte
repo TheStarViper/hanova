@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CompassSvg from "#lib/assets/compass.svg?raw";
-	import type { Viewport } from "#lib/utils.svelte.js";
+	import { Pos, type Viewport } from "#lib/utils.svelte.js";
 	import Sprite from "./Sprite.svelte";
 
 	interface Props {
@@ -18,6 +18,7 @@
 	<Sprite
 		top={viewport.max.y - 180}
 		left={viewport.max.x - 160}
+		viewportOffset={new Pos()}
 		width={202}
 		layer={5}
 		{borderColor}

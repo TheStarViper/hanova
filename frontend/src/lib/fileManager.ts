@@ -1,16 +1,191 @@
-import type { CppManager, FileFormat } from "./cppManager";
+import { type CppManager } from "./cppManager";
+import type { ReturnObj } from "./cppRunner.worker";
+import { decodeSounds } from "./sound";
 
 const MAX_FILENAME_CHARS = 20;
 const ELLIPSIS = "...";
 
+export const JPEG_QUALITY = 85;
+export const WEBP_QUALITY = 90;
+
+export interface FileFormat {
+	/** file extension for the file download. Does *not* include the dot */
+	ext: string;
+
+	/**
+	 * {@link https://www.iana.org/assignments/media-types#image|Super useful resource for MIME types}
+	 */
+	mimeType: string;
+
+	validExtensions: string[];
+}
+
+export const FORMATS = {
+	// https://en.wikipedia.org/wiki/PNG
+	PNG: {
+		ext: "png",
+		mimeType: "image/png",
+		validExtensions: ["png"],
+	},
+
+	// https://en.wikipedia.org/wiki/JPEG
+	JPEG: {
+		ext: "jpeg",
+		mimeType: "image/jpeg",
+		validExtensions: ["jpg", "jpeg"],
+	},
+
+	// https://en.wikipedia.org/wiki/BMP_file_format
+	BMP: {
+		ext: "bmp",
+		mimeType: "image/bmp",
+		validExtensions: ["bmp"],
+	},
+
+	// https://en.wikipedia.org/wiki/Truevision_TGA
+	// Ive literally never heard of this format lol
+	TGA: {
+		ext: "tga",
+
+		// apparently this mime type is unofficial and unregistered
+		mimeType: "image/x-targa",
+
+		validExtensions: ["tga", "icb", "vda", "vst"],
+	},
+
+	// https://en.wikipedia.org/wiki/RGBE_image_format
+	HDR: {
+		ext: "hdr",
+		mimeType: "image/vnd.radiance",
+		validExtensions: ["hdr"],
+	},
+
+	// https://en.wikipedia.org/wiki/WebP
+	// best image format!
+	WebP: {
+		ext: "webp",
+		mimeType: "image/webp",
+		validExtensions: ["webp"],
+	},
+
+	// https://en.wikipedia.org/wiki/SVG
+	SVG: {
+		ext: "svg",
+		mimeType: "image/svg+xml",
+		validExtensions: ["svg"],
+	},
+
+	// https://en.wikipedia.org/wiki/GIF
+	GIF: {
+		ext: "gif",
+		mimeType: "image/gif",
+		validExtensions: ["gif"],
+	},
+
+	// https://en.wikipedia.org/wiki/AVIF
+	AVIF: {
+		ext: "avif",
+		mimeType: "image/avif",
+		validExtensions: ["avif", "avifs"],
+	},
+
+	// https://en.wikipedia.org/wiki/TIFF
+	TIFF: {
+		ext: "tiff",
+		mimeType: "image/tiff",
+		validExtensions: ["tiff", "tif"],
+	},
+
+	// https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
+	HEIF: {
+		ext: "heif",
+		mimeType: "image/heif",
+		validExtensions: [
+			"heif",
+			"heifs",
+			"heic",
+			"heics",
+			"hif",
+			"hifs",
+			"avci",
+			"avcs",
+		],
+	},
+
+	// https://en.wikipedia.org/wiki/JPEG_XL
+	JPEGXL: {
+		ext: "jxl",
+		mimeType: "image/jxl",
+		validExtensions: ["jxl"],
+	},
+
+	// https://en.wikipedia.org/wiki/ICO_(file_format)
+	ICO: {
+		ext: "ico",
+		mimeType: "image/x-icon",
+		validExtensions: ["ico"],
+	},
+
+	// https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
+	PSD: {
+		ext: "psd",
+		mimeType: "image/vnd.adobe.photoshop",
+		validExtensions: ["psd"],
+	},
+
+	// https://en.wikipedia.org/wiki/PDF
+	PDF: {
+		ext: "pdf",
+		mimeType: "application/pdf",
+		validExtensions: ["pdf"],
+	},
+
+	// https://en.wikipedia.org/wiki/Encapsulated_PostScript
+	EPS: {
+		ext: "eps",
+		mimeType: "application/postscript",
+		validExtensions: ["eps", "epsf", "epsi"],
+	},
+
+	// im omitting Adobe Illustrator's .ai format cuz there's no wikipedia
+	// article for it, and I worry that it'd be confusing for users who
+	// think that it's a generative AI feature
+
+	// https://en.wikipedia.org/wiki/OpenRaster
+	ORA: {
+		ext: "ora",
+		mimeType: "image/openraster",
+		validExtensions: ["ora"],
+	},
+
+	// https://en.wikipedia.org/wiki/XCF_(file_format)
+	XCF: {
+		ext: "xcf",
+		mimeType: "image/x-xcf",
+		validExtensions: ["xcf"],
+	},
+
+	// im omitting QOI because it doesn't even have a mimetype
+
+	// https://en.wikipedia.org/wiki/OpenEXR
+	EXR: {
+		ext: "exr",
+		mimeType: "image/x-exr",
+		validExtensions: ["exr"],
+	},
+} as const satisfies Record<string, FileFormat>;
+export type FormatName = keyof typeof FORMATS;
+
 export class FileManager {
 	file: File | undefined;
-	outFormat: FileFormat | undefined;
 
-	ok: boolean | undefined;
+	outFormatName: FormatName | undefined;
+	get outFormat(): FileFormat | undefined {
+		if (this.outFormatName === undefined) return undefined;
+		return FORMATS[this.outFormatName];
+	}
 
-	blob: Blob | undefined;
-	err: string | undefined;
+	conversionStartTime: number | null = null;
 
 	constructor(
 		public cppManager: CppManager,
@@ -29,28 +204,32 @@ export class FileManager {
 		});
 		document.addEventListener("drop", (event: DragEvent) => {
 			event.preventDefault();
-			document.body.classList.remove("dragover");
-			document.body.classList.add("dropped");
 
-			const files: FileList | undefined = event.dataTransfer?.files;
-			if (files === undefined) return;
-			if (files.length > 1) {
-				console.warn(
-					"Only dropping a single file is supported rn. Defaulting to first file.",
-				);
-			}
-			this.file = files[0];
+			// hijacking interaction to decode sounds
+			decodeSounds();
 
-			this.dropHook?.();
+			this.handleUpload(event.dataTransfer?.files);
 		});
 	}
 
-	async convertTo(formatName: string) {
-		this.ok = undefined;
-		this.blob = undefined;
-		this.err = undefined;
+	handleUpload(files: FileList | undefined | null) {
+		if (files === undefined || files === null || files.length === 0) return;
 
-		this.outFormat = this.cppManager.findFormat(formatName);
+		document.body.classList.remove("dragover");
+		document.body.classList.add("dropped");
+
+		if (files.length > 1) {
+			console.warn(
+				"Only dropping a single file is supported rn. Defaulting to first file.",
+			);
+		}
+		this.file = files[0];
+
+		this.dropHook?.();
+	}
+
+	async convertTo(formatName: FormatName) {
+		this.outFormatName = formatName;
 		if (this.outFormat === undefined) {
 			throw new Error(`invalid file type ${formatName}`);
 		}
@@ -60,30 +239,33 @@ export class FileManager {
 		}
 
 		const inBytes = await this.file.bytes();
+		const inFormat = this.getInputFormatName();
 
-		// syncronous but veeeeerrryyyyyy slowwwwwww
-		// [TODO] move this to a web worker or something
-		const result = this.outFormat.func(inBytes);
-		this.ok = result.ok;
+		this.conversionStartTime = Date.now();
+		this.cppManager.startConversion({
+			inBytes,
+			outFormat: formatName,
+			inFormat,
+		});
+	}
 
-		if (!result.ok) {
-			this.err = result.error;
-			return;
-		}
+	/**
+	 *
+	 * @returns undefined if the conversion never finished, true if everything worked, and a string if there was an error
+	 */
+	downloadFile(): undefined | true | string {
+		const result = this.cppManager.response;
+
+		if (result === null) return undefined;
+		if (!result.ok) return result.error;
 
 		const outBytes = result.data;
 
-		const blob = new Blob([outBytes], { type: this.outFormat.mimeType });
+		const blob = new Blob([outBytes], {
+			type: FORMATS[this.outFormatName!].mimeType,
+		});
 
-		this.blob = blob;
-	}
-
-	downloadFile() {
-		if (this.blob === undefined) {
-			throw new Error("can only download if conversion has finished");
-		}
-
-		const url = URL.createObjectURL(this.blob);
+		const url = URL.createObjectURL(blob);
 
 		const a = document.createElement("a");
 		a.href = url;
@@ -91,7 +273,9 @@ export class FileManager {
 		a.click();
 		a.remove();
 
-		URL.revokeObjectURL(url);
+		setTimeout(() => URL.revokeObjectURL(url), 0);
+
+		return true;
 	}
 
 	private parseFilename(): { base: string; ext: string | undefined } {
@@ -115,6 +299,19 @@ export class FileManager {
 		return { base, ext };
 	}
 
+	getInputFormatName(): FormatName | undefined {
+		const { ext } = this.parseFilename();
+		if (ext === undefined) return undefined;
+
+		const name = (Object.keys(FORMATS) as FormatName[]).find((name) => {
+			const format = FORMATS[name];
+			const extensions = format.validExtensions.map((e) => e.toLowerCase());
+			return extensions.includes(ext.substring(1).toLowerCase());
+		});
+
+		return name;
+	}
+
 	get displayifiedFilename(): string {
 		const { base, ext } = this.parseFilename();
 
@@ -128,7 +325,7 @@ export class FileManager {
 	}
 
 	get outFilename(): string {
-		const { base, ext } = this.parseFilename();
+		const { base } = this.parseFilename();
 
 		if (this.outFormat === undefined) {
 			throw new Error("can't get out filename until out format is set");

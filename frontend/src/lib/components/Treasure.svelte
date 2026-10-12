@@ -2,14 +2,21 @@
 	import TreasureSvg from "#lib/assets/treasure.svg?raw";
 	import Sprite from "./Sprite.svelte";
 	import { Treasure } from "#lib/treasure.svelte.js";
+	import type { Pos } from "#lib/utils.svelte.js";
 
 	interface Props {
 		me: Treasure;
+		viewportOffset: Pos;
 	}
 
-	let { me }: Props = $props();
+	let { me, viewportOffset }: Props = $props();
 </script>
 
-<Sprite top={me.pos.y} left={me.pos.x} width={30} layer={9} hide={me.hide}
-	>{@html TreasureSvg}</Sprite
+<Sprite
+	top={me.pos.y}
+	left={me.pos.x}
+	{viewportOffset}
+	width={30}
+	layer={9}
+	hide={me.hide}>{@html TreasureSvg}</Sprite
 >

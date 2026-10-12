@@ -1,6 +1,7 @@
 <!-- reusable SVG wrapper component -->
 
 <script lang="ts">
+	import type { Pos } from "#lib/utils.svelte.js";
 	import type { Snippet } from "svelte";
 
 	interface Props {
@@ -8,6 +9,12 @@
 
 		top: number;
 		left: number;
+
+		/**
+		 * im making this mandatory so that I don't forget to implement it on
+		 * every component
+		 */
+		viewportOffset: Pos;
 
 		label?: string;
 
@@ -28,6 +35,8 @@
 		shadowOpacity?: number;
 		borderColor?: string;
 		borderWidth?: number;
+
+		sunk?: boolean;
 	}
 
 	let { children, ...props }: Props = $props();
@@ -47,10 +56,10 @@
 
 <div
 	bind:this={el}
-	class="svg-wrapper"
+	class="svg-wrapper {props.sunk ? 'sunk' : ''}"
 	style:opacity={props.hide ? "0" : "1"}
-	style:top="{props.top}px"
-	style:left="{props.left}px"
+	style:top="{props.top + props.viewportOffset.y}px"
+	style:left="{props.left + props.viewportOffset.x}px"
 	style:width={props.width !== undefined ? `${props.width}px` : "auto"}
 	style:height={props.height !== undefined ? `${props.height}px` : "auto"}
 	style:z-index={props.layer ?? 0}
@@ -94,6 +103,21 @@
 		span {
 			font-style: italic;
 			user-select: none;
+		}
+	}
+
+	.sunk {
+		animation: sink 1s ease both;
+	}
+
+	@keyframes sink {
+		from {
+			transform: translate(-50%, -50%);
+			clip-path: xywh(0 0 100% 100%);
+		}
+		to {
+			transform: translate(-50%, 0) rotate(6deg);
+			clip-path: xywh(0 0 100% 0);
 		}
 	}
 </style>

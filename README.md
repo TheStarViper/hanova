@@ -36,17 +36,22 @@ library that a file converter like file validation and safety functions.
 - [stb_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
 - [libwebp](https://github.com/webmproject/libwebp) (webp)
 - [nanosvg](https://github.com/memononen/nanosvg) (svg)
-- [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image formats)
+- [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image
+  formats)
 
 ### Custom Compilation
 
-A few of the libraries used dont have a precompiled binary for use as a c++ library that can be compiled to wasm through emscripten. Because of this we had to compile the library from source via emscripten so we could use it for this purpose. This took a while of troubleshooting as there is limited documentation online about how to go about this and the libraries we had to compile in this form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
-
-
-### Supported File Formats
+A few of the libraries used dont have a precompiled binary for use as a c++
+library that can be compiled to wasm through emscripten. Because of this we had
+to compile the library from source via emscripten so we could use it for this
+purpose. This took a while of troubleshooting as there is limited documentation
+online about how to go about this and the libraries we had to compile in this
+form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
 
 <details>
-<summary><h3>Images</h3></summary>
+<summary><h3>Supported File Formats</h3></summary>
+
+Images:
 
 - [x] png
 - [x] jpeg
@@ -55,17 +60,14 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 - [x] hdr
 - [ ] ico (in progress)
 - [ ] gif
-- [x] webp (conversion from WebP not supposed yet)
+- [x] webp (conversion _from_ WebP not supported yet)
 - [ ] avif
 - [ ] heif
 - [ ] heic
-- [x] svg (conversion from svg not supposed yet)
+- [x] svg (conversion _from_ svg not supported yet)
 - [ ] eps
 
-</details>
-
-<details>
-<summary><h3>Audio</h3></summary>
+Audio:
 
 - [ ] mp3
 - [ ] wav
@@ -80,10 +82,7 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 - [ ] amr
 - [ ] ac3
 
-</details>
-
-<details>
-<summary><h3>Docs</h3></summary>
+Documents:
 
 - [ ] pdf
 - [ ] txt
@@ -98,10 +97,16 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 - [ ] odt
 - [ ] xls
 
-</details>
+3D Files:
 
-<details>
-<summary><h3>Video</h3></summary>
+- [ ] obj
+- [ ] fbx
+- [ ] stl
+- [ ] step
+- [ ] glb
+- [ ] blend
+
+Video:
 
 Video conversion locally has no access to hardware accelleration so we are
 unable to do it reasonably without an external server. In the future we may
@@ -119,25 +124,54 @@ aesthetic: a sleek modern webpage with a small box to drop files into and a
 dropdown to select the target format. Well that's boring! It would be much more
 fun if the whole website was styled as an antique nautical map.
 
-The current version of the frontend is ~~stolen from~~ inspired by
+The current design of the frontend is ~~stolen from~~ inspired by
 [Perilous Shores](https://watabou.itch.io/perilous-shores) by Watabou, and I
 made most of Hanova's assets by extracting them from Perilous Shores exports. We
 might change the art direction or use custom assets in the future.
 
-### Planned Features
+### Pathfinding
 
-- [x] A compass rose that brings you to an About page
-- [ ] Sounds
-- [ ] Boat sinks if the conversion throws an error
-- [ ] Boat points in the direction it's moving in
-- [ ] Boat spawns at the island corresponding to its original file format
+![Debugging mode, where the pathfinding grid and island collision boundaries are drawn in red and overlayed on the rest of the map](./frontend/src/lib/assets/debug_screenshot.png)
+
+The boat uses the A* algorithm to pathfind from its current position to the
+target island without clipping through any other islands. The generated path is
+then converted to centripetal Catmull-Rom splines, converted to cubic Beziers,
+and then used to animate the boat's travel and draw the dashed line.
+
+### Frontend Roadmap
+
+Week 1:
+
+- [x] Page layout inspired by Perilous Shores
+- [x] Boat that can move between islands
+- [x] 3 islands that trigger a file conversion when clicked
+- [x] File uploading and downloading
+
+Week 2:
+
+- [x] About page
+- [x] Decorative compass rose (that links to the about page)
+- [x] A* pathfinding between islands
+- [x] Boat travels along route
+- [x] Dashed line that displays route
+
+Week 3:
+
+- [x] Viewport panning
+- [x] Boat sinks if the conversion fails
+- [x] Sound effects
+- [x] Boat spawns at the island corresponding to its original file format
+- [x] 19 islands
+
+Planned:
+
+- [ ] More island asset variety
+- [ ] Viewport zooming
+- [ ] Initial menu animation that pans over the islands
 - [ ] Mobile support
 - [ ] Boat moves in circles around islands rather than beaching itself
-- [ ] Map is scrollable (and maybe zoomable)
-- [ ] Boat travel animation where it follows an auto-generated dashed line that
-      curves around obstacles
 - [ ] Smoother animations and an overall better experience
-- [ ] procedural island and water generation
+- [ ] Procedural island and water generation
 - [ ] ...and probably more
 
 ## Compiling yourself
@@ -168,7 +202,7 @@ pnpm dev
   inspiration, and from which most of the assets are derived (e.g. islands,
   color palette, banner). _Obligatory legal disclaimer: Perilous Shores allows
   its output to be used
-  ["as you like: copy, modify, include in your commercial rpg adventures etc. Attribution is appreciated, but not required"](https://watabou.itch.io/perilous-shores#:~:text=You%20can%20use,but%20not%20required.)._
+  ["as you like: copy, modify, include in your commercial rpg adventures etc."](https://watabou.itch.io/perilous-shores#:~:text=You%20can%20use,rpg%20adventures%20etc.)_
 - Thanks to [Sean Barrett](https://github.com/nothings) for making
   [stb](https://github.com/nothings/stb), which is used for the image conversion
   backend.

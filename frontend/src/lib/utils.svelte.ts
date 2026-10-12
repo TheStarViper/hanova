@@ -40,13 +40,23 @@ export class Viewport {
 	min = new Pos();
 	max = new Pos();
 
+	offset = new Pos(0, 0);
+
+	canDrag = $state(false);
+	userIsDragging = $state(false);
+	private dragStartX = 0;
+	private dragStartY = 0;
+
 	constructor() {}
 
 	init(): void {
 		this.el = document.getElementById("main");
 
 		this.update();
+
 		window.addEventListener("resize", () => this.update());
+
+		this.initDragListeners();
 	}
 
 	update(): void {
@@ -70,6 +80,64 @@ export class Viewport {
 
 	get center(): Pos {
 		return new Pos(this.width / 2, this.height / 2);
+	}
+
+	initDragListeners() {
+		window.addEventListener("pointerdown", (event) => {
+			if (!this.canDrag) return;
+
+			this.userIsDragging = true;
+			this.dragStartX = event.clientX;
+			this.dragStartY = event.clientY;
+		});
+		window.addEventListener("pointerup", () => (this.userIsDragging = false));
+		window.addEventListener(
+			"pointercancel",
+			() => (this.userIsDragging = false),
+		);
+		window.addEventListener("pointermove", (event) => {
+			if (!this.userIsDragging) return;
+
+			const dragDeltaX = event.clientX - this.dragStartX;
+			const dragDeltaY = event.clientY - this.dragStartY;
+
+			this.offset.x += dragDeltaX;
+			this.offset.y += dragDeltaY;
+
+			this.dragStartX = event.clientX;
+			this.dragStartY = event.clientY;
+		});
+	}
+
+	private recenterAnimID: number | null = null;
+	recenterTo(endPos: Pos) {
+		if (this.recenterAnimID !== null) cancelAnimationFrame(this.recenterAnimID);
+
+		const duration = 1000;
+		const startPos = new Pos(this.offset.x, this.offset.y);
+		const delta = Pos.sub(endPos, startPos);
+
+		let startTime: number | null = null;
+
+		const animate = (nowTime: number) => {
+			if (startTime === null) {
+				startTime = nowTime;
+			}
+
+			const elapsed = nowTime - startTime;
+
+			/** normalized between 0 and 1 */
+			const rawProgress = Math.min(elapsed / duration, 1);
+			const progress = ease(rawProgress);
+
+			this.offset.x = startPos.x + delta.x * progress;
+			this.offset.y = startPos.y + delta.y * progress;
+
+			this.recenterAnimID =
+				progress < 1 ? requestAnimationFrame(animate) : null;
+		};
+
+		this.recenterAnimID = requestAnimationFrame(animate);
 	}
 }
 
