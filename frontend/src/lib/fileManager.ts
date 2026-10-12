@@ -74,6 +74,105 @@ export const FORMATS = {
 		mimeType: "image/svg+xml",
 		validExtensions: ["svg"],
 	},
+
+	// https://en.wikipedia.org/wiki/GIF
+	GIF: {
+		ext: "gif",
+		mimeType: "image/gif",
+		validExtensions: ["gif"],
+	},
+
+	// https://en.wikipedia.org/wiki/AVIF
+	AVIF: {
+		ext: "avif",
+		mimeType: "image/avif",
+		validExtensions: ["avif", "avifs"],
+	},
+
+	// https://en.wikipedia.org/wiki/TIFF
+	TIFF: {
+		ext: "tiff",
+		mimeType: "image/tiff",
+		validExtensions: ["tiff", "tif"],
+	},
+
+	// https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
+	HEIF: {
+		ext: "heif",
+		mimeType: "image/heif",
+		validExtensions: [
+			"heif",
+			"heifs",
+			"heic",
+			"heics",
+			"hif",
+			"hifs",
+			"avci",
+			"avcs",
+		],
+	},
+
+	// https://en.wikipedia.org/wiki/JPEG_XL
+	JPEGXL: {
+		ext: "jxl",
+		mimeType: "image/jxl",
+		validExtensions: ["jxl"],
+	},
+
+	// https://en.wikipedia.org/wiki/ICO_(file_format)
+	ICO: {
+		ext: "ico",
+		mimeType: "image/x-icon",
+		validExtensions: ["ico"],
+	},
+
+	// https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
+	PSD: {
+		ext: "psd",
+		mimeType: "image/vnd.adobe.photoshop",
+		validExtensions: ["psd"],
+	},
+
+	// https://en.wikipedia.org/wiki/PDF
+	PDF: {
+		ext: "pdf",
+		mimeType: "application/pdf",
+		validExtensions: ["pdf"],
+	},
+
+	// https://en.wikipedia.org/wiki/Encapsulated_PostScript
+	EPS: {
+		ext: "eps",
+		mimeType: "application/postscript",
+		validExtensions: ["eps", "epsf", "epsi"],
+	},
+
+	// im omitting Adobe Illustrator's .ai format cuz there's no wikipedia
+	// article for it, and I worry that it'd be confusing for users who
+	// think that it's a generative AI feature
+
+	// https://en.wikipedia.org/wiki/OpenRaster
+	ORA: {
+		ext: "ora",
+		mimeType: "image/openraster",
+		validExtensions: ["ora"],
+	},
+
+	// https://en.wikipedia.org/wiki/XCF_(file_format)
+	XCF: {
+		ext: "xcf",
+		mimeType: "image/x-xcf",
+		validExtensions: ["xcf"],
+	},
+
+	// im omitting QOI because it doesn't even have a mimetype
+
+	// https://en.wikipedia.org/wiki/OpenEXR
+	EXR: {
+		ext: "exr",
+		mimeType: "image/x-exr",
+		validExtensions: ["exr"],
+	},
 } as const satisfies Record<string, FileFormat>;
 export type FormatName = keyof typeof FORMATS;
 
