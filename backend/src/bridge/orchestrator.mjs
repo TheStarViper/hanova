@@ -4,6 +4,14 @@ import { dirname, join} from 'path';
 import createcore from '../../build/image_core_module.js';
 import createwebp from '../../build/webp_module.js';
 import createsvg from '../../build/svg_module.js';
+import * as bridge from './imagemagick-bridge.mjs';
+const magick = {
+    convert_bytes: bridge.convert_bytes,
+    detect_format: bridge.detect_format,
+    formats: bridge.MAGICK_BY_NAME,
+    processors: bridge.MAGICK_PROCESSORS
+};
+
 
 export class ConvertError extends Error {
     constructor(code, message,{step,cause}={}) {
@@ -49,20 +57,31 @@ export const FORMATS = ['png',
                  'tga',
                  'webp',
                  'svg',
+                 'gif',
+                 'avif',
+                 'tiff',
+                 'ico',
+                 'heic',
+                 'jxl',
+                 'qoi',
+                 'psd',
 ];
 
 const INDEX = Object.fromEntries(FORMATS.map((f,i)=>[f,i]));
 const ALIASES = {jpeg:'jpg', //formats that are the same with diff extensions
                  jpe: 'jpg',
-                 targa:'tga'}; 
+                 targa:'tga',
+                 tif: 'tiff',
+                 heif: 'heic'}; 
 
 const N = FORMATS.length;
 
 
 
-export function createconverter({core,webp,svg}){
+export function createconverter({core,webp,svg,magick}){
     console.log('core keys:', Object.keys(core ?? {}));
     const table = Array.from({length:N},()=>Array(N).fill(null));
+    
     function register(from,to,func,cost=1){
         if(INDEX[from]===undefined||INDEX[to]===undefined){
             throw new Error(`register: unknown format ${from} -> ${to}`);
@@ -94,6 +113,29 @@ export function createconverter({core,webp,svg}){
 
     //nanosvg
     register('svg','png',(bytes)=>svg.convert_svg_to_png(bytes));
+
+    //magick
+
+    if(magick){
+        const MAGICK_COST = 5;
+        const READABLE = ['png','jpg','bmp','tga','hdr'];
+        const WRITABLE = Object.keys(magick.formats);
+
+        for (const to of WRITABLE){
+            const proc = magick.processors?.[to];
+            for (const from of READABLE){
+                register(from, to,
+                    (bytes, q) => magick.convert_bytes(bytes, magick.formats[to], q, proc),
+                    MAGICK_COST);
+            }
+        }
+
+        for (const from of WRITABLE){
+            register(from, 'png',
+                (bytes) => magick.convert_bytes(bytes, magick.formats.png ?? 'png'.toUpperCase(), undefined),
+                MAGICK_COST);
+        }
+    }
 
     function search_path(start,target){
         if (start===target){return[];}
@@ -166,4 +208,4 @@ export function createconverter({core,webp,svg}){
 }
 
 const [core, webp, svg] = await Promise.all([createcore(), createwebp(), createsvg()]);
-export const { convert_image } = createconverter({ core, webp, svg });
+export const { convert_image } = createconverter({ core, webp, svg ,magick});

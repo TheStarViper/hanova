@@ -24,6 +24,53 @@ export async function init_imagemagick() {
     isinit = true;
 }
 
+export const MAGICK_BY_NAME = {
+    gif:  MagickFormat.Gif,
+    avif: MagickFormat.Avif,
+    tiff: MagickFormat.Tiff,
+    ico:  MagickFormat.Ico,
+    heic: MagickFormat.Heic,
+    jxl:  MagickFormat.Jxl,
+    qoi:  MagickFormat.Qoi,
+    psd:  MagickFormat.Psd,
+};
+
+export const MAGICK_PROCESSORS = {
+    ico: (image) => {
+        if (image.width > 256 || image.height > 256) {
+            image.resize(new MagickGeometry(256, 256));
+        }
+    },
+};
+
+export async function convert_bytes(bytes, format, quality, processor) {
+    await init_imagemagick();
+    let output;
+    try {
+        ImageMagick.read(bytes, (image) => {
+            if (quality != null) image.quality = quality;
+            if (processor) processor(image);
+            image.write(format, (data) => {
+                output = Uint8Array.from(data);
+            });
+        });
+    } catch (error) {
+        throw summarize_errors(error);
+    }
+    return output;
+}
+
+export async function detect_format(bytes) {
+    await init_imagemagick();
+    try {
+        let name = 'unknown';
+        ImageMagick.read(bytes, (image) => { name = String(image.format).toLowerCase(); });
+        return name;
+    } catch {
+        return 'unknown';
+    }
+}
+
 const FORMATS = {
     '.png': magickModule.MagickFormat.Png,
     '.jpg': magickModule.MagickFormat.Jpeg,
