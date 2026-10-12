@@ -145,6 +145,7 @@ export class World {
 		}
 
 		this.viewport.canDrag = false;
+		this.viewport.userIsDragging = false;
 	}
 
 	islandClickHandler(me: Island, endPos: Pos) {

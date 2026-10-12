@@ -82,13 +82,7 @@ export class Viewport {
 		return new Pos(this.width / 2, this.height / 2);
 	}
 
-	private resetDrag() {
-		this.userIsDragging = false;
-	}
-
 	initDragListeners() {
-		this.resetDrag();
-
 		window.addEventListener("pointerdown", (event) => {
 			if (!this.canDrag) return;
 
@@ -96,8 +90,11 @@ export class Viewport {
 			this.dragStartX = event.clientX;
 			this.dragStartY = event.clientY;
 		});
-		window.addEventListener("pointerup", () => this.resetDrag());
-		window.addEventListener("pointercancel", () => this.resetDrag());
+		window.addEventListener("pointerup", () => (this.userIsDragging = false));
+		window.addEventListener(
+			"pointercancel",
+			() => (this.userIsDragging = false),
+		);
 		window.addEventListener("pointermove", (event) => {
 			if (!this.userIsDragging) return;
 
