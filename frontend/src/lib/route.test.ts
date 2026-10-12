@@ -21,12 +21,11 @@ describe("Can pathfind", () => {
 					);
 					const isWalkable = isWalkableFactory(otherIslands);
 
-					/** this is the path that A* will fall back on */
-					const crudePath = [start, goal];
-
 					const path = aStar(start, goal, isWalkable);
 
-					expect(path).not.toEqual(crudePath);
+					// the fallback path always has length 2, and all actual paths
+					// should probably be more complex than that
+					expect(path).not.toHaveLength(2);
 				},
 			);
 		},
