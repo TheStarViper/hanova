@@ -29,8 +29,8 @@ export interface WorkerRequest {
 }
 export type WorkerResponse = ReturnObj;
 
-type OutFuncMapping = Record<FormatName, (input: Bytes) => ReturnObj>;
-type PrepFuncMapping = Partial<Record<FormatName, (input: Bytes) => ReturnObj>>;
+type OutFunc = (input: Bytes) => ReturnObj;
+type PrepFunc = (input: Bytes) => ReturnObj;
 
 interface Modules {
 	image: ImageModule;
@@ -59,7 +59,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 
 	const modules = await getModules();
 
-	const prepFuncMapping: PrepFuncMapping = {
+	const prepFuncMapping: Partial<Record<FormatName, PrepFunc>> = {
 		WebP: (input: Bytes) => modules.webp.convert_webp_to_png(input),
 		SVG: (input: Bytes) => modules.svg.convert_svg_to_png(input),
 	};
@@ -80,7 +80,12 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 		}
 	}
 
-	const outFuncMapping: OutFuncMapping = {
+	const unsupported: OutFunc = () => ({
+		ok: false,
+		error: "Not supported yet, sry",
+	});
+
+	const outFuncMapping: Record<FormatName, OutFunc> = {
 		PNG: (input: Bytes) => modules.image.convert_to_png(input),
 		JPEG: (input: Bytes) => modules.image.convert_to_jpeg(input, JPEG_QUALITY),
 		BMP: (input: Bytes) => modules.image.convert_to_bmp(input),
@@ -88,6 +93,18 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
 		HDR: (input: Bytes) => modules.image.convert_to_hdr(input),
 		WebP: (input: Bytes) => modules.webp.convert_to_webp(input, WEBP_QUALITY),
 		SVG: (input: Bytes) => modules.svg.convert_to_svg(input),
+		AVIF: unsupported,
+		EPS: unsupported,
+		EXR: unsupported,
+		GIF: unsupported,
+		HEIF: unsupported,
+		ICO: unsupported,
+		JPEGXL: unsupported,
+		ORA: unsupported,
+		PDF: unsupported,
+		PSD: unsupported,
+		TIFF: unsupported,
+		XCF: unsupported,
 	};
 
 	// syncronous and very slow, but we're in a worker so who cares
