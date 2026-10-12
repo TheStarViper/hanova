@@ -37,10 +37,10 @@ library that a file converter like file validation and safety functions.
 - [libwebp](https://github.com/webmproject/libwebp) (webp)
 - [nanosvg](https://github.com/memononen/nanosvg) (svg)
 
-### Supported File Formats
-
 <details>
-<summary><h3>Images</h3></summary>
+<summary><h3>Supported File Formats</h3></summary>
+
+Images:
 
 - [x] png
 - [x] jpeg
@@ -56,10 +56,7 @@ library that a file converter like file validation and safety functions.
 - [x] svg (conversion _from_ svg not supported yet)
 - [ ] eps
 
-</details>
-
-<details>
-<summary><h3>Audio</h3></summary>
+Audio:
 
 - [ ] mp3
 - [ ] wav
@@ -74,10 +71,7 @@ library that a file converter like file validation and safety functions.
 - [ ] amr
 - [ ] ac3
 
-</details>
-
-<details>
-<summary><h3>Docs</h3></summary>
+Documents:
 
 - [ ] pdf
 - [ ] txt
@@ -92,10 +86,7 @@ library that a file converter like file validation and safety functions.
 - [ ] odt
 - [ ] xls
 
-</details>
-
-<details>
-<summary><h3>3D files</h3></summary>
+3D Files:
 
 - [ ] obj
 - [ ] fbx
@@ -104,10 +95,7 @@ library that a file converter like file validation and safety functions.
 - [ ] glb
 - [ ] blend
 
-</details>
-
-<details>
-<summary><h3>Video</h3></summary>
+Video:
 
 Video conversion locally has no access to hardware accelleration so we are
 unable to do it reasonably without an external server. In the future we may
@@ -139,21 +127,43 @@ target island without clipping through any other islands. The generated path is
 then converted to centripetal Catmull-Rom splines, converted to cubic Beziers,
 and then used to animate the boat's travel and draw the dashed line.
 
-### Planned Features
+### Frontend Roadmap
 
-- [x] A compass rose that brings you to an About page
-- [x] Sounds
-- [x] Boat sinks if the conversion throws an error
-- [ ] Boat points in the direction it's moving in
+Week 1:
+
+- [x] Page layout inspired by Perilous Shores
+- [x] Boat that can move between islands
+- [x] 3 islands that trigger a file conversion when clicked
+- [x] File uploading and downloading
+
+Week 2:
+
+- [x] About page
+- [x] Decorative compass rose (that links to the about page)
+- [x] A* pathfinding between islands
+- [x] Boat travels along route
+- [x] Dashed line that displays route
+
+Week 3:
+
+- [x] Viewport panning
+- [x] Boat sinks if the conversion fails
+- [x] Sound effects
 - [x] Boat spawns at the island corresponding to its original file format
+- [x] 19 islands
+
+Planned:
+
+- [ ] More island asset variety
+- [ ] Viewport zooming
+- [ ] Initial menu animation that pans over the islands
 - [ ] Mobile support
 - [ ] Boat moves in circles around islands rather than beaching itself
-- [ ] Map is scrollable (and maybe zoomable)
-- [x] Boat travel animation where it follows an auto-generated dashed line that
-      curves around obstacles
 - [ ] Smoother animations and an overall better experience
-- [ ] procedural island and water generation
+- [ ] Procedural island and water generation
 - [ ] ...and probably more
+
+</details>
 
 ## Compiling yourself
 
@@ -183,7 +193,7 @@ pnpm dev
   inspiration, and from which most of the assets are derived (e.g. islands,
   color palette, banner). _Obligatory legal disclaimer: Perilous Shores allows
   its output to be used
-  ["as you like: copy, modify, include in your commercial rpg adventures etc. Attribution is appreciated, but not required"](https://watabou.itch.io/perilous-shores#:~:text=You%20can%20use,but%20not%20required.)._
+  ["as you like: copy, modify, include in your commercial rpg adventures etc."](https://watabou.itch.io/perilous-shores#:~:text=You%20can%20use,rpg%20adventures%20etc.)_
 - Thanks to [Sean Barrett](https://github.com/nothings) for making
   [stb](https://github.com/nothings/stb), which is used for the image conversion
   backend.
