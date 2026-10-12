@@ -8,7 +8,7 @@ const islands = ISLAND_DATA.map((datum) => new Island(datum, () => {}));
 describe("Can pathfind", () => {
 	describe.each<Island>(islands)(
 		"from $name",
-		({ name, pos: originPos, sprite: originSprite }) => {
+		({ name: originName, pos: originPos, sprite: originSprite }) => {
 			const start = gridify(Pos.add(originPos, originSprite.spawnOffset));
 
 			it.each<Island>(islands)(
@@ -23,9 +23,12 @@ describe("Can pathfind", () => {
 
 					const path = aStar(start, goal, isWalkable);
 
-					// the fallback path always has length 2, and all actual paths
-					// should probably be more complex than that
-					expect(path).not.toHaveLength(2);
+					// the fallback path always has length 2, and all non-trivial paths
+					// ought to be more complex than that
+					expect(
+						path,
+						`Can't pathfind from ${originName} to ${targetName}`,
+					).length.greaterThan(2);
 				},
 			);
 		},
