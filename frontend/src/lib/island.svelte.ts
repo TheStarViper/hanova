@@ -40,7 +40,7 @@ export const ISLAND_SPRITES = {
 		width: 336,
 		treasureOffset: new Pos(120, -70),
 		spawnOffset: new Pos(220, -50),
-		radius: 205,
+		radius: 200,
 	},
 	// used for webp
 	4: {
@@ -62,8 +62,8 @@ export const ISLAND_SPRITES = {
 		svg: Island6Svg,
 		width: 98,
 		treasureOffset: new Pos(0, 0),
-		spawnOffset: new Pos(0, 0),
-		radius: 0,
+		spawnOffset: new Pos(0, 100),
+		radius: 65,
 	},
 } as const satisfies Record<number, IslandSprite>;
 
@@ -78,28 +78,98 @@ export interface IslandDatum {
 export const ISLAND_DATA = [
 	{
 		name: "BMP",
-		pos: new Pos(200, 200),
+		pos: new Pos(170, 350),
 		islandSpriteIndex: 1,
 	},
 	{
+		name: "GIF",
+		pos: new Pos(0, 500),
+		islandSpriteIndex: 6,
+	},
+	{
 		name: "JPEG",
-		pos: new Pos(630, 100),
+		pos: new Pos(500, 500),
 		islandSpriteIndex: 5,
 	},
 	{
+		name: "JPEGXL",
+		pos: new Pos(600, 730),
+		islandSpriteIndex: 6,
+	},
+	{
 		name: "PNG",
-		pos: new Pos(220, 600),
+		pos: new Pos(450, 100),
 		islandSpriteIndex: 3,
 	},
 	{
 		name: "WebP",
-		pos: new Pos(1050, 150),
+		pos: new Pos(900, 200),
 		islandSpriteIndex: 4,
+	},
+	{
+		name: "AVIF",
+		pos: new Pos(1200, 0),
+		islandSpriteIndex: 5,
+	},
+	{
+		name: "HEIF",
+		pos: new Pos(1150, 350),
+		islandSpriteIndex: 2,
+	},
+	{
+		name: "TIFF",
+		pos: new Pos(1500, 200),
+		islandSpriteIndex: 3,
+	},
+	{
+		name: "EPS",
+		pos: new Pos(900, -100),
+		islandSpriteIndex: 1,
+	},
+	{
+		name: "EXR",
+		pos: new Pos(1050, -300),
+		islandSpriteIndex: 2,
+	},
+	{
+		name: "TGA",
+		pos: new Pos(1370, 570),
+		islandSpriteIndex: 4,
+	},
+	{
+		name: "HDR",
+		pos: new Pos(1600, 470),
+		islandSpriteIndex: 6,
 	},
 	{
 		name: "SVG",
 		pos: new Pos(400, -200),
 		islandSpriteIndex: 2,
+	},
+	{
+		name: "ICO",
+		pos: new Pos(550, -350),
+		islandSpriteIndex: 6,
+	},
+	{
+		name: "PSD",
+		pos: new Pos(1000, 1000),
+		islandSpriteIndex: 4,
+	},
+	{
+		name: "ORA",
+		pos: new Pos(900, 1200),
+		islandSpriteIndex: 6,
+	},
+	{
+		name: "XCF",
+		pos: new Pos(1300, 1050),
+		islandSpriteIndex: 3,
+	},
+	{
+		name: "PDF",
+		pos: new Pos(1150, 730),
+		islandSpriteIndex: 1,
 	},
 ] as const satisfies IslandDatum[];
 
