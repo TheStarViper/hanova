@@ -1,5 +1,7 @@
 #include "validation.hpp"
 #include "variables.hpp"
+#include <emscripten/val.h>
+#include <emscripten/bind.h>
 
 Errortypes validate_input_size(const std::vector<uint8_t>& input){
     if (input.size()>MAX_INPUT_BYTES){return Errortypes::FileTooLarge;}
@@ -37,6 +39,10 @@ std::string validate_file_format(const std::vector<uint8_t>& input){ //verify fi
     return "unknown";
 }
 
+std::string validate_file_format_js(const emscripten::val& input) {
+    return validate_file_format(emscripten::convertJSArrayToNumberVector<uint8_t>(input));
+}
+
 EMSCRIPTEN_BINDINGS(validation_module) {
-    emscripten::function("validate_file_format", &validate_file_format);
+    emscripten::function("validate_file_format", &validate_file_format_js);
 }
