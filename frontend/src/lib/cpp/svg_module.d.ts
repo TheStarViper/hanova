@@ -7,6 +7,7 @@ interface EmbindModule {
   get_image_height(_0: any): number;
   convert_to_svg(_0: any): any;
   convert_svg_to_png(_0: any): any;
+  validate_file_format(_0: any): string;
 }
 
 export type MainModule = WasmModule & EmbindModule;

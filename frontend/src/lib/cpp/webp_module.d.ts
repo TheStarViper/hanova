@@ -7,6 +7,7 @@ interface EmbindModule {
   convert_webp_to_png(_0: any): any;
   get_image_width(_0: any): number;
   get_image_height(_0: any): number;
+  validate_file_format(_0: any): string;
 }
 
 export type MainModule = WasmModule & EmbindModule;
