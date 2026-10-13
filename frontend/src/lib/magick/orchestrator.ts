@@ -1,19 +1,19 @@
-import { readFileSync } from "fs";
-import { fileURLToPath, pathToFileURL } from "url";
-import { dirname, join } from "path";
-import createcore from "../../build/image_core_module.js";
-import createwebp from "../../build/webp_module.js";
-import createsvg from "../../build/svg_module.js";
-import * as bridge from "./imagemagick-bridge.mjs";
-const magick = {
-	convert_bytes: bridge.convert_bytes,
-	detect_format: bridge.detect_format,
-	formats: bridge.MAGICK_BY_NAME,
-	processors: bridge.MAGICK_PROCESSORS,
-};
+import coreFactory, {
+	type MainModule as coreModule,
+} from "../cpp/image_core_module";
+import webpFactory, { type MainModule as WebpModule } from "../cpp/webp_module";
+import svgFactory, { type MainModule as SvgModule } from "../cpp/svg_module";
+
+import * as magick from "./imagemagickBridge.js";
 
 export class ConvertError extends Error {
-	constructor(code, message, { step, cause } = {}) {
+	step: string | undefined;
+
+	constructor(
+		public code: string,
+		message: string,
+		{ step, cause }: { step?: string; cause?: Error } = {},
+	) {
 		super(message);
 		this.name = "ConvertError";
 		this.code = code;
@@ -22,7 +22,9 @@ export class ConvertError extends Error {
 	}
 }
 
-export function simplifyerror(error) {
+export function simplifyError(
+	error: ConvertError | number | string | Error,
+): string {
 	if (error instanceof ConvertError) return error.message;
 
 	if (typeof error === "number") {
@@ -42,9 +44,9 @@ export function simplifyerror(error) {
 		return `embind: ${message.split("\n")[0]}`;
 	}
 
-	if (error?.code && error?.syscall) {
-		return `${error.code}: ${error.syscall} ${error.path ?? ""}`.trim();
-	}
+	// if (error?.code && error?.syscall) {
+	// 	return `${error.code}: ${error.syscall} ${error.path ?? ""}`.trim();
+	// }
 
 	return `${error?.name ?? "Error"}: ${message.split("\n")[0]}`;
 }
@@ -65,21 +67,33 @@ export const FORMATS = [
 	"jxl",
 	"qoi",
 	"psd",
-];
+] as const satisfies string[];
+type FormatName = (typeof FORMATS)[number];
 
-const INDEX = Object.fromEntries(FORMATS.map((f, i) => [f, i]));
+//formats that are the same with diff extensions
 const ALIASES = {
-	jpeg: "jpg", //formats that are the same with diff extensions
+	jpeg: "jpg",
 	jpe: "jpg",
 	targa: "tga",
 	tif: "tiff",
 	heif: "heic",
-};
+} as const satisfies Record<string, FormatName>;
 
 const N = FORMATS.length;
 
-export function createconverter({ core, webp, svg, magick }) {
-	const unwrap = (r) => {
+interface Modules {
+	core: coreModule;
+	webp: WebpModule;
+	svg: SvgModule;
+	magick?: typeof magick;
+}
+type ConverterFunc = (
+	bytes: Buffer<ArrayBuffer>,
+	quality?: number,
+) => Buffer<ArrayBuffer>;
+
+export function createconverter({ core, webp, svg, magick }: Modules) {
+	const unwrap = (r: any) => {
 		if (Array.isArray(r) || r instanceof Uint8Array) {
 			return r;
 		}
@@ -100,28 +114,39 @@ export function createconverter({ core, webp, svg, magick }) {
 	console.log("core keys:", Object.keys(core ?? {}));
 	const table = Array.from({ length: N }, () => Array(N).fill(null));
 
-	function register(from, to, func, cost = 1) {
-		if (INDEX[from] === undefined || INDEX[to] === undefined) {
+	function register(
+		from: FormatName,
+		to: FormatName,
+		func: ConverterFunc,
+		cost = 1,
+	) {
+		const fromIdx = FORMATS.indexOf(from);
+		const toIdx = FORMATS.indexOf(to);
+
+		if (fromIdx === undefined || toIdx === undefined) {
 			throw new Error(`register: unknown format ${from} -> ${to}`);
 		}
-		table[INDEX[from]][INDEX[to]] = { func, cost };
+		table[fromIdx][toIdx] = { func, cost };
 	}
 
 	const STB_ENCODER = {
-		png: "convert_to_png",
-		jpg: "convert_to_jpeg",
-		bmp: "convert_to_bmp",
-		tga: "convert_to_tga",
-		hdr: "convert_to_hdr",
+		png: core.convert_to_png,
+		jpg: core.convert_to_jpeg,
+		bmp: core.convert_to_bmp,
+		tga: core.convert_to_tga,
+		hdr: core.convert_to_hdr,
 	};
 
-	for (const from of Object.keys(STB_ENCODER)) {
-		for (const to of Object.keys(STB_ENCODER)) {
+	for (const from in STB_ENCODER) {
+		for (const to in STB_ENCODER) {
 			if (from !== to) {
 				register(
-					from,
-					to,
-					(bytes, q) => unwrap(core[STB_ENCODER[to]](bytes, q)),
+					from as keyof typeof STB_ENCODER,
+					to as keyof typeof STB_ENCODER,
+					(bytes: Buffer<ArrayBuffer>, q?: number) =>
+						unwrap(
+							STB_ENCODER[to as keyof typeof STB_ENCODER](bytes, q as any),
+						),
 					1,
 				);
 			}
@@ -150,16 +175,16 @@ export function createconverter({ core, webp, svg, magick }) {
 	if (magick) {
 		const MAGICK_COST = 5;
 		const READABLE = ["png", "jpg", "bmp", "tga", "hdr"];
-		const WRITABLE = Object.keys(magick.formats);
+		const WRITABLE = Object.keys(magick.FORMATS);
 
 		for (const to of WRITABLE) {
-			const proc = magick.processors?.[to];
+			const proc = magick.MAGICK_PROCESSORS?.[to];
 			for (const from of READABLE) {
 				register(
 					from,
 					to,
 					(bytes, q) =>
-						magick.convert_bytes(bytes, magick.formats[to], q, proc),
+						magick.convert_bytes(bytes, magick.FORMATS[to], q, proc),
 					MAGICK_COST,
 				);
 			}
@@ -266,7 +291,7 @@ export function createconverter({ core, webp, svg, magick }) {
 			} catch (error) {
 				throw new ConvertError(
 					"StepFailed",
-					`${step.from} -> ${step.to} failed: ${simplifyerror(error)}`,
+					`${step.from} -> ${step.to} failed: ${simplifyError(error)}`,
 					{ step: `${step.from} -> ${step.to}`, cause: error },
 				);
 			}
@@ -276,9 +301,11 @@ export function createconverter({ core, webp, svg, magick }) {
 	return { convert_image, search_path };
 }
 
-const [core, webp, svg] = await Promise.all([
-	createcore(),
-	createwebp(),
-	createsvg(),
-]);
-export const { convert_image } = createconverter({ core, webp, svg, magick });
+async function getConverter() {
+	const [core, webp, svg] = await Promise.all([
+		coreFactory(),
+		webpFactory(),
+		svgFactory(),
+	]);
+	return createconverter({ core, webp, svg, magick });
+}
