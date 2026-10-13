@@ -1,4 +1,4 @@
-import type { WorkerResponse, WorkerRequest } from "./cppRunner.worker";
+import type { WorkerResponse, WorkerRequest } from "./converter.worker";
 
 export class CppManager {
 	private worker: Worker | null = null;
@@ -10,7 +10,7 @@ export class CppManager {
 
 	async init() {
 		this.worker = new Worker(
-			new URL("./cppRunner.worker.ts", import.meta.url),
+			new URL("./converter.worker.ts", import.meta.url),
 			{ type: "module" },
 		);
 

@@ -10,7 +10,7 @@ interface EmbindModule {
   convert_to_bmp(_0: any): any;
   convert_to_tga(_0: any): any;
   convert_to_hdr(_0: any): any;
-  convert_to_ico(_0: any): any;
+  validate_file_format(_0: any): string;
 }
 
 export type MainModule = WasmModule & EmbindModule;

@@ -10,7 +10,7 @@ import { Pos, Viewport, mulberry32 } from "./utils.svelte";
 import type { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
 import type { CubicBezier } from "./bezier";
-import type { WorkerResponse } from "./cppRunner.worker";
+import type { WorkerResponse } from "./converter.worker";
 import { decodeSounds, playSound, preloadSounds } from "./sound";
 
 export class World {

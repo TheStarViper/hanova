@@ -37,12 +37,18 @@ else
 endif
 
 
-UNIVERSAL_DEPENENCY_SRCS = src/images/a_universal.cpp src/results.cpp src/validation.cpp src/stbstuff.cpp src/main.cpp 
+UNIVERSAL_DEPENENCY_SRCS = src/images/a_universal.cpp src/results.cpp src/validation.cpp src/stbstuff.cpp src/main.cpp
 
 # CORE ------------------------------------------------------------------------------------------------------------------------------
 ALL_CPP_SRCS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 
-CORE_CPP_SRCS = $(filter-out src/images/webp.cpp src/images/svg.cpp, $(ALL_CPP_SRCS))
+CORE_CPP_SRCS = $(filter-out \
+				 src/images/webp.cpp \
+				 src/images/svg.cpp \
+				 src/images/magick_test.cpp \
+				, $(ALL_CPP_SRCS))
+
+
 CORE_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(CORE_CPP_SRCS))
 CORE_TARGET = $(BUILD_DIR)/image_core_module.js
 CORE_TSD = image_core_module.d.ts
@@ -53,7 +59,7 @@ WEBP_LIB_SRCS = $(wildcard libraries/libwebp/src/enc/*.c) \
             $(wildcard libraries/libwebp/src/dsp/*.c) \
             $(wildcard libraries/libwebp/src/utils/*.c) \
             $(wildcard libraries/libwebp/sharpyuv/*.c)
-WEBP_CPP_SRCS = src/images/webp.cpp 
+WEBP_CPP_SRCS = src/images/webp.cpp
 WEBP_OBJS = $(patsubst %.c,$(OBJ_DIR)/%.o,$(WEBP_LIB_SRCS)) \
             $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(WEBP_CPP_SRCS)) \
             $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(UNIVERSAL_DEPENENCY_SRCS))
@@ -61,13 +67,13 @@ WEBP_TARGET = $(BUILD_DIR)/webp_module.js
 WEBP_TSD = webp_module.d.ts
 
 # SVG ----------------------------------------------------------------------------------------------------------------------------
-SVG_CPP_SRCS = src/images/svg.cpp 
+SVG_CPP_SRCS = src/images/svg.cpp
 SVG_OBJS = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SVG_CPP_SRCS))\
 			$(patsubst %.cpp,$(OBJ_DIR)/%.o,$(UNIVERSAL_DEPENENCY_SRCS))
 SVG_TARGET = $(BUILD_DIR)/svg_module.js
 SVG_TSD = svg_module.d.ts
 
-.PHONY: all setup build-core build-webp clean 
+.PHONY: all setup build-core build-webp clean
 
 all: setup build-core build-webp build-svg success
 
@@ -103,26 +109,12 @@ build-svg: $(SVG_OBJS)
 	@echo "==============================================================================================="
 	@$(call echo_color, "[3/3] svg SUCCESSFULLY CREATED!", "Blue")
 
-
 clean:
 	@$(RM)
 	@$(RM_OBJ)
 
 success:
 	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
-	@$(call echo_color, "ALL BUILDS SUCCESSFUL!", "Yellow")
+	@$(call echo_color, "node backend/test/run.mjs for testing", "Yellow")
+	@$(call echo_color, "node backend/test/test_magick.mjs for testing magick", "Yellow")
     # just to make sure i dont miss it idk

@@ -1,5 +1,5 @@
 import { type CppManager } from "./cppManager";
-import type { ReturnObj } from "./cppRunner.worker";
+import type { ReturnObj } from "./converter.worker";
 import { decodeSounds } from "./sound";
 
 const MAX_FILENAME_CHARS = 20;

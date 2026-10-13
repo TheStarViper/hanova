@@ -1,25 +1,24 @@
-import { readFileSync } from 'fs';
+import { init_imagemagick, process_image, ImageMagick, MagickFormat, MagickGeometry } from '../src/bridge/imagemagick-bridge.mjs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const MODULE_DIR = join(dirname(fileURLToPath(import.meta.url)), '../../frontend/src/lib/cpp');
+const INPUT_PATH = './backend/test/samples';
+const OUTPUT_PATH = './backend/test/output';
 
-const INPUT_PATH = './backend/test/testsmall.png';
+async function test(){
+  await init_imagemagick();
+  console.log(`ImageMagick Ver: ${ImageMagick.ver}`);
 
-async function main() {
-  const createModule = (await import('../../frontend/src/lib/cpp/magick_module.js')).default;
-  const Module = await createModule();
+  await process_image(`${INPUT_PATH}/test.png`,`${OUTPUT_PATH}/imagemagick_test.avif`,(image,lib)=>{
+    const geometry = new lib.MagickGeometry(800,600);
+    geometry.greater = true;
 
-  const inputBytes = new Uint8Array(readFileSync(INPUT_PATH));
-  console.log(`Input: ${INPUT_PATH} (${inputBytes.length} bytes)\n`);
-
-  const result = Module.magick_identify(inputBytes);
-
-  if (!result.ok) {
-    console.log(`FAIL  ${result.error}`);
-    return;
-  }
-
-  console.log(`OK    format=${result.format}  ${result.width}x${result.height}`);
+    image.resize(geometry);
+    image.quality = 90;
+  });
+  console.log('Image successfully processed and saved as output');
 }
 
-main().catch((err) => {
-  console.error('\nFATAL:', err.message);
-  process.exit(1);
+test().catch((error)=>{
+  console.error(`${error.code ?? 'error'}: ${error.message}`);
 });

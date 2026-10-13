@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 
 const OUTPUT_DIR = './backend/test/output';
 
-const INPUT_TO_TEST = 'png';
+const INPUT_TO_TEST = 'small';
 
 var input_path;
 if (INPUT_TO_TEST === 'png') {
@@ -76,10 +76,10 @@ async function runConversion(inputBytes, { module, fn, args, ext, label }) {
 }
 
 async function main() {
-  const inputBytes = new Uint8Array(readFileSync(INPUT_PATH));
-  console.log(`Input: ${INPUT_PATH} (${inputBytes.length} bytes)\n`);
+  const inputBytes = new Uint8Array(readFileSync(input_path));
+  console.log(`Input: ${input_path} (${inputBytes.length} bytes)\n`);
   
-  const ext = INPUT_PATH.split('.').pop().toLowerCase();
+  const ext = input_path.split('.').pop().toLowerCase();
   const isSTBreadable = ['png', 'jpg', 'jpeg', 'bmp', 'tga', 'hdr'].includes(ext);
 
   if (isSTBreadable){
