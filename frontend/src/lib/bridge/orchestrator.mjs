@@ -1,9 +1,8 @@
-import { readFileSync } from "fs";
-import { fileURLToPath, pathToFileURL } from "url";
-import { dirname, join } from "path";
-import createcore from "../../build/image_core_module.js";
-import createwebp from "../../build/webp_module.js";
-import createsvg from "../../build/svg_module.js";
+// @ts-nocheck
+
+import createcore from "../cpp/image_core_module.js";
+import createwebp from "../cpp/webp_module.js";
+import createsvg from "../cpp/svg_module.js";
 import * as bridge from "./imagemagick-bridge.mjs";
 const magick = {
 	convert_bytes: bridge.convert_bytes,
@@ -276,9 +275,15 @@ export function createconverter({ core, webp, svg, magick }) {
 	return { convert_image, search_path };
 }
 
-const [core, webp, svg] = await Promise.all([
-	createcore(),
-	createwebp(),
-	createsvg(),
-]);
-export const { convert_image } = createconverter({ core, webp, svg, magick });
+/**
+ * @returns {Promise<(target_format: string, bytes: Buffer<ArrayBuffer>, quality: number) => Promise<Buffer<ArrayBuffer>>> }
+ */
+export async function converterFactory() {
+	const [core, webp, svg] = await Promise.all([
+		createcore(),
+		createwebp(),
+		createsvg(),
+	]);
+
+	return createconverter({ core, webp, svg, magick }).convert_image;
+}

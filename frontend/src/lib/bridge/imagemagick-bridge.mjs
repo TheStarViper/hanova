@@ -1,10 +1,7 @@
-import fs from "node:fs";
-import { extname } from "node:path";
-import { createRequire } from "node:module";
-import * as magickModule from "@imagemagick/magick-wasm";
+// @ts-nocheck
 
-const require = createRequire(import.meta.url);
-let isinit = false;
+import * as magickModule from "@imagemagick/magick-wasm";
+import magickWasmUrl from "@imagemagick/magick-wasm/magick.wasm?url";
 
 export class ImageError extends Error {
 	constructor(code, message) {
@@ -14,15 +11,19 @@ export class ImageError extends Error {
 	}
 }
 
+let isinit = false;
+
 export async function init_imagemagick() {
 	if (isinit) return;
 
-	const wasmPath = require.resolve("@imagemagick/magick-wasm/magick.wasm");
-	const wasmBytes = fs.readFileSync(wasmPath);
+	const wasmUrl = new URL(magickWasmUrl, import.meta.url);
+	const response = await fetch(wasmUrl);
+	const wasmBuffer = await response.arrayBuffer();
+	await magickModule.initializeImageMagick(new Uint8Array(wasmBuffer));
 
-	await magickModule.initializeImageMagick(wasmBytes);
 	isinit = true;
 }
+
 export const MAGICK_BY_NAME = {
 	png: magickModule.MagickFormat.Png,
 	gif: magickModule.MagickFormat.Gif,
@@ -143,6 +144,7 @@ function summarize_errors(error) {
 	}
 }
 
+/**
 export async function process_image(inputpath, outputpath, processorfunc) {
 	await init_imagemagick();
 
@@ -166,6 +168,7 @@ export async function process_image(inputpath, outputpath, processorfunc) {
 	}
 	fs.writeFileSync(outputpath, output);
 }
+*/
 
 export const {
 	ImageMagick,
