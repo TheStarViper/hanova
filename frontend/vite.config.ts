@@ -2,6 +2,10 @@ import adapter from "@sveltejs/adapter-static";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 import { defineConfig } from "vite";
+import { fileURLToPath } from "node:url";
+
+const frontendRoot = fileURLToPath(new URL(".", import.meta.url));
+const backendRoot = fileURLToPath(new URL("../backend", import.meta.url));
 
 export default defineConfig({
   plugins: [
@@ -28,4 +32,9 @@ export default defineConfig({
       preprocess: [vitePreprocess()],
     }),
   ],
+  server: {
+    fs: {
+      allow: [frontendRoot, backendRoot],
+    },
+  },
 });

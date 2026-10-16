@@ -1,7 +1,7 @@
 import { init_imagemagick, process_image, ImageMagick, MagickFormat, MagickGeometry } from '../src/bridge/imagemagick-bridge.mjs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-const MODULE_DIR = join(dirname(fileURLToPath(import.meta.url)), '../../frontend/src/lib/cpp');
+const MODULE_DIR = join(dirname(fileURLToPath(import.meta.url)), '../build');
 const INPUT_PATH = './backend/test/samples';
 const OUTPUT_PATH = './backend/test/output';
 

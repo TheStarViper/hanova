@@ -1,6 +1,6 @@
 CXX = em++
 CC = emcc
-BUILD_DIR = ../frontend/src/lib/cpp
+BUILD_DIR = ./build
 OBJ_DIR = obj
 
 INC = -Iinclude -Isrc -Ilibraries/libwebp/src -Ilibraries/libwebp -Iinclude/images -Ilibraries/stb -Ilibraries/nanosvg

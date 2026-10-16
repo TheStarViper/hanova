@@ -1,8 +1,8 @@
 // @ts-nocheck
 
-import createcore from "../cpp/image_core_module.js";
-import createsvg from "../cpp/svg_module.js";
-import createwebp from "../cpp/webp_module.js";
+import createcore from "../../build/image_core_module.js";
+import createsvg from "../../build/svg_module.js";
+import createwebp from "../../build/webp_module.js";
 import * as bridge from "./imagemagick-bridge.mjs";
 const magick = {
   convert_bytes: bridge.convert_bytes,

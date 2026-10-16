@@ -6,5 +6,5 @@
     "strict": true,
   },
   "include": ["src"],
-  "exclude": ["src/lib/cpp"],
+  "exclude": ["../backend/build"],
 }

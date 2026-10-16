@@ -3,7 +3,7 @@
   "json": {},
   "markup": {},
   "yaml": {},
-  "excludes": ["**/node_modules", "**/*-lock.json", "backend", "*.svg", "_module.**", "frontend/src/lib/cpp"],
+  "excludes": ["**/node_modules", "**/*-lock.json", "backend", "*.svg"],
   "plugins": [
     "npm:@dprint/typescript@0.96.1",
     "npm:@dprint/json@0.25.2",

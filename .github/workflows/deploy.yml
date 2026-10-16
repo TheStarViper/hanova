@@ -7,26 +7,24 @@ on:
 jobs:
   build_site:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 10
 
       - name: Install dependencies
-        run: npm i
+        run: pnpm i
 
       - name: build
         env:
           BASE_PATH: "/${{ github.event.repository.name }}"
         run: |
-          npm run build
+          pnpm run build
+        working-directory: ./frontend
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3

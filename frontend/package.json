@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "hanova-frontend",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -17,7 +17,6 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
-    "@imagemagick/magick-wasm": "^0.0.44",
     "@sveltejs/adapter-static": "^4.0.0",
     "@sveltejs/kit": "^3.0.0",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",

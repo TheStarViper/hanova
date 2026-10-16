@@ -22,9 +22,9 @@ mkdirSync(OUTPUT_DIR, { recursive: true });
 
 
 const moduleLoaders = {
-  core: () => import('../../frontend/src/lib/cpp/image_core_module.js'),
-  webp: () => import('../../frontend/src/lib/cpp/webp_module.js'),
-  svg: () => import('../../frontend/src/lib/cpp/svg_module.js'),
+  core: () => import('../build/image_core_module.js'),
+  webp: () => import('../build/webp_module.js'),
+  svg: () => import('../build/svg_module.js'),
 };
 
 const loadedModules = {};
@@ -61,14 +61,14 @@ async function runConversion(inputBytes, { module, fn, args, ext, label }) {
     console.log(`SKIP  ${label.padEnd(20)}  ${fn} not found on ${module} module`);
     return;
   }
-  
+
   const result = Module[fn](inputBytes, ...args);
 
   if (!result.ok) {
     console.log(`FAIL  ${label.padEnd(20)}  ${result.error}`);
     return;
   }
-  
+
   const bytes = new Uint8Array(result.data);
   const outPath = `${OUTPUT_DIR}/test_output.${ext}`;
   writeFileSync(outPath, bytes);
@@ -78,7 +78,7 @@ async function runConversion(inputBytes, { module, fn, args, ext, label }) {
 async function main() {
   const inputBytes = new Uint8Array(readFileSync(input_path));
   console.log(`Input: ${input_path} (${inputBytes.length} bytes)\n`);
-  
+
   const ext = input_path.split('.').pop().toLowerCase();
   const isSTBreadable = ['png', 'jpg', 'jpeg', 'bmp', 'tga', 'hdr'].includes(ext);
 

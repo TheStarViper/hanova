@@ -1,4 +1,4 @@
-import { converterFactory } from "./bridge/orchestrator.mjs";
+import { converterFactory } from "../../../backend/src/bridge/orchestrator.mjs";
 import { type FormatName, JPEG_QUALITY, WEBP_QUALITY } from "./fileManager";
 
 type Bytes = Uint8Array<ArrayBuffer>;
