@@ -1,5 +1,5 @@
-import { type CppManager } from "./cppManager";
 import type { ReturnObj } from "./converter.worker";
+import { type CppManager } from "./cppManager";
 import { decodeSounds } from "./sound";
 
 const MAX_FILENAME_CHARS = 20;
@@ -9,328 +9,327 @@ export const JPEG_QUALITY = 85;
 export const WEBP_QUALITY = 90;
 
 export interface FileFormat {
-	/** file extension for the file download. Does *not* include the dot */
-	ext: string;
+  /** file extension for the file download. Does *not* include the dot */
+  ext: string;
 
-	/**
-	 * {@link https://www.iana.org/assignments/media-types#image|Super useful resource for MIME types}
-	 */
-	mimeType: string;
+  /**
+   * {@link https://www.iana.org/assignments/media-types#image|Super useful resource for MIME types}
+   */
+  mimeType: string;
 
-	validExtensions: string[];
+  validExtensions: string[];
 }
 
 export const FORMATS = {
-	// https://en.wikipedia.org/wiki/PNG
-	PNG: {
-		ext: "png",
-		mimeType: "image/png",
-		validExtensions: ["png"],
-	},
+  // https://en.wikipedia.org/wiki/PNG
+  PNG: {
+    ext: "png",
+    mimeType: "image/png",
+    validExtensions: ["png"],
+  },
 
-	// https://en.wikipedia.org/wiki/JPEG
-	JPEG: {
-		ext: "jpeg",
-		mimeType: "image/jpeg",
-		validExtensions: ["jpg", "jpeg"],
-	},
+  // https://en.wikipedia.org/wiki/JPEG
+  JPEG: {
+    ext: "jpeg",
+    mimeType: "image/jpeg",
+    validExtensions: ["jpg", "jpeg"],
+  },
 
-	// https://en.wikipedia.org/wiki/BMP_file_format
-	BMP: {
-		ext: "bmp",
-		mimeType: "image/bmp",
-		validExtensions: ["bmp"],
-	},
+  // https://en.wikipedia.org/wiki/BMP_file_format
+  BMP: {
+    ext: "bmp",
+    mimeType: "image/bmp",
+    validExtensions: ["bmp"],
+  },
 
-	// https://en.wikipedia.org/wiki/Truevision_TGA
-	// Ive literally never heard of this format lol
-	TGA: {
-		ext: "tga",
+  // https://en.wikipedia.org/wiki/Truevision_TGA
+  // Ive literally never heard of this format lol
+  TGA: {
+    ext: "tga",
 
-		// apparently this mime type is unofficial and unregistered
-		mimeType: "image/x-targa",
+    // apparently this mime type is unofficial and unregistered
+    mimeType: "image/x-targa",
 
-		validExtensions: ["tga", "icb", "vda", "vst"],
-	},
+    validExtensions: ["tga", "icb", "vda", "vst"],
+  },
 
-	// https://en.wikipedia.org/wiki/RGBE_image_format
-	HDR: {
-		ext: "hdr",
-		mimeType: "image/vnd.radiance",
-		validExtensions: ["hdr"],
-	},
+  // https://en.wikipedia.org/wiki/RGBE_image_format
+  HDR: {
+    ext: "hdr",
+    mimeType: "image/vnd.radiance",
+    validExtensions: ["hdr"],
+  },
 
-	// https://en.wikipedia.org/wiki/WebP
-	// best image format!
-	WebP: {
-		ext: "webp",
-		mimeType: "image/webp",
-		validExtensions: ["webp"],
-	},
+  // https://en.wikipedia.org/wiki/WebP
+  // best image format!
+  WebP: {
+    ext: "webp",
+    mimeType: "image/webp",
+    validExtensions: ["webp"],
+  },
 
-	// https://en.wikipedia.org/wiki/SVG
-	SVG: {
-		ext: "svg",
-		mimeType: "image/svg+xml",
-		validExtensions: ["svg"],
-	},
+  // https://en.wikipedia.org/wiki/SVG
+  SVG: {
+    ext: "svg",
+    mimeType: "image/svg+xml",
+    validExtensions: ["svg"],
+  },
 
-	// https://en.wikipedia.org/wiki/GIF
-	GIF: {
-		ext: "gif",
-		mimeType: "image/gif",
-		validExtensions: ["gif"],
-	},
+  // https://en.wikipedia.org/wiki/GIF
+  GIF: {
+    ext: "gif",
+    mimeType: "image/gif",
+    validExtensions: ["gif"],
+  },
 
-	// https://en.wikipedia.org/wiki/AVIF
-	AVIF: {
-		ext: "avif",
-		mimeType: "image/avif",
-		validExtensions: ["avif", "avifs"],
-	},
+  // https://en.wikipedia.org/wiki/AVIF
+  AVIF: {
+    ext: "avif",
+    mimeType: "image/avif",
+    validExtensions: ["avif", "avifs"],
+  },
 
-	// https://en.wikipedia.org/wiki/TIFF
-	TIFF: {
-		ext: "tiff",
-		mimeType: "image/tiff",
-		validExtensions: ["tiff", "tif"],
-	},
+  // https://en.wikipedia.org/wiki/TIFF
+  TIFF: {
+    ext: "tiff",
+    mimeType: "image/tiff",
+    validExtensions: ["tiff", "tif"],
+  },
 
-	// https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
-	HEIF: {
-		ext: "heif",
-		mimeType: "image/heif",
-		validExtensions: [
-			"heif",
-			"heifs",
-			"heic",
-			"heics",
-			"hif",
-			"hifs",
-			"avci",
-			"avcs",
-		],
-	},
+  // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
+  HEIF: {
+    ext: "heif",
+    mimeType: "image/heif",
+    validExtensions: [
+      "heif",
+      "heifs",
+      "heic",
+      "heics",
+      "hif",
+      "hifs",
+      "avci",
+      "avcs",
+    ],
+  },
 
-	// https://en.wikipedia.org/wiki/JPEG_XL
-	JPEGXL: {
-		ext: "jxl",
-		mimeType: "image/jxl",
-		validExtensions: ["jxl"],
-	},
+  // https://en.wikipedia.org/wiki/JPEG_XL
+  JPEGXL: {
+    ext: "jxl",
+    mimeType: "image/jxl",
+    validExtensions: ["jxl"],
+  },
 
-	// https://en.wikipedia.org/wiki/ICO_(file_format)
-	ICO: {
-		ext: "ico",
-		mimeType: "image/x-icon",
-		validExtensions: ["ico"],
-	},
+  // https://en.wikipedia.org/wiki/ICO_(file_format)
+  ICO: {
+    ext: "ico",
+    mimeType: "image/x-icon",
+    validExtensions: ["ico"],
+  },
 
-	// https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
-	PSD: {
-		ext: "psd",
-		mimeType: "image/vnd.adobe.photoshop",
-		validExtensions: ["psd"],
-	},
+  // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
+  PSD: {
+    ext: "psd",
+    mimeType: "image/vnd.adobe.photoshop",
+    validExtensions: ["psd"],
+  },
 
-	// https://en.wikipedia.org/wiki/PDF
-	PDF: {
-		ext: "pdf",
-		mimeType: "application/pdf",
-		validExtensions: ["pdf"],
-	},
+  // https://en.wikipedia.org/wiki/PDF
+  PDF: {
+    ext: "pdf",
+    mimeType: "application/pdf",
+    validExtensions: ["pdf"],
+  },
 
-	// https://en.wikipedia.org/wiki/Encapsulated_PostScript
-	EPS: {
-		ext: "eps",
-		mimeType: "application/postscript",
-		validExtensions: ["eps", "epsf", "epsi"],
-	},
+  // https://en.wikipedia.org/wiki/Encapsulated_PostScript
+  EPS: {
+    ext: "eps",
+    mimeType: "application/postscript",
+    validExtensions: ["eps", "epsf", "epsi"],
+  },
 
-	// im omitting Adobe Illustrator's .ai format cuz there's no wikipedia
-	// article for it, and I worry that it'd be confusing for users who
-	// think that it's a generative AI feature
+  // im omitting Adobe Illustrator's .ai format cuz there's no wikipedia
+  // article for it, and I worry that it'd be confusing for users who
+  // think that it's a generative AI feature
 
-	// https://en.wikipedia.org/wiki/OpenRaster
-	ORA: {
-		ext: "ora",
-		mimeType: "image/openraster",
-		validExtensions: ["ora"],
-	},
+  // https://en.wikipedia.org/wiki/OpenRaster
+  ORA: {
+    ext: "ora",
+    mimeType: "image/openraster",
+    validExtensions: ["ora"],
+  },
 
-	// https://en.wikipedia.org/wiki/XCF_(file_format)
-	XCF: {
-		ext: "xcf",
-		mimeType: "image/x-xcf",
-		validExtensions: ["xcf"],
-	},
+  // https://en.wikipedia.org/wiki/XCF_(file_format)
+  XCF: {
+    ext: "xcf",
+    mimeType: "image/x-xcf",
+    validExtensions: ["xcf"],
+  },
 
-	// im omitting QOI because it doesn't even have a mimetype
+  // im omitting QOI because it doesn't even have a mimetype
 
-	// https://en.wikipedia.org/wiki/OpenEXR
-	EXR: {
-		ext: "exr",
-		mimeType: "image/x-exr",
-		validExtensions: ["exr"],
-	},
+  // https://en.wikipedia.org/wiki/OpenEXR
+  EXR: {
+    ext: "exr",
+    mimeType: "image/x-exr",
+    validExtensions: ["exr"],
+  },
 } as const satisfies Record<string, FileFormat>;
 export type FormatName = keyof typeof FORMATS;
 
 export class FileManager {
-	file: File | undefined;
+  file: File | undefined;
 
-	outFormatName: FormatName | undefined;
-	get outFormat(): FileFormat | undefined {
-		if (this.outFormatName === undefined) return undefined;
-		return FORMATS[this.outFormatName];
-	}
+  outFormatName: FormatName | undefined;
+  get outFormat(): FileFormat | undefined {
+    if (this.outFormatName === undefined) return undefined;
+    return FORMATS[this.outFormatName];
+  }
 
-	conversionStartTime: number | null = null;
+  conversionStartTime: number | null = null;
 
-	constructor(
-		public cppManager: CppManager,
-		public dropHook?: () => Promise<void>,
-	) {}
+  constructor(
+    public cppManager: CppManager,
+    public dropHook?: () => Promise<void>,
+  ) {}
 
-	init() {
-		document.addEventListener("dragover", (event: DragEvent) => {
-			event.preventDefault();
-			document.body.classList.add("dragover");
-		});
-		document.addEventListener("dragleave", (event: DragEvent) => {
-			if (event.relatedTarget === undefined) {
-				document.body.classList.remove("dragover");
-			}
-		});
-		document.addEventListener("drop", (event: DragEvent) => {
-			event.preventDefault();
+  init() {
+    document.addEventListener("dragover", (event: DragEvent) => {
+      event.preventDefault();
+      document.body.classList.add("dragover");
+    });
+    document.addEventListener("dragleave", (event: DragEvent) => {
+      if (event.relatedTarget === undefined) {
+        document.body.classList.remove("dragover");
+      }
+    });
+    document.addEventListener("drop", (event: DragEvent) => {
+      event.preventDefault();
 
-			// hijacking interaction to decode sounds
-			decodeSounds();
+      // hijacking interaction to decode sounds
+      decodeSounds();
 
-			this.handleUpload(event.dataTransfer?.files);
-		});
-	}
+      this.handleUpload(event.dataTransfer?.files);
+    });
+  }
 
-	handleUpload(files: FileList | undefined | null) {
-		if (files === undefined || files === null || files.length === 0) return;
+  handleUpload(files: FileList | undefined | null) {
+    if (files === undefined || files === null || files.length === 0) return;
 
-		document.body.classList.remove("dragover");
-		document.body.classList.add("dropped");
+    document.body.classList.remove("dragover");
+    document.body.classList.add("dropped");
 
-		if (files.length > 1) {
-			console.warn(
-				"Only dropping a single file is supported rn. Defaulting to first file.",
-			);
-		}
-		this.file = files[0];
+    if (files.length > 1) {
+      console.warn(
+        "Only dropping a single file is supported rn. Defaulting to first file.",
+      );
+    }
+    this.file = files[0];
 
-		this.dropHook?.();
-	}
+    this.dropHook?.();
+  }
 
-	async convertTo(formatName: FormatName) {
-		this.outFormatName = formatName;
-		if (this.outFormat === undefined) {
-			throw new Error(`invalid file type ${formatName}`);
-		}
+  async convertTo(formatName: FormatName) {
+    this.outFormatName = formatName;
+    if (this.outFormat === undefined) {
+      throw new Error(`invalid file type ${formatName}`);
+    }
 
-		if (this.file === undefined) {
-			throw new Error("tried to convert before file was set");
-		}
+    if (this.file === undefined) {
+      throw new Error("tried to convert before file was set");
+    }
 
-		const inBytes = await this.file.bytes();
-		const inFormat = this.getInputFormatName();
+    const inBytes = await this.file.bytes();
+    const inFormat = this.getInputFormatName();
 
-		this.conversionStartTime = Date.now();
-		this.cppManager.startConversion({
-			inBytes,
-			outFormat: formatName,
-			inFormat,
-		});
-	}
+    this.conversionStartTime = Date.now();
+    this.cppManager.startConversion({
+      inBytes,
+      outFormat: formatName,
+      inFormat,
+    });
+  }
 
-	/**
-	 *
-	 * @returns undefined if the conversion never finished, true if everything worked, and a string if there was an error
-	 */
-	downloadFile(): undefined | true | string {
-		const result = this.cppManager.response;
+  /**
+   * @returns undefined if the conversion never finished, true if everything worked, and a string if there was an error
+   */
+  downloadFile(): undefined | true | string {
+    const result = this.cppManager.response;
 
-		if (result === null) return undefined;
-		if (!result.ok) return result.error;
+    if (result === null) return undefined;
+    if (!result.ok) return result.error;
 
-		const outBytes = result.data;
+    const outBytes = result.data;
 
-		const blob = new Blob([outBytes], {
-			type: FORMATS[this.outFormatName!].mimeType,
-		});
+    const blob = new Blob([outBytes], {
+      type: FORMATS[this.outFormatName!].mimeType,
+    });
 
-		const url = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
 
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = this.outFilename;
-		a.click();
-		a.remove();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = this.outFilename;
+    a.click();
+    a.remove();
 
-		setTimeout(() => URL.revokeObjectURL(url), 0);
+    setTimeout(() => URL.revokeObjectURL(url), 0);
 
-		return true;
-	}
+    return true;
+  }
 
-	private parseFilename(): { base: string; ext: string | undefined } {
-		if (this.file === undefined) {
-			throw new Error("can only parse filename if file is defined");
-		}
-		const input = this.file.name;
+  private parseFilename(): { base: string; ext: string | undefined } {
+    if (this.file === undefined) {
+      throw new Error("can only parse filename if file is defined");
+    }
+    const input = this.file.name;
 
-		// group 1: everything before the final dot
-		// group 2: the final dot and everything after it, if it exists
-		const regex = /^(.*?)(\.[^.]*)?$/;
+    // group 1: everything before the final dot
+    // group 2: the final dot and everything after it, if it exists
+    const regex = /^(.*?)(\.[^.]*)?$/;
 
-		const match = input.match(regex);
+    const match = input.match(regex);
 
-		if (match === null) return { base: "file", ext: "" };
+    if (match === null) return { base: "file", ext: "" };
 
-		// one-indexed because regex is weird like that
-		const base: string = match[1];
-		const ext: string | undefined = match[2]; // includes dot btw
+    // one-indexed because regex is weird like that
+    const base: string = match[1];
+    const ext: string | undefined = match[2]; // includes dot btw
 
-		return { base, ext };
-	}
+    return { base, ext };
+  }
 
-	getInputFormatName(): FormatName | undefined {
-		const { ext } = this.parseFilename();
-		if (ext === undefined) return undefined;
+  getInputFormatName(): FormatName | undefined {
+    const { ext } = this.parseFilename();
+    if (ext === undefined) return undefined;
 
-		const name = (Object.keys(FORMATS) as FormatName[]).find((name) => {
-			const format = FORMATS[name];
-			const extensions = format.validExtensions.map((e) => e.toLowerCase());
-			return extensions.includes(ext.substring(1).toLowerCase());
-		});
+    const name = (Object.keys(FORMATS) as FormatName[]).find((name) => {
+      const format = FORMATS[name];
+      const extensions = format.validExtensions.map((e) => e.toLowerCase());
+      return extensions.includes(ext.substring(1).toLowerCase());
+    });
 
-		return name;
-	}
+    return name;
+  }
 
-	get displayifiedFilename(): string {
-		const { base, ext } = this.parseFilename();
+  get displayifiedFilename(): string {
+    const { base, ext } = this.parseFilename();
 
-		const maxBaseLength = MAX_FILENAME_CHARS - (ext?.length ?? 0);
+    const maxBaseLength = MAX_FILENAME_CHARS - (ext?.length ?? 0);
 
-		if (base.length <= maxBaseLength) return base + ext;
+    if (base.length <= maxBaseLength) return base + ext;
 
-		const truncatedBase = base.substring(0, maxBaseLength - 1);
+    const truncatedBase = base.substring(0, maxBaseLength - 1);
 
-		return truncatedBase + ELLIPSIS + ext;
-	}
+    return truncatedBase + ELLIPSIS + ext;
+  }
 
-	get outFilename(): string {
-		const { base } = this.parseFilename();
+  get outFilename(): string {
+    const { base } = this.parseFilename();
 
-		if (this.outFormat === undefined) {
-			throw new Error("can't get out filename until out format is set");
-		}
+    if (this.outFormat === undefined) {
+      throw new Error("can't get out filename until out format is set");
+    }
 
-		return `${base}.${this.outFormat.ext}`;
-	}
+    return `${base}.${this.outFormat.ext}`;
+  }
 }

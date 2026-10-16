@@ -1,29 +1,29 @@
-import type { WorkerResponse, WorkerRequest } from "./converter.worker";
+import type { WorkerRequest, WorkerResponse } from "./converter.worker";
 
 export class CppManager {
-	private worker: Worker | null = null;
-	response: WorkerResponse | null = null;
+  private worker: Worker | null = null;
+  response: WorkerResponse | null = null;
 
-	hook: ((response: WorkerResponse) => void) | null = null;
+  hook: ((response: WorkerResponse) => void) | null = null;
 
-	constructor() {}
+  constructor() {}
 
-	async init() {
-		this.worker = new Worker(
-			new URL("./converter.worker.ts", import.meta.url),
-			{ type: "module" },
-		);
+  async init() {
+    this.worker = new Worker(
+      new URL("./converter.worker.ts", import.meta.url),
+      { type: "module" },
+    );
 
-		this.worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
-			this.response = event.data;
+    this.worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
+      this.response = event.data;
 
-			this.hook?.(this.response);
-		};
-	}
+      this.hook?.(this.response);
+    };
+  }
 
-	startConversion(request: WorkerRequest) {
-		if (this.worker === null) throw new Error("call worker init first");
+  startConversion(request: WorkerRequest) {
+    if (this.worker === null) throw new Error("call worker init first");
 
-		this.worker.postMessage(request);
-	}
+    this.worker.postMessage(request);
+  }
 }

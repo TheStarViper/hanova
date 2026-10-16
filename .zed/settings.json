@@ -1,0 +1,23 @@
+{
+  "formatter": {
+    "external": {
+      "command": "dprint",
+      "arguments": ["fmt", "--stdin", "{buffer_path}"],
+    },
+  },
+
+  "languages": {
+    "TypeScript": {
+      "language_servers": ["dprint", "vtsls", "hackatime"],
+      "formatter": "language_server"
+    },
+    "JavaScript": {
+      "language_servers": ["dprint", "vtsls", "hackatime"],
+      "formatter": "language_server"
+    },
+    "Svelte": {
+      "language_servers": ["dprint", "vtsls", "hackatime"],
+      "formatter": "language_server"
+    },
+  }
+}

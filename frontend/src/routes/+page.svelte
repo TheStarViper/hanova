@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Map from "#lib/components/Map.svelte";
-	import { onMount } from "svelte";
-	import { CppManager } from "#lib/cppManager.js";
+import Map from "#lib/components/Map.svelte";
+import { CppManager } from "#lib/cppManager.js";
+import { onMount } from "svelte";
 
-	const cppManager = new CppManager();
+const cppManager = new CppManager();
 
-	onMount(() => {
-		cppManager.init();
-	});
+onMount(() => {
+  cppManager.init();
+});
 </script>
 
 <Map {cppManager} />

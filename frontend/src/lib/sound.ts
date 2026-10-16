@@ -9,22 +9,21 @@ import { asset } from "$app/paths";
  * Master list of all sounds.
  */
 export const SOUNDS = [
-	// https://freesound.org/people/BMacZero/sounds/96125/
-	"bubble2.wav",
+  // https://freesound.org/people/BMacZero/sounds/96125/
+  "bubble2.wav",
 
-	// https://freesound.org/people/f3bbbo/sounds/651293/
-	"shovel1.wav",
+  // https://freesound.org/people/f3bbbo/sounds/651293/
+  "shovel1.wav",
 
-	// https://freesound.org/people/maryhelena.clark/sounds/554439/
-	"sail1.ogg",
+  // https://freesound.org/people/maryhelena.clark/sounds/554439/
+  "sail1.ogg",
 
-	// https://freesound.org/people/Sheyvan/sounds/519006/
-	"splash1.ogg",
+  // https://freesound.org/people/Sheyvan/sounds/519006/
+  "splash1.ogg",
 ] as const satisfies string[];
 export type Sound = (typeof SOUNDS)[number];
 
-const getSoundPath: (sound: Sound) => string = (sound: Sound) =>
-	asset(`sounds/${sound}`);
+const getSoundPath: (sound: Sound) => string = (sound: Sound) => asset(`sounds/${sound}`);
 
 let audioCtx: AudioContext | undefined = undefined;
 
@@ -42,20 +41,20 @@ let isPreloadingStarted = false;
  * page load.
  */
 export async function preloadSounds(): Promise<void> {
-	if (typeof window === "undefined" || isPreloadingStarted) return;
-	isPreloadingStarted = true;
+  if (typeof window === "undefined" || isPreloadingStarted) return;
+  isPreloadingStarted = true;
 
-	const preloads = SOUNDS.map(async (sound) => {
-		try {
-			const response = await fetch(getSoundPath(sound));
-			const arrayBuffer = await response.arrayBuffer();
-			rawAudioCache.set(sound, arrayBuffer);
-		} catch {
-			console.error(`Failed to preload sound ${sound}`);
-		}
-	});
+  const preloads = SOUNDS.map(async (sound) => {
+    try {
+      const response = await fetch(getSoundPath(sound));
+      const arrayBuffer = await response.arrayBuffer();
+      rawAudioCache.set(sound, arrayBuffer);
+    } catch {
+      console.error(`Failed to preload sound ${sound}`);
+    }
+  });
 
-	await Promise.all(preloads);
+  await Promise.all(preloads);
 }
 
 /**
@@ -64,60 +63,60 @@ export async function preloadSounds(): Promise<void> {
  * run it after a user interaction.
  */
 export async function decodeSounds(): Promise<void> {
-	if (typeof window === "undefined" || typeof audioCtx !== "undefined") return;
+  if (typeof window === "undefined" || typeof audioCtx !== "undefined") return;
 
-	audioCtx = new window.AudioContext();
+  audioCtx = new window.AudioContext();
 
-	// In case we didn't preload the sounds before trying to decode them
-	if (rawAudioCache.size === 0) await preloadSounds();
+  // In case we didn't preload the sounds before trying to decode them
+  if (rawAudioCache.size === 0) await preloadSounds();
 
-	const rawCacheEntries = Array.from(rawAudioCache.entries());
+  const rawCacheEntries = Array.from(rawAudioCache.entries());
 
-	const decodes: Promise<void>[] = rawCacheEntries.map(
-		async ([sound, arrayBuffer]) => {
-			try {
-				if (audioCtx) {
-					const decoded = await audioCtx.decodeAudioData(arrayBuffer.slice(0));
-					decodedAudioCache.set(sound, decoded);
-				}
-			} catch {
-				console.error(`Failed to preload sound ${sound}`);
-			}
-		},
-	);
+  const decodes: Promise<void>[] = rawCacheEntries.map(
+    async ([sound, arrayBuffer]) => {
+      try {
+        if (audioCtx) {
+          const decoded = await audioCtx.decodeAudioData(arrayBuffer.slice(0));
+          decodedAudioCache.set(sound, decoded);
+        }
+      } catch {
+        console.error(`Failed to preload sound ${sound}`);
+      }
+    },
+  );
 
-	await Promise.all(decodes);
+  await Promise.all(decodes);
 }
 
 export function playSound(sound: Sound, volume: number = 1): void {
-	// If we aren't running in the browser, do an early return.
-	if (typeof window === "undefined") return;
+  // If we aren't running in the browser, do an early return.
+  if (typeof window === "undefined") return;
 
-	if (audioCtx === undefined) {
-		decodeSounds();
-		// early return because we're fire-and-forgetting an async and we don't
-		// want race conditions.
-		return;
-	}
+  if (audioCtx === undefined) {
+    decodeSounds();
+    // early return because we're fire-and-forgetting an async and we don't
+    // want race conditions.
+    return;
+  }
 
-	if (audioCtx.state === "suspended") {
-		audioCtx.resume();
-	}
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
 
-	const buffer = decodedAudioCache.get(sound);
-	if (buffer === undefined) {
-		console.warn(`Sound ${sound} is not loaded in cache`);
-		return;
-	}
+  const buffer = decodedAudioCache.get(sound);
+  if (buffer === undefined) {
+    console.warn(`Sound ${sound} is not loaded in cache`);
+    return;
+  }
 
-	const source = audioCtx.createBufferSource();
-	const gainNode = audioCtx.createGain();
+  const source = audioCtx.createBufferSource();
+  const gainNode = audioCtx.createGain();
 
-	source.buffer = buffer;
-	gainNode.gain.value = volume;
+  source.buffer = buffer;
+  gainNode.gain.value = volume;
 
-	source.connect(gainNode);
-	gainNode.connect(audioCtx.destination);
+  source.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
 
-	source.start(0);
+  source.start(0);
 }

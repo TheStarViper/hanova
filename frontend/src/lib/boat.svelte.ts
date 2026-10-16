@@ -1,4 +1,4 @@
-import { Pos, ease } from "#lib/utils.svelte.js";
+import { ease, Pos } from "#lib/utils.svelte.js";
 import type { Route } from "./route";
 import { playSound } from "./sound";
 import type { Viewport } from "./viewport.svelte";
@@ -8,85 +8,84 @@ import type { Viewport } from "./viewport.svelte";
 export const SAIL_DURATION = 4000;
 
 export class Boat {
-	pos = new Pos();
-	route: Route | undefined;
-	hide = $state(true);
-	sunk = $state(false);
-	name = "Boat";
+  pos = new Pos();
+  route: Route | undefined;
+  hide = $state(true);
+  sunk = $state(false);
+  name = "Boat";
 
-	constructor(public viewport: Viewport) {}
+  constructor(public viewport: Viewport) {}
 
-	private moveAnimID: number | null = null;
-	/**
-	 * Smoothly moves from one position to another
-	 *
-	 * @param route
-	 * @param duration in milliseconds
-	 * @param arriveHook runs after the animation
-	 */
-	sail(route: Route, duration: number, arriveHook?: () => void) {
-		// sailing should only happen if visible
-		if (this.hide) return;
+  private moveAnimID: number | null = null;
+  /**
+   * Smoothly moves from one position to another
+   *
+   * @param route
+   * @param duration in milliseconds
+   * @param arriveHook runs after the animation
+   */
+  sail(route: Route, duration: number, arriveHook?: () => void) {
+    // sailing should only happen if visible
+    if (this.hide) return;
 
-		// we don't wanna restart the animation if there's already one running
-		if (this.route !== undefined) return;
-		this.route = route;
+    // we don't wanna restart the animation if there's already one running
+    if (this.route !== undefined) return;
+    this.route = route;
 
-		if (this.moveAnimID !== null) cancelAnimationFrame(this.moveAnimID);
+    if (this.moveAnimID !== null) cancelAnimationFrame(this.moveAnimID);
 
-		const shouldMoveViewport =
-			this.pos.x > -this.viewport.offset.x &&
-			this.pos.x < -this.viewport.offset.x + this.viewport.width &&
-			this.pos.y > -this.viewport.offset.y &&
-			this.pos.y < -this.viewport.offset.y + this.viewport.height;
+    const shouldMoveViewport = this.pos.x > -this.viewport.offset.x
+      && this.pos.x < -this.viewport.offset.x + this.viewport.width
+      && this.pos.y > -this.viewport.offset.y
+      && this.pos.y < -this.viewport.offset.y + this.viewport.height;
 
-		// hopefully enough time for the sounds to decode
-		setTimeout(() => playSound("sail1.ogg"), 50);
+    // hopefully enough time for the sounds to decode
+    setTimeout(() => playSound("sail1.ogg"), 50);
 
-		let startTime: number | null = null;
+    let startTime: number | null = null;
 
-		const animate = (nowTime: number) => {
-			if (startTime === null) {
-				startTime = nowTime;
-			}
+    const animate = (nowTime: number) => {
+      if (startTime === null) {
+        startTime = nowTime;
+      }
 
-			const elapsed = nowTime - startTime;
+      const elapsed = nowTime - startTime;
 
-			/** normalized between 0 and 1 */
-			const rawProgress = Math.min(elapsed / duration, 1);
-			const progress = ease(rawProgress);
+      /** normalized between 0 and 1 */
+      const rawProgress = Math.min(elapsed / duration, 1);
+      const progress = ease(rawProgress);
 
-			const newPos = route(progress);
+      const newPos = route(progress);
 
-			if (shouldMoveViewport) {
-				this.viewport.offset.x -= newPos.x - this.pos.x;
-				this.viewport.offset.y -= newPos.y - this.pos.y;
-			}
+      if (shouldMoveViewport) {
+        this.viewport.offset.x -= newPos.x - this.pos.x;
+        this.viewport.offset.y -= newPos.y - this.pos.y;
+      }
 
-			this.pos.x = newPos.x;
-			this.pos.y = newPos.y;
+      this.pos.x = newPos.x;
+      this.pos.y = newPos.y;
 
-			if (progress < 1) {
-				this.moveAnimID = requestAnimationFrame(animate);
-			} else {
-				this.moveAnimID = null;
-				arriveHook?.();
-			}
-		};
+      if (progress < 1) {
+        this.moveAnimID = requestAnimationFrame(animate);
+      } else {
+        this.moveAnimID = null;
+        arriveHook?.();
+      }
+    };
 
-		this.moveAnimID = requestAnimationFrame(animate);
-	}
+    this.moveAnimID = requestAnimationFrame(animate);
+  }
 
-	sink() {
-		if (this.moveAnimID !== null) {
-			cancelAnimationFrame(this.moveAnimID);
-			this.moveAnimID = null;
-		}
+  sink() {
+    if (this.moveAnimID !== null) {
+      cancelAnimationFrame(this.moveAnimID);
+      this.moveAnimID = null;
+    }
 
-		playSound("bubble2.wav");
+    playSound("bubble2.wav");
 
-		this.sunk = true;
+    this.sunk = true;
 
-		setTimeout(() => (this.hide = true), 1000);
-	}
+    setTimeout(() => (this.hide = true), 1000);
+  }
 }
