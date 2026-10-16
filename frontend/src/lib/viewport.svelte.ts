@@ -13,7 +13,7 @@ export class Viewport {
 	private dragStartX = 0;
 	private dragStartY = 0;
 
-	private DRAG_SENSITIVITY = 0.7;
+	private DRAG_SENSITIVITY = 1;
 	private SCROLL_SENSITIVITY = 1.0015;
 	private MIN_ZOOM = 0.3;
 	private MAX_ZOOM = 2;
@@ -79,6 +79,8 @@ export class Viewport {
 			this.dragStartY = event.clientY;
 		});
 		window.addEventListener("wheel", (event) => {
+			if (!this.canDrag) return;
+
 			const newZoom =
 				this.zoom * Math.pow(this.SCROLL_SENSITIVITY, -event.deltaY);
 
