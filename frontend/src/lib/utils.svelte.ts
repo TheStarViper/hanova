@@ -41,11 +41,17 @@ export class Viewport {
 	max = new Pos();
 
 	offset = new Pos(0, 0);
+	zoom: number = $state(1);
 
 	canDrag = $state(false);
 	userIsDragging = $state(false);
 	private dragStartX = 0;
 	private dragStartY = 0;
+
+	private DRAG_SENSITIVITY = 0.7;
+	private SCROLL_SENSITIVITY = 1.0015;
+	private MIN_ZOOM = 0.3;
+	private MAX_ZOOM = 2;
 
 	constructor() {}
 
@@ -56,7 +62,7 @@ export class Viewport {
 
 		window.addEventListener("resize", () => this.update());
 
-		this.initDragListeners();
+		this.initListeners();
 	}
 
 	update(): void {
@@ -82,7 +88,7 @@ export class Viewport {
 		return new Pos(this.width / 2, this.height / 2);
 	}
 
-	initDragListeners() {
+	private initListeners() {
 		window.addEventListener("pointerdown", (event) => {
 			if (!this.canDrag) return;
 
@@ -101,11 +107,19 @@ export class Viewport {
 			const dragDeltaX = event.clientX - this.dragStartX;
 			const dragDeltaY = event.clientY - this.dragStartY;
 
-			this.offset.x += dragDeltaX;
-			this.offset.y += dragDeltaY;
+			this.offset.x += (dragDeltaX * this.DRAG_SENSITIVITY) / this.zoom;
+			this.offset.y += (dragDeltaY * this.DRAG_SENSITIVITY) / this.zoom;
 
 			this.dragStartX = event.clientX;
 			this.dragStartY = event.clientY;
+		});
+		window.addEventListener("wheel", (event) => {
+			const newZoom =
+				this.zoom * Math.pow(this.SCROLL_SENSITIVITY, -event.deltaY);
+
+			if (newZoom > this.MIN_ZOOM && newZoom < this.MAX_ZOOM) {
+				this.zoom = newZoom;
+			}
 		});
 	}
 

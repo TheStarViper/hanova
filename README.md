@@ -163,10 +163,13 @@ Week 3:
 - [x] Boat spawns at the island corresponding to its original file format
 - [x] 19 islands
 
+Week 4:
+
+- [x] Viewport zooming
+
 Planned:
 
 - [ ] More island asset variety
-- [ ] Viewport zooming
 - [ ] Initial menu animation that pans over the islands
 - [ ] Mobile support
 - [ ] Boat moves in circles around islands rather than beaching itself

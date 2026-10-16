@@ -12,6 +12,7 @@
 	import { onMount } from "svelte";
 	import Bezier from "./Bezier.svelte";
 	import DebuggingGrid from "./DebuggingGrid.svelte";
+	import { Pos } from "#lib/utils.svelte.js";
 
 	// for various dev-only debugging visuals
 	const debugging = false;
@@ -31,6 +32,8 @@
 		world.init();
 	});
 
+	let worldOffset = $derived(Pos.mul(viewport.center, 1 - viewport.zoom));
+
 	$effect(() => {
 		document.body.style.cursor = world.viewport.canDrag
 			? world.viewport.userIsDragging
@@ -42,23 +45,33 @@
 
 <h1>Hanova</h1>
 
-<Boat me={world.boat} {viewport} />
+<div
+	class="world-layer"
+	style:transform="translate({worldOffset.x}px, {worldOffset.y}px) scale({viewport.zoom})"
+>
+	<Boat me={world.boat} {viewport} />
 
-{#each world.islands as island}
-	<Island me={island} {viewport} {debugging} allowHover={world.banner.hide} />
-{/each}
-{#if debugging}
-	<DebuggingGrid {viewport} />
-{/if}
+	<Bezier curves={world.curves} {viewport} />
 
-<Treasure me={world.treasure} {viewport} />
+	{#each world.islands as island}
+		<Island
+			me={island}
+			{viewport}
+			{debugging}
+			allowHover={world.banner.hide}
+		/>
+	{/each}
+	<Treasure me={world.treasure} {viewport} />
+
+	{#if debugging}<DebuggingGrid {viewport} />{/if}
+</div>
+
 <Banner
 	me={world.banner}
 	handleUpload={(files: FileList | undefined | null) =>
 		world.fileManager.handleUpload(files)}
 />
 <Compass viewport={world.viewport} href="./about" />
-<Bezier curves={world.curves} {viewport} />
 
 <style lang="scss">
 	h1 {
@@ -67,5 +80,12 @@
 		z-index: 20;
 		right: 0.6rem;
 		top: 0.3rem;
+	}
+
+	.world-layer {
+		position: absolute;
+		inset: 0;
+		transform-origin: 0 0;
+		pointer-events: none;
 	}
 </style>
