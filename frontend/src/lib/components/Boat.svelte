@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BoatSvg from "#lib/assets/boat.svg?raw";
 	import type { Boat } from "#lib/boat.svelte.js";
-	import type { Viewport } from "#lib/utils.svelte.js";
+	import type { Viewport } from "#lib/viewport.svelte.js";
 	import Sprite from "./Sprite.svelte";
 
 	interface Props {

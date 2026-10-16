@@ -1,4 +1,4 @@
-import { Viewport } from "./utils.svelte";
+import { Viewport } from "./viewport.svelte";
 
 export class Banner {
 	text: string = $state("");

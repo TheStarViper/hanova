@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Island } from "#lib/island.svelte.js";
-	import type { Viewport } from "#lib/utils.svelte.js";
+	import type { Viewport } from "#lib/viewport.svelte.js";
 	import Sprite from "./Sprite.svelte";
 
 	interface Props {

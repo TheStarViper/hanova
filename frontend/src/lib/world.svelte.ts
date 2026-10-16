@@ -4,7 +4,8 @@ import { Boat, SAIL_DURATION } from "./boat.svelte";
 import { FileManager, FORMATS } from "./fileManager";
 import { Island, ISLAND_DATA, type IslandDatum } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
-import { Pos, Viewport } from "./utils.svelte";
+import { Pos } from "./utils.svelte";
+import { Viewport } from "./viewport.svelte";
 
 // misc imports
 import type { CppManager } from "./cppManager";

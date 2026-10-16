@@ -1,6 +1,7 @@
-import { Pos, Viewport, ease } from "#lib/utils.svelte.js";
+import { Pos, ease } from "#lib/utils.svelte.js";
 import type { Route } from "./route";
 import { playSound } from "./sound";
+import type { Viewport } from "./viewport.svelte";
 
 // [TODO] replace this with an actual conversion time estimate
 /** in milliseconds */

@@ -5,7 +5,7 @@ which is helpful when deciding where to place islands
 
 <script lang="ts">
 	import { GRID_CELL_WIDTH, GRID_CELL_HEIGHT } from "#lib/route.js";
-	import type { Viewport } from "#lib/utils.svelte.js";
+	import type { Viewport } from "#lib/viewport.svelte.js";
 
 	interface Props {
 		viewport: Viewport;

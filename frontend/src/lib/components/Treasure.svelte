@@ -2,7 +2,7 @@
 	import TreasureSvg from "#lib/assets/treasure.svg?raw";
 	import Sprite from "./Sprite.svelte";
 	import { Treasure } from "#lib/treasure.svelte.js";
-	import type { Viewport } from "#lib/utils.svelte.js";
+	import type { Viewport } from "#lib/viewport.svelte.js";
 
 	interface Props {
 		me: Treasure;

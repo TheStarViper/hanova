@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { CubicBezier } from "#lib/bezier.js";
-	import type { Pos, Viewport } from "#lib/utils.svelte.js";
+	import type { Pos } from "#lib/utils.svelte.js";
+	import type { Viewport } from "#lib/viewport.svelte.js";
 	import { draw, type TransitionConfig } from "svelte/transition";
 
 	interface Props {

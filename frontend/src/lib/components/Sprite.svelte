@@ -1,7 +1,7 @@
 <!-- reusable SVG wrapper component -->
 
 <script lang="ts">
-	import type { Viewport } from "#lib/utils.svelte.js";
+	import type { Viewport } from "#lib/viewport.svelte.js";
 	import type { Snippet } from "svelte";
 
 	interface Props {
