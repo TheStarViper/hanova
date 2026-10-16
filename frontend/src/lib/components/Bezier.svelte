@@ -1,14 +1,14 @@
 <script lang="ts">
 	import type { CubicBezier } from "#lib/bezier.js";
-	import type { Pos } from "#lib/utils.svelte.js";
+	import type { Pos, Viewport } from "#lib/utils.svelte.js";
 	import { draw, type TransitionConfig } from "svelte/transition";
 
 	interface Props {
 		curves: CubicBezier[] | undefined;
-		viewportOffset: Pos;
+		viewport: Viewport;
 	}
 
-	let { curves, viewportOffset }: Props = $props();
+	let { curves, viewport }: Props = $props();
 
 	const DRAW_DURATION = 600;
 	const PADDING = 20;
@@ -57,8 +57,8 @@
 	});
 
 	let offset = $derived({
-		x: viewportOffset.x + minX,
-		y: viewportOffset.y + minY,
+		x: viewport.offset.x + minX,
+		y: viewport.offset.y + minY,
 	});
 
 	/**

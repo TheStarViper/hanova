@@ -37,7 +37,7 @@
 <Sprite
 	top={me.pos.y}
 	left={me.pos.x}
-	viewportOffset={new Pos()}
+	viewport={null}
 	width={847}
 	layer={100}
 	hide={me.hide}

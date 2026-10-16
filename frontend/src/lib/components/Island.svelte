@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { Island } from "#lib/island.svelte.js";
-	import type { Pos } from "#lib/utils.svelte.js";
+	import type { Viewport } from "#lib/utils.svelte.js";
 	import Sprite from "./Sprite.svelte";
 
 	interface Props {
 		me: Island;
-		viewportOffset: Pos;
+		viewport: Viewport;
 		debugging: boolean;
 		allowHover: boolean;
 	}
 
-	let { me, viewportOffset, debugging, allowHover }: Props = $props();
+	let { me, viewport, debugging, allowHover }: Props = $props();
 
 	let hovered: boolean = $state(false);
 	let shadowOpacity = $derived(hovered && allowHover ? 0.8 : 0.4);
@@ -20,7 +20,7 @@
 <Sprite
 	left={me.pos.x}
 	top={me.pos.y}
-	{viewportOffset}
+	{viewport}
 	width={me.sprite.width}
 	{shadowOpacity}
 	{borderColor}
@@ -34,8 +34,8 @@
 >
 <div
 	class="radius for-debugging-purposes-only"
-	style:left="{me.pos.x + viewportOffset.x}px"
-	style:top="{me.pos.y + viewportOffset.y}px"
+	style:left="{me.pos.x + viewport.offset.x}px"
+	style:top="{me.pos.y + viewport.offset.y}px"
 	style:--radius="{me.sprite.radius}px"
 	style:display={debugging ? "flex" : "none"}
 ></div>

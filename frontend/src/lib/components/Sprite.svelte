@@ -1,7 +1,7 @@
 <!-- reusable SVG wrapper component -->
 
 <script lang="ts">
-	import type { Pos } from "#lib/utils.svelte.js";
+	import type { Viewport } from "#lib/utils.svelte.js";
 	import type { Snippet } from "svelte";
 
 	interface Props {
@@ -11,10 +11,10 @@
 		left: number;
 
 		/**
-		 * im making this mandatory so that I don't forget to implement it on
-		 * every component
+		 * I'm making this use an explicit null value rather than just
+		 * undefined so that I don't forget to implement it everywhere
 		 */
-		viewportOffset: Pos;
+		viewport: Viewport | null;
 
 		label?: string;
 
@@ -58,8 +58,8 @@
 	bind:this={el}
 	class="svg-wrapper {props.sunk ? 'sunk' : ''}"
 	style:opacity={props.hide ? "0" : "1"}
-	style:top="{props.top + props.viewportOffset.y}px"
-	style:left="{props.left + props.viewportOffset.x}px"
+	style:top="{props.top + (props.viewport?.offset.y ?? 0)}px"
+	style:left="{props.left + (props.viewport?.offset.x ?? 0)}px"
 	style:width={props.width !== undefined ? `${props.width}px` : "auto"}
 	style:height={props.height !== undefined ? `${props.height}px` : "auto"}
 	style:z-index={props.layer ?? 0}

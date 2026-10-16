@@ -25,7 +25,7 @@
 	// svelte-ignore state_referenced_locally
 	const world = new World(cppManager);
 
-	let viewportOffset = $derived(world.viewport.offset);
+	let viewport = $derived(world.viewport);
 
 	onMount(() => {
 		world.init();
@@ -42,28 +42,23 @@
 
 <h1>Hanova</h1>
 
-<Boat me={world.boat} {viewportOffset} />
+<Boat me={world.boat} {viewport} />
 
 {#each world.islands as island}
-	<Island
-		me={island}
-		{viewportOffset}
-		{debugging}
-		allowHover={world.banner.hide}
-	/>
+	<Island me={island} {viewport} {debugging} allowHover={world.banner.hide} />
 {/each}
 {#if debugging}
-	<DebuggingGrid {viewportOffset} />
+	<DebuggingGrid {viewport} />
 {/if}
 
-<Treasure me={world.treasure} {viewportOffset} />
+<Treasure me={world.treasure} {viewport} />
 <Banner
 	me={world.banner}
 	handleUpload={(files: FileList | undefined | null) =>
 		world.fileManager.handleUpload(files)}
 />
 <Compass viewport={world.viewport} href="./about" />
-<Bezier curves={world.curves} {viewportOffset} />
+<Bezier curves={world.curves} {viewport} />
 
 <style lang="scss">
 	h1 {
