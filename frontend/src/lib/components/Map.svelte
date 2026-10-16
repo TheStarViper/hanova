@@ -4,6 +4,7 @@ import Banner from "./Banner.svelte";
 import Boat from "./Boat.svelte";
 import Compass from "./Compass.svelte";
 import Island from "./Island.svelte";
+import Title from "./Title.svelte";
 import Treasure from "./Treasure.svelte";
 
 // misc imports
@@ -43,7 +44,7 @@ $effect(() => {
 });
 </script>
 
-<h1>Hanova</h1>
+<Title cornered={world.titleCornered} />
 
 <div
   class="world-layer"
@@ -73,14 +74,6 @@ $effect(() => {
 <Compass viewport={world.viewport} href="./about" />
 
 <style lang="scss">
-h1 {
-	position: absolute;
-	user-select: none;
-	z-index: 20;
-	right: 0.6rem;
-	top: 0.3rem;
-}
-
 .world-layer {
 	position: absolute;
 	inset: 0;

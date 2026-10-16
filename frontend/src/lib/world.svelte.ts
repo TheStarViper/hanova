@@ -22,6 +22,7 @@ export class World {
   treasure = new Treasure();
   banner = new Banner(this.viewport);
   curves: CubicBezier[] = $state([]);
+  titleCornered: boolean = $state(false);
 
   constructor(public cppManager: CppManager) {
     this.fileManager = new FileManager(cppManager, async () => this.dropHook());
@@ -62,6 +63,8 @@ export class World {
     this.spawnBoat();
     this.banner.text = "";
     this.viewport.canDrag = true;
+
+    this.titleCornered = true;
   }
 
   private getSpawnOffset(): Pos | undefined {

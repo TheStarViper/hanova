@@ -166,11 +166,11 @@ Week 3:
 Week 4:
 
 - [x] Viewport zooming
+- [ ] More island asset variety
+- [ ] Initial menu animation that pans over the islands
 
 Planned:
 
-- [ ] More island asset variety
-- [ ] Initial menu animation that pans over the islands
 - [ ] Mobile support
 - [ ] Boat moves in circles around islands rather than beaching itself
 - [ ] Smoother animations and an overall better experience

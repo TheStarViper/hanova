@@ -16,7 +16,7 @@
       "formatter": "language_server"
     },
     "Svelte": {
-      "language_servers": ["dprint", "vtsls", "hackatime"],
+      "language_servers": ["dprint", "svelte-language-server", "hackatime"],
       "formatter": "language_server"
     },
   }
