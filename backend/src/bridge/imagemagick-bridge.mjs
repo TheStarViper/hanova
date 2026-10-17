@@ -33,6 +33,33 @@ export const MAGICK_BY_NAME = {
     jxl:  magickModule.MagickFormat.Jxl,
     qoi:  magickModule.MagickFormat.Qoi,
     psd:  magickModule.MagickFormat.Psd,
+    bmp:  magickModule.MagickFormat.Bmp,
+    webp: magickModule.MagickFormat.WebP,
+    heif: magickModule.MagickFormat.Heif,
+    pdf: magickModule.MagickFormat.Pdf, // FIX add document conversion
+    eps: magickModule.MagickFormat.Eps,
+    ai: magickModule.MagickFormat.Ai,
+    ora: magickModule.MagickFormat.Ora,
+    xcf: magickModule.MagickFormat.Xcf,
+    exr: magickModule.MagickFormat.Exr,
+    
+    //camera formats
+    raw: magickModule.MagickFormat.Raw,
+    dng: magickModule.MagickFormat.Dng,
+    cr2: magickModule.MagickFormat.Cr2,
+    cr3: magickModule.MagickFormat.Cr3,
+    nef: magickModule.MagickFormat.Nef,
+    arw: magickModule.MagickFormat.Arw,
+    orf: magickModule.MagickFormat.Orf,
+    rw2: magickModule.MagickFormat.Rw2,
+    raf: magickModule.MagickFormat.Raf,
+    pef: magickModule.MagickFormat.Pef,
+    srw: magickModule.MagickFormat.Srw,
+    x3f: magickModule.MagickFormat.X3f,
+    fff: magickModule.MagickFormat.Fff,
+    iiq: magickModule.MagickFormat.Iiq,
+    mos: magickModule.MagickFormat.Mos,
+    mrw: magickModule.MagickFormat.Mrw,
 };
 
 export const MAGICK_PROCESSORS = {
