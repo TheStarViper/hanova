@@ -5,6 +5,7 @@
       "arguments": ["fmt", "--stdin", "{buffer_path}"],
     },
   },
+  "hard_tabs": true,
 
   "languages": {
     "TypeScript": {

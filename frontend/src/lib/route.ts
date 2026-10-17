@@ -118,23 +118,17 @@ function inBoundsFactory(
   };
 }
 
-// prettier-ignore
+// dprint-ignore
 const MOORE_NEIGHBORHOOD = [
-  [-1, -1],
-  [0, -1],
-  [1, -1],
-  [-1, 0],
-  [1, 0],
-  [-1, 1],
-  [0, 1],
-  [1, 1],
+  [-1, -1],[0, -1],[1, -1],
+  [-1, 0],         [1, 0],
+  [-1, 1], [0, 1], [1, 1],
 ];
-// prettier-ignore
+// dprint-ignore
 const NEUMANN_NEIGHBORHOOD = [
-  [0, -1],
-  [-1, 0],
-  [1, 0],
-  [0, 1],
+          [0, -1],
+  [-1, 0],        [1, 0],
+          [0, 1],
 ];
 function getNeighbors(origin: Coords): Coords[] {
   const [originX, originY] = numifyCoords(origin);
