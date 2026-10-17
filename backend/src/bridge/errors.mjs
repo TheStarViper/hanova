@@ -48,16 +48,41 @@ export function to_convert_error(error,fallbackcode=ErrorCode.Unknown,{step}={})
         const [,code,detail='']=magick;
         switch (code){
             case 'NoEncodeDelegateForThisImageFormat': 
-                return new ImageError(ErrorCode.UnsupportedOutput, `Can't write ${detail}: format is read-only or not in this build`,opts);
+                return new ConvertError(ErrorCode.UnsupportedOutput, `Can't write ${detail}: format is read-only or not in this build`,opts);
             case 'NoDecodeDelegateForThisImageFormat':
-                return new ImageError(ErrorCode.UnsupportedInput,`Can't read ${detail}: format is not supported`,opts);
+                return new ConvertError(ErrorCode.UnsupportedInput,`Can't read ${detail}: format is not supported`,opts);
             case 'WidthOrHeightExceedsLimit':
-                return new ImageError(ErrorCode.TooLarge,`Image is too large for this format (ICO max is 256x256)`,opts);
+                return new ConvertError(ErrorCode.TooLarge,`Image is too large for this format (ICO max is 256x256)`,opts);
             default:
-                return new ImageError(ErrorCode.NativeFailure,`${code}${detail ? ` (${detail})` : ''}`, opts);
+                return new ConvertError(ErrorCode.NativeFailure,`${code}${detail ? ` (${detail})` : ''}`, opts);
         }
     }
 
     //embind error structure
-    
+    if (error?.name==='BindingError'||error?.name==='UnboundTypeError'){
+        return new ConvertError(ErrorCode.NativeFailure,`embind: ${first}`,opts);
+    }
+
+    //webcodecccs
+    if(error?.name==='AbortError'){return new ConvertError(ErrorCode.Cancelled, 'Conversion was cancelled', opts);}
+    if(error?.name==='NotSupportedError'){return new ConvertError(ErrorCode.EncoderUnavailable, first, opts);}
+    if(error?.name==='EncodingError'||error?.name==='DataError'){return new ConvertError(ErrorCode.CorruptInput, first, opts);}
+
+    //out of memory
+    if (
+        (err instanceof RangeError && /memory|allocation|invalid (typed )?array length/i.test(message)) ||
+        /cannot enlarge memory|aborted\(oom\)|out of memory/i.test(message)
+    ) {
+        return new ConvertError(ErrorCode.TooLarge, 'Not enough memory for this file', opts);
+    }
+
+    //mediabunny
+    if (/cannot (be )?(decoded|encoded)|no (decoder|encoder)|unsupported codec|not supported/i.test(message)) {
+        return new ConvertError(ErrorCode.EncoderUnavailable, first, opts);
+    }
+    if (/invalid|malformed|unexpected end|failed to parse|not a valid/i.test(message)) {
+        return new ConvertError(ErrorCode.CorruptInput, first, opts);
+    }
+
+    return new ConvertError(fallbackcode, `${err?.name ?? 'Error'}: ${first}`, opts);//uhhhhhh wtf
 }
