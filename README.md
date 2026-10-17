@@ -37,6 +37,7 @@ library that a file converter like file validation and safety functions.
 - [libwebp](https://github.com/webmproject/libwebp) (webp)
 - [nanosvg](https://github.com/memononen/nanosvg) (svg)
 - [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image formats)
+- [mediabunny](https://mediabunny.dev/) (audio and video)
 
 ### Custom Compilation
 
@@ -53,14 +54,16 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 - [x] bmp
 - [x] tga
 - [x] hdr
-- [ ] ico (in progress)
-- [ ] gif
+- [x] ico (in progress)
+- [x] gif
 - [x] webp (conversion from WebP not supposed yet)
-- [ ] avif
-- [ ] heif
-- [ ] heic
+- [x] avif
+- [x] heif
+- [x] heic
 - [x] svg (conversion from svg not supposed yet)
 - [ ] eps
+- [x] qoi
+- [x] tiff
 
 </details>
 
@@ -103,10 +106,10 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 <details>
 <summary><h3>Video</h3></summary>
 
-Video conversion locally has no access to hardware accelleration so we are
-unable to do it reasonably without an external server. In the future we may
-dable with the idea of making video formats available via self hosted docker
-container.
+- [ ] mp4
+- [ ] mkv
+- [ ] webm
+- [ ] 
 
 </details>
 
