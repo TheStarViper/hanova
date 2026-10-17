@@ -2,11 +2,25 @@ import { Pos } from "./utils.svelte";
 
 // svg imports
 import Island1Svg from "#lib/assets/island1.svg?raw";
+import Island10Svg from "#lib/assets/island10.svg?raw";
+import Island11Svg from "#lib/assets/island11.svg?raw";
+import Island12Svg from "#lib/assets/island12.svg?raw";
+import Island13Svg from "#lib/assets/island13.svg?raw";
+import Island14Svg from "#lib/assets/island14.svg?raw";
+import Island15Svg from "#lib/assets/island15.svg?raw";
+import Island16Svg from "#lib/assets/island16.svg?raw";
+import Island17Svg from "#lib/assets/island17.svg?raw";
+import Island18Svg from "#lib/assets/island18.svg?raw";
+import Island19Svg from "#lib/assets/island19.svg?raw";
 import Island2Svg from "#lib/assets/island2.svg?raw";
 import Island3Svg from "#lib/assets/island3.svg?raw";
 import Island4Svg from "#lib/assets/island4.svg?raw";
 import Island5Svg from "#lib/assets/island5.svg?raw";
 import Island6Svg from "#lib/assets/island6.svg?raw";
+import Island7Svg from "#lib/assets/island7.svg?raw";
+import Island8Svg from "#lib/assets/island8.svg?raw";
+import Island9Svg from "#lib/assets/island9.svg?raw";
+
 import type { FileFormat, FormatName } from "./fileManager";
 
 export interface IslandSprite {
@@ -64,6 +78,97 @@ export const ISLAND_SPRITES = {
     treasureOffset: new Pos(0, 0),
     spawnOffset: new Pos(0, 100),
     radius: 65,
+  },
+  7: {
+    svg: Island7Svg,
+    width: 605,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 10,
+  },
+  8: {
+    svg: Island8Svg,
+    width: 156,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 90,
+  },
+  9: {
+    svg: Island9Svg,
+    width: 300,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 150,
+  },
+  10: {
+    svg: Island10Svg,
+    width: 244,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 195,
+  },
+  11: {
+    svg: Island11Svg,
+    width: 251,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 200,
+  },
+  12: {
+    svg: Island12Svg,
+    width: 242,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 130,
+  },
+  13: {
+    svg: Island13Svg,
+    width: 458,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 250,
+  },
+  14: {
+    svg: Island14Svg,
+    width: 295,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 175,
+  },
+  15: {
+    svg: Island15Svg,
+    width: 293,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 160,
+  },
+  16: {
+    svg: Island16Svg,
+    width: 382,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 230,
+  },
+  17: {
+    svg: Island17Svg,
+    width: 432,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 230,
+  },
+  18: {
+    svg: Island18Svg,
+    width: 207,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 110,
+  },
+  19: {
+    svg: Island19Svg,
+    width: 249,
+    treasureOffset: new Pos(0, 0),
+    spawnOffset: new Pos(0, 0),
+    radius: 185,
   },
 } as const satisfies Record<number, IslandSprite>;
 
