@@ -20,12 +20,12 @@ export async function convert_media(inputdata,target){
         throw new Error(`Unsupported media output: "${target}" (supported: ${MEDIA_FORMATS.join(', ')})`);
     }
 
-    const input = new Input({
+    const input = new mediabunny.Input({
         source: new mediabunny.BufferSource(inputdata),
         formats: mediabunny.ALL_FORMATS,
     });
 
-    const output = new Output({
+    const output = new mediabunny.Output({
         format: make(),
         target: new mediabunny.BufferTarget,
     });

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { fileURLToPath, fileURLToPathBuffer } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { convert_media, MEDIA_FORMATS } from '../src/bridge/mediabunny-bridge.mjs';
 
@@ -25,4 +25,4 @@ test(`mp4 to mkv`,{skip: !hassample && `put a test.mp4 in backend/test/samples`}
 
     //magick numahhs
     assert.deepEqual([...out.subarray(0,4)],[0x1a,0x45,0xdf,0xa3]);
-})
+});
