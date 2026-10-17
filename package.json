@@ -1,5 +1,10 @@
 {
   "dependencies": {
-    "@imagemagick/magick-wasm": "^0.0.44"
+    "@imagemagick/magick-wasm": "^0.0.44",
+    "@mediabunny/server": "^1.61.5",
+    "mediabunny": "^1.61.5"
+  },
+  "allowScripts": {
+    "node-av@6.1.1": true
   }
 }
