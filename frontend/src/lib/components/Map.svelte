@@ -63,10 +63,9 @@ $effect(() => {
     />
   {/each}
   <Treasure me={world.treasure} {viewport} />
-
-  {#if debugging}<DebuggingGrid {viewport} />{/if}
 </div>
 
+{#if debugging}<DebuggingGrid {viewport} />{/if}
 <Banner
   me={world.banner}
   handleUpload={(files: FileList | undefined | null) => world.fileManager.handleUpload(files)}
