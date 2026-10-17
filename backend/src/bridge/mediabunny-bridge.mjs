@@ -1,7 +1,7 @@
 import * as mediabunny from 'mediabunny';
-import {registermediabunnyserver} from '@mediabunny/server';
+import {registerMediabunnyServer } from '@mediabunny/server';
 
-registermediabunnyserver();
+registerMediabunnyServer ();
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
 
 const OUTPUT_FORMATS = {
