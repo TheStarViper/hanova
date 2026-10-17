@@ -11,7 +11,7 @@ let { cornered }: Props = $props();
 <style lang="scss">
 h1 {
 	position: absolute;
-	user-select: none;
+	pointer-events: none;
 	z-index: 100;
 	width: 100%;
 	text-align: center;
