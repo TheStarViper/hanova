@@ -1,7 +1,5 @@
 import * as mediabunny from 'mediabunny';
-import {registerMediabunnyServer } from '@mediabunny/server';
 
-registerMediabunnyServer ();
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
 
 const OUTPUT_FORMATS = {
@@ -13,7 +11,7 @@ const OUTPUT_FORMATS = {
 
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);
 
-export async function convert_media(inputdata,target){
+export async function convert_media(inputdata,target,options={}){
 
     const make = OUTPUT_FORMATS[target];
     if(!make){
@@ -30,7 +28,12 @@ export async function convert_media(inputdata,target){
         target: new mediabunny.BufferTarget,
     });
 
-    const conversion = await mediabunny.Conversion.init({input,output});
+    const conversion = await mediabunny.Conversion.init({
+                                                        input,
+                                                        output,
+                                                        ...(options.video && { video: options.video }),
+                                                        ...(options.audio && { audio: options.audio }),
+                                                        });
     await conversion.execute();
 
     return new Uint8Array(output.target.buffer);

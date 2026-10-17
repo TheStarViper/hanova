@@ -6,5 +6,8 @@
   },
   "allowScripts": {
     "node-av@6.1.1": true
+  },
+  "devDependencies": {
+    "vite": "^8.3.4"
   }
 }
