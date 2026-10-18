@@ -120,3 +120,18 @@ const USER_MESSAGES = { //front end user messages
     [ErrorCode.Cancelled]: "Conversion canceled",
     [ErrorCode.Unknown]: "idk bruh smth got cooked no idea what happened u shouldnt even be seeing this msg",
 };
+
+export function usermessage(error){
+    const e = to_convert_error(error);
+    return USER_MESSAGES[e.code]??USER_MESSAGES[ErrorCode.Unknown];
+}
+
+export function installglobalerrorhandlers(onError = (errorrrrrrr)=>console.error(errorrrrrrr.code,errorrrrrrr.message,errorrrrrrr.cause)){
+    if (typeof window !== 'undefined'){
+        window.addEventListener('unhandledrejection',(ev)=>{onError(to_convert_error(ev.reason));ev.preventDefault();});
+        window.addEventListener('error',(ev)=>onError(to_convert_error(ev.error ?? ev.message)));
+    } else if (typeof process !=='undefined'){
+        process.on('unhandledRejection',(reason)=>onError(to_convert_error(reason)));
+        process.on('uncaughtException',(errorrrrrrr)=>onError(to_convert_error(errorrrrrrr)));
+    }
+}

@@ -4,6 +4,7 @@ import { dirname, join} from 'path';
 import createcore from '../../build/image_core_module.js';
 import createwebp from '../../build/webp_module.js';
 import createsvg from '../../build/svg_module.js';
+import { ConvertError,to_convert_error,ErrorCode } from './errors.mjs';
 import * as bridge from './imagemagick-bridge.mjs';
 const magick = {
     convert_bytes: bridge.convert_bytes,
@@ -11,17 +12,6 @@ const magick = {
     formats: bridge.MAGICK_BY_NAME,
     processors: bridge.MAGICK_PROCESSORS
 };
-
-
-export class ConvertError extends Error {
-    constructor(code, message,{step,cause}={}) {
-        super(message);
-        this.name = 'ConvertError';
-        this.code = code;
-        this.step = step;
-        this.cause = cause;
-    }
-}
 
 export function simplifyerror(error){
     if (error instanceof ConvertError) return error.message;
@@ -82,7 +72,7 @@ export function createconverter({core,webp,svg,magick}){
     const unwrap = (r)=>{
         if (Array.isArray(r)||r instanceof Uint8Array){return r};
         if (r&&r.ok===false){
-            throw new Error(`native conversion failed: ${r.error ?? r.errorType ?? 'unknown error'}`);
+            throw new ConvertError(ErrorCode.NativeFailure,`native conversion failed: ${r.error ?? r.errorType ?? 'unknown error'}`);
         }
 
         if (r?.data instanceof Uint8Array){
@@ -90,7 +80,7 @@ export function createconverter({core,webp,svg,magick}){
             r.delete?.();
             return out;
         }
-        throw new Error(`unexpected native result: ${Object.keys(r ?? {})}`);
+        throw new ConvertError(ErrorCode.NativeFailure,`unexpected native result: ${Object.keys(r ?? {})}`);
     }
 
 
@@ -134,21 +124,24 @@ export function createconverter({core,webp,svg,magick}){
     if(magick){
         const MAGICK_COST = 5;
         const READABLE = ['png','jpg','bmp','tga','hdr'];
-        const WRITABLE = Object.keys(magick.formats);
+        const has = (from,to)=>table[INDEX[from]][INDEX[to]]!==null;
+
+        const WRITABLE = Object.keys(magick.formats).filter(
+            (f)=>f!=='png'&&INDEX[f]!==undefined&&magick.formats[f]!==undefined);
+        
+        const via = (to,proc)=>(bytes,q)=>magick.convert_bytes(bytes,magick.formats[to],q,proc); 
+        
 
         for (const to of WRITABLE){
-            const proc = magick.processors?.[to];
             for (const from of READABLE){
-                register(from, to,
-                    (bytes, q) => magick.convert_bytes(bytes, magick.formats[to], q, proc),
-                    MAGICK_COST);
+                if (!has(from,to)){register(from,to,via(to,magick.processors?.[to]),MAGICK_COST);}
             }
         }
 
-        for (const from of WRITABLE){
-            register(from, 'png',
-                (bytes) => magick.convert_bytes(bytes, magick.formats.png ?? 'png'.toUpperCase(), undefined),
-                MAGICK_COST);
+        if(magick.formats.png !==undefined){
+            for (const from of WRITABLE){
+                if (!has(from,'png')){register(from,'png',via('png'),MAGICK_COST);}
+            }
         }
     }
 
@@ -200,12 +193,12 @@ export function createconverter({core,webp,svg,magick}){
         let current_index=INDEX[detected_format];
         let target_index = INDEX[target_format];
 
-        if (current_index === undefined){throw new Error(`Unsupported Input Format: "${detected_format}"`);}
-        if (target_index === undefined){throw new Error(`Unsupported Output Format: "${target_format}"`);}
+        if (current_index === undefined){throw new ConvertError(ErrorCode.UnsupportedInput,`Unsupported Input Format: "${detected_format}"`);}
+        if (target_index === undefined){throw new ConvertError(ErrorCode.UnsupportedOutput,`Unsupported Output Format: "${target_format}"`);}
         
         const path = search_path(current_index,target_index);
         if (!path){
-            throw new Error(`No conversion path found "${detected_format}"->"${FORMATS[target_index]}"`);
+            throw new ConvertError(ErrorCode.NoPath,`No conversion path found "${detected_format}"->"${FORMATS[target_index]}"`);
         }
 
         let data = bytes;
@@ -214,11 +207,11 @@ export function createconverter({core,webp,svg,magick}){
                 console.log(`Converting ${step.from} -> ${step.to}...`);
                 data = await step.func(data,quality);
             } catch(error) {
+                const cause = to_convert_error(error,ErrorCode.NativeFailure);
                 throw new ConvertError(
-                    'StepFailed',
-                    `${step.from} -> ${step.to} failed: ${simplifyerror(error)}`,
-                    { step: `${step.from} -> ${step.to}`, cause: error }
-                );
+                    ErrorCode.StepFailed,
+                    
+                )
             }
         }
         return data;
