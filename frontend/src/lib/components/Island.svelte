@@ -33,24 +33,52 @@ let borderColor = $derived(hovered && allowHover ? "#FFC067" : undefined);
   label={me.name}
 >{@html me.sprite.svg}</Sprite>
 <div
-  class="radius for-debugging-purposes-only"
-  style:left="{me.pos.x + viewport.offset.x}px"
-  style:top="{me.pos.y + viewport.offset.y}px"
-  style:--radius="{me.sprite.radius}px"
+  class="debug"
   style:display={debugging ? "flex" : "none"}
 >
+  <span
+    class="radius"
+    style:left="{me.pos.x + viewport.offset.x}px"
+    style:top="{me.pos.y + viewport.offset.y}px"
+    style:--radius="{me.sprite.radius}px"
+  ></span>
+  <span
+    class="spawn"
+    style:left="{me.pos.x + me.sprite.spawnOffset.x + viewport.offset.x}px"
+    style:top="{me.pos.y + me.sprite.spawnOffset.y + viewport.offset.y}px"
+  ></span>
+  <span
+    class="treasure"
+    style:left="{me.pos.x + me.sprite.treasureOffset.x + viewport.offset.x}px"
+    style:top="{me.pos.y + me.sprite.treasureOffset.y + viewport.offset.y}px"
+  ></span>
 </div>
 
 <style lang="scss">
-.radius {
-	position: absolute;
-	transform: translate(-50%, -50%);
-	pointer-events: none;
+.debug {
+	* {
+		position: absolute;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+	}
 
-	width: calc(var(--radius) * 2);
-	height: calc(var(--radius) * 2);
-
-	border: 5px solid red;
-	border-radius: 9999px;
+	.radius {
+		width: calc(var(--radius) * 2);
+		height: calc(var(--radius) * 2);
+		border: 5px solid red;
+		border-radius: 9999px;
+	}
+	.spawn {
+		width: 96px;
+		height: 74px;
+		border: 7px solid lime;
+		border-radius: 9999px;
+	}
+	.treasure {
+		width: 30px;
+		height: 30px;
+		border: 5px solid fuchsia;
+		border-radius: 9999px;
+	}
 }
 </style>
