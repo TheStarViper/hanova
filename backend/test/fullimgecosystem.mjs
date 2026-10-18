@@ -19,7 +19,7 @@ try {
     const outPath = join(dirname(output), `${basename(input, extname(input))}_out.${target}`);
     fs.writeFileSync(outPath, Buffer.from(out));
     console.log(`wrote ${outPath} (${out.length} bytes)`);
-} catch (err) {
-    console.error(`${err.code ?? 'error'}: ${err.message}`);
-    if (process.env.DEBUG) console.error(err);
+} catch (error) {
+    console.error(`${error.code ?? 'error'}: ${error.message}`);
+    console.error(error.stack);
 }

@@ -62,6 +62,7 @@ export const MAGICK_BY_NAME = {
     mrw: magickModule.MagickFormat.Mrw,
 };
 
+
 export const MAGICK_PROCESSORS = {
     ico: (image) => {
         if (image.width > 256 || image.height > 256) {
@@ -178,6 +179,17 @@ export async function process_image(inputpath, outputpath, processorfunc) {
         throw summarize_errors(error);
     }
     fs.writeFileSync(outputpath, output);
+}
+
+export async function writable_formats(){
+    await init_imagemagick();
+    const ok = {};
+    for (const [name,fmt] of Object.entries(MAGICK_BY_NAME)){
+        try {
+            if (fmt!==undefined&& magickModule.MagickFormatInfo.create(fmt)?.isWritable) ok[name] = fmt;
+        } catch {}
+    }
+    return ok;
 }
 
 export const {

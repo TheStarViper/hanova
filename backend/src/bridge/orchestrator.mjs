@@ -9,7 +9,7 @@ import * as bridge from './imagemagick-bridge.mjs';
 const magick = {
     convert_bytes: bridge.convert_bytes,
     detect_format: bridge.detect_format,
-    formats: bridge.MAGICK_BY_NAME,
+    formats: await bridge.writable_formats(),
     processors: bridge.MAGICK_PROCESSORS
 };
 
@@ -210,7 +210,8 @@ export function createconverter({core,webp,svg,magick}){
                 const cause = to_convert_error(error,ErrorCode.NativeFailure);
                 throw new ConvertError(
                     ErrorCode.StepFailed,
-                    
+                    `${step.from} -> ${step.to} failed: ${cause.message}`,
+                    { step: `${step.from} -> ${step.to}`, cause }
                 )
             }
         }

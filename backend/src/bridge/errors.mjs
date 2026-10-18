@@ -45,7 +45,7 @@ export function to_convert_error(error,fallbackcode=ErrorCode.Unknown,{step}={})
     const first = message.split('\n')[0];
 
     if (typeof error ==='number'){
-        return new ConvertError(ErrorCode.NativeFailure, `C++ exception thrown (pointer ${err})`, opts);
+        return new ConvertError(ErrorCode.NativeFailure, `C++ exception thrown (pointer ${error})`, opts);
     }
 
 
@@ -77,7 +77,7 @@ export function to_convert_error(error,fallbackcode=ErrorCode.Unknown,{step}={})
 
     //out of memory
     if (
-        (err instanceof RangeError && /memory|allocation|invalid (typed )?array length/i.test(message)) ||
+        (error instanceof RangeError && /memory|allocation|invalid (typed )?array length/i.test(message)) ||
         /cannot enlarge memory|aborted\(oom\)|out of memory/i.test(message)
     ) {
         return new ConvertError(ErrorCode.TooLarge, 'Not enough memory for this file', opts);
@@ -91,7 +91,7 @@ export function to_convert_error(error,fallbackcode=ErrorCode.Unknown,{step}={})
         return new ConvertError(ErrorCode.CorruptInput, first, opts);
     }
 
-    return new ConvertError(fallbackcode, `${err?.name ?? 'Error'}: ${first}`, opts);//uhhhhhh wtf
+    return new ConvertError(fallbackcode, `${error?.name ?? 'Error'}: ${first}`, opts);//uhhhhhh wtf
 }
 
 export const simplify_error=(error)=>to_convert_error(error).message;
