@@ -26,7 +26,13 @@ let borderColor = $derived(hovered && allowHover ? "#FFC067" : undefined);
   {borderColor}
   borderWidth={2}
   handlers={{
-    click: allowHover ? me.callBoat : undefined,
+    click: allowHover
+      ? () => {
+        setTimeout(() => {
+          if (!viewport.userIsDragging) me.callBoat();
+        }, 50);
+      }
+      : undefined,
     hover: () => (hovered = true),
     unhover: () => (hovered = false),
   }}
