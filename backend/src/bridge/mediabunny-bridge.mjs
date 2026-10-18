@@ -4,11 +4,41 @@ import { ConvertError,ErrorCode, to_convert_error } from './errors.mjs';
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
 
 const OUTPUT_FORMATS = {
+    //video
     mp4: ()=>new mediabunny.Mp4OutputFormat,
     mkv: ()=>new mediabunny.MkvOutputFormat,
     webm:()=>new mediabunny.WebMOutputFormat,
-    //add more later after testing
+    ts:  ()=>new mediabunny.MpegTsOutputFormat,
+    mov: ()=>new mediabunny.MovOutputFormat,
+    m3u8:()=>new mediabunny.HlsOutputFormat,
+    
+    //audio
+    mp3: ()=>new mediabunny.Mp3OutputFormat,
+    wav: ()=>new mediabunny.WavOutputFormat,
+    ogg: ()=>new mediabunny.OggOutputFormat,
+    flac:()=>new mediabunny.FlacOutputFormat,
+    aac: ()=>new mediabunny.AdtsOutputFormat,
+    m4a: ()=>new mediabunny.Mp4OutputFormat, //uses mp4 container
 };
+
+export const MEDIA_INFO={
+    //video
+    mp4: {ext:'mp4',mime:'video/mp4',video: true},
+    mkv: {ext:'mkv',mime:'video/x-matroska',video: true},
+    webm:{ext:'webm',mime:'video/webm',video: true},
+    ts:  {ext:'ts',mime:'video/mp2t',video: true},
+    mov: {ext:'mov',mime:'video/quicktime',video: true},
+    m3u8:{ext:'m3u8',mime:'video/idkbruhwth',video: true}, // FIX
+    
+    //audio
+    mp3: {ext:'mp3',mime:'audio/mpeg',video: false},
+    wav: {ext:'wav',mime:'audio/wav',video: false},
+    ogg: {ext:'ogg',mime:'audio/ogg',video: false},
+    flac:{ext:'flac',mime:'audio/flac',video: false},
+    aac: {ext:'aac',mime:'audio/aac',video: false},
+    m4a: {ext:'m4a',mime:'audio/mp4',video: false},
+};
+
 
 const PRESETS = {
     potato: {video: {height:360, bitrate: mediabunny.QUALITY_VERY_LOW},audio:{bitrate: mediabunny.QUALITY_VERY_LOW}},

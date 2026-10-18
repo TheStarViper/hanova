@@ -6,6 +6,7 @@ import createwebp from '../../build/webp_module.js';
 import createsvg from '../../build/svg_module.js';
 import { ConvertError,to_convert_error,ErrorCode } from './errors.mjs';
 import * as bridge from './imagemagick-bridge.mjs';
+
 const magick = {
     convert_bytes: bridge.convert_bytes,
     detect_format: bridge.detect_format,
@@ -26,7 +27,6 @@ const ALIASES = {jpeg:'jpg', //formats that are the same with diff extensions
                  heif: 'heic'}; 
 
 const N = FORMATS.length;
-
 
 
 export function createconverter({core,webp,svg,magick}){
@@ -75,7 +75,6 @@ export function createconverter({core,webp,svg,magick}){
     //libwebp
     register('png','webp', (bytes, q)=> unwrap(webp.convert_to_webp(bytes, q)), 1);
     register('webp','png', (bytes) =>unwrap(webp.convert_webp_to_png(bytes)), 1);
-
 
     //nanosvg
     register('svg','png', (bytes)=> unwrap(svg.convert_svg_to_png(bytes)), 1);
