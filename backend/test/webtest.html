@@ -1,0 +1,89 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Mediabunny web test</title>
+<body style="font-family: sans-serif; max-width: 640px; margin: 2rem auto">
+  <h3>Mediabunny web test</h3>
+  <input type="file" id="file" accept="video/*,audio/*">
+  <select id="target"></select>
+  <select id="preset"><option value="">no preset (remux if possible)</option></select>
+  <button id="go">Convert</button>
+  <button id="stop">Cancel</button>
+  <p id="status">Loading...</p>
+  <a id="download" style="display:none">Download result</a>
+  <video id="preview" controls style="width:100%; display:none"></video>
+  <audio id="audioPreview" controls style="width:100%; display:none"></audio>
+
+  <script type="module">
+    const $ = (id) => document.getElementById(id);
+    const say = (msg) => { $('status').textContent = msg; };
+
+    // anything uncaught shows on the page, not just in the console
+    window.addEventListener('error', (e) => say('Error: ' + e.message));
+    window.addEventListener('unhandledrejection', (e) => say('Error: ' + (e.reason?.message ?? e.reason)));
+
+    let bridge;
+    try {
+      bridge = await import('../src/bridge/mediabunny-bridge.mjs');
+    } catch (err) {
+      say('Failed to load the bridge: ' + err.message);
+      console.error(err);
+      throw err;
+    }
+
+    // dropdowns come from the bridge, so they can never offer something it can't do
+    for (const f of bridge.MEDIA_FORMATS) $('target').add(new Option(f, f));
+    for (const p of bridge.MEDIA_PRESETS) $('preset').add(new Option(p, p));
+    $('target').value = 'mkv';
+    say('Ready. Pick a file.');
+
+    const PLAYABLE = ['mp4', 'webm', 'mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'];
+    let ctrl = null;
+    $('stop').onclick = () => ctrl?.abort();
+
+    $('go').onclick = async () => {
+      const file = $('file').files[0];
+      if (!file) { say('Pick a file first.'); return; }
+
+      const target = $('target').value;
+      const preset = $('preset').value || undefined;
+      const info = bridge.MEDIA_INFO[target];
+
+      $('download').style.display = 'none';
+      $('preview').style.display = 'none';
+      $('audioPreview').style.display = 'none';
+      ctrl = new AbortController();
+      say('Reading file...');
+
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const t0 = performance.now();
+
+        say('Converting... 0%');
+        const out = await bridge.convert_media(bytes, target, {
+          preset,
+          signal: ctrl.signal,
+          onProgress: (p) => say(`Converting... ${Math.round(p * 100)}%`),
+        });
+
+        const secs = ((performance.now() - t0) / 1000).toFixed(1);
+        const url = URL.createObjectURL(new Blob([out], { type: info.mime }));
+
+        say(`Done in ${secs}s: ${(bytes.length / 1e6).toFixed(1)} MB -> ${(out.length / 1e6).toFixed(1)} MB`);
+        $('download').href = url;
+        $('download').download = `converted.${info.ext}`;
+        $('download').style.display = 'inline';
+
+        if (PLAYABLE.includes(target)) {
+          const el = info.video ? $('preview') : $('audioPreview');
+          el.src = url;
+          el.style.display = 'block';
+        }
+      } catch (err) {
+        say(`Error${err.code ? ' [' + err.code + ']' : ''}: ${err.message}`);
+        console.error(err);
+      }
+    };
+  </script>
+</body>
+<!-- ai file -->
+<!-- http://localhost:5173/backend/test/webtest.html -->
