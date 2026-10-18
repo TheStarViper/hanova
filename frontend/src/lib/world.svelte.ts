@@ -150,7 +150,7 @@ export class World {
     this.viewport.userIsDragging = false;
   }
 
-  islandClickHandler(me: Island, endPos: Pos) {
+  islandClickHandler(targetIsland: Island) {
     // hijacking this interaction to decode the sounds
     decodeSounds();
 
@@ -161,18 +161,16 @@ export class World {
     // change it partway through
     if (this.boat.route !== undefined) return;
 
-    this.treasure.owner = me;
-    this.treasure.previousOwner = me;
+    this.treasure.owner = targetIsland;
+    this.treasure.previousOwner = targetIsland;
 
     // intentionally NOT awaiting this even though its async
-    this.fileManager.convertTo(me.name);
-
-    const otherIslands = this.islands.filter((i) => i !== me);
+    this.fileManager.convertTo(targetIsland.name);
 
     const [route, curves] = aStarRouteFactory(
       new Pos(this.boat.pos.x, this.boat.pos.y),
-      endPos,
-      otherIslands,
+      targetIsland,
+      this.islands,
     );
 
     this.curves = curves;
@@ -182,7 +180,7 @@ export class World {
 
   initIslands() {
     this.islands = ISLAND_DATA.map((datum) => {
-      return new Island(datum, (me: Island, endPos: Pos) => this.islandClickHandler(me, endPos));
+      return new Island(datum, (targetIsland: Island) => this.islandClickHandler(targetIsland));
     });
   }
 }

@@ -14,14 +14,17 @@ export function linearRouteFactory(start: Pos, end: Pos): Route {
 
 export function aStarRouteFactory(
   startPos: Pos,
-  endPos: Pos,
-  otherIslands: Island[],
+  targetIsland: Island,
+  islands: Island[],
 ): [Route, CubicBezier[]] {
   const start = gridify(startPos);
-  const goal = gridify(endPos);
-  const isWalkable = isWalkableFactory(otherIslands);
+  const goal = gridify(targetIsland.treasurePos);
+  const otherIslands = islands.filter((i) => i !== targetIsland);
 
-  const path = aStar(start, goal, isWalkable);
+  const isWalkable = isWalkableFactory(otherIslands);
+  const getCost = getCostFactory(targetIsland);
+
+  const path = aStar(start, goal, isWalkable, getCost);
 
   const curves = pathToBezier(path.map(pixelify));
 
@@ -39,6 +42,7 @@ export function aStar(
   start: Coords,
   goal: Coords,
   isWalkable: (cell: Coords) => boolean,
+  getCost: (cell: Coords) => number,
 ): Coords[] {
   let open: Coords[] = [start];
   const gScores = new Map<Coords, number>();
@@ -75,13 +79,12 @@ export function aStar(
     if (closed.has(current)) continue;
     closed.add(current);
 
-    const tentativeG = gScores.get(current)! + 1;
-
     const neighbors = getNeighbors(current);
     for (const neighbor of neighbors) {
       if (!isWalkable(neighbor) || !inBounds(neighbor)) continue;
 
       const previousG = gScores.get(neighbor);
+      const tentativeG = gScores.get(current)! + getCost(neighbor);
 
       if (previousG === undefined || tentativeG < previousG) {
         gScores.set(neighbor, tentativeG);
@@ -167,18 +170,32 @@ export function isWalkableFactory(
 
     const point = pixelify(coords);
 
-    let walkable = true;
-
-    for (const island of islands) {
-      const distance = Math.abs(Pos.dist(point, island.pos));
-      if (distance < island.sprite.radius) {
-        walkable = false;
-        break;
-      }
-    }
+    const walkable = islands.every(
+      (island) => Math.abs(Pos.dist(point, island.pos)) >= island.sprite.radius,
+    );
 
     cache.set(coords, walkable);
     return walkable;
+  };
+}
+
+export function getCostFactory(targetIsland: Island): (coords: Coords) => number {
+  const cache = new Map<Coords, number>();
+
+  return (coords: Coords) => {
+    const cached = cache.get(coords);
+    if (cached !== undefined) return cached;
+
+    const point = pixelify(coords);
+
+    const intersectingTargetIsland = Math.abs(Pos.dist(point, targetIsland.pos)) < targetIsland.sprite.radius;
+
+    // the target island is still technically walkable, but A* is strongly
+    // discouraged from clipping inside the islands if there's another route
+    const cost = intersectingTargetIsland ? 20 : 1;
+
+    cache.set(coords, cost);
+    return cost;
   };
 }
 

@@ -290,9 +290,9 @@ export class Island {
 
   constructor(
     public datum: IslandDatum,
-    islandClickHandler: (me: Island, endPos: Pos) => void,
+    islandClickHandler: (targetIsland: Island) => void,
   ) {
-    this.callBoat = () => islandClickHandler(this, this.treasurePos);
+    this.callBoat = () => islandClickHandler(this);
   }
 
   get name() {
