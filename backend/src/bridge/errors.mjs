@@ -15,6 +15,7 @@ export const ErrorCode = Object.freeze({
     FileTooBig: 'FileTooBig',
     Cancelled: 'Cancelled',
     Unknown: 'Unknown',
+    UnsupportedParameter: 'UnsupportedParameter',
 });
 
 export class ConvertError extends Error{
@@ -119,6 +120,7 @@ const USER_MESSAGES = { //front end user messages
     [ErrorCode.FileTooBig]: "Filesize too large (max: undefined yet FIX)",
     [ErrorCode.Cancelled]: "Conversion canceled",
     [ErrorCode.Unknown]: "idk bruh smth got cooked no idea what happened u shouldnt even be seeing this msg",
+    [ErrorCode.UnsupportedParameter]: "an unsupported parameter was given (eg: infinite quality level)",
 };
 
 export function usermessage(error){

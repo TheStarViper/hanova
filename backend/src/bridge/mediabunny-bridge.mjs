@@ -1,5 +1,5 @@
 import * as mediabunny from 'mediabunny';
-import { ErrorCode, to_convert_error } from './errors.mjs';
+import { ConvertError,ErrorCode, to_convert_error } from './errors.mjs';
 
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
 
@@ -10,15 +10,27 @@ const OUTPUT_FORMATS = {
     //add more later after testing
 };
 
+const PRESETS = {
+    potato: {video: {height:360, bitrate: mediabunny.QUALITY_VERY_LOW},audio:{bitrate: mediabunny.QUALITY_VERY_LOW}},
+    small: {video: {height:480, bitrate: mediabunny.QUALITY_LOW},audio:{bitrate: mediabunny.QUALITY_LOW}},
+    balanced: {video: {height:720, bitrate: mediabunny.QUALITY_MEDIUM},audio:{bitrate: mediabunny.QUALITY_MEDIUM}},
+    high: {video: {height:480, bitrate: mediabunny.QUALITY_HIGH},audio:{bitrate: mediabunny.QUALITY_HIGH}},
+};
+
+export const MEDIA_PRESETS = Object.keys(PRESETS);
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);
 
 export async function convert_media(inputdata,target,options={}){
 
     const make = OUTPUT_FORMATS[target];
     if(!make){
-        throw new Error(`Unsupported media output: "${target}" (supported: ${MEDIA_FORMATS.join(', ')})`);
+        throw new ConvertError(`Unsupported media output: "${target}" (supported: ${MEDIA_FORMATS.join(', ')})`);
     }
 
+    if(options.preset && !PRESETS[options.preset]){
+        throw new ConvertError(ErrorCode.UnsupportedParameter,`Unknown preset: "${options.preset}"`);
+    }
+    
     const input = new mediabunny.Input({
         source: new mediabunny.BufferSource(inputdata),
         formats: mediabunny.ALL_FORMATS,
