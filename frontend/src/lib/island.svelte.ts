@@ -179,7 +179,7 @@ export const ISLAND_DATA = [
     name: "GIF",
     pos: new Pos(0, 800),
     islandSpriteIndex: 6,
-    spawnOffset: new Pos(0, 100),
+    spawnOffset: new Pos(50, 100),
   },
   {
     name: "JPEG",
@@ -209,7 +209,7 @@ export const ISLAND_DATA = [
     name: "AVIF",
     pos: new Pos(1300, -200),
     islandSpriteIndex: 14,
-    spawnOffset: new Pos(-30, 180),
+    spawnOffset: new Pos(-130, 100),
   },
   {
     name: "HEIF",
@@ -221,7 +221,7 @@ export const ISLAND_DATA = [
     name: "TIFF",
     pos: new Pos(900, -150),
     islandSpriteIndex: 19,
-    spawnOffset: new Pos(30, 200),
+    spawnOffset: new Pos(90, 170),
   },
   {
     name: "EPS",
