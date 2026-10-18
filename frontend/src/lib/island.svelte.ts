@@ -32,7 +32,8 @@ export interface IslandSprite {
 }
 
 export const ISLAND_SPRITES = {
-  // used for bmp
+  /**
+	 * these are all broken
   1: {
     svg: Island1Svg,
     width: 255,
@@ -40,7 +41,6 @@ export const ISLAND_SPRITES = {
     spawnOffset: new Pos(-80, 80),
     radius: 152,
   },
-  // used for svg
   2: {
     svg: Island2Svg,
     width: 232,
@@ -48,7 +48,6 @@ export const ISLAND_SPRITES = {
     spawnOffset: new Pos(190, 60),
     radius: 135,
   },
-  // used for png
   3: {
     svg: Island3Svg,
     width: 336,
@@ -56,7 +55,6 @@ export const ISLAND_SPRITES = {
     spawnOffset: new Pos(220, -50),
     radius: 200,
   },
-  // used for webp
   4: {
     svg: Island4Svg,
     width: 243,
@@ -64,7 +62,6 @@ export const ISLAND_SPRITES = {
     spawnOffset: new Pos(-120, 120),
     radius: 140,
   },
-  // used for jpeg
   5: {
     svg: Island5Svg,
     width: 305,
@@ -72,6 +69,8 @@ export const ISLAND_SPRITES = {
     spawnOffset: new Pos(100, 150),
     radius: 175,
   },
+   */
+
   6: {
     svg: Island6Svg,
     width: 98,
@@ -79,18 +78,20 @@ export const ISLAND_SPRITES = {
     spawnOffset: new Pos(0, 100),
     radius: 65,
   },
-  7: {
-    svg: Island7Svg,
-    width: 605,
-    treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
-    radius: 10,
-  },
+
+  // too big
+  // 7: {
+  //   svg: Island7Svg,
+  //   width: 605,
+  //   treasureOffset: new Pos(0, 0),
+  //   spawnOffset: new Pos(0, 0),
+  //   radius: 320,
+  // },
   8: {
     svg: Island8Svg,
     width: 156,
-    treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
+    treasureOffset: new Pos(10, -10),
+    spawnOffset: new Pos(100, 100),
     radius: 90,
   },
   9: {
@@ -121,13 +122,14 @@ export const ISLAND_SPRITES = {
     spawnOffset: new Pos(0, 0),
     radius: 130,
   },
-  13: {
-    svg: Island13Svg,
-    width: 458,
-    treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
-    radius: 250,
-  },
+  // too big
+  // 13: {
+  //   svg: Island13Svg,
+  //   width: 458,
+  //   treasureOffset: new Pos(0, 0),
+  //   spawnOffset: new Pos(0, 0),
+  //   radius: 250,
+  // },
   14: {
     svg: Island14Svg,
     width: 295,
@@ -183,98 +185,98 @@ export interface IslandDatum {
 export const ISLAND_DATA = [
   {
     name: "BMP",
-    pos: new Pos(170, 350),
-    islandSpriteIndex: 1,
+    pos: new Pos(0, 500),
+    islandSpriteIndex: 18,
   },
   {
     name: "GIF",
-    pos: new Pos(0, 500),
+    pos: new Pos(0, 800),
     islandSpriteIndex: 6,
   },
   {
     name: "JPEG",
-    pos: new Pos(500, 500),
-    islandSpriteIndex: 5,
+    pos: new Pos(400, 550),
+    islandSpriteIndex: 16,
   },
   {
     name: "JPEGXL",
-    pos: new Pos(600, 730),
-    islandSpriteIndex: 6,
+    pos: new Pos(600, 880),
+    islandSpriteIndex: 8,
   },
   {
     name: "PNG",
-    pos: new Pos(450, 100),
-    islandSpriteIndex: 3,
+    pos: new Pos(200, 100),
+    islandSpriteIndex: 17,
   },
   {
     name: "WebP",
-    pos: new Pos(900, 200),
-    islandSpriteIndex: 4,
+    pos: new Pos(850, 240),
+    islandSpriteIndex: 15,
   },
   {
     name: "AVIF",
-    pos: new Pos(1200, 0),
-    islandSpriteIndex: 5,
+    pos: new Pos(1300, -200),
+    islandSpriteIndex: 14,
   },
   {
     name: "HEIF",
     pos: new Pos(1150, 350),
-    islandSpriteIndex: 2,
+    islandSpriteIndex: 12,
   },
   {
     name: "TIFF",
-    pos: new Pos(1500, 200),
-    islandSpriteIndex: 3,
+    pos: new Pos(900, -150),
+    islandSpriteIndex: 19,
   },
   {
     name: "EPS",
-    pos: new Pos(900, -100),
-    islandSpriteIndex: 1,
+    pos: new Pos(1500, 150),
+    islandSpriteIndex: 11,
   },
   {
     name: "EXR",
-    pos: new Pos(1050, -300),
-    islandSpriteIndex: 2,
+    pos: new Pos(1050, -500),
+    islandSpriteIndex: 15,
   },
   {
     name: "TGA",
     pos: new Pos(1370, 570),
-    islandSpriteIndex: 4,
+    islandSpriteIndex: 18,
   },
   {
     name: "HDR",
-    pos: new Pos(1600, 470),
-    islandSpriteIndex: 6,
+    pos: new Pos(1650, 510),
+    islandSpriteIndex: 15,
   },
   {
     name: "SVG",
-    pos: new Pos(400, -200),
-    islandSpriteIndex: 2,
+    pos: new Pos(300, -250),
+    islandSpriteIndex: 8,
   },
   {
     name: "ICO",
     pos: new Pos(550, -350),
-    islandSpriteIndex: 6,
+    islandSpriteIndex: 18,
   },
   {
     name: "PSD",
     pos: new Pos(1000, 1000),
-    islandSpriteIndex: 4,
+    islandSpriteIndex: 9,
   },
-  {
-    name: "ORA",
-    pos: new Pos(900, 1200),
-    islandSpriteIndex: 6,
-  },
-  {
-    name: "XCF",
-    pos: new Pos(1300, 1050),
-    islandSpriteIndex: 3,
-  },
+  // {
+  //   name: "ORA",
+  //   pos: new Pos(900, 1200),
+  //   islandSpriteIndex: 1,
+  // },
+  // {
+  //   name: "XCF",
+  //   pos: new Pos(1300, 1050),
+  //   islandSpriteIndex: 1,
+  // },
   {
     name: "PDF",
-    pos: new Pos(1150, 730),
-    islandSpriteIndex: 1,
+    pos: new Pos(1050, 670),
+    islandSpriteIndex: 18,
   },
 ] as const satisfies IslandDatum[];
 

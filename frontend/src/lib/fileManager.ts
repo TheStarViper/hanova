@@ -152,18 +152,18 @@ export const FORMATS = {
   // think that it's a generative AI feature
 
   // https://en.wikipedia.org/wiki/OpenRaster
-  ORA: {
-    ext: "ora",
-    mimeType: "image/openraster",
-    validExtensions: ["ora"],
-  },
+  // ORA: {
+  //   ext: "ora",
+  //   mimeType: "image/openraster",
+  //   validExtensions: ["ora"],
+  // },
 
   // https://en.wikipedia.org/wiki/XCF_(file_format)
-  XCF: {
-    ext: "xcf",
-    mimeType: "image/x-xcf",
-    validExtensions: ["xcf"],
-  },
+  // XCF: {
+  //   ext: "xcf",
+  //   mimeType: "image/x-xcf",
+  //   validExtensions: ["xcf"],
+  // },
 
   // im omitting QOI because it doesn't even have a mimetype
 
