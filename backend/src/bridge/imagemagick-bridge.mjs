@@ -2,17 +2,10 @@ import fs from 'node:fs';
 import { extname } from 'node:path';
 import { createRequire } from 'node:module';
 import * as magickModule from '@imagemagick/magick-wasm';
+import { ConvertError,ErrorCode, to_convert_error } from './errors.mjs';
 
 const require = createRequire(import.meta.url);
 let isinit = false;
-
-export class ImageError extends Error {
-    constructor(code, message) {
-        super(message);
-        this.name = 'ImageError';
-        this.code = code;
-    }
-}
 
 export async function init_imagemagick() {
     if (isinit) return;
@@ -62,7 +55,7 @@ export async function convert_bytes(bytes, format, quality, processor) {
             });
         });
     } catch (error) {
-        throw summarize_errors(error);
+        throw to_convert_error(error,ErrorCode.NativeFailure);
     }
     return output;
 }
@@ -144,7 +137,7 @@ export async function process_image(inputpath, outputpath, processorfunc) {
 
     const inputbytes = fs.readFileSync(inputpath);
     const format = FORMATS[extname(outputpath).toLowerCase()];
-    if (!format) throw new Error(`Unsupported output extension: ${outputpath}`);
+    if (!format) throw new ConvertError(ErrorCode.UnsupportedOutput,`Unsupported output extension: ${outputpath}`);
 
     let output;
     try{
@@ -155,7 +148,7 @@ export async function process_image(inputpath, outputpath, processorfunc) {
             });
         });
     } catch(error) {
-        throw summarize_errors(error);
+        throw to_convert_error(error,Error.NativeFailure);
     }
     fs.writeFileSync(outputpath, output);
 }

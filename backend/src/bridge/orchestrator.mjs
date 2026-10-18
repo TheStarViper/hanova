@@ -14,33 +14,6 @@ const magick = {
     processors: bridge.MAGICK_PROCESSORS
 };
 
-export function simplifyerror(error){
-    if (error instanceof ConvertError) return error.message;
-
-    if (typeof error ==='number'){
-        return `C++ exception thrown (pointer ${error}); build with -fexceptions or catch it in C++`;
-    }
-
-    if (typeof error ==='string'){
-        return error;
-    }
-
-    const message = String(error?.message??error);
-    
-    const magick = /^(\w+)\s*(?:`([^']*)')?\s*@/.exec(message); //icl i have 0 idea wtf this line does
-    if (magick) return `${magick[1]}${magick[2] ? ` (${magick[2]})` : ''}`;
-
-    if (error?.name==='BindingError'||error?.name==='UnboundTypeError'){
-        return `embind: ${message.split('\n')[0]}`;
-    }
-
-    if (error?.code &&error?.syscall){
-        return `${error.code}: ${error.syscall} ${error.path ?? ''}`.trim();
-    }
-
-    return `${error?.name??'Error'}: ${message.split('\n')[0]}`;
-}
-
 export const FORMATS = ['png', 'jpg', 'bmp', 'hdr', 'tga', 'webp', 'svg',
                         'gif', 'avif', 'tiff', 'ico', 'jxl', 'qoi', 'psd', 'exr',
                         'pdf', 'eps', 'ai'];

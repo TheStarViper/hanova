@@ -14,7 +14,9 @@ const PRESETS = {
     potato: {video: {height:360, bitrate: mediabunny.QUALITY_VERY_LOW},audio:{bitrate: mediabunny.QUALITY_VERY_LOW}},
     small: {video: {height:480, bitrate: mediabunny.QUALITY_LOW},audio:{bitrate: mediabunny.QUALITY_LOW}},
     balanced: {video: {height:720, bitrate: mediabunny.QUALITY_MEDIUM},audio:{bitrate: mediabunny.QUALITY_MEDIUM}},
-    high: {video: {height:480, bitrate: mediabunny.QUALITY_HIGH},audio:{bitrate: mediabunny.QUALITY_HIGH}},
+    high: {video: {height:1080, bitrate: mediabunny.QUALITY_HIGH},audio:{bitrate: mediabunny.QUALITY_HIGH}},
+    hdlossless: {video: {height:1080, bitrate:mediabunny.QUALITY_VERY_HIGH},audio:{bitrate: mediabunny.QUALITY_VERY_HIGH}},
+    fourklossless: {video: {height:3840, bitrate:mediabunny.QUALITY_VERY_HIGH},audio:{bitrate: mediabunny.QUALITY_VERY_HIGH}},
 };
 
 export const MEDIA_PRESETS = Object.keys(PRESETS);
