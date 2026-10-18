@@ -9,7 +9,8 @@ import * as bridge from './imagemagick-bridge.mjs';
 const magick = {
     convert_bytes: bridge.convert_bytes,
     detect_format: bridge.detect_format,
-    formats: await bridge.writable_formats(),
+    formats: bridge.MAGICK_BY_NAME,
+    outputonly: bridge.MAGICK_OUTPUT_ONLY,
     processors: bridge.MAGICK_PROCESSORS
 };
 
@@ -40,22 +41,9 @@ export function simplifyerror(error){
     return `${error?.name??'Error'}: ${message.split('\n')[0]}`;
 }
 
-export const FORMATS = ['png',
-                 'jpg',
-                 'bmp',
-                 'hdr',
-                 'tga',
-                 'webp',
-                 'svg',
-                 'gif',
-                 'avif',
-                 'tiff',
-                 'ico',
-                 'heic',
-                 'jxl',
-                 'qoi',
-                 'psd'
-];
+export const FORMATS = ['png', 'jpg', 'bmp', 'hdr', 'tga', 'webp', 'svg',
+                        'gif', 'avif', 'tiff', 'ico', 'jxl', 'qoi', 'psd', 'exr',
+                        'pdf', 'eps', 'ai'];
 
 const INDEX = Object.fromEntries(FORMATS.map((f,i)=>[f,i]));
 const ALIASES = {jpeg:'jpg', //formats that are the same with diff extensions
@@ -140,6 +128,7 @@ export function createconverter({core,webp,svg,magick}){
 
         if(magick.formats.png !==undefined){
             for (const from of WRITABLE){
+                if (magick.outputonly?.includes(from)) {continue;}
                 if (!has(from,'png')){register(from,'png',via('png'),MAGICK_COST);}
             }
         }

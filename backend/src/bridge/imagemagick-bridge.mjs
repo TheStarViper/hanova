@@ -29,39 +29,18 @@ export const MAGICK_BY_NAME = {
     avif: magickModule.MagickFormat.Avif,
     tiff: magickModule.MagickFormat.Tiff,
     ico:  magickModule.MagickFormat.Ico,
-    heic: magickModule.MagickFormat.Heic,
     jxl:  magickModule.MagickFormat.Jxl,
     qoi:  magickModule.MagickFormat.Qoi,
     psd:  magickModule.MagickFormat.Psd,
+    exr:  magickModule.MagickFormat.Exr,
     bmp:  magickModule.MagickFormat.Bmp,
     webp: magickModule.MagickFormat.WebP,
-    heif: magickModule.MagickFormat.Heif,
-    pdf: magickModule.MagickFormat.Pdf, // FIX add document conversion
-    eps: magickModule.MagickFormat.Eps,
-    ai: magickModule.MagickFormat.Ai,
-    ora: magickModule.MagickFormat.Ora,
-    xcf: magickModule.MagickFormat.Xcf,
-    exr: magickModule.MagickFormat.Exr,
-    
-    //camera formats
-    raw: magickModule.MagickFormat.Raw,
-    dng: magickModule.MagickFormat.Dng,
-    cr2: magickModule.MagickFormat.Cr2,
-    cr3: magickModule.MagickFormat.Cr3,
-    nef: magickModule.MagickFormat.Nef,
-    arw: magickModule.MagickFormat.Arw,
-    orf: magickModule.MagickFormat.Orf,
-    rw2: magickModule.MagickFormat.Rw2,
-    raf: magickModule.MagickFormat.Raf,
-    pef: magickModule.MagickFormat.Pef,
-    srw: magickModule.MagickFormat.Srw,
-    x3f: magickModule.MagickFormat.X3f,
-    fff: magickModule.MagickFormat.Fff,
-    iiq: magickModule.MagickFormat.Iiq,
-    mos: magickModule.MagickFormat.Mos,
-    mrw: magickModule.MagickFormat.Mrw,
+    pdf:  magickModule.MagickFormat.Pdf,
+    eps:  magickModule.MagickFormat.Eps,
+    ai:   magickModule.MagickFormat.Ai,
 };
-
+//can be writen but not read
+export const MAGICK_OUTPUT_ONLY = ['ico', 'pdf', 'eps', 'ai'];
 
 export const MAGICK_PROCESSORS = {
     ico: (image) => {
@@ -181,16 +160,6 @@ export async function process_image(inputpath, outputpath, processorfunc) {
     fs.writeFileSync(outputpath, output);
 }
 
-export async function writable_formats(){
-    await init_imagemagick();
-    const ok = {};
-    for (const [name,fmt] of Object.entries(MAGICK_BY_NAME)){
-        try {
-            if (fmt!==undefined&& magickModule.MagickFormatInfo.create(fmt)?.isWritable) ok[name] = fmt;
-        } catch {}
-    }
-    return ok;
-}
 
 export const {
     ImageMagick,
