@@ -28,6 +28,13 @@ export class ConvertError extends Error{
     toJSON(){
         return {code: this.code, message: this.message, step: this.step };
     }
+    static FromJSON(json){
+        return new ConvertError(
+            json?.code ?? ErrorCode.Unknown,
+            json?.message ?? 'Unknown Error',
+            {step: json?.step}
+        );
+    }
 }
 
 export function to_convert_error(error,fallbackcode=ErrorCode.Unknown,{step}={}){
@@ -86,3 +93,30 @@ export function to_convert_error(error,fallbackcode=ErrorCode.Unknown,{step}={})
 
     return new ConvertError(fallbackcode, `${err?.name ?? 'Error'}: ${first}`, opts);//uhhhhhh wtf
 }
+
+export const simplify_error=(error)=>to_convert_error(error).message;
+
+export function guard(fn,fallbackcode = ErrorCode.Unknown){
+    return async (...args)=>{
+        try {
+            return await fn(...args);
+        } catch(error) {
+            throw to_convert_error(error,fallbackcode);
+        }
+    };
+}
+
+const USER_MESSAGES = { //front end user messages
+    [ErrorCode.UnsupportedInput]: "This file type isnt supported",
+    [ErrorCode.UnsupportedOutput]: "We dont support conversions to this file",
+    [ErrorCode.NoPath]: "No route to travel to convert these formats",
+    [ErrorCode.StepFailed]: "One hop in conversion chaining failed",
+    [ErrorCode.NativeFailure]: "Something went wrong with one of our libraries whist converting this file",
+    [ErrorCode.CorruptInput]: "This file is damaged/corrupted",
+    [ErrorCode.EncoderUnavailable]: "Encoder Unavailable, try another browser/format",
+    [ErrorCode.NothingToConvert]: "File appears empty",
+    [ErrorCode.TooLarge]: "File too large (scale like image size/video length)",
+    [ErrorCode.FileTooBig]: "Filesize too large (max: undefined yet FIX)",
+    [ErrorCode.Cancelled]: "Conversion canceled",
+    [ErrorCode.Unknown]: "idk bruh smth got cooked no idea what happened u shouldnt even be seeing this msg",
+};
