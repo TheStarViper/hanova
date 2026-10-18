@@ -21,13 +21,12 @@ import Island7Svg from "#lib/assets/island7.svg?raw";
 import Island8Svg from "#lib/assets/island8.svg?raw";
 import Island9Svg from "#lib/assets/island9.svg?raw";
 
-import type { FileFormat, FormatName } from "./fileManager";
+import type { FormatName } from "./fileManager";
 
 export interface IslandSprite {
   svg: string;
   width: number;
   treasureOffset: Pos;
-  spawnOffset: Pos;
   radius: number;
 }
 
@@ -75,7 +74,6 @@ export const ISLAND_SPRITES = {
     svg: Island6Svg,
     width: 98,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 100),
     radius: 65,
   },
 
@@ -84,42 +82,36 @@ export const ISLAND_SPRITES = {
   //   svg: Island7Svg,
   //   width: 605,
   //   treasureOffset: new Pos(0, 0),
-  //   spawnOffset: new Pos(0, 0),
   //   radius: 320,
   // },
   8: {
     svg: Island8Svg,
     width: 156,
     treasureOffset: new Pos(10, -10),
-    spawnOffset: new Pos(100, 100),
     radius: 90,
   },
   9: {
     svg: Island9Svg,
     width: 300,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 150,
   },
   10: {
     svg: Island10Svg,
     width: 244,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 195,
   },
   11: {
     svg: Island11Svg,
     width: 251,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 200,
   },
   12: {
     svg: Island12Svg,
     width: 242,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 130,
   },
   // too big
@@ -127,49 +119,42 @@ export const ISLAND_SPRITES = {
   //   svg: Island13Svg,
   //   width: 458,
   //   treasureOffset: new Pos(0, 0),
-  //   spawnOffset: new Pos(0, 0),
   //   radius: 250,
   // },
   14: {
     svg: Island14Svg,
     width: 295,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 175,
   },
   15: {
     svg: Island15Svg,
     width: 293,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 160,
   },
   16: {
     svg: Island16Svg,
     width: 382,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 230,
   },
   17: {
     svg: Island17Svg,
     width: 432,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 230,
   },
   18: {
     svg: Island18Svg,
     width: 207,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 110,
   },
   19: {
     svg: Island19Svg,
     width: 249,
     treasureOffset: new Pos(0, 0),
-    spawnOffset: new Pos(0, 0),
     radius: 185,
   },
 } as const satisfies Record<number, IslandSprite>;
@@ -180,6 +165,7 @@ export interface IslandDatum {
   name: FormatName;
   pos: Pos;
   islandSpriteIndex: IslandSpriteIndex;
+  spawnOffset: Pos;
 }
 
 export const ISLAND_DATA = [
@@ -187,81 +173,97 @@ export const ISLAND_DATA = [
     name: "BMP",
     pos: new Pos(0, 500),
     islandSpriteIndex: 18,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "GIF",
     pos: new Pos(0, 800),
     islandSpriteIndex: 6,
+    spawnOffset: new Pos(0, 100),
   },
   {
     name: "JPEG",
     pos: new Pos(400, 550),
     islandSpriteIndex: 16,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "JPEGXL",
     pos: new Pos(600, 880),
     islandSpriteIndex: 8,
+    spawnOffset: new Pos(-100, 100),
   },
   {
     name: "PNG",
     pos: new Pos(200, 100),
     islandSpriteIndex: 17,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "WebP",
     pos: new Pos(850, 240),
     islandSpriteIndex: 15,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "AVIF",
     pos: new Pos(1300, -200),
     islandSpriteIndex: 14,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "HEIF",
     pos: new Pos(1150, 350),
     islandSpriteIndex: 12,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "TIFF",
     pos: new Pos(900, -150),
     islandSpriteIndex: 19,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "EPS",
     pos: new Pos(1500, 150),
     islandSpriteIndex: 11,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "EXR",
     pos: new Pos(1050, -500),
     islandSpriteIndex: 15,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "TGA",
     pos: new Pos(1370, 570),
     islandSpriteIndex: 18,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "HDR",
     pos: new Pos(1650, 510),
     islandSpriteIndex: 15,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "SVG",
     pos: new Pos(300, -250),
     islandSpriteIndex: 8,
+    spawnOffset: new Pos(100, 100),
   },
   {
     name: "ICO",
     pos: new Pos(550, -350),
     islandSpriteIndex: 18,
+    spawnOffset: new Pos(0, 0),
   },
   {
     name: "PSD",
     pos: new Pos(1000, 1000),
     islandSpriteIndex: 9,
+    spawnOffset: new Pos(0, 0),
   },
   // {
   //   name: "ORA",
@@ -277,24 +279,34 @@ export const ISLAND_DATA = [
     name: "PDF",
     pos: new Pos(1050, 670),
     islandSpriteIndex: 18,
+    spawnOffset: new Pos(0, 0),
   },
 ] as const satisfies IslandDatum[];
 
 export class Island {
   callBoat: () => void;
-  name: FormatName;
-  pos: Pos;
-  sprite: IslandSprite;
 
   constructor(
-    datum: IslandDatum,
+    public datum: IslandDatum,
     islandClickHandler: (me: Island, endPos: Pos) => void,
   ) {
-    this.name = datum.name;
-    this.pos = datum.pos;
-    this.sprite = ISLAND_SPRITES[datum.islandSpriteIndex];
-
     this.callBoat = () => islandClickHandler(this, this.treasurePos);
+  }
+
+  get name() {
+    return this.datum.name;
+  }
+
+  get pos() {
+    return this.datum.pos;
+  }
+
+  get sprite() {
+    return ISLAND_SPRITES[this.datum.islandSpriteIndex];
+  }
+
+  get spawnOffset() {
+    return this.datum.spawnOffset;
   }
 
   get treasurePos() {
@@ -309,6 +321,6 @@ export class Island {
 
     const islandSprite = ISLAND_SPRITES[islandDatum.islandSpriteIndex];
 
-    return Pos.add(islandDatum.pos, islandSprite.spawnOffset);
+    return Pos.add(islandDatum.pos, islandDatum.spawnOffset);
   }
 }

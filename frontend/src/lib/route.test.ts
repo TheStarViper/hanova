@@ -8,13 +8,13 @@ const islands = ISLAND_DATA.map((datum) => new Island(datum, () => {}));
 describe("Can pathfind", () => {
   describe.each<Island>(islands)(
     "from $name",
-    ({ name: originName, pos: originPos, sprite: originSprite }) => {
-      const start = gridify(Pos.add(originPos, originSprite.spawnOffset));
+    ({ name: originName, pos: originPos, spawnOffset: originSpawnOffset }) => {
+      const start = gridify(Pos.add(originPos, originSpawnOffset));
 
       it.each<Island>(islands)(
         "to $name",
-        ({ name: targetName, pos: targetPos, sprite: targetSprite }) => {
-          const goal = gridify(Pos.add(targetPos, targetSprite.treasureOffset));
+        ({ name: targetName, pos: targetPos, sprite: { treasureOffset: targetTreasureOffset } }) => {
+          const goal = gridify(Pos.add(targetPos, targetTreasureOffset));
 
           const otherIslands = islands.filter(
             (island) => island.name !== targetName,

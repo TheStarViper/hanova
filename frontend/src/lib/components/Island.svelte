@@ -44,8 +44,8 @@ let borderColor = $derived(hovered && allowHover ? "#FFC067" : undefined);
   ></span>
   <span
     class="spawn"
-    style:left="{me.pos.x + me.sprite.spawnOffset.x + viewport.offset.x}px"
-    style:top="{me.pos.y + me.sprite.spawnOffset.y + viewport.offset.y}px"
+    style:left="{me.pos.x + me.spawnOffset.x + viewport.offset.x}px"
+    style:top="{me.pos.y + me.spawnOffset.y + viewport.offset.y}px"
   ></span>
   <span
     class="treasure"
