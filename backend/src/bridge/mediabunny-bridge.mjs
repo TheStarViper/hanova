@@ -24,32 +24,58 @@ export async function convert_media(inputdata,target,options={}){
 
     const make = OUTPUT_FORMATS[target];
     if(!make){
-        throw new ConvertError(`Unsupported media output: "${target}" (supported: ${MEDIA_FORMATS.join(', ')})`);
+        throw new ConvertError(ErrorCode.UnsupportedOutput,`Unsupported media output: "${target}" (supported: ${MEDIA_FORMATS.join(', ')})`);
     }
 
     if(options.preset && !PRESETS[options.preset]){
         throw new ConvertError(ErrorCode.UnsupportedParameter,`Unknown preset: "${options.preset}"`);
     }
-    
-    const input = new mediabunny.Input({
-        source: new mediabunny.BufferSource(inputdata),
-        formats: mediabunny.ALL_FORMATS,
-    });
 
-    const output = new mediabunny.Output({
-        format: make(),
-        target: new mediabunny.BufferTarget,
-    });
+    if(options.signal?.aborted){
+        throw new ConvertError(ErrorCode.Cancelled, 'Conversion was cancelled');
+    }
 
-    const conversion = await mediabunny.Conversion.init({
-                                                        input,
-                                                        output,
-                                                        ...(options.video && { video: options.video }),
-                                                        ...(options.audio && { audio: options.audio }),
-                                                        });
-    await conversion.execute();
+    const preset = PRESETS[options.preset]??{};
+    const video = {...preset.video,...options.video};
+    const audio = {...preset.audio,...options.audio};
 
-    return new Uint8Array(output.target.buffer);
+    try{
+        const input = new mediabunny.Input({
+            source: new mediabunny.BufferSource(inputdata),
+            formats: mediabunny.ALL_FORMATS,
+        });
+
+        const output = new mediabunny.Output({
+            format: make(),
+            target: new mediabunny.BufferTarget,
+        });
+
+        const conversion = await mediabunny.Conversion.init({
+            input,
+            output,
+            ...(Object.keys(video).length && { video }),
+            ...(Object.keys(audio).length && { audio }),
+            ...(options.trim && { trim: options.trim }),
+        });
+
+        if (!conversion.isValid){
+            const reasons = conversion.discardedTracks.map((t) => t.reason).join(', ');
+            throw new ConvertError(ErrorCode.NothingToConvert,`Nothing to convert (${reasons || 'no usable tracks'})`);
+        }
+
+        if (options.onProgrses) {
+            conversion.onProgress = options.onProgress;
+        }
+        options.signal?.addEventListener('Abort',()=>conversion.cancel(),{once: true});
+        await conversion.execute();
+
+        if (options.signal?.aborted) throw new ConvertError(ErrorCode.Cancelled, 'Conversion was cancelled');
+        return new Uint8Array(output.target.buffer);
+
+    } catch (error){
+        if (options.signal?.aborted){throw new ConvertError(ErrorCode.Cancelled,'Conversion was cancelled', {cause: error })}
+        throw to_convert_error(error,ErrorCode.NativeFailure);
+    }
 }
 
 export async function probe_media(inputdata){

@@ -54,16 +54,18 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 - [x] bmp
 - [x] tga
 - [x] hdr
-- [x] ico (in progress)
+- [x] ico
 - [x] gif
-- [x] webp (conversion from WebP not supposed yet)
+- [x] exr
+- [x] webp
 - [x] avif
-- [x] heif
-- [x] heic
-- [x] svg (conversion from svg not supposed yet)
-- [ ] eps
+- [x] svg
+- [x] eps
+- [x] ai (adobe illustrator not artificial intellegence)
 - [x] qoi
 - [x] tiff
+- [x] jxl
+- [x] psd
 
 </details>
 
@@ -106,10 +108,15 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 <details>
 <summary><h3>Video</h3></summary>
 
-- [ ] mp4
-- [ ] mkv
+- [x] mp4
+- [x] mkv
 - [ ] webm
-- [ ] 
+- [ ] mov
+- [ ] m4s
+- [ ] ogg
+- [ ] ts (MPEG Transport stem)
+- [ ] m3u8 (HLS)
+   
 
 </details>
 
