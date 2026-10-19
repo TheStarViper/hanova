@@ -32,9 +32,9 @@ export const MAGICK_BY_NAME = {
     eps:  magickModule.MagickFormat.Eps,
     ai:   magickModule.MagickFormat.Ai,
 };
+
 //can be writen but not read
 export const MAGICK_OUTPUT_ONLY = ['ico', 'pdf', 'eps', 'ai'];
-
 export const MAGICK_PROCESSORS = {
     ico: (image) => {
         if (image.width > 256 || image.height > 256) {

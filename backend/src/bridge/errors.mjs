@@ -4,14 +4,14 @@ export const ErrorCode = Object.freeze({
     NoPath: 'NoPath', //both known no conversion chain path between two
     StepFailed: 'StepFailed', //one hop in conversion chaining failed
     NativeFailure: 'NativeFailure', //C++/imagemagick/mediabunny/etc error
-    CorruptInput: 'CorruptInput', //you will never guess
+    CorruptInput: 'CorruptInput',
     EncoderUnavailable: 'EncoderUnavailable',
     NothingToConvert: 'NothingToConvert',
-    TooLarge: 'TooLarge', //too big scale
+    TooLarge: 'TooLarge', //exceeds max dimensions of image or video too long
     FileTooBig: 'FileTooBig',
     Cancelled: 'Cancelled',
-    Unknown: 'Unknown',
-    UnsupportedParameter: 'UnsupportedParameter',
+    Unknown: 'Unknown', //idk
+    UnsupportedParameter: 'UnsupportedParameter', //a function in the backend was called with an invalid set of parameters
 });
 
 export class ConvertError extends Error{

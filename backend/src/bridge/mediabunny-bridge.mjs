@@ -4,7 +4,6 @@ import {registerMp3Encoder} from '@mediabunny/mp3-encoder';
 import {registerFlacEncoder} from '@mediabunny/flac-encoder';
 import {registerAacEncoder} from '@mediabunny/aac-encoder';
 
-let mp3ready = null;
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
 const ENCODERS = {
     mp3: registerMp3Encoder,

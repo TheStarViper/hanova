@@ -15,9 +15,25 @@ const magick = {
     processors: bridge.MAGICK_PROCESSORS
 };
 
-export const FORMATS = ['png', 'jpg', 'bmp', 'hdr', 'tga', 'webp', 'svg',
-                        'gif', 'avif', 'tiff', 'ico', 'jxl', 'qoi', 'psd', 'exr',
-                        'pdf', 'eps', 'ai'];
+//OOOO all da formats
+export const FORMATS = ['png', 
+                        'jpg', 
+                        'bmp', 
+                        'hdr', 
+                        'tga', 
+                        'webp', 
+                        'svg',
+                        'gif', 
+                        'avif', 
+                        'tiff', 
+                        'ico', 
+                        'jxl', 
+                        'qoi', 
+                        'psd', 
+                        'exr',
+                        'pdf', 
+                        'eps', 
+                        'ai'];
 
 const INDEX = Object.fromEntries(FORMATS.map((f,i)=>[f,i]));
 const ALIASES = {jpeg:'jpg', //formats that are the same with diff extensions
@@ -133,11 +149,11 @@ export function createconverter({core,webp,svg,magick}){
                 }
             }
         }
-
         const path =[];
         for (let i = target; prev[i];i=prev[i][0]){
             path.unshift({from: FORMATS[prev[i][0]],to: FORMATS[i],func: prev[i][1].func});
         }
+        
         return path;
     }
 
