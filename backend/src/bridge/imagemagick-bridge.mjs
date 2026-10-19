@@ -153,7 +153,6 @@ export async function process_image(inputpath, outputpath, processorfunc) {
     fs.writeFileSync(outputpath, output);
 }
 
-
 export const {
     ImageMagick,
     Magick,

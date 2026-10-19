@@ -37,12 +37,12 @@ library that a file converter like file validation and safety functions.
 - [libwebp](https://github.com/webmproject/libwebp) (webp)
 - [nanosvg](https://github.com/memononen/nanosvg) (svg)
 - [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image formats)
-- [mediabunny](https://mediabunny.dev/) (audio and video)
+- [mediabunny](https://mediabunny.dev/) (audio and video hardware accelerated)
 
-### Custom Compilation
+### Bridge System
+As alot of the libraries we used like [imagemagick](https://github.com/ImageMagick/ImageMagick), [mediabunny](https://mediabunny.dev/) & pandoc dont have C++ variants, we have to use the JS packaged versions, therefore we had to create a bridge system between the C++ conversions and the JS packages so that they can all work together. We have some special functions like conversion chaining if we dont have a direct conversion like webp -> avif so we hop between webp -> png -> avif like how airport flights work.
 
-A few of the libraries used dont have a precompiled binary for use as a c++ library that can be compiled to wasm through emscripten. Because of this we had to compile the library from source via emscripten so we could use it for this purpose. This took a while of troubleshooting as there is limited documentation online about how to go about this and the libraries we had to compile in this form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
-
+Our setup consists of a couple mjs files chained together like the imagemagick-bridge,mediabunny bridge files and the errors file. The bridge files bridge the packages to easily callable functions anywhere else with simple parameters and validation guards. The errors file is what i use to summarize massive errors into normal readable text aswell as merge all of the different error formats from all the libs together because mediabunny,imagemagick,emscripten,c++ all have different ways to format their errors so this helps us standardize it.
 
 ### Supported File Formats
 
@@ -73,11 +73,11 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 <summary><h3>Audio</h3></summary>
 
 - [x] mp3
-- [ ] wav
-- [ ] flac
-- [ ] ogg
-- [ ] aac
-- [ ] m4a
+- [x] wav
+- [x] flac
+- [x] ogg
+- [x] aac
+- [x] m4a
 - [ ] opus
 - [ ] wma
 - [ ] aiff
@@ -110,12 +110,11 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 
 - [x] mp4
 - [x] mkv
-- [ ] webm
-- [ ] mov
-- [ ] m4s
-- [ ] ogg
-- [ ] ts (MPEG Transport stem)
-- [ ] m3u8 (HLS)
+- [x] webm
+- [x] mov
+- [x] m4s
+- [x] ts (MPEG Transport stem)
+- [x] m3u8 (HLS)
    
 
 </details>
@@ -186,4 +185,4 @@ pnpm dev
 ## Contributors
 
 - Ethan ([@ethmarks](https://github.com/ethmarks)): Frontend in Svelte
-- Andrew ([@TheStarViper](https://github.com/TheStarViper)): Backend in C++
+- Andrew ([@TheStarViper](https://github.com/TheStarViper)): Backend in C++ x Mjs

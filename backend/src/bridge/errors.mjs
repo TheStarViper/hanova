@@ -45,7 +45,6 @@ export function to_convert_error(error,fallbackcode=ErrorCode.Unknown,{step}={})
         return new ConvertError(ErrorCode.NativeFailure, `C++ exception thrown (pointer ${error})`, opts);
     }
 
-
     //imagemagick error structure
     const magick = /^(\w+)\s*(?:`([^']*)')?\s*@/.exec(message);
     if (magick){

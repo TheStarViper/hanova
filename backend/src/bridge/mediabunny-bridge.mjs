@@ -6,8 +6,6 @@ import {registerAacEncoder} from '@mediabunny/aac-encoder';
 
 let mp3ready = null;
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
-
-
 const ENCODERS = {
     mp3: registerMp3Encoder,
     flac: registerFlacEncoder,
@@ -94,8 +92,6 @@ export async function convert_media(inputdata,target,options={}){
     }
 
     const preset = PRESETS[options.preset]??{};
-    const video = {...preset.video,...options.video};
-    const audio = {...preset.audio,...options.audio};
     const info = MEDIA_INFO[target];
 
     try{

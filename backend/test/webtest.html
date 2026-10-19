@@ -30,7 +30,7 @@
       throw err;
     }
 
-    // dropdowns come from the bridge, so they can never offer something it can't do
+    // grab dropdowns from bridge
     for (const f of bridge.MEDIA_FORMATS) $('target').add(new Option(f, f));
     for (const p of bridge.MEDIA_PRESETS) $('preset').add(new Option(p, p));
     $('target').value = 'mkv';
@@ -58,7 +58,7 @@
         const bytes = new Uint8Array(await file.arrayBuffer());
         const t0 = performance.now();
 
-        say('Converting... 0%');
+        say('Converting');
         const out = await bridge.convert_media(bytes, target, {
           preset,
           signal: ctrl.signal,
