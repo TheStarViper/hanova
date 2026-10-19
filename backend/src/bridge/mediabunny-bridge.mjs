@@ -1,6 +1,8 @@
 import * as mediabunny from 'mediabunny';
 import { ConvertError,ErrorCode, to_convert_error } from './errors.mjs';
+import {registerMp3Encoder} from '@mediabunny/mp3-encoder';
 
+let mp3ready = null;
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
 
 const OUTPUT_FORMATS = {
@@ -45,12 +47,19 @@ const PRESETS = {
     small: {video: {height:480, bitrate: mediabunny.QUALITY_LOW},audio:{bitrate: mediabunny.QUALITY_LOW}},
     balanced: {video: {height:720, bitrate: mediabunny.QUALITY_MEDIUM},audio:{bitrate: mediabunny.QUALITY_MEDIUM}},
     high: {video: {height:1080, bitrate: mediabunny.QUALITY_HIGH},audio:{bitrate: mediabunny.QUALITY_HIGH}},
-    hdlossless: {video: {height:1080, bitrate:mediabunny.QUALITY_VERY_HIGH},audio:{bitrate: mediabunny.QUALITY_VERY_HIGH}},
-    fourklossless: {video: {height:3840, bitrate:mediabunny.QUALITY_VERY_HIGH},audio:{bitrate: mediabunny.QUALITY_VERY_HIGH}},
+    hdmax: {video: {height:1080, bitrate:mediabunny.QUALITY_VERY_HIGH},audio:{bitrate: mediabunny.QUALITY_VERY_HIGH}},
+    fourkmax: {video: {height:3840, bitrate:mediabunny.QUALITY_VERY_HIGH},audio:{bitrate: mediabunny.QUALITY_VERY_HIGH}},
 };
 
 export const MEDIA_PRESETS = Object.keys(PRESETS);
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);
+
+function ensureMp3Encoder(){
+    mp3ready??=(async()=>{
+        if(!(await mediabunny.canEncodeAudio('mp3'))){registerMp3Encoder();}
+    })();
+    return mp3ready;
+}
 
 export async function convert_media(inputdata,target,options={}){
 
@@ -81,6 +90,8 @@ export async function convert_media(inputdata,target,options={}){
             format: make(),
             target: new mediabunny.BufferTarget,
         });
+
+        if (target==='mp3'){await ensureMp3Encoder();}
 
         const conversion = await mediabunny.Conversion.init({
             input,

@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@imagemagick/magick-wasm": "^0.0.44",
+    "@mediabunny/mp3-encoder": "^1.61.6",
     "@mediabunny/server": "^1.61.5",
     "mediabunny": "^1.61.5"
   },
