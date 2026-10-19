@@ -55,17 +55,21 @@ Images:
 
 - [x] png
 - [x] jpeg
+- [x] webp
 - [x] bmp
-- [x] tga
+- [x] avif
+- [x] jxl
+- [x] heif
+- [x] svg
+- [x] gif
+- [x] exr
+- [x] eps
 - [x] hdr
-- [ ] ico (in progress)
-- [ ] gif
-- [x] webp (conversion _from_ WebP not supported yet)
-- [ ] avif
-- [ ] heif
-- [ ] heic
-- [x] svg (conversion _from_ svg not supported yet)
-- [ ] eps
+- [x] tga
+- [x] ico
+- [x] psd
+- [x] tiff
+- [x] qoi
 
 Audio:
 
@@ -131,7 +135,7 @@ might change the art direction or use custom assets in the future.
 
 ### Pathfinding
 
-![Debugging mode, where the pathfinding grid and island collision boundaries are drawn in red and overlayed on the rest of the map](./frontend/src/lib/assets/debug_screenshot.png)
+![Debugging mode, where the pathfinding grid and island collision boundaries are drawn in red and overlayed on the rest of the map](./frontend/src/lib/assets/debug_screenshot2.png)
 
 The boat uses the A* algorithm to pathfind from its current position to the
 target island without clipping through any other islands. The generated path is
@@ -166,8 +170,10 @@ Week 3:
 Week 4:
 
 - [x] Viewport zooming
-- [ ] More island asset variety
-- [ ] Initial menu animation that pans over the islands
+- [x] More island asset variety
+- [x] Improved title screen
+- [x] Pathfinding algorithm improvements
+- [x] Tooltips
 
 Planned:
 
