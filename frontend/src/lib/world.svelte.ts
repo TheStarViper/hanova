@@ -35,7 +35,8 @@ export class World {
     this.banner.text = "Drag & drop a file to start";
     this.viewport.canDrag = false;
 
-    this.cppManager.hook = (response: WorkerResponse) => this.conversionHandler(response);
+    this.cppManager.hook = (response: WorkerResponse) =>
+      this.conversionHandler(response);
 
     preloadSounds();
   }
@@ -133,12 +134,14 @@ export class World {
 
     switch (res) {
       case undefined:
-        this.banner.text = "error: the boat arrived before the conversion finished :(";
+        this.banner.text =
+          "error: the boat arrived before the conversion finished :(";
         break;
       case true:
         playSound("shovel1.wav");
 
-        this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat} file!`;
+        this.banner.text =
+          `You've found buried treasure: a ${this.fileManager.outFormat} file!`;
         setTimeout(() => this.reset(), 2000);
         break;
       default:
@@ -180,7 +183,10 @@ export class World {
 
   initIslands() {
     this.islands = ISLAND_DATA.map((datum) => {
-      return new Island(datum, (targetIsland: Island) => this.islandClickHandler(targetIsland));
+      return new Island(
+        datum,
+        (targetIsland: Island) => this.islandClickHandler(targetIsland),
+      );
     });
   }
 }

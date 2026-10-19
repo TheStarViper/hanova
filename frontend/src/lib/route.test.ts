@@ -9,7 +9,9 @@ describe("Can pathfind", () => {
   describe.each<Island>(islands)(
     "from $name",
     (originIsland) => {
-      const start = gridify(Pos.add(originIsland.pos, originIsland.spawnOffset));
+      const start = gridify(
+        Pos.add(originIsland.pos, originIsland.spawnOffset),
+      );
 
       it.each<Island>(islands)(
         "to $name",

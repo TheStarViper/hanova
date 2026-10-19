@@ -1,8 +1,8 @@
 import adapter from "@sveltejs/adapter-static";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
-import { defineConfig } from "vite";
 import { fileURLToPath } from "node:url";
+import { defineConfig } from "vite";
 
 const frontendRoot = fileURLToPath(new URL(".", import.meta.url));
 const backendRoot = fileURLToPath(new URL("../backend", import.meta.url));
@@ -12,7 +12,8 @@ export default defineConfig({
     sveltekit({
       compilerOptions: {
         // Force runes mode for the project, except for libraries. Can be removed in svelte 6.
-        runes: ({ filename }) => filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
+        runes: ({ filename }) =>
+          filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
       },
       adapter: adapter(),
       paths: {

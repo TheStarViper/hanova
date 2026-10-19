@@ -52,7 +52,8 @@ export function aStar(
   const inBounds = inBoundsFactory(start, goal);
   const heuristic = heuristicFactory(goal);
 
-  const getF = (coords: Coords): number => gScores.get(coords)! + heuristic(coords);
+  const getF = (coords: Coords): number =>
+    gScores.get(coords)! + heuristic(coords);
 
   gScores.set(start, 0);
 
@@ -136,13 +137,16 @@ const NEUMANN_NEIGHBORHOOD = [
 function getNeighbors(origin: Coords): Coords[] {
   const [originX, originY] = numifyCoords(origin);
 
-  return MOORE_NEIGHBORHOOD.map((offset) => stringifyCoords(originX + offset[0], originY + offset[1]));
+  return MOORE_NEIGHBORHOOD.map((offset) =>
+    stringifyCoords(originX + offset[0], originY + offset[1])
+  );
 }
 
 /** x,y */
 type Coords = `${number},${number}`;
 const stringifyCoords = (x: number, y: number): Coords => `${x},${y}`;
-const numifyCoords = (coord: Coords) => coord.split(",").map(Number) as [number, number];
+const numifyCoords = (coord: Coords) =>
+  coord.split(",").map(Number) as [number, number];
 
 export const gridify = (point: Pos): Coords => {
   const x = Math.floor(point.x / GRID_CELL_WIDTH);
@@ -179,7 +183,9 @@ export function isWalkableFactory(
   };
 }
 
-export function getCostFactory(targetIsland: Island): (coords: Coords) => number {
+export function getCostFactory(
+  targetIsland: Island,
+): (coords: Coords) => number {
   const cache = new Map<Coords, number>();
 
   return (coords: Coords) => {
@@ -188,7 +194,8 @@ export function getCostFactory(targetIsland: Island): (coords: Coords) => number
 
     const point = pixelify(coords);
 
-    const intersectingTargetIsland = Math.abs(Pos.dist(point, targetIsland.pos)) < targetIsland.sprite.radius;
+    const intersectingTargetIsland =
+      Math.abs(Pos.dist(point, targetIsland.pos)) < targetIsland.sprite.radius;
 
     // the target island is still technically walkable, but A* is strongly
     // discouraged from clipping inside the islands if there's another route

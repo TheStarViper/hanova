@@ -81,7 +81,8 @@ export class Viewport {
     window.addEventListener("wheel", (event) => {
       if (!this.canDrag) return;
 
-      const newZoom = this.zoom * Math.pow(this.SCROLL_SENSITIVITY, -event.deltaY);
+      const newZoom = this.zoom
+        * Math.pow(this.SCROLL_SENSITIVITY, -event.deltaY);
 
       if (newZoom > this.MIN_ZOOM && newZoom < this.MAX_ZOOM) {
         this.zoom = newZoom;
@@ -113,7 +114,9 @@ export class Viewport {
       this.offset.x = startPos.x + delta.x * progress;
       this.offset.y = startPos.y + delta.y * progress;
 
-      this.recenterAnimID = progress < 1 ? requestAnimationFrame(animate) : null;
+      this.recenterAnimID = progress < 1
+        ? requestAnimationFrame(animate)
+        : null;
     };
 
     this.recenterAnimID = requestAnimationFrame(animate);

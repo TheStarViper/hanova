@@ -23,7 +23,8 @@ export const SOUNDS = [
 ] as const satisfies string[];
 export type Sound = (typeof SOUNDS)[number];
 
-const getSoundPath: (sound: Sound) => string = (sound: Sound) => asset(`sounds/${sound}`);
+const getSoundPath: (sound: Sound) => string = (sound: Sound) =>
+  asset(`sounds/${sound}`);
 
 let audioCtx: AudioContext | undefined = undefined;
 
