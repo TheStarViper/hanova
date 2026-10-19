@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { Format } from "#lib/fileManager.js";
 import { Island } from "#lib/island.svelte.js";
+import { TOOLTIP_DATA } from "#lib/tooltip.svelte.js";
 import type { Viewport } from "#lib/viewport.svelte.js";
 import Sprite from "./Sprite.svelte";
 
@@ -42,7 +43,7 @@ $effect(() => {
     hover: () => (hovered = true),
     unhover: () => (hovered = false),
   }}
-  label={me.name.toUpperCase()}
+  label={TOOLTIP_DATA[me.name].title}
 >{@html me.sprite.svg}</Sprite>
 <div
   class="debug"
