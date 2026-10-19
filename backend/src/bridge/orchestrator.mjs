@@ -48,7 +48,7 @@ export function simplifyerror(error) {
   return `${error?.name ?? "Error"}: ${message.split("\n")[0]}`;
 }
 
-export const FORMATS = [
+export const FORMATS = /** @type {const} */ ([
   "png",
   "jpg",
   "bmp",
@@ -64,15 +64,34 @@ export const FORMATS = [
   "jxl",
   "qoi",
   "psd",
-];
+  "eps",
+  "exr",
+]);
 
 const INDEX = Object.fromEntries(FORMATS.map((f, i) => [f, i]));
-const ALIASES = {
+
+/** @type {Record<string, (typeof FORMATS)[number]>} */
+export const ALIASES = {
   jpeg: "jpg", // formats that are the same with diff extensions
   jpe: "jpg",
+
   targa: "tga",
+  icb: "tga",
+  vda: "tga",
+  vst: "tga",
+
   tif: "tiff",
+
   heif: "heic",
+  heifs: "heic",
+  heics: "heic",
+  hif: "heic",
+  hifs: "heic",
+  avci: "heic",
+  avcs: "heic",
+
+  epsf: "eps",
+  epsi: "eps",
 };
 
 const N = FORMATS.length;

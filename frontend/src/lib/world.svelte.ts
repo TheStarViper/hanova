@@ -1,8 +1,8 @@
 // class imports
 import { Banner } from "./banner.svelte";
 import { Boat, SAIL_DURATION } from "./boat.svelte";
-import { FileManager, FORMATS } from "./fileManager";
-import { Island, ISLAND_DATA, type IslandDatum } from "./island.svelte";
+import { FileManager } from "./fileManager";
+import { Island, ISLAND_DATA } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
 import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
@@ -47,7 +47,7 @@ export class World {
     this.boat.sunk = false;
 
     this.fileManager.file = undefined;
-    this.fileManager.outFormatName = undefined;
+    this.fileManager.outFormat = undefined;
     this.fileManager.conversionStartTime = null;
 
     this.treasure.hide = true;
@@ -138,7 +138,7 @@ export class World {
       case true:
         playSound("shovel1.wav");
 
-        this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormatName} file!`;
+        this.banner.text = `You've found buried treasure: a ${this.fileManager.outFormat} file!`;
         setTimeout(() => this.reset(), 2000);
         break;
       default:

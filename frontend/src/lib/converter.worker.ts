@@ -1,5 +1,5 @@
 import { converterFactory } from "../../../backend/src/bridge/orchestrator.mjs";
-import { type FormatName, JPEG_QUALITY, WEBP_QUALITY } from "./fileManager";
+import { type Format, JPEG_QUALITY, WEBP_QUALITY } from "./fileManager";
 
 type Bytes = Uint8Array<ArrayBuffer>;
 
@@ -15,8 +15,7 @@ export type ReturnObj = SuccessObj | FailObj;
 
 export interface WorkerRequest {
   inBytes: Bytes;
-  inFormat: FormatName | undefined;
-  outFormat: FormatName;
+  outFormat: Format;
 }
 export type WorkerResponse = ReturnObj;
 
@@ -24,7 +23,6 @@ let converter: Awaited<ReturnType<typeof converterFactory>> | undefined;
 
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   let inBytes = event.data.inBytes;
-  const inFormat = event.data.inFormat;
   const outFormat = event.data.outFormat;
 
   if (converter === undefined) converter = await converterFactory();

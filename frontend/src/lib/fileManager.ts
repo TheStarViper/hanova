@@ -1,3 +1,5 @@
+import mime from "mime";
+import { ALIASES, FORMATS } from "../../../backend/src/bridge/orchestrator.mjs";
 import type { ReturnObj } from "./converter.worker";
 import { type CppManager } from "./cppManager";
 import { decodeSounds } from "./sound";
@@ -8,182 +10,12 @@ const ELLIPSIS = "...";
 export const JPEG_QUALITY = 85;
 export const WEBP_QUALITY = 90;
 
-export interface FileFormat {
-  /** file extension for the file download. Does *not* include the dot */
-  ext: string;
-
-  /**
-   * {@link https://www.iana.org/assignments/media-types#image|Super useful resource for MIME types}
-   */
-  mimeType: string;
-
-  validExtensions: string[];
-}
-
-export const FORMATS = {
-  // https://en.wikipedia.org/wiki/PNG
-  PNG: {
-    ext: "png",
-    mimeType: "image/png",
-    validExtensions: ["png"],
-  },
-
-  // https://en.wikipedia.org/wiki/JPEG
-  JPEG: {
-    ext: "jpeg",
-    mimeType: "image/jpeg",
-    validExtensions: ["jpg", "jpeg"],
-  },
-
-  // https://en.wikipedia.org/wiki/BMP_file_format
-  BMP: {
-    ext: "bmp",
-    mimeType: "image/bmp",
-    validExtensions: ["bmp"],
-  },
-
-  // https://en.wikipedia.org/wiki/Truevision_TGA
-  // Ive literally never heard of this format lol
-  TGA: {
-    ext: "tga",
-
-    // apparently this mime type is unofficial and unregistered
-    mimeType: "image/x-targa",
-
-    validExtensions: ["tga", "icb", "vda", "vst"],
-  },
-
-  // https://en.wikipedia.org/wiki/RGBE_image_format
-  HDR: {
-    ext: "hdr",
-    mimeType: "image/vnd.radiance",
-    validExtensions: ["hdr"],
-  },
-
-  // https://en.wikipedia.org/wiki/WebP
-  // best image format!
-  WebP: {
-    ext: "webp",
-    mimeType: "image/webp",
-    validExtensions: ["webp"],
-  },
-
-  // https://en.wikipedia.org/wiki/SVG
-  SVG: {
-    ext: "svg",
-    mimeType: "image/svg+xml",
-    validExtensions: ["svg"],
-  },
-
-  // https://en.wikipedia.org/wiki/GIF
-  GIF: {
-    ext: "gif",
-    mimeType: "image/gif",
-    validExtensions: ["gif"],
-  },
-
-  // https://en.wikipedia.org/wiki/AVIF
-  AVIF: {
-    ext: "avif",
-    mimeType: "image/avif",
-    validExtensions: ["avif", "avifs"],
-  },
-
-  // https://en.wikipedia.org/wiki/TIFF
-  TIFF: {
-    ext: "tiff",
-    mimeType: "image/tiff",
-    validExtensions: ["tiff", "tif"],
-  },
-
-  // https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format
-  HEIF: {
-    ext: "heif",
-    mimeType: "image/heif",
-    validExtensions: [
-      "heif",
-      "heifs",
-      "heic",
-      "heics",
-      "hif",
-      "hifs",
-      "avci",
-      "avcs",
-    ],
-  },
-
-  // https://en.wikipedia.org/wiki/JPEG_XL
-  JPEGXL: {
-    ext: "jxl",
-    mimeType: "image/jxl",
-    validExtensions: ["jxl"],
-  },
-
-  // https://en.wikipedia.org/wiki/ICO_(file_format)
-  ICO: {
-    ext: "ico",
-    mimeType: "image/x-icon",
-    validExtensions: ["ico"],
-  },
-
-  // https://en.wikipedia.org/wiki/Adobe_Photoshop#File_format
-  PSD: {
-    ext: "psd",
-    mimeType: "image/vnd.adobe.photoshop",
-    validExtensions: ["psd"],
-  },
-
-  // https://en.wikipedia.org/wiki/PDF
-  PDF: {
-    ext: "pdf",
-    mimeType: "application/pdf",
-    validExtensions: ["pdf"],
-  },
-
-  // https://en.wikipedia.org/wiki/Encapsulated_PostScript
-  EPS: {
-    ext: "eps",
-    mimeType: "application/postscript",
-    validExtensions: ["eps", "epsf", "epsi"],
-  },
-
-  // im omitting Adobe Illustrator's .ai format cuz there's no wikipedia
-  // article for it, and I worry that it'd be confusing for users who
-  // think that it's a generative AI feature
-
-  // https://en.wikipedia.org/wiki/OpenRaster
-  // ORA: {
-  //   ext: "ora",
-  //   mimeType: "image/openraster",
-  //   validExtensions: ["ora"],
-  // },
-
-  // https://en.wikipedia.org/wiki/XCF_(file_format)
-  // XCF: {
-  //   ext: "xcf",
-  //   mimeType: "image/x-xcf",
-  //   validExtensions: ["xcf"],
-  // },
-
-  // im omitting QOI because it doesn't even have a mimetype
-
-  // https://en.wikipedia.org/wiki/OpenEXR
-  EXR: {
-    ext: "exr",
-    mimeType: "image/x-exr",
-    validExtensions: ["exr"],
-  },
-} as const satisfies Record<string, FileFormat>;
-export type FormatName = keyof typeof FORMATS;
+export type Format = (typeof FORMATS)[number];
 
 export class FileManager {
   file: File | undefined;
 
-  outFormatName: FormatName | undefined;
-  get outFormat(): FileFormat | undefined {
-    if (this.outFormatName === undefined) return undefined;
-    return FORMATS[this.outFormatName];
-  }
+  outFormat: Format | undefined;
 
   conversionStartTime: number | null = null;
 
@@ -228,8 +60,8 @@ export class FileManager {
     this.dropHook?.();
   }
 
-  async convertTo(formatName: FormatName) {
-    this.outFormatName = formatName;
+  async convertTo(formatName: Format) {
+    this.outFormat = formatName;
     if (this.outFormat === undefined) {
       throw new Error(`invalid file type ${formatName}`);
     }
@@ -239,13 +71,11 @@ export class FileManager {
     }
 
     const inBytes = await this.file.bytes();
-    const inFormat = this.getInputFormatName();
 
     this.conversionStartTime = Date.now();
     this.cppManager.startConversion({
       inBytes,
       outFormat: formatName,
-      inFormat,
     });
   }
 
@@ -255,13 +85,13 @@ export class FileManager {
   downloadFile(): undefined | true | string {
     const result = this.cppManager.response;
 
-    if (result === null) return undefined;
+    if (result === null || this.outFormat === undefined) return undefined;
     if (!result.ok) return result.error;
 
     const outBytes = result.data;
 
     const blob = new Blob([outBytes], {
-      type: FORMATS[this.outFormatName!].mimeType,
+      type: mime.getType(this.outFormat) ?? undefined,
     });
 
     const url = URL.createObjectURL(blob);
@@ -298,17 +128,17 @@ export class FileManager {
     return { base, ext };
   }
 
-  getInputFormatName(): FormatName | undefined {
+  getInputFormatName(): Format | undefined {
     const { ext } = this.parseFilename();
     if (ext === undefined) return undefined;
 
-    const name = (Object.keys(FORMATS) as FormatName[]).find((name) => {
-      const format = FORMATS[name];
-      const extensions = format.validExtensions.map((e) => e.toLowerCase());
-      return extensions.includes(ext.substring(1).toLowerCase());
-    });
+    const extWithoutDot = ext.substring(1).toLowerCase();
 
-    return name;
+    if ((FORMATS as readonly string[]).includes(extWithoutDot)) {
+      return extWithoutDot as Format;
+    }
+
+    return ALIASES[extWithoutDot];
   }
 
   get displayifiedFilename(): string {
@@ -330,6 +160,6 @@ export class FileManager {
       throw new Error("can't get out filename until out format is set");
     }
 
-    return `${base}.${this.outFormat.ext}`;
+    return `${base}.${this.outFormat}`;
   }
 }

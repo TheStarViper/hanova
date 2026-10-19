@@ -34,6 +34,8 @@ export const MAGICK_BY_NAME = {
   jxl: magickModule.MagickFormat.Jxl,
   qoi: magickModule.MagickFormat.Qoi,
   psd: magickModule.MagickFormat.Psd,
+  eps: magickModule.MagickFormat.Eps,
+  exr: magickModule.MagickFormat.Exr,
 };
 
 export const MAGICK_PROCESSORS = {

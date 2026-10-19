@@ -30,13 +30,13 @@ let borderColor = $derived(hovered && allowHover ? "#FFC067" : undefined);
       ? () => {
         setTimeout(() => {
           if (!viewport.userIsDragging) me.callBoat();
-        }, 50);
+        }, 100);
       }
       : undefined,
     hover: () => (hovered = true),
     unhover: () => (hovered = false),
   }}
-  label={me.name}
+  label={me.name.toUpperCase()}
 >{@html me.sprite.svg}</Sprite>
 <div
   class="debug"

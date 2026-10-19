@@ -21,7 +21,7 @@ import Island7Svg from "#lib/assets/island7.svg?raw";
 import Island8Svg from "#lib/assets/island8.svg?raw";
 import Island9Svg from "#lib/assets/island9.svg?raw";
 
-import type { FormatName } from "./fileManager";
+import type { Format } from "./fileManager";
 
 export interface IslandSprite {
   svg: string;
@@ -162,7 +162,7 @@ export const ISLAND_SPRITES = {
 type IslandSpriteIndex = keyof typeof ISLAND_SPRITES;
 
 export interface IslandDatum {
-  name: FormatName;
+  name: Format;
   pos: Pos;
   islandSpriteIndex: IslandSpriteIndex;
   spawnOffset: Pos;
@@ -170,97 +170,97 @@ export interface IslandDatum {
 
 export const ISLAND_DATA = [
   {
-    name: "BMP",
+    name: "bmp",
     pos: new Pos(0, 500),
     islandSpriteIndex: 18,
     spawnOffset: new Pos(0, -160),
   },
   {
-    name: "GIF",
+    name: "gif",
     pos: new Pos(0, 800),
     islandSpriteIndex: 6,
     spawnOffset: new Pos(50, 100),
   },
   {
-    name: "JPEG",
+    name: "jpg",
     pos: new Pos(400, 550),
     islandSpriteIndex: 16,
     spawnOffset: new Pos(200, 20),
   },
   {
-    name: "JPEGXL",
+    name: "jxl",
     pos: new Pos(600, 880),
     islandSpriteIndex: 8,
     spawnOffset: new Pos(-100, 100),
   },
   {
-    name: "PNG",
+    name: "png",
     pos: new Pos(200, 100),
     islandSpriteIndex: 17,
     spawnOffset: new Pos(250, -100),
   },
   {
-    name: "WebP",
+    name: "webp",
     pos: new Pos(850, 240),
     islandSpriteIndex: 15,
     spawnOffset: new Pos(160, -120),
   },
   {
-    name: "AVIF",
+    name: "avif",
     pos: new Pos(1300, -200),
     islandSpriteIndex: 14,
     spawnOffset: new Pos(-130, 100),
   },
   {
-    name: "HEIF",
+    name: "heic",
     pos: new Pos(1150, 350),
     islandSpriteIndex: 12,
     spawnOffset: new Pos(180, 50),
   },
   {
-    name: "TIFF",
+    name: "tiff",
     pos: new Pos(900, -150),
     islandSpriteIndex: 19,
     spawnOffset: new Pos(90, 170),
   },
   {
-    name: "EPS",
+    name: "eps",
     pos: new Pos(1500, 150),
     islandSpriteIndex: 11,
     spawnOffset: new Pos(-40, 200),
   },
   {
-    name: "EXR",
+    name: "exr",
     pos: new Pos(1050, -500),
     islandSpriteIndex: 15,
     spawnOffset: new Pos(-200, 0),
   },
   {
-    name: "TGA",
+    name: "tga",
     pos: new Pos(1370, 570),
     islandSpriteIndex: 18,
     spawnOffset: new Pos(0, -150),
   },
   {
-    name: "HDR",
+    name: "hdr",
     pos: new Pos(1650, 510),
     islandSpriteIndex: 14,
     spawnOffset: new Pos(-170, -80),
   },
   {
-    name: "SVG",
+    name: "svg",
     pos: new Pos(300, -250),
     islandSpriteIndex: 8,
     spawnOffset: new Pos(100, 100),
   },
   {
-    name: "ICO",
+    name: "ico",
     pos: new Pos(550, -350),
     islandSpriteIndex: 18,
     spawnOffset: new Pos(150, 0),
   },
   {
-    name: "PSD",
+    name: "psd",
     pos: new Pos(1000, 1000),
     islandSpriteIndex: 9,
     spawnOffset: new Pos(-200, 30),
@@ -277,12 +277,12 @@ export const ISLAND_DATA = [
   //   islandSpriteIndex: 1,
   //   spawnOffset: new Pos(0, 0),
   // },
-  {
-    name: "PDF",
-    pos: new Pos(1050, 670),
-    islandSpriteIndex: 18,
-    spawnOffset: new Pos(160, 20),
-  },
+  // {
+  //   name: "PDF",
+  //   pos: new Pos(1050, 670),
+  //   islandSpriteIndex: 18,
+  //   spawnOffset: new Pos(160, 20),
+  // },
 ] as const satisfies IslandDatum[];
 
 export class Island {
@@ -315,7 +315,7 @@ export class Island {
     return Pos.add(this.pos, this.sprite.treasureOffset);
   }
 
-  static findSpawnOffsetForFormat(formatName: FormatName): Pos | undefined {
+  static findSpawnOffsetForFormat(formatName: Format): Pos | undefined {
     const islandDatum = ISLAND_DATA.find(
       (datum) => datum.name.toLowerCase() === formatName.toLowerCase(),
     );
