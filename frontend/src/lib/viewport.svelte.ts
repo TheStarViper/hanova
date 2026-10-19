@@ -1,5 +1,10 @@
 import { ease, Pos } from "./utils.svelte";
 
+const DRAG_SENSITIVITY = 1;
+const SCROLL_SENSITIVITY = 1.0015;
+const MIN_ZOOM = 0.3;
+const MAX_ZOOM = 2;
+
 export class Viewport {
   el: HTMLElement | null = null;
   min = new Pos();
@@ -10,13 +15,11 @@ export class Viewport {
 
   canDrag = $state(false);
   userIsDragging = $state(false);
+
+  mouseX = $state(0);
+  mouseY = $state(0);
   private dragStartX = 0;
   private dragStartY = 0;
-
-  private DRAG_SENSITIVITY = 1;
-  private SCROLL_SENSITIVITY = 1.0015;
-  private MIN_ZOOM = 0.3;
-  private MAX_ZOOM = 2;
 
   constructor() {}
 
@@ -72,8 +75,8 @@ export class Viewport {
       const dragDeltaX = event.clientX - this.dragStartX;
       const dragDeltaY = event.clientY - this.dragStartY;
 
-      this.offset.x += (dragDeltaX * this.DRAG_SENSITIVITY) / this.zoom;
-      this.offset.y += (dragDeltaY * this.DRAG_SENSITIVITY) / this.zoom;
+      this.offset.x += (dragDeltaX * DRAG_SENSITIVITY) / this.zoom;
+      this.offset.y += (dragDeltaY * DRAG_SENSITIVITY) / this.zoom;
 
       this.dragStartX = event.clientX;
       this.dragStartY = event.clientY;
@@ -82,11 +85,16 @@ export class Viewport {
       if (!this.canDrag) return;
 
       const newZoom = this.zoom
-        * Math.pow(this.SCROLL_SENSITIVITY, -event.deltaY);
+        * Math.pow(SCROLL_SENSITIVITY, -event.deltaY);
 
-      if (newZoom > this.MIN_ZOOM && newZoom < this.MAX_ZOOM) {
+      if (newZoom > MIN_ZOOM && newZoom < MAX_ZOOM) {
         this.zoom = newZoom;
       }
+    });
+
+    document.addEventListener("mousemove", (event) => {
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
     });
   }
 

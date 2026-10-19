@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Format } from "#lib/fileManager.js";
 import { Island } from "#lib/island.svelte.js";
 import type { Viewport } from "#lib/viewport.svelte.js";
 import Sprite from "./Sprite.svelte";
@@ -8,13 +9,18 @@ interface Props {
   viewport: Viewport;
   debugging: boolean;
   allowHover: boolean;
+  setTooltip: (format: Format | null) => void;
 }
 
-let { me, viewport, debugging, allowHover }: Props = $props();
+let { me, viewport, debugging, allowHover, setTooltip }: Props = $props();
 
 let hovered: boolean = $state(false);
 let shadowOpacity = $derived(hovered && allowHover ? 0.8 : 0.4);
 let borderColor = $derived(hovered && allowHover ? "#FFC067" : undefined);
+
+$effect(() => {
+  setTooltip(hovered && allowHover ? me.name : null);
+});
 </script>
 
 <Sprite

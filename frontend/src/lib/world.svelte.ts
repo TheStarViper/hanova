@@ -13,6 +13,7 @@ import type { WorkerResponse } from "./converter.worker";
 import type { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
 import { decodeSounds, playSound, preloadSounds } from "./sound";
+import { Tooltip } from "./tooltip.svelte";
 
 const USE_TIME_ESTIMATE = false;
 
@@ -23,6 +24,8 @@ export class World {
   fileManager: FileManager;
   treasure = new Treasure();
   banner = new Banner(this.viewport);
+  tooltip = new Tooltip();
+
   curves: CubicBezier[] = $state([]);
   titleCornered: boolean = $state(false);
 
