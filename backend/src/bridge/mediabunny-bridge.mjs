@@ -1,9 +1,31 @@
 import * as mediabunny from 'mediabunny';
 import { ConvertError,ErrorCode, to_convert_error } from './errors.mjs';
 import {registerMp3Encoder} from '@mediabunny/mp3-encoder';
+import {registerFlacEncoder} from '@mediabunny/flac-encoder';
+import {registerAacEncoder} from '@mediabunny/aac-encoder';
 
 let mp3ready = null;
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
+
+
+const ENCODERS = {
+    mp3: registerMp3Encoder,
+    flac: registerFlacEncoder,
+    aac: registerAacEncoder,
+};
+const registered = new Map();
+
+function ensureEncoder(codec){
+    const register = ENCODERS[codec];
+    if (!register) {return Promise.resolve();}
+    if (!registered.has(codec)){
+        registered.set(codec,(async ()=>{
+            if (!(await mediabunny.canEncodeAudio(codec))) {register();}
+        })());
+    }
+    return registered.get(codec);
+}
+
 
 const OUTPUT_FORMATS = {
     //video
@@ -25,20 +47,20 @@ const OUTPUT_FORMATS = {
 
 export const MEDIA_INFO={
     //video
-    mp4: {ext:'mp4',mime:'video/mp4',video: true},
-    mkv: {ext:'mkv',mime:'video/x-matroska',video: true},
-    webm:{ext:'webm',mime:'video/webm',video: true},
-    ts:  {ext:'ts',mime:'video/mp2t',video: true},
-    mov: {ext:'mov',mime:'video/quicktime',video: true},
+    mp4: {ext:'mp4' ,mime:'video/mp4'       ,video: true, encoders:['aac']},
+    mkv: {ext:'mkv' ,mime:'video/x-matroska',video: true},
+    webm:{ext:'webm',mime:'video/webm'      ,video: true},
+    ts:  {ext:'ts'  ,mime:'video/mp2t'      ,video: true, encoders:['aac']},
+    mov: {ext:'mov' ,mime:'video/quicktime' ,video: true, encoders:['aac']},
     m3u8:{ext:'m3u8',mime:'video/idkbruhwth',video: true}, // FIX
     
     //audio
-    mp3: {ext:'mp3',mime:'audio/mpeg',video: false},
-    wav: {ext:'wav',mime:'audio/wav',video: false},
-    ogg: {ext:'ogg',mime:'audio/ogg',video: false},
-    flac:{ext:'flac',mime:'audio/flac',video: false},
-    aac: {ext:'aac',mime:'audio/aac',video: false},
-    m4a: {ext:'m4a',mime:'audio/mp4',video: false},
+    mp3: {ext:'mp3' ,mime:'audio/mpeg',video: false, encoders: ['mp3'],  audioCodec: 'mp3' },
+    wav: {ext:'wav' ,mime:'audio/wav' ,video: false},
+    ogg: {ext:'ogg' ,mime:'audio/ogg' ,video: false},
+    flac:{ext:'flac',mime:'audio/flac',video: false, encoders: ['flac'], audioCodec: 'flac'},
+    aac: {ext:'aac' ,mime:'audio/aac' ,video: false, encoders: ['aac'],  audioCodec: 'aac'},
+    m4a: {ext:'m4a' ,mime:'audio/mp4' ,video: false, encoders: ['aac'],  audioCodec: 'aac'},
 };
 
 
@@ -54,12 +76,7 @@ const PRESETS = {
 export const MEDIA_PRESETS = Object.keys(PRESETS);
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);
 
-function ensureMp3Encoder(){
-    mp3ready??=(async()=>{
-        if(!(await mediabunny.canEncodeAudio('mp3'))){registerMp3Encoder();}
-    })();
-    return mp3ready;
-}
+
 
 export async function convert_media(inputdata,target,options={}){
 
@@ -79,8 +96,18 @@ export async function convert_media(inputdata,target,options={}){
     const preset = PRESETS[options.preset]??{};
     const video = {...preset.video,...options.video};
     const audio = {...preset.audio,...options.audio};
+    const info = MEDIA_INFO[target];
 
     try{
+        for (const codec of info.encoders??[]){await ensureEncoder(codec);}
+
+        const video = info.video? {...preset.video, ...options.video} : {discard: true};
+        const audio = {
+            ...(info.audioCodec && { codec: info.audioCodec }),
+            ...preset.audio,
+            ...options.audio,
+        };
+
         const input = new mediabunny.Input({
             source: new mediabunny.BufferSource(inputdata),
             formats: mediabunny.ALL_FORMATS,
@@ -91,12 +118,10 @@ export async function convert_media(inputdata,target,options={}){
             target: new mediabunny.BufferTarget,
         });
 
-        if (target==='mp3'){await ensureMp3Encoder();}
-
         const conversion = await mediabunny.Conversion.init({
             input,
             output,
-            ...(Object.keys(video).length && { video }),
+            video,
             ...(Object.keys(audio).length && { audio }),
             ...(options.trim && { trim: options.trim }),
         });

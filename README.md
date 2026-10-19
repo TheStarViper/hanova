@@ -72,7 +72,7 @@ A few of the libraries used dont have a precompiled binary for use as a c++ libr
 <details>
 <summary><h3>Audio</h3></summary>
 
-- [ ] mp3
+- [x] mp3
 - [ ] wav
 - [ ] flac
 - [ ] ogg
