@@ -14,6 +14,8 @@ import type { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
 import { decodeSounds, playSound, preloadSounds } from "./sound";
 
+const USE_TIME_ESTIMATE = false;
+
 export class World {
   viewport = new Viewport();
   boat = new Boat(this.viewport);
@@ -142,12 +144,13 @@ export class World {
 
         this.banner.text =
           `You've found buried treasure: a ${this.fileManager.outFormat} file!`;
-        setTimeout(() => this.reset(), 2000);
         break;
       default:
         this.banner.text = `error: ${res}`;
         break;
     }
+
+    setTimeout(() => this.reset(), 2000);
 
     this.viewport.canDrag = false;
     this.viewport.userIsDragging = false;
@@ -170,6 +173,16 @@ export class World {
     // intentionally NOT awaiting this even though its async
     this.fileManager.convertTo(targetIsland.name);
 
+    const fileSize = this.fileManager.file?.size ?? 1000000;
+
+    // 1 millisecond per 3 kilobytes is a good-enough heuristic based on
+    // testing on my Framework 13
+    const timeEstimate = fileSize * 0.003;
+
+    const duration = USE_TIME_ESTIMATE
+      ? Math.max(2000, Math.min(8000, timeEstimate))
+      : SAIL_DURATION;
+
     const [route, curves] = aStarRouteFactory(
       new Pos(this.boat.pos.x, this.boat.pos.y),
       targetIsland,
@@ -178,7 +191,11 @@ export class World {
 
     this.curves = curves;
 
-    this.boat.sail(route, SAIL_DURATION, () => this.boatArriveHandler());
+    this.boat.sail(
+      route,
+      duration,
+      () => this.boatArriveHandler(),
+    );
   }
 
   initIslands() {
