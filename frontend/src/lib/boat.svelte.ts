@@ -16,7 +16,7 @@ export class Boat {
 
   constructor(public viewport: Viewport) {}
 
-  private moveAnimID: number | null = null;
+  #moveAnimID: number | null = null;
   /**
    * Smoothly moves from one position to another
    *
@@ -32,7 +32,7 @@ export class Boat {
     if (this.route !== undefined) return;
     this.route = route;
 
-    if (this.moveAnimID !== null) cancelAnimationFrame(this.moveAnimID);
+    if (this.#moveAnimID !== null) cancelAnimationFrame(this.#moveAnimID);
 
     const shouldMoveViewport = this.pos.x > -this.viewport.offset.x
       && this.pos.x < -this.viewport.offset.x + this.viewport.width
@@ -66,20 +66,20 @@ export class Boat {
       this.pos.y = newPos.y;
 
       if (progress < 1) {
-        this.moveAnimID = requestAnimationFrame(animate);
+        this.#moveAnimID = requestAnimationFrame(animate);
       } else {
-        this.moveAnimID = null;
+        this.#moveAnimID = null;
         arriveHook?.();
       }
     };
 
-    this.moveAnimID = requestAnimationFrame(animate);
+    this.#moveAnimID = requestAnimationFrame(animate);
   }
 
   sink() {
-    if (this.moveAnimID !== null) {
-      cancelAnimationFrame(this.moveAnimID);
-      this.moveAnimID = null;
+    if (this.#moveAnimID !== null) {
+      cancelAnimationFrame(this.#moveAnimID);
+      this.#moveAnimID = null;
     }
 
     playSound("bubble2.wav");

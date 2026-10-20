@@ -73,7 +73,7 @@ export class World {
     this.titleCornered = true;
   }
 
-  private getSpawnOffset(): Pos | undefined {
+  #getSpawnOffset(): Pos | undefined {
     const inFormatName = this.fileManager.getInputFormatName();
     if (inFormatName === undefined) return undefined;
 
@@ -82,7 +82,7 @@ export class World {
   }
 
   spawnBoat() {
-    const spawnOffset = this.getSpawnOffset() ?? this.viewport.center;
+    const spawnOffset = this.#getSpawnOffset() ?? this.viewport.center;
 
     this.boat.pos.x = spawnOffset.x;
     this.boat.pos.y = spawnOffset.y;

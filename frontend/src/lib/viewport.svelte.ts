@@ -18,8 +18,8 @@ export class Viewport {
 
   mouseX = $state(0);
   mouseY = $state(0);
-  private dragStartX = 0;
-  private dragStartY = 0;
+  #dragStartX = 0;
+  #dragStartY = 0;
 
   constructor() {}
 
@@ -30,7 +30,7 @@ export class Viewport {
 
     window.addEventListener("resize", () => this.update());
 
-    this.initListeners();
+    this.#initListeners();
   }
 
   update(): void {
@@ -56,13 +56,13 @@ export class Viewport {
     return new Pos(this.width / 2, this.height / 2);
   }
 
-  private initListeners() {
+  #initListeners() {
     window.addEventListener("pointerdown", (event) => {
       if (!this.canDrag) return;
 
       this.userIsDragging = true;
-      this.dragStartX = event.clientX;
-      this.dragStartY = event.clientY;
+      this.#dragStartX = event.clientX;
+      this.#dragStartY = event.clientY;
     });
     window.addEventListener("pointerup", () => (this.userIsDragging = false));
     window.addEventListener(
@@ -72,14 +72,14 @@ export class Viewport {
     window.addEventListener("pointermove", (event) => {
       if (!this.userIsDragging) return;
 
-      const dragDeltaX = event.clientX - this.dragStartX;
-      const dragDeltaY = event.clientY - this.dragStartY;
+      const dragDeltaX = event.clientX - this.#dragStartX;
+      const dragDeltaY = event.clientY - this.#dragStartY;
 
       this.offset.x += (dragDeltaX * DRAG_SENSITIVITY) / this.zoom;
       this.offset.y += (dragDeltaY * DRAG_SENSITIVITY) / this.zoom;
 
-      this.dragStartX = event.clientX;
-      this.dragStartY = event.clientY;
+      this.#dragStartX = event.clientX;
+      this.#dragStartY = event.clientY;
     });
     window.addEventListener("wheel", (event) => {
       if (!this.canDrag) return;
@@ -98,9 +98,11 @@ export class Viewport {
     });
   }
 
-  private recenterAnimID: number | null = null;
+  #recenterAnimID: number | null = null;
   recenterTo(endPos: Pos) {
-    if (this.recenterAnimID !== null) cancelAnimationFrame(this.recenterAnimID);
+    if (this.#recenterAnimID !== null) {
+      cancelAnimationFrame(this.#recenterAnimID);
+    }
 
     const duration = 1000;
     const startPos = new Pos(this.offset.x, this.offset.y);
@@ -122,11 +124,11 @@ export class Viewport {
       this.offset.x = startPos.x + delta.x * progress;
       this.offset.y = startPos.y + delta.y * progress;
 
-      this.recenterAnimID = progress < 1
+      this.#recenterAnimID = progress < 1
         ? requestAnimationFrame(animate)
         : null;
     };
 
-    this.recenterAnimID = requestAnimationFrame(animate);
+    this.#recenterAnimID = requestAnimationFrame(animate);
   }
 }

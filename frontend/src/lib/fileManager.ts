@@ -107,7 +107,7 @@ export class FileManager {
     return true;
   }
 
-  private parseFilename(): { base: string; ext: string | undefined } {
+  #parseFilename(): { base: string; ext: string | undefined } {
     if (this.file === undefined) {
       throw new Error("can only parse filename if file is defined");
     }
@@ -129,7 +129,7 @@ export class FileManager {
   }
 
   getInputFormatName(): Format | undefined {
-    const { ext } = this.parseFilename();
+    const { ext } = this.#parseFilename();
     if (ext === undefined) return undefined;
 
     const extWithoutDot = ext.substring(1).toLowerCase();
@@ -142,7 +142,7 @@ export class FileManager {
   }
 
   get displayifiedFilename(): string {
-    const { base, ext } = this.parseFilename();
+    const { base, ext } = this.#parseFilename();
 
     const maxBaseLength = MAX_FILENAME_CHARS - (ext?.length ?? 0);
 
@@ -154,7 +154,7 @@ export class FileManager {
   }
 
   get outFilename(): string {
-    const { base } = this.parseFilename();
+    const { base } = this.#parseFilename();
 
     if (this.outFormat === undefined) {
       throw new Error("can't get out filename until out format is set");
