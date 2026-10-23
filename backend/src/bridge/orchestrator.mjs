@@ -200,14 +200,14 @@ export function createconverter({core,webp,svg,magick,media}){
         return path;
     }
 
-    async function convert_image(target_format,bytes,quality){
-        let detected_format = core.validate_file_format(bytes);
+    async function detect(bytes){
+        let f=core.validate_file_format(bytes);
+        if (f==='unknown'&&media){f=await mediabridge.detect_format(bytes);}
+        if (f==='unknown'&&magick){f=await magick.detect_format(bytes);}
+    }
 
-        if (detected_format==='unknown'&&magick){
-            detected_format = await magick.detect_format(bytes);
-        }
-        
-        detected_format = ALIASES[detected_format]??detected_format;
+    async function convert_universal(target_format,bytes,quality,options,domain){
+        const detected_format = await detect(bytes);
         target_format = ALIASES[target_format]??target_format;
 
         let current_index=INDEX[detected_format];
@@ -215,29 +215,54 @@ export function createconverter({core,webp,svg,magick,media}){
 
         if (current_index === undefined){throw new ConvertError(ErrorCode.UnsupportedInput,`Unsupported Input Format: "${detected_format}"`);}
         if (target_index === undefined){throw new ConvertError(ErrorCode.UnsupportedOutput,`Unsupported Output Format: "${target_format}"`);}
+        if (domain&&DOMAIN[target_format]!==domain){throw new ConvertError(ErrorCode.UnsupportedOutput,`"${target_format}" is not ${domain === 'image' ? 'an' : 'a'} ${domain} format`);}
         
-        const path = search_path(current_index,target_index);
-        if (!path){
+        if (options.signal?.aborted){
+            throw new ConvertError(ErrorCode.Cancelled, 'Conversion was cancelled');
+        }
+
+        let path = search_path(current_index,target_index);
+        if(!path){
             throw new ConvertError(ErrorCode.NoPath,`No conversion path found "${detected_format}"->"${IMAGE_FORMATS[target_index]}"`);
         }
 
         let data = bytes;
-        for (const step of path){
-            try {
-                console.log(`Converting ${step.from} -> ${step.to}...`);
-                data = await step.func(data,quality);
-            } catch(error) {
+        for(const step of path){
+            if(options.signal?.aborted){
+                throw new ConvertError(ErrorCode.Cancelled, 'Conversion was cancelled');
+            }
+            try{
+                if (process.env.DEBUG){console.log(`Converting ${step.from} -> ${step.to}...`);}
+                data = await step.func(data,quality,options);
+            } catch (error){
                 const cause = to_convert_error(error,ErrorCode.NativeFailure);
+                if  (cause.code===ErrorCode.Cancelled) {throw cause;}
                 throw new ConvertError(
                     ErrorCode.StepFailed,
                     `${step.from} -> ${step.to} failed: ${cause.message}`,
                     { step: `${step.from} -> ${step.to}`, cause }
-                )
+                );
             }
         }
         return data;
     }
-    return {convert_image,search_path};
+
+    const convert_image = (target,bytes,quality)=>convert_universal(target,bytes,quality,{},'image');
+    const convert_video = (target,bytes,options = {})=> convert_universal(target,bytes,options.quality,options,'video');
+    const convert_audio = (target,bytes,options={})=> convert_universal(target,bytes,options.quality,options,'audio');
+    
+    //what can be read/writen
+    function capabilities(){
+        const out = {};
+        for (const [kind,list] of [['image',IMAGE_FORMATS],['video',VIDEO_FORMATS],['audio',AUDIO_FORMATS]]){
+            out[kind] = {
+                inputs: list.filter((f)=>table[INDEX[f]].some(Boolean)),
+                outputs: list.filter((f)=>table.some((row)=>row[INDEX[f]]!==null)),
+            }
+        };
+        return out;
+    }
+    return {convert_image,convert_video,convert_audio,search_path,capabilities};
 }
 
 const [core, webp, svg] = await Promise.all([createcore(), createwebp(), createsvg()]);
