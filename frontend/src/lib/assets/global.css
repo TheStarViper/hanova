@@ -1,7 +1,14 @@
 :root {
-	--line: #261c26;
+	/* for the islands */
+	--land: hsl(46, 71%, 86%); /* originally #f9f2db */
+	--shore-shadow: #4c2416; /* originally #4c24161a */
+	--line: #645157; /* originally #645157 */
+	--tree-fill: hsl(46, 40%, 80%); /* originally #eadfce */
+
+	/* for the ui elements */
 	--parchment: #fffae5;
-	--bg-accent: #eadfce;
+	--ink: #261c26;
+	--bg-accent: #f2e9da;
 	--accent: #33576d;
 }
 

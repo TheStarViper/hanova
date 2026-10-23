@@ -1,3 +1,22 @@
+<script lang="ts" module>
+export const COLOR_SUBSTITIONS: Record<string, string> = {
+  "#f9f2db": "var(--land)",
+  "#F9F2DB": "var(--land)",
+
+  "#4c2416": "var(--shore-shadow)",
+
+  "#645157": "var(--line)",
+  "#645257": "var(--line)",
+  "#68565b": "var(--line)",
+  "#66535a": "var(--line)",
+  "#6d5a5f": "var(--line)",
+
+  "#eadfce": "var(--tree-fill)",
+  "#efe6d2": "var(--tree-fill)",
+  "#E5DAC9": "var(--tree-fill)",
+};
+</script>
+
 <script lang="ts">
 import type { Format } from "#lib/fileManager.js";
 import { Island } from "#lib/island.svelte.js";
@@ -16,8 +35,19 @@ interface Props {
 let { me, viewport, debugging, allowHover, setTooltip }: Props = $props();
 
 let hovered: boolean = $state(false);
-let shadowOpacity = $derived(hovered && allowHover ? 0.8 : 0.4);
+let shadowOpacity = $derived(hovered && allowHover ? 1 : 0.7);
 let borderColor = $derived(hovered && allowHover ? "#FFC067" : undefined);
+
+let processedSvg: string = $derived.by(() => {
+  let svg = me.sprite.svg;
+
+  for (const key in COLOR_SUBSTITIONS) {
+    const value = COLOR_SUBSTITIONS[key];
+    svg = svg.replaceAll(key, value);
+  }
+
+  return svg;
+});
 
 $effect(() => {
   setTooltip(hovered && allowHover ? me.name : null);
@@ -44,7 +74,7 @@ $effect(() => {
     unhover: () => (hovered = false),
   }}
   label={TOOLTIP_DATA[me.name].title}
->{@html me.sprite.svg}</Sprite>
+>{@html processedSvg}</Sprite>
 <div
   class="debug"
   style:display={debugging ? "flex" : "none"}

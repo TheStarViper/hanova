@@ -59,7 +59,7 @@ h2 {
 
 article {
 	margin: 5% auto;
-	color: var(--line);
+	color: var(--ink);
 	max-width: 60ch;
 	padding: 1rem;
 	max-height: 100%;

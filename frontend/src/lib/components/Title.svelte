@@ -19,7 +19,7 @@ h1 {
 
 	transition: translate 0.5s ease-in-out, scale 0.4s ease-in-out;
 
-	color: var(--line);
+	color: var(--ink);
 	text-shadow: 1px 1px rgba(0,0,0,0.2);
 
 	translate: 0 20vh;
