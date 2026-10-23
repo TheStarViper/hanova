@@ -29,6 +29,10 @@ export class World {
   curves: CubicBezier[] = $state([]);
   titleCornered: boolean = $state(false);
 
+  // for various dev-only debugging visuals
+  debugging = false;
+  skipMenu = false;
+
   constructor(public cppManager: CppManager) {
     this.fileManager = new FileManager(cppManager, async () => this.dropHook());
   }
@@ -37,8 +41,19 @@ export class World {
     this.viewport.init();
     this.initIslands();
     this.fileManager.init();
-    this.banner.text = "Drag & drop a file to start";
-    this.viewport.canDrag = false;
+
+    // ik I could massively simplify this, but I want to keep the logic explicit
+    if (this.skipMenu) {
+      // debugging values
+      this.banner.text = "";
+      this.viewport.canDrag = true;
+      this.titleCornered = true;
+    } else {
+      // normal values
+      this.banner.text = "Drag & drop a file to start";
+      this.viewport.canDrag = false;
+      this.titleCornered = false;
+    }
 
     this.cppManager.hook = (response: WorkerResponse) =>
       this.conversionHandler(response);

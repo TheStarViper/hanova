@@ -17,9 +17,6 @@ import { Pos } from "#lib/utils.svelte.js";
 import { World } from "#lib/world.svelte.js";
 import { onMount } from "svelte";
 
-// for various dev-only debugging visuals
-const debugging = false;
-
 interface Props {
   cppManager: CppManager;
 }
@@ -60,7 +57,7 @@ $effect(() => {
     <Island
       me={island}
       {viewport}
-      {debugging}
+      debugging={world.debugging}
       allowHover={world.banner.hide}
       setTooltip={(format: Format | null) => {
         world.tooltip.target = format;
@@ -70,7 +67,7 @@ $effect(() => {
   <Treasure me={world.treasure} {viewport} />
 </div>
 
-{#if debugging}<DebuggingGrid {viewport} />{/if}
+{#if world.debugging}<DebuggingGrid {viewport} />{/if}
 <Banner
   me={world.banner}
   handleUpload={(files: FileList | undefined | null) => world.fileManager.handleUpload(files)}
