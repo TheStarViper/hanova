@@ -47,11 +47,6 @@ std::string validate_file_format(const std::vector<uint8_t>& input){ //verify fi
     //DOCUMENT FORMATS
     //AUDIO FORMATS
     //VIDEO FORMATS
-
-
-
-
-
     return "unknown";
 }
 

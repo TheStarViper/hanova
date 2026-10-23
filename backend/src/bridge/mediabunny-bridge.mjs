@@ -23,7 +23,6 @@ function ensureEncoder(codec){
     return registered.get(codec);
 }
 
-
 const OUTPUT_FORMATS = {
     //video
     mp4: ()=>new mediabunny.Mp4OutputFormat,
@@ -62,17 +61,43 @@ export const MEDIA_INFO={
 
 
 const PRESETS = {
-    potato: {video: {height:360, bitrate: mediabunny.QUALITY_VERY_LOW},audio:{bitrate: mediabunny.QUALITY_VERY_LOW}},
-    small: {video: {height:480, bitrate: mediabunny.QUALITY_LOW},audio:{bitrate: mediabunny.QUALITY_LOW}},
-    balanced: {video: {height:720, bitrate: mediabunny.QUALITY_MEDIUM},audio:{bitrate: mediabunny.QUALITY_MEDIUM}},
-    high: {video: {height:1080, bitrate: mediabunny.QUALITY_HIGH},audio:{bitrate: mediabunny.QUALITY_HIGH}},
-    hdmax: {video: {height:1080, bitrate:mediabunny.QUALITY_VERY_HIGH},audio:{bitrate: mediabunny.QUALITY_VERY_HIGH}},
+    potato:   {video: {height:360,  bitrate: mediabunny.QUALITY_VERY_LOW},audio:{bitrate: mediabunny.QUALITY_VERY_LOW}},
+    small:    {video: {height:480,  bitrate: mediabunny.QUALITY_LOW}     ,audio:{bitrate: mediabunny.QUALITY_LOW}},
+    balanced: {video: {height:720,  bitrate: mediabunny.QUALITY_MEDIUM}  ,audio:{bitrate: mediabunny.QUALITY_MEDIUM}},
+    high:     {video: {height:1080, bitrate: mediabunny.QUALITY_HIGH}    ,audio:{bitrate: mediabunny.QUALITY_HIGH}},
+    hdmax:    {video: {height:1080, bitrate:mediabunny.QUALITY_VERY_HIGH},audio:{bitrate: mediabunny.QUALITY_VERY_HIGH}},
     fourkmax: {video: {height:3840, bitrate:mediabunny.QUALITY_VERY_HIGH},audio:{bitrate: mediabunny.QUALITY_VERY_HIGH}},
 };
 
 export const MEDIA_PRESETS = Object.keys(PRESETS);
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);
 
+const ascii = (bytes, start,end)=>String.fromCharCode(...b.subarray(start,end));
+
+export function detect_media_format(bytes){
+    if(!bytes||bytes.length<12){return 'unknown';}
+
+    if(ascii(bytes,4,8)==='ftyp'){
+        const brand  = ascii(bytes,4,8);
+        if(brand==='qt  '){return 'mov';}
+        if(brand==='M4A '||brand==='M4B '){return 'm4a';}
+        return 'mp4';
+    }
+
+    if(bytes[0]===0x1a&&bytes[1]===0x45&&bytes[2]===0xdf&&bytes[3]===0xa3){
+        return ascii(bytes,0,Math.min(64,bytes.length)).includes('webm')?'webm':'mkv';
+    }
+
+    if (ascii(bytes,0,4)==='OggS'){return 'ogg';}
+    if (ascii(bytes,0,4)==='fLaC'){return 'flac';}
+    if (ascii(bytes,0,4)==='RIFF'&&ascii(bytes,8,12)==='WAVE'){return 'wav';}
+    if (ascii(bytes,0,3)==='ID3'){return 'mp3';}
+    if (bytes[0]===0xff&&(bytes[1]&0xe0)===0xe0){
+        return ((bytes[1]>>1)&3)===0?'aac':'mp3';
+    }
+    if(bytes[0]===0x47&&(bytes.length<189||bytes[188]===0x47)){return 'ts';}
+    return 'unknown';
+}
 
 
 export async function convert_media(inputdata,target,options={}){
