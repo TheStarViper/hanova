@@ -1,4 +1,4 @@
-import { Pos } from "./utils.svelte";
+import { Ellipse, Pos } from "./utils.svelte";
 
 // svg imports
 import Island1Svg from "#lib/assets/island1.svg?raw";
@@ -27,7 +27,7 @@ export interface IslandSprite {
   svg: string;
   width: number;
   treasureOffset: Pos;
-  radius: number;
+  bound: Ellipse;
 }
 
 export const ISLAND_SPRITES = {
@@ -74,7 +74,7 @@ export const ISLAND_SPRITES = {
     svg: Island6Svg,
     width: 98,
     treasureOffset: new Pos(20, 0),
-    radius: 65,
+    bound: new Ellipse(5, -10, 55, 65, 10),
   },
 
   // too big
@@ -88,31 +88,31 @@ export const ISLAND_SPRITES = {
     svg: Island8Svg,
     width: 156,
     treasureOffset: new Pos(10, -10),
-    radius: 90,
+    bound: new Ellipse(0, -20, 85, 70, 0),
   },
   9: {
     svg: Island9Svg,
     width: 300,
     treasureOffset: new Pos(35, -80),
-    radius: 150,
+    bound: new Ellipse(0, -20, 150, 125, -15),
   },
   10: {
     svg: Island10Svg,
     width: 244,
     treasureOffset: new Pos(0, 0),
-    radius: 195,
+    bound: new Ellipse(0, 0, 195, 195, 0),
   },
   11: {
     svg: Island11Svg,
     width: 251,
     treasureOffset: new Pos(-30, 90),
-    radius: 200,
+    bound: new Ellipse(0, -20, 135, 170, 0),
   },
   12: {
     svg: Island12Svg,
     width: 242,
     treasureOffset: new Pos(30, 70),
-    radius: 130,
+    bound: new Ellipse(0, 0, 115, 130, -20),
   },
   // too big
   // 13: {
@@ -125,37 +125,37 @@ export const ISLAND_SPRITES = {
     svg: Island14Svg,
     width: 295,
     treasureOffset: new Pos(-100, -20),
-    radius: 175,
+    bound: new Ellipse(10, -15, 160, 150, 0),
   },
   15: {
     svg: Island15Svg,
     width: 293,
     treasureOffset: new Pos(3, 30),
-    radius: 160,
+    bound: new Ellipse(10, -30, 160, 130, 20),
   },
   16: {
     svg: Island16Svg,
     width: 382,
     treasureOffset: new Pos(100, 20),
-    radius: 230,
+    bound: new Ellipse(30, -30, 185, 230, 120),
   },
   17: {
     svg: Island17Svg,
     width: 432,
     treasureOffset: new Pos(180, 50),
-    radius: 230,
+    bound: new Ellipse(10, -10, 180, 240, -70),
   },
   18: {
     svg: Island18Svg,
     width: 207,
     treasureOffset: new Pos(-40, 0),
-    radius: 110,
+    bound: new Ellipse(5, -10, 120, 100, 0),
   },
   19: {
     svg: Island19Svg,
     width: 249,
     treasureOffset: new Pos(-40, 90),
-    radius: 185,
+    bound: new Ellipse(-10, -5, 130, 185, -15),
   },
 } as const satisfies Record<number, IslandSprite>;
 
@@ -313,6 +313,10 @@ export class Island {
 
   get treasurePos() {
     return Pos.add(this.pos, this.sprite.treasureOffset);
+  }
+
+  isInside(point: Pos): boolean {
+    return this.sprite.bound.isInside(Pos.sub(point, this.pos));
   }
 
   static findSpawnOffsetForFormat(formatName: Format): Pos | undefined {

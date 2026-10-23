@@ -78,27 +78,33 @@ $effect(() => {
 <div
   class="debug"
   style:display={debugging ? "flex" : "none"}
+  style:left="{me.pos.x + viewport.offset.x}px"
+  style:top="{me.pos.y + viewport.offset.y}px"
 >
   <span
     class="radius"
-    style:left="{me.pos.x + viewport.offset.x}px"
-    style:top="{me.pos.y + viewport.offset.y}px"
-    style:--radius="{me.sprite.radius}px"
+    style:--xAxis="{me.sprite.bound.xAxis}px"
+    style:--yAxis="{me.sprite.bound.yAxis}px"
+    style:left="{me.sprite.bound.xOffset}px"
+    style:top="{me.sprite.bound.yOffset}px"
+    style:rotate="{me.sprite.bound.degrees}deg"
   ></span>
   <span
     class="spawn"
-    style:left="{me.pos.x + me.spawnOffset.x + viewport.offset.x}px"
-    style:top="{me.pos.y + me.spawnOffset.y + viewport.offset.y}px"
+    style:left="{me.spawnOffset.x}px"
+    style:top="{me.spawnOffset.y}px"
   ></span>
   <span
     class="treasure"
-    style:left="{me.pos.x + me.sprite.treasureOffset.x + viewport.offset.x}px"
-    style:top="{me.pos.y + me.sprite.treasureOffset.y + viewport.offset.y}px"
+    style:left="{me.sprite.treasureOffset.x}px"
+    style:top="{me.sprite.treasureOffset.y}px"
   ></span>
 </div>
 
 <style lang="scss">
 .debug {
+	position: relative;
+
 	* {
 		position: absolute;
 		transform: translate(-50%, -50%);
@@ -106,10 +112,11 @@ $effect(() => {
 	}
 
 	.radius {
-		width: calc(var(--radius) * 2);
-		height: calc(var(--radius) * 2);
+		width: calc(var(--xAxis) * 2);
+		height: calc(var(--yAxis) * 2);
+		transform-origin: top left;
 		border: 5px solid red;
-		border-radius: 9999px;
+		border-radius: 50%;
 	}
 	.spawn {
 		width: 96px;

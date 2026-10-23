@@ -175,7 +175,7 @@ export function isWalkableFactory(
     const point = pixelify(coords);
 
     const walkable = islands.every(
-      (island) => Math.abs(Pos.dist(point, island.pos)) >= island.sprite.radius,
+      (island) => !island.isInside(point),
     );
 
     cache.set(coords, walkable);
@@ -194,8 +194,7 @@ export function getCostFactory(
 
     const point = pixelify(coords);
 
-    const intersectingTargetIsland =
-      Math.abs(Pos.dist(point, targetIsland.pos)) < targetIsland.sprite.radius;
+    const intersectingTargetIsland = targetIsland.isInside(point);
 
     // the target island is still technically walkable, but A* is strongly
     // discouraged from clipping inside the islands if there's another route

@@ -32,6 +32,35 @@ export class Pos {
   }
 }
 
+export class Ellipse {
+  constructor(
+    public xOffset: number,
+    public yOffset: number,
+    public xAxis: number,
+    public yAxis: number,
+    public degrees: number,
+  ) {}
+
+  isInside(point: Pos): boolean {
+    const theta = this.degrees * Math.PI / 180;
+    const cos = Math.cos(theta);
+    const sin = Math.sin(theta);
+
+    const local = new Pos(
+      point.x - this.xOffset,
+      point.y - this.yOffset,
+    );
+
+    const xPrime = local.x * cos + local.y * sin;
+    const yPrime = -local.x * sin + local.y * cos;
+
+    // normalized between 0 and 1
+    const distance = (xPrime / this.xAxis) ** 2 + (yPrime / this.yAxis) ** 2;
+
+    return distance < 1;
+  }
+}
+
 export function ease(t: number): number {
   return t * (2 - t);
 }
