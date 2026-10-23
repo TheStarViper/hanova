@@ -77,6 +77,7 @@ const ascii = (bytes, start,end)=>String.fromCharCode(...b.subarray(start,end));
 export function detect_media_format(bytes){
     if(!bytes||bytes.length<12){return 'unknown';}
 
+    //video
     if(ascii(bytes,4,8)==='ftyp'){
         const brand  = ascii(bytes,4,8);
         if(brand==='qt  '){return 'mov';}
@@ -88,6 +89,7 @@ export function detect_media_format(bytes){
         return ascii(bytes,0,Math.min(64,bytes.length)).includes('webm')?'webm':'mkv';
     }
 
+    //audio
     if (ascii(bytes,0,4)==='OggS'){return 'ogg';}
     if (ascii(bytes,0,4)==='fLaC'){return 'flac';}
     if (ascii(bytes,0,4)==='RIFF'&&ascii(bytes,8,12)==='WAVE'){return 'wav';}

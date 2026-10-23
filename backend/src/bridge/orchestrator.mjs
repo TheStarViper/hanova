@@ -6,6 +6,8 @@ import createwebp from '../../build/webp_module.js';
 import createsvg from '../../build/svg_module.js';
 import { ConvertError,to_convert_error,ErrorCode } from './errors.mjs';
 import * as bridge from './imagemagick-bridge.mjs';
+import * as mediabridge from './mediabunny-bridge.mjs';
+import { Domain } from 'domain';
 
 const magick = {
     convert_bytes: bridge.convert_bytes,
@@ -16,7 +18,7 @@ const magick = {
 };
 
 //OOOO all da formats
-export const FORMATS = ['png', 
+export const IMAGE_FORMATS = ['png', 
                         'jpg', 
                         'bmp', 
                         'hdr', 
@@ -35,17 +37,45 @@ export const FORMATS = ['png',
                         'eps', 
                         'ai'];
 
+export const VIDEO_FORMATS = [
+                        'mp4',
+                        'mov',
+                        'webm',
+                        'mkv',
+                        'ts'];
+
+export const AUDIO_FORMATS = [
+                        'mp3',
+                        'wav',
+                        'ogg',
+                        'flac',
+                        'aac',
+                        'm4a'];
+
+export const FORMATS = [...IMAGE_FORMATS, ...VIDEO_FORMATS, ...AUDIO_FORMATS];
+
 const INDEX = Object.fromEntries(FORMATS.map((f,i)=>[f,i]));
+const N = FORMATS.length;
+
+const DOMAIN = {};
+for (const f of IMAGE_FORMATS){DOMAIN[f]='image';}
+for (const f of VIDEO_FORMATS){DOMAIN[f]='video';}
+for (const f of AUDIO_FORMATS){DOMAIN[f]='audio';}
+
 const ALIASES = {jpeg:'jpg', //formats that are the same with diff extensions
                  jpe: 'jpg',
                  targa:'tga',
                  tif: 'tiff',
-                 heif: 'heic'}; 
+                 heif: 'heic',
+                 m4v: 'mp4',
+                 matroska: 'mkv',
+                 oga: 'ogg',
+                 wave: 'wav'};
+                 
 
-const N = FORMATS.length;
+const has_media_options = (o) => Boolean(o.preset ||o.trim||o.video||o.audio);
 
-
-export function createconverter({core,webp,svg,magick}){
+export function createconverter({core,webp,svg,magick,media}){
     const unwrap = (r)=>{
         if (Array.isArray(r)||r instanceof Uint8Array){return r};
         if (r&&r.ok===false){
@@ -63,7 +93,8 @@ export function createconverter({core,webp,svg,magick}){
 
     console.log('core keys:', Object.keys(core ?? {}));
     const table = Array.from({length:N},()=>Array(N).fill(null));
-    
+    const has = (from,to)=>table[INDEX[from]][INDEX[to]]!==null;
+
     function register(from,to,func,cost=1){
         if(INDEX[from]===undefined||INDEX[to]===undefined){
             throw new Error(`register: unknown format ${from} -> ${to}`);
@@ -122,6 +153,18 @@ export function createconverter({core,webp,svg,magick}){
         }
     }
 
+    //mediabunny
+    const media_step = (to)=>(bytes,_q,options)=>mediabridge.convert_media(bytes,to,options);
+    
+    if (media){
+        const link = (froms,tos)=>{
+            for (const a of froms) for (const b of tos) if (a!==b) {register(a,b,media_step(b),1);}
+        };
+        link(VIDEO_FORMATS,VIDEO_FORMATS);
+        link(VIDEO_FORMATS,AUDIO_FORMATS);
+        link(AUDIO_FORMATS,AUDIO_FORMATS);
+    }
+
     function search_path(start,target){
         if (start===target){return[];}
 
@@ -151,7 +194,7 @@ export function createconverter({core,webp,svg,magick}){
         }
         const path =[];
         for (let i = target; prev[i];i=prev[i][0]){
-            path.unshift({from: FORMATS[prev[i][0]],to: FORMATS[i],func: prev[i][1].func});
+            path.unshift({from: IMAGE_FORMATS[prev[i][0]],to: IMAGE_FORMATS[i],func: prev[i][1].func});
         }
         
         return path;
@@ -175,7 +218,7 @@ export function createconverter({core,webp,svg,magick}){
         
         const path = search_path(current_index,target_index);
         if (!path){
-            throw new ConvertError(ErrorCode.NoPath,`No conversion path found "${detected_format}"->"${FORMATS[target_index]}"`);
+            throw new ConvertError(ErrorCode.NoPath,`No conversion path found "${detected_format}"->"${IMAGE_FORMATS[target_index]}"`);
         }
 
         let data = bytes;

@@ -42,11 +42,6 @@ std::string validate_file_format(const std::vector<uint8_t>& input){ //verify fi
     std::string svgHead(input.begin(), input.begin() + svgScanLen);
     if (svgHead.find("<svg") != std::string::npos) return "svg";
     //end of svg
-
-
-    //DOCUMENT FORMATS
-    //AUDIO FORMATS
-    //VIDEO FORMATS
     return "unknown";
 }
 
