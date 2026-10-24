@@ -115,7 +115,7 @@ export function createconverter({ core, webp, svg, magick }) {
     throw new Error(`unexpected native result: ${Object.keys(r ?? {})}`);
   };
 
-  console.log("core keys:", Object.keys(core ?? {}));
+  // console.log("core keys:", Object.keys(core ?? {}));
   const table = Array.from({ length: N }, () => Array(N).fill(null));
 
   function register(from, to, func, cost = 1) {
