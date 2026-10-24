@@ -294,12 +294,9 @@ export function createconverter({ core, webp, svg, magick }) {
 }
 
 /**
- * @param {Parameters<typeof bridge.init_imagemagick>[0]} magickWasm
  * @returns {Promise<(target_format: string, bytes: Buffer<ArrayBuffer>, quality: number) => Promise<Buffer<ArrayBuffer>>> }
  */
-export async function converterFactory(magickWasm) {
-	await bridge.init_imagemagick(magickWasm);
-
+export async function converterFactory() {
   const [core, webp, svg] = await Promise.all([
     createcore(),
     createwebp(),

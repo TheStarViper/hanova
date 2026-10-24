@@ -10,14 +10,6 @@ export class ImageError extends Error {
   }
 }
 
-/**
- * @param {Parameters<typeof magickModule.initializeImageMagick>[0]} wasm
- * this can be a URL or it can be bytes
- */
-export async function init_imagemagick(wasm) {
-	await magickModule.initializeImageMagick(wasm);
-}
-
 export const MAGICK_BY_NAME = {
   png: magickModule.MagickFormat.Png,
   gif: magickModule.MagickFormat.Gif,
@@ -170,4 +162,5 @@ export const {
   MagickGeometry,
   Channels,
   EvaluateOperator,
+  initializeImageMagick,
 } = magickModule;

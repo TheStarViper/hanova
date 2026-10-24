@@ -1,4 +1,4 @@
-import { magickWasmUrl } from "../../../backend/src/bridge/magickWasmUrl.mjs";
+import { initMagick } from "../../../backend/src/bridge/browserMagick.mjs";
 import { converterFactory } from "../../../backend/src/bridge/orchestrator.mjs";
 import { type Format, JPEG_QUALITY, WEBP_QUALITY } from "./fileManager";
 
@@ -27,7 +27,8 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   const outFormat = event.data.outFormat;
 
   if (converter === undefined) {
-    converter = await converterFactory(new URL(magickWasmUrl, import.meta.url));
+    await initMagick();
+    converter = await converterFactory();
   }
 
   let response: ReturnObj;
