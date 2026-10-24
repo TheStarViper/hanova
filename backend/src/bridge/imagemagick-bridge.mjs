@@ -1,7 +1,6 @@
 // @ts-nocheck
 
 import * as magickModule from "@imagemagick/magick-wasm";
-import magickWasmUrl from "@imagemagick/magick-wasm/magick.wasm?url";
 
 export class ImageError extends Error {
   constructor(code, message) {
@@ -11,17 +10,12 @@ export class ImageError extends Error {
   }
 }
 
-let isinit = false;
-
-export async function init_imagemagick() {
-  if (isinit) return;
-
-  const wasmUrl = new URL(magickWasmUrl, import.meta.url);
-  const response = await fetch(wasmUrl);
-  const wasmBuffer = await response.arrayBuffer();
-  await magickModule.initializeImageMagick(new Uint8Array(wasmBuffer));
-
-  isinit = true;
+/**
+ * @param {Parameters<typeof magickModule.initializeImageMagick>[0]} wasm
+ * this can be a URL or it can be bytes
+ */
+export async function init_imagemagick(wasm) {
+	await magickModule.initializeImageMagick(wasm);
 }
 
 export const MAGICK_BY_NAME = {
@@ -47,7 +41,6 @@ export const MAGICK_PROCESSORS = {
 };
 
 export async function convert_bytes(bytes, format, quality, processor) {
-  await init_imagemagick();
   let output;
   try {
     magickModule.ImageMagick.read(bytes, (image) => {
@@ -64,7 +57,6 @@ export async function convert_bytes(bytes, format, quality, processor) {
 }
 
 export async function detect_format(bytes) {
-  await init_imagemagick();
   try {
     let name = "unknown";
     magickModule.ImageMagick.read(bytes, (image) => {
@@ -76,7 +68,7 @@ export async function detect_format(bytes) {
   }
 }
 
-const FORMATS = {
+export const FORMATS = {
   ".png": magickModule.MagickFormat.Png,
   ".jpg": magickModule.MagickFormat.Jpeg,
   ".jpeg": magickModule.MagickFormat.Jpeg,
@@ -120,7 +112,7 @@ const FORMATS = {
   ".mrw": magickModule.MagickFormat.Mrw,
 };
 
-function summarize_errors(error) {
+export function summarize_errors(error) {
   const m = /^(\w+)\s*(?:`([^']*)')?/.exec(error?.message ?? "");
   const code = m?.[1] ?? "Unknown";
   const detail = m?.[2] || "";
@@ -148,8 +140,6 @@ function summarize_errors(error) {
 
 /**
 export async function process_image(inputpath, outputpath, processorfunc) {
-	await init_imagemagick();
-
 	const inputbytes = fs.readFileSync(inputpath);
 	const format = FORMATS[extname(outputpath).toLowerCase()];
 	if (!format) throw new Error(`Unsupported output extension: ${outputpath}`);
