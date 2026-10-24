@@ -3,7 +3,17 @@
   "json": {},
   "markup": {},
   "yaml": {},
-  "excludes": ["**/node_modules", "**/*-lock.json", "backend", "*.svg"],
+  "excludes": [
+    "**/node_modules",
+    "**/*-lock.json",
+    "*.svg",
+
+    "imagemagick-bridge.mjs",
+    "orchestrator.mjs",
+    "bridge_test.mjs",
+    "fullimgecosystem.mjs",
+    "run.mjs"
+  ],
   "plugins": [
     "npm:@dprint/typescript@0.96.1",
     "npm:@dprint/json@0.25.2",
