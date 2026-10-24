@@ -115,23 +115,6 @@ const FORMATS = {
     '.mrw': magickModule.MagickFormat.Mrw,
 };
 
-function summarize_errors(error){
-    const m = /^(\w+)\s*(?:`([^']*)')?/.exec(error?.message ?? '');
-    const code = m?.[1] ?? 'Unknown';
-    const detail = m?.[2] || '';
-
-    switch (code){
-        case 'NoEncodeDelegateForThisImageFormat': 
-            return new ImageError(code, `Can't write ${detail}: format is read-only or not in this build`);
-        case 'NoDecodeDelegateForThisImageFormat':
-            return new ImageError(code,`Can't read ${detail}: format is not supported`);
-        case 'WidthOrHeightExceedsLimit':
-            return new ImageError(code,`Image is too large for this format (ICO max is 256x256)`);
-        default:
-            return new ImageError(code,error?.message ?? String(error));
-    }
-}
-
 export async function process_image(inputpath, outputpath, processorfunc) {
     await init_imagemagick();
 

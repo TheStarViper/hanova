@@ -1,56 +1,224 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>Mediabunny web test</title>
-<body style="font-family: sans-serif; max-width: 640px; margin: 2rem auto">
-  <h3>Mediabunny web test</h3>
-  <input type="file" id="file" accept="video/*,audio/*">
-  <select id="target"></select>
-  <select id="preset"><option value="">no preset (remux if possible)</option></select>
+<title>Media & Image Converter Test</title>
+<style>
+  body {
+    font-family: sans-serif;
+    max-width: 640px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 1.5rem;
+  }
+  .tab {
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+    background: #f1f1f1;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    margin-right: 0.25rem;
+    font-weight: bold;
+    border-radius: 4px 4px 0 0;
+  }
+  .tab.active {
+    background: #fff;
+    border-bottom: 2px solid #fff;
+    margin-bottom: -2px;
+    color: #0066cc;
+  }
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
+  .control-group {
+    margin-bottom: 1rem;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+  select, input[type="file"], button {
+    width: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    margin-bottom: 0.5rem;
+  }
+  button {
+    cursor: pointer;
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  button#stop {
+    background: #cc3333;
+  }
+  button:hover {
+    opacity: 0.9;
+  }
+  #status {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  video, audio, img {
+    width: 100%;
+    margin-top: 1rem;
+    max-height: 400px;
+    object-fit: contain;
+    display: none;
+  }
+  #download {
+    display: none;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #28a745;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+</style>
+
+<body>
+  <h3>Media & Image Converter Test</h3>
+
+  <!-- Tabs Header -->
+  <div class="tabs">
+    <div class="tab active" data-target="tab-media">Video & Audio</div>
+    <div class="tab" data-target="tab-image">Images</div>
+  </div>
+
+  <!-- Tab 1: Video & Audio -->
+  <div id="tab-media" class="tab-content active">
+    <div class="control-group">
+      <label for="mediaFile">Select Video or Audio File</label>
+      <input type="file" id="mediaFile" accept="video/*,audio/*">
+    </div>
+    <div class="control-group">
+      <label for="mediaTarget">Target Format</label>
+      <select id="mediaTarget"></select>
+    </div>
+    <div class="control-group">
+      <label for="mediaPreset">Preset (Optional)</label>
+      <select id="mediaPreset">
+        <option value="">no preset (remux if possible)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tab 2: Images -->
+  <div id="tab-image" class="tab-content">
+    <div class="control-group">
+      <label for="imageFile">Select Image File</label>
+      <input type="file" id="imageFile" accept="image/*">
+    </div>
+    <div class="control-group">
+      <label for="imageTarget">Target Format</label>
+      <select id="imageTarget"></select>
+    </div>
+    <div class="control-group">
+      <label for="imageQuality">Quality (1 - 100)</label>
+      <input type="number" id="imageQuality" value="80" min="1" max="100">
+    </div>
+  </div>
+
+  <!-- Common Actions & Status -->
   <button id="go">Convert</button>
   <button id="stop">Cancel</button>
-  <p id="status">Loading...</p>
-  <a id="download" style="display:none">Download result</a>
-  <video id="preview" controls style="width:100%; display:none"></video>
-  <audio id="audioPreview" controls style="width:100%; display:none"></audio>
+  <p id="status">Loading converter module...</p>
+
+  <a id="download">Download result</a>
+  <video id="preview" controls></video>
+  <audio id="audioPreview" controls></audio>
+  <img id="imagePreview" alt="Preview">
 
   <script type="module">
     const $ = (id) => document.getElementById(id);
     const say = (msg) => { $('status').textContent = msg; };
 
-    // anything uncaught shows on the page, not just in the console
     window.addEventListener('error', (e) => say('Error: ' + e.message));
     window.addEventListener('unhandledrejection', (e) => say('Error: ' + (e.reason?.message ?? e.reason)));
 
-    let bridge;
+    let converter;
     try {
-      bridge = await import('../src/bridge/mediabunny-bridge.mjs');
+      // Adjust the import path to point to your main converter .mjs file
+      converter = await import('../src/bridge/orchestrator.mjs');
     } catch (err) {
-      say('Failed to load the bridge: ' + err.message);
+      say('Failed to load the converter module: ' + err.message);
       console.error(err);
       throw err;
     }
 
-    // grab dropdowns from bridge
-    for (const f of bridge.MEDIA_FORMATS) $('target').add(new Option(f, f));
-    for (const p of bridge.MEDIA_PRESETS) $('preset').add(new Option(p, p));
-    $('target').value = 'mkv';
-    say('Ready. Pick a file.');
+    // Populate dropdowns from module exports
+    // Video & Audio formats
+    const mediaFormats = [...converter.VIDEO_FORMATS, ...converter.AUDIO_FORMATS];
+    for (const f of mediaFormats) $('mediaTarget').add(new Option(f, f));
+    $('mediaTarget').value = 'mkv';
 
-    const PLAYABLE = ['mp4', 'webm', 'mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'];
+    // Image formats
+    for (const f of converter.IMAGE_FORMATS) $('imageTarget').add(new Option(f, f));
+    $('imageTarget').value = 'png';
+
+    // Note: If MEDIA_PRESETS is available in bridge/converter, populate presets; otherwise defaults to empty.
+    if (converter.MEDIA_PRESETS) {
+      for (const p of converter.MEDIA_PRESETS) $('mediaPreset').add(new Option(p, p));
+    }
+
+    say('Ready. Pick a file and click Convert.');
+
+    // Tab Switching Logic
+    let activeTab = 'media';
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.onclick = () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        const targetId = tab.getAttribute('data-target');
+        $(targetId).classList.add('active');
+        activeTab = targetId === 'tab-media' ? 'media' : 'image';
+        
+        $('download').style.display = 'none';
+        $('preview').style.display = 'none';
+        $('audioPreview').style.display = 'none';
+        $('imagePreview').style.display = 'none';
+      };
+    });
+
+    const PLAYABLE_VIDEO = converter.VIDEO_FORMATS;
+    const PLAYABLE_AUDIO = converter.AUDIO_FORMATS;
+    const PLAYABLE_IMAGE = converter.IMAGE_FORMATS;
+
     let ctrl = null;
     $('stop').onclick = () => ctrl?.abort();
 
     $('go').onclick = async () => {
-      const file = $('file').files[0];
+      const isMedia = activeTab === 'media';
+      const fileInput = isMedia ? $('mediaFile') : $('imageFile');
+      const file = fileInput.files[0];
+
       if (!file) { say('Pick a file first.'); return; }
 
-      const target = $('target').value;
-      const preset = $('preset').value || undefined;
-      const info = bridge.MEDIA_INFO[target];
+      const target = isMedia ? $('mediaTarget').value : $('imageTarget').value;
+      const preset = isMedia ? ($('mediaPreset').value || undefined) : undefined;
+      const quality = isMedia ? undefined : parseInt($('imageQuality').value, 10) || 80;
 
+      // Hide previous outputs
       $('download').style.display = 'none';
       $('preview').style.display = 'none';
       $('audioPreview').style.display = 'none';
+      $('imagePreview').style.display = 'none';
+
       ctrl = new AbortController();
       say('Reading file...');
 
@@ -58,26 +226,56 @@
         const bytes = new Uint8Array(await file.arrayBuffer());
         const t0 = performance.now();
 
-        say('Converting');
-        const out = await bridge.convert_media(bytes, target, {
+        say('Converting...');
+        
+        const options = {
           preset,
+          quality,
           signal: ctrl.signal,
           onProgress: (p) => say(`Converting... ${Math.round(p * 100)}%`),
-        });
+        };
+
+        // Use universal convert or specific conversion function
+        const out = await converter.convert(bytes, target, options);
 
         const secs = ((performance.now() - t0) / 1000).toFixed(1);
-        const url = URL.createObjectURL(new Blob([out], { type: info.mime }));
+        
+        // Determine mime type / extension
+        const ext = target;
+        let mime = 'application/octet-stream';
+        if (PLAYABLE_VIDEO.includes(target)) mime = `video/${target === 'mov' ? 'quicktime' : target}`;
+        else if (PLAYABLE_AUDIO.includes(target)) mime = `audio/${target === 'm4a' ? 'mp4' : target}`;
+        else if (target === 'jpg' || target === 'jpeg') mime = 'image/jpeg';
+        else if (target === 'png') mime = 'image/png';
+        else if (target === 'webp') mime = 'image/webp';
+        else if (target === 'gif') mime = 'image/gif';
+
+        const blob = new Blob([out], { type: mime });
+        const url = URL.createObjectURL(blob);
 
         say(`Done in ${secs}s: ${(bytes.length / 1e6).toFixed(1)} MB -> ${(out.length / 1e6).toFixed(1)} MB`);
-        $('download').href = url;
-        $('download').download = `converted.${info.ext}`;
-        $('download').style.display = 'inline';
+        
+        const downloadEl = $('download');
+        downloadEl.href = url;
+        downloadEl.download = `converted.${ext}`;
+        downloadEl.style.display = 'block';
+        downloadEl.textContent = `Download converted.${ext}`;
 
-        if (PLAYABLE.includes(target)) {
-          const el = info.video ? $('preview') : $('audioPreview');
+        // Show appropriate preview
+        if (PLAYABLE_VIDEO.includes(target)) {
+          const el = $('preview');
+          el.src = url;
+          el.style.display = 'block';
+        } else if (PLAYABLE_AUDIO.includes(target)) {
+          const el = $('audioPreview');
+          el.src = url;
+          el.style.display = 'block';
+        } else if (PLAYABLE_IMAGE.includes(target)) {
+          const el = $('imagePreview');
           el.src = url;
           el.style.display = 'block';
         }
+
       } catch (err) {
         say(`Error${err.code ? ' [' + err.code + ']' : ''}: ${err.message}`);
         console.error(err);
@@ -85,24 +283,3 @@
     };
   </script>
 </body>
-<!-- http://localhost:5173/backend/test/webtest.html -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->
-<!-- ai file -->

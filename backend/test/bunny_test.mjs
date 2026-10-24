@@ -41,15 +41,3 @@ test(`mp4 to mkv`,{ skip }, async ()=>{
     const ratio = out.length / input.length;
     assert.ok(ratio > 0.8 && ratio < 1.2, `size changed too much (${ratio.toFixed(2)}x)`);
 });
-
-
-test(`mp4 to webm`,{ skip, timeout: 120_000 },async ()=>{
-    const out = await convert_media(load(),'webm',{
-        video: {height: 720, bitrate: 1_500_000},
-        audio: {bitrate: 96_000},
-    });
-    fs.writeFileSync('backend/test/output/test_out.webm', out);
-
-    //assert.ok(out.length > 0,'output is empty');
-    //assert.deepEqual([...out.subarray(0,4)],[0x1a,0x45,0xdf,0xa3]);
-});

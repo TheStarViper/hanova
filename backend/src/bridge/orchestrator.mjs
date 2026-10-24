@@ -65,7 +65,6 @@ const ALIASES = {jpeg:'jpg', //formats that are the same with diff extensions
                  jpe: 'jpg',
                  targa:'tga',
                  tif: 'tiff',
-                 heif: 'heic',
                  m4v: 'mp4',
                  matroska: 'mkv',
                  oga: 'ogg',
@@ -90,7 +89,6 @@ export function createconverter({core,webp,svg,magick,media}){
     }
 
 
-    console.log('core keys:', Object.keys(core ?? {}));
     const table = Array.from({length:N},()=>Array(N).fill(null));
     const has = (from,to)=>table[INDEX[from]][INDEX[to]]!==null;
 
