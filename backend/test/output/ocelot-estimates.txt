@@ -1,0 +1,140 @@
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to png: 26666.99177177076
+actual time to convert 23569944-pixel jpg to png: 6668
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to bmp: 9250.262742667332
+actual time to convert 23569944-pixel jpg to bmp: 1763
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to hdr: 12721.610801740071
+actual time to convert 23569944-pixel jpg to hdr: 2699
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to tga: 9510.213922206189
+actual time to convert 23569944-pixel jpg to tga: 1785
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to webp: 40370.418182384514
+actual time to convert 23569944-pixel jpg to webp: 13418
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to gif: 16860.833429781873
+actual time to convert 23569944-pixel jpg to gif: 4510
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to avif: 77301.48229702415
+actual time to convert 23569944-pixel jpg to avif: 19429
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to tiff: 1705.6796626665011
+actual time to convert 23569944-pixel jpg to tiff: 417
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to ico: 3743.296985359543
+actual time to convert 23569944-pixel jpg to ico: 1104
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to jxl: 142707.1986934586
+actual time to convert 23569944-pixel jpg to jxl: 35671
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to qoi: 3191.4006349539695
+actual time to convert 23569944-pixel jpg to qoi: 832
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to psd: 6244.827182306545
+actual time to convert 23569944-pixel jpg to psd: 478
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to eps: 3679.309002703824
+actual time to convert 23569944-pixel jpg to eps: 929
+
+estimated pixels of jpg input: 94262072.99176629
+actual pixels of jpg input: 23569944
+estimated time to convert 94262072.99176629-pixel jpg to exr: 4815.095694842831
+actual time to convert 23569944-pixel jpg to exr: 1266
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to jpg: 3263.9999999999995
+actual time to convert 23569944-pixel png to jpg: 3264
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to bmp: 2312.9999999999995
+actual time to convert 23569944-pixel png to bmp: 2863
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to hdr: 3180.9999999999995
+actual time to convert 23569944-pixel png to hdr: 3663
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to tga: 2377.9999999999995
+actual time to convert 23569944-pixel png to tga: 2971
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to webp: 10094.499999999998
+actual time to convert 23569944-pixel png to webp: 6771
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to gif: 4215.999999999999
+actual time to convert 23569944-pixel png to gif: 3922
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to avif: 19328.999999999996
+actual time to convert 23569944-pixel png to avif: 19229
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to tiff: 426.49999999999994
+actual time to convert 23569944-pixel png to tiff: 436
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to ico: 935.9999999999999
+actual time to convert 23569944-pixel png to ico: 768
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to jxl: 35683.5
+actual time to convert 23569944-pixel png to jxl: 35696
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to qoi: 797.9999999999999
+actual time to convert 23569944-pixel png to qoi: 764
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to psd: 1561.4999999999998
+actual time to convert 23569944-pixel png to psd: 2645
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to eps: 919.9999999999998
+actual time to convert 23569944-pixel png to eps: 911
+
+estimated pixels of png input: 23569943.999999996
+actual pixels of png input: 23569944
+estimated time to convert 23569943.999999996-pixel png to exr: 1203.9999999999998
+actual time to convert 23569944-pixel png to exr: 1142

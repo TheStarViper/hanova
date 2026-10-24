@@ -1,103 +1,152 @@
+import fs from "node:fs";
+import { ImageMagick } from "../src/bridge/imagemagick-bridge.mjs";
 import { init } from "../src/bridge/nodeMagick.mjs";
 import { converterFactory, FORMATS } from "../src/bridge/orchestrator.mjs";
 
-const INPUT_IMAGES = {
-  /**
-   * JPEG, 20.4 MB
-   * (the Wikimedia Commons' picture of the day as I'm writing this code)
-   */
-  "ocelot.jpg":
-    "https://upload.wikimedia.org/wikipedia/commons/9/91/016_Ocelot_in_Encontro_das_%C3%81guas_State_Park_Photo_by_Giles_Laurent.jpg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original",
-
-  /**
-   * PNG, 187 MB
-   */
-  "mandelbrot.png":
-    "https://upload.wikimedia.org/wikipedia/commons/4/4d/Mandelbox_14072019.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original",
-};
+/**
+ * @typedef {(typeof FORMATS)[number]} Format
+ */
 
 const QUALITY = 90;
 
 class Result {
-  constructor(format, inputName, inputSize, startTime, endTime) {
-    this.format = format;
-    this.inputName = inputName;
+  constructor(
+    inputFormat,
+    outputFormat,
+    inputSize,
+    outputSize,
+    startTime,
+    endTime,
+  ) {
+    this.inputFormat = inputFormat;
+    this.outputFormat = outputFormat;
     this.inputSize = inputSize;
+    this.outputSize = outputSize;
     this.startTime = startTime;
     this.endTime = endTime;
   }
-
-  get millisecondsPerByte() {
-    const delta = this.endTime - this.startTime;
-    return delta / this.inputSize;
-  }
 }
 
-const CLEAR_LINE_ANSI = "\x1b[K";
+/**
+ * @param {Format} inputFormat
+ * @param {Buffer<ArrayBuffer>} inputBuffer
+ * @returns {Promise<Result[]>}
+ */
+async function testAllFormats(inputFormat, inputBuffer) {
+  console.log(`\n${inputFormat} input:`);
 
-async function run() {
-  await init();
-  const converter = await converterFactory();
+  const resultsForThisInput = [];
 
-  /** @type {Record<(typeof FORMATS)[number], Result[]>} */
-  const resultMap = {};
+  for (const outputFormat of FORMATS) {
+    if (inputFormat === outputFormat) continue;
 
-  for (const name in INPUT_IMAGES) {
-    console.log(`Processing ${name}:`);
+    try {
+      const start = Date.now();
 
-    const url = INPUT_IMAGES[name];
+      const outBuffer = await converter(outputFormat, inputBuffer, QUALITY);
+      if (outputFormat === "png") pngBuffer = outBuffer;
 
-    const response = await fetch(url);
-    const inputBuffer = Buffer.from(await response.arrayBuffer());
-    const inputSize = inputBuffer.byteLength;
+      const end = Date.now();
 
-    for (const format of FORMATS) {
-      process.stdout.write(
-        `\rPROCESSING - ${name} -> ${format} ${CLEAR_LINE_ANSI}`,
+      console.log(
+        `DONE in ${(end - start) / 1000}s - ${inputFormat} -> ${outputFormat}`,
       );
 
-      const start = Date.now();
-      try {
-        const outBytes = await converter(format, inputBuffer, QUALITY);
+      const result = new Result(
+        inputFormat,
+        outputFormat,
+        inputBuffer.byteLength,
+        outBuffer.byteLength,
+        start,
+        end,
+      );
 
-        const end = Date.now();
-
-        process.stdout.write(
-          `\rDONE in ${
-            (end - start) / 1000
-          }s - ${name} -> ${format} ${CLEAR_LINE_ANSI}\n`,
-        );
-
-        const result = new Result(format, name, inputSize, start, end);
-
-        if (resultMap[format] === undefined) {
-          resultMap[format] = [result];
-        } else {
-          resultMap[format].push(result);
-        }
-      } catch (err) {
-        process.stdout.write(
-          `\rFAILED - ${name} -> ${format} ${CLEAR_LINE_ANSI}\n`,
-        );
-        continue;
-      }
+      resultsForThisInput.push(result);
+    } catch (err) {
+      console.log(`SKIPPING - ${inputFormat} -> ${outputFormat}`);
+      console.log(err);
+      continue;
     }
   }
 
-  console.log(resultMap);
-
-  /** @type {Record<(typeof FORMATS)[number], number>} */
-  const encodingSpeedMap = {};
-
-  for (const format in resultMap) {
-    /** @type {Result[]}  */
-    const results = resultMap[format];
-    const sum = results.reduce((acc, res) => acc + res.millisecondsPerByte, 0);
-    const avg = sum / results.length;
-    encodingSpeedMap[format] = avg;
-  }
-
-  console.log(encodingSpeedMap);
+  return resultsForThisInput;
 }
 
-await run();
+await init();
+const converter = await converterFactory();
+
+/**
+ * JPEG, 20.4 MB
+ * (the Wikimedia Commons' picture of the day as I'm writing this code)
+ * {@link https://upload.wikimedia.org/wikipedia/commons/9/91/016_Ocelot_in_Encontro_das_%C3%81guas_State_Park_Photo_by_Giles_Laurent.jpg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original}
+ */
+const path = "backend/test/samples/ocelot.jpg";
+const jpegBuffer = fs.readFileSync(path);
+
+let pngBuffer;
+
+let imagePixels;
+ImageMagick.read(new Uint8Array(jpegBuffer), (image) => {
+  imagePixels = image.width * image.height;
+});
+
+const jpegResults = await testAllFormats("jpg", jpegBuffer);
+const pngResults = await testAllFormats("png", pngBuffer);
+
+const allResults = [jpegResults, pngResults].flat();
+
+/** @type {Record<Format, number>} */
+let pixelsPerByte = {};
+/** @type {Record<Format, number>} */
+let millisecondsPerPixel = {};
+
+FORMATS.forEach((format) => {
+  const results = allResults.filter((res) => res.outputFormat === format);
+
+  const avgWeight = results.reduce((acc, res) => acc + res.outputSize, 0)
+    / results.length;
+  const avgTime = results.reduce((acc, res) =>
+    acc + res.endTime - res.startTime, 0) / results.length;
+
+  pixelsPerByte[format] = imagePixels / avgWeight;
+  millisecondsPerPixel[format] = avgTime / imagePixels;
+});
+
+const data = {
+  pixelsPerByte,
+  millisecondsPerPixel,
+};
+fs.writeFileSync(
+  "backend/test/output/encodingSpeedData.json",
+  JSON.stringify(data, null, 2),
+);
+
+/**
+ * @param {Format} inputFormat
+ * @param {Format} outputFormat
+ */
+function estimate(inputFormat, outputFormat) {
+  console.log();
+
+  const result = allResults.find((res) =>
+    res.inputFormat === inputFormat && res.outputFormat === outputFormat
+  );
+  if (result === undefined) {
+    throw new Error(`no logged ${inputFormat} -> ${outputFormat} results`);
+  }
+
+  const estimatedPixels = result.inputSize * pixelsPerByte[inputFormat];
+  console.log(`estimated pixels of ${inputFormat} input: ${estimatedPixels}`);
+  console.log(`actual pixels of ${inputFormat} input: ${imagePixels}`);
+
+  const estimatedTime = estimatedPixels * millisecondsPerPixel[outputFormat];
+  console.log(
+    `estimated time to convert ${estimatedPixels}-pixel ${inputFormat} to ${outputFormat}: ${estimatedTime}`,
+  );
+  console.log(
+    `actual time to convert ${imagePixels}-pixel ${inputFormat} to ${outputFormat}: ${
+      result.endTime - result.startTime
+    }`,
+  );
+}
+allResults.forEach((res) => estimate(res.inputFormat, res.outputFormat));
