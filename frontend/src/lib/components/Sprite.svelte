@@ -103,6 +103,7 @@ $effect(() => {
 	span {
 		font-style: italic;
 		user-select: none;
+		color: var(--ink);
 	}
 }
 

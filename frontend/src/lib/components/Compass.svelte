@@ -26,5 +26,6 @@ let borderColor = $derived(hovered ? "var(--accent)" : undefined);
       hover: () => (hovered = true),
       unhover: () => (hovered = false),
     }}
+    label="About"
   >{@html CompassSvg}</Sprite>
 </a>
