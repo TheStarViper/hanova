@@ -203,7 +203,7 @@ export function createconverter({core,webp,svg,magick,media}){
         let format=core.validate_file_format(bytes);
         if (format==='unknown'&&media){format=await mediabridge.detect_format(bytes);}
         if (format==='unknown'&&magick){format=await magick.detect_format(bytes);}
-        return ALIASES[f]??format;
+        return ALIASES[format]??format;
     }
 
     async function convert_universal(target_format,bytes,quality,options,domain){
@@ -229,7 +229,7 @@ export function createconverter({core,webp,svg,magick,media}){
         if (path.length===0&&media&&DOMAIN[target_format]!=='image'&&has_media_options(options)){
             path = [{from:target_format, to:target_format,func: media_step(target_format)}];
         }
-        
+
         let data = bytes;
         for(const step of path){
             if(options.signal?.aborted){
@@ -267,6 +267,31 @@ export function createconverter({core,webp,svg,magick,media}){
         return out;
     }
     return {convert_image,convert_video,convert_audio,search_path,capabilities};
+}
+
+export function createConvert({image,imageFormats=[],media,mediaFormats=[],maxBytes}={}){
+    return async function convert(bytes,target,options={}){
+        try {
+            if (!(bytes instanceof Uint8Array)){
+                throw new ConvertError(ErrorCode.UnsupportedInput,'Expected file as Uint8Array');
+            }
+            if (bytes.length===0){
+                throw new ConvertError(ErrorCode.CorruptInput,'file is empty');
+            }
+            const limit = options.maxBytes ?? maxBytes;
+            if(limit&&bytes.length>limit){
+                throw new ConvertError(ErrorCode.TooLarge, `File is ${bytes.length} bytes, limit is ${limit}`);
+            }
+
+            target = ALIASES[target]??target;
+            if (media&&mediaFormats.includes(target)){return await media(bytes,target,options);}
+            if (image&&imageFormats.includes(target)){return await image(target,bytes,options.quality??80);}
+
+            throw new ConvertError(ErrorCode.UnsupportedOutput,`Unsupported output format: "${target}"`);
+        } catch (error){
+            throw to_convert_error(error,ErrorCode.NativeFailure);
+        }
+    };
 }
 
 const media = {
