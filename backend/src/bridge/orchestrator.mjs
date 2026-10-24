@@ -7,7 +7,6 @@ import createsvg from '../../build/svg_module.js';
 import { ConvertError,to_convert_error,ErrorCode } from './errors.mjs';
 import * as bridge from './imagemagick-bridge.mjs';
 import * as mediabridge from './mediabunny-bridge.mjs';
-import { Domain } from 'domain';
 
 const magick = {
     convert_bytes: bridge.convert_bytes,
@@ -154,7 +153,7 @@ export function createconverter({core,webp,svg,magick,media}){
     }
 
     //mediabunny
-    const media_step = (to)=>(bytes,_q,options)=>mediabridge.convert_media(bytes,to,options);
+    const media_step = (to) => (bytes, _q, options) => media.convert_media(bytes, to, options);
     
     if (media){
         const link = (froms,tos)=>{
@@ -194,16 +193,17 @@ export function createconverter({core,webp,svg,magick,media}){
         }
         const path =[];
         for (let i = target; prev[i];i=prev[i][0]){
-            path.unshift({from: IMAGE_FORMATS[prev[i][0]],to: IMAGE_FORMATS[i],func: prev[i][1].func});
+            path.unshift({from: FORMATS[prev[i][0]],to: FORMATS[i],func: prev[i][1].func});
         }
         
         return path;
     }
 
     async function detect(bytes){
-        let f=core.validate_file_format(bytes);
-        if (f==='unknown'&&media){f=await mediabridge.detect_format(bytes);}
-        if (f==='unknown'&&magick){f=await magick.detect_format(bytes);}
+        let format=core.validate_file_format(bytes);
+        if (format==='unknown'&&media){format=await mediabridge.detect_format(bytes);}
+        if (format==='unknown'&&magick){format=await magick.detect_format(bytes);}
+        return ALIASES[f]??format;
     }
 
     async function convert_universal(target_format,bytes,quality,options,domain){
@@ -223,9 +223,13 @@ export function createconverter({core,webp,svg,magick,media}){
 
         let path = search_path(current_index,target_index);
         if(!path){
-            throw new ConvertError(ErrorCode.NoPath,`No conversion path found "${detected_format}"->"${IMAGE_FORMATS[target_index]}"`);
+            throw new ConvertError(ErrorCode.NoPath, `No conversion path: "${detected_format}" -> "${target_format}"`);
         }
 
+        if (path.length===0&&media&&DOMAIN[target_format]!=='image'&&has_media_options(options)){
+            path = [{from:target_format, to:target_format,func: media_step(target_format)}];
+        }
+        
         let data = bytes;
         for(const step of path){
             if(options.signal?.aborted){
@@ -265,5 +269,18 @@ export function createconverter({core,webp,svg,magick,media}){
     return {convert_image,convert_video,convert_audio,search_path,capabilities};
 }
 
+const media = {
+    convert_media: mediabridge.convert_media,
+    detect_format: mediabridge.detect_media_format,
+};
+
 const [core, webp, svg] = await Promise.all([createcore(), createwebp(), createsvg()]);
-export const { convert_image } = createconverter({ core, webp, svg ,magick});
+export const {convert_image, convert_video,convert_audio,capabilities} = createconverter({ core, webp, svg ,magick,media});
+
+export const convert = createConvert({
+    image: convert_image,
+    imageFormats: IMAGE_FORMATS,
+    media: (bytes, target, options) =>
+        (AUDIO_FORMATS.includes(target) ? convert_audio : convert_video)(target, bytes, options),
+    mediaFormats: [...VIDEO_FORMATS, ...AUDIO_FORMATS],
+});
