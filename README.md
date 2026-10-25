@@ -38,6 +38,7 @@ library that a file converter like file validation and safety functions.
 - [nanosvg](https://github.com/memononen/nanosvg) (svg)
 - [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image
   formats)
+- [mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
 
 ### Custom Compilation
 
@@ -48,37 +49,40 @@ purpose. This took a while of troubleshooting as there is limited documentation
 online about how to go about this and the libraries we had to compile in this
 form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
 
-<details>
-<summary><h3>Supported File Formats</h3></summary>
+### Supported File Formats
 
-Images:
+<details>
+<summary><h3>Images</h3></summary>
 
 - [x] png
 - [x] jpeg
-- [x] webp
 - [x] bmp
-- [x] avif
-- [x] jxl
-- [x] heif
-- [x] svg
+- [x] tga
+- [x] hdr
+- [x] ico
 - [x] gif
 - [x] exr
+- [x] webp
+- [x] avif
+- [x] svg
 - [x] eps
-- [x] hdr
-- [x] tga
-- [x] ico
-- [x] psd
-- [x] tiff
+- [x] ai (adobe illustrator not artificial intellegence)
 - [x] qoi
+- [x] tiff
+- [x] jxl
+- [x] psd
 
-Audio:
+</details>
 
-- [ ] mp3
-- [ ] wav
-- [ ] flac
-- [ ] ogg
-- [ ] aac
-- [ ] m4a
+<details>
+<summary><h3>Audio</h3></summary>
+
+- [x] mp3
+- [x] wav
+- [x] flac
+- [x] ogg
+- [x] aac
+- [x] m4a
 - [ ] opus
 - [ ] wma
 - [ ] aiff
@@ -86,7 +90,10 @@ Audio:
 - [ ] amr
 - [ ] ac3
 
-Documents:
+</details>
+
+<details>
+<summary><h3>Docs</h3></summary>
 
 - [ ] pdf
 - [ ] txt
@@ -101,6 +108,19 @@ Documents:
 - [ ] odt
 - [ ] xls
 
+</details>
+
+<details>
+<summary><h3>Video</h3></summary>
+
+- [x] mp4
+- [x] mkv
+- [x] webm
+- [x] mov
+- [x] m4s
+- [x] ts (MPEG Transport stem)
+- [x] m3u8 (HLS)
+</details>
 3D Files:
 
 - [ ] obj
@@ -110,14 +130,6 @@ Documents:
 - [ ] glb
 - [ ] blend
 
-Video:
-
-Video conversion locally has no access to hardware accelleration so we are
-unable to do it reasonably without an external server. In the future we may
-dable with the idea of making video formats available via self hosted docker
-container.
-
-</details>
 
 ## Frontend (Svelte)
 
