@@ -1,18 +1,24 @@
 import * as magickModule from '@imagemagick/magick-wasm';
 import { ConvertError,ErrorCode, to_convert_error } from './errors.mjs';
 
-let isinit = false;
+let initPromise=null;
 
 export async function init_imagemagick() {
-    if (isinit) return;
-
-    const inNode = typeof process !== 'undefined' && process.versions?.node;
-    const wasm = inNode ? (await import ('node:fs')).readFileSync(
-        (await import('node:module')).createRequire(import.meta.url).resolve('@imagemagick/magick-wasm/magick.wasm'))
-        : new URL((await import('@imagemagick/magick-wasm/magick.wasm?url')).default,import.meta.url);
-
-    await magickModule.initializeImageMagick(wasmBytes);
-    isinit = true;
+    initPromise ??= (async()=>{
+        const inNode = typeof process !=='undefined'&&!!process.versions?.node;
+        let wasm;
+        if(inNode){
+            const fs = await import('node:fs');
+            const {createRequire}=await import('node:module');
+            const path = createRequire(import.meta.url).resolve('@imagemagick/magick-wasm/magick.wasm');
+            wasm = fs.readFileSync(path);
+        } else {
+            const url = (await import('@imagemagick/magick-wasm/magick.wasm?url')).default;
+            wasm = new URL(url,import.meta.url);
+        }
+        await magickModule.initializeImageMagick(wasm);
+    })().catch((error)=>{initPromise=null;throw error;});
+    return initPromise;
 }
 
 export const MAGICK_BY_NAME = {
@@ -68,28 +74,6 @@ export async function detect_format(bytes) {
     } catch {
         return 'unknown';
     }
-}
-
-
-export async function process_image(inputpath, outputpath, processorfunc) {
-    await init_imagemagick();
-
-    const inputbytes = fs.readFileSync(inputpath);
-    const format = FORMATS[extname(outputpath).toLowerCase()];
-    if (!format) throw new ConvertError(ErrorCode.UnsupportedOutput,`Unsupported output extension: ${outputpath}`);
-
-    let output;
-    try{
-        await magickModule.ImageMagick.read(new Uint8Array(inputbytes), async (image) => {
-            await processorfunc(image, magickModule);
-            image.write(format, (data) => {
-                output = Buffer.from(data);
-            });
-        });
-    } catch(error) {
-        throw to_convert_error(error,Error.NativeFailure);
-    }
-    fs.writeFileSync(outputpath, output);
 }
 
 export const {
