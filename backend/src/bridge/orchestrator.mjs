@@ -10,7 +10,6 @@ import {
     VIDEO_FORMATS, 
     AUDIO_FORMATS,
 } from './converter.mjs';
-import { AudioFifo } from 'node-av';
 
 const magick = {
     convert_bytes: bridge.convert_bytes,

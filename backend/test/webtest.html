@@ -68,7 +68,11 @@
     // one import: everything below goes through hanova.convert
     let hanova;
     try {
-      hanova = await import('../src/bridge/orchestrator.mjs');
+      const {initMagick}=await import('../src/bridge/browserMagick.mjs');
+      await initMagick();
+      const mod = await import('../src/bridge/orchestrator.mjs');
+      hanova = {...(await mod.universalFactory()),MEDIA_INFO:mod.MEDIA_INFO,MEDIA_PRESETS:mod.MEDIA_PRESETS};
+
       const caps = hanova.capabilities();
       for (const format of [...caps.video.outputs, ...caps.audio.outputs]) $('target').add(new Option(format, format));
       for (const p of hanova.MEDIA_PRESETS) $('preset').add(new Option(p, p));

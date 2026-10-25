@@ -7,7 +7,7 @@ export const ImageError = ConvertError;
 export const summarize_errors = (error)=>to_convert_error(error,ErrorCode.NativeFailure);
 let ready = false;
 
-export async function initializeImageMagick(wasm) {
+export async function initializeImageMagickz(wasm) {
   await magickModule.initializeImageMagick(wasm);
   ready = true;
 }

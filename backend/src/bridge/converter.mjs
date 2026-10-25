@@ -1,4 +1,5 @@
 import { ConvertError,to_convert_error,ErrorCode } from './errors.mjs';
+export { ConvertError,simplifyerror } from './errors.mjs';
 
 export const IMAGE_FORMATS = ['png', 
                         'jpg', 
@@ -47,7 +48,7 @@ for (const f of AUDIO_FORMATS){DOMAIN[f]='audio';}
 
 /**@type {Record<string,string>}*/ 
 //formats that are the same with diff extensions
-const ALIASES = {jpeg:'jpg',
+export const ALIASES = {jpeg:'jpg',
                  jpe: 'jpg',
                  targa:'tga',
                  icb:'tga',

@@ -90,7 +90,7 @@ export function to_convert_error(error,fallbackcode=ErrorCode.Unknown,{step}={})
     return new ConvertError(fallbackcode, `${error?.name ?? 'Error'}: ${first}`, opts);//uhhhhhh wtf
 }
 
-export const simplify_error=(error)=>to_convert_error(error).message;
+export const simplifyerror=(error)=>to_convert_error(error).message;
 
 export function guard(fn,fallbackcode = ErrorCode.Unknown){
     return async (...args)=>{
