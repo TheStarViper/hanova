@@ -37,7 +37,7 @@ library that a file converter like file validation and safety functions.
 - [libwebp](https://github.com/webmproject/libwebp) (webp)
 - [nanosvg](https://github.com/memononen/nanosvg) (svg)
 - [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image formats)
-- [mediabunny](https://mediabunny.dev/) (audio and video hardware accelerated)
+- [mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video hardware accelerated)
 
 ### Bridge System
 As alot of the libraries we used like [imagemagick](https://github.com/ImageMagick/ImageMagick), [mediabunny](https://mediabunny.dev/) & pandoc dont have C++ variants, we have to use the JS packaged versions, therefore we had to create a bridge system between the C++ conversions and the JS packages so that they can all work together. We have some special functions like conversion chaining if we dont have a direct conversion like webp -> avif so we hop between webp -> png -> avif like how airport flights work.
@@ -185,4 +185,4 @@ pnpm dev
 ## Contributors
 
 - Ethan ([@ethmarks](https://github.com/ethmarks)): Frontend in Svelte
-- Andrew ([@TheStarViper](https://github.com/TheStarViper)): Backend in C++ x Mjs
+- Andrew ([@TheStarViper](https://github.com/TheStarViper)): Backend in C++ & Mjs

@@ -72,7 +72,7 @@ const PRESETS = {
 export const MEDIA_PRESETS = Object.keys(PRESETS);
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);
 
-const ascii = (bytes, start,end)=>String.fromCharCode(...b.subarray(start,end));
+const ascii = (bytes, start,end)=>String.fromCharCode(...bytes.subarray(start,end));
 
 export function detect_media_format(bytes){
     if(!bytes||bytes.length<12){return 'unknown';}

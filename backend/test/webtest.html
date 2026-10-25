@@ -70,17 +70,17 @@
     try {
       hanova = await import('../src/bridge/orchestrator.mjs');
       const caps = hanova.capabilities();
-      for (const f of [...caps.video.outputs, ...caps.audio.outputs]) $('target').add(new Option(f, f));
+      for (const format of [...caps.video.outputs, ...caps.audio.outputs]) $('target').add(new Option(format, format));
       for (const p of hanova.MEDIA_PRESETS) $('preset').add(new Option(p, p));
-      for (const f of caps.image.outputs) $('imgTarget').add(new Option(f, f));
+      for (const format of caps.image.outputs) $('imgTarget').add(new Option(format, format));
       $('target').value = 'mkv';
       $('imgTarget').value = 'jpg';
       say('Ready. Pick a file.');
       imgSay('Ready. Pick an image.');
-    } catch (err) {
-      say('Failed to load: ' + err.message);
-      imgSay('Failed to load: ' + err.message);
-      console.error(err);
+    } catch (error) {
+      say('Failed to load: ' + error.message + '\n' + (error.stack??'').split('\n').slice(0,4).join('\n'));
+      imgSay('Failed to load: ' + error.message);
+      console.error(error);
     }
 
     // ---------- media ----------

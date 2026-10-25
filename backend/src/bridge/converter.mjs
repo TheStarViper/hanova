@@ -1,6 +1,5 @@
 import { ConvertError,to_convert_error,ErrorCode } from './errors.mjs';
 
-//OOOO all da formats
 export const IMAGE_FORMATS = ['png', 
                         'jpg', 
                         'bmp', 
@@ -45,7 +44,8 @@ for (const f of IMAGE_FORMATS){DOMAIN[f]='image';}
 for (const f of VIDEO_FORMATS){DOMAIN[f]='video';}
 for (const f of AUDIO_FORMATS){DOMAIN[f]='audio';}
 
-const ALIASES = {jpeg:'jpg', //formats that are the same with diff extensions
+//formats that are the same with diff extensions
+const ALIASES = {jpeg:'jpg',
                  jpe: 'jpg',
                  targa:'tga',
                  tif: 'tiff',
@@ -142,7 +142,7 @@ export function createconverter({core,webp,svg,magick,media}={}){
 
     //mediabunny
     const media_step = (to) => (bytes, _q, options) => media.convert_media(bytes, to, options);
-    
+
     if (media){
         const link = (froms,tos)=>{
             for (const a of froms) for (const b of tos) if (a!==b) {register(a,b,media_step(b),1);}
@@ -189,7 +189,7 @@ export function createconverter({core,webp,svg,magick,media}={}){
 
     async function detect(bytes){
         let format=core?core.validate_file_format(bytes):'unknown';
-        if (format==='unknown'&&media){format=await mediabridge.detect_format(bytes);}
+        if (format==='unknown'&&media){format=await media.detect_format(bytes);}
         if (format==='unknown'&&magick){format=await magick.detect_format(bytes);}
         return ALIASES[format]??format;
     }
@@ -224,7 +224,7 @@ export function createconverter({core,webp,svg,magick,media}={}){
                 throw new ConvertError(ErrorCode.Cancelled, 'Conversion was cancelled');
             }
             try{
-                if (process.env.DEBUG){console.log(`Converting ${step.from} -> ${step.to}...`);}
+                if (globalThis.process?.env?.DEBUG){console.log(`Converting ${step.from} -> ${step.to}...`);}
                 data = await step.func(data,quality,options);
             } catch (error){
                 const cause = to_convert_error(error,ErrorCode.NativeFailure);
