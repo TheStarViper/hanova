@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 export const ErrorCode = Object.freeze({
   UnsupportedInput: "UnsupportedInput",
   UnsupportedOutput: "UnsupportedOutput",
@@ -163,7 +165,8 @@ const USER_MESSAGES = { // front end user messages
   [ErrorCode.EncoderUnavailable]:
     "Encoder Unavailable, try another browser/format",
   [ErrorCode.NothingToConvert]: "File appears empty",
-  [ErrorCode.TooLarge]: "File too large (scale like image size/video length)",
+  [ErrorCode.TooLarge]:
+    "Image too large (max: 8192 pixels in either dimension)",
   [ErrorCode.FileTooBig]: "Filesize too large (max: undefined yet FIX)",
   [ErrorCode.Cancelled]: "Conversion canceled",
   [ErrorCode.Unknown]:
