@@ -191,3 +191,25 @@ export async function probe_media(inputdata){
         throw to_convert_error(error,ErrorCode.CorruptInput);
     }
 }
+
+export async function thumbnail_at(inputdata,seconds=0,{width = 320,type = 'image/jpeg',quality = 0.8}={}){
+    try{
+        const input = new mediabunny.Input({
+            source: new mediabunny.BufferSource(inputdata),
+            formats: mediabunny.ALL_FORMATS,
+        });
+        const track = await input.getPrimaryVideoTrack;
+        if (!track){throw new ConvertError(ErrorCode.NothingToConvert,'file has no video');}
+
+        const frame = await new mediabunny.CanvasSink(track,{width}).getCanvas(seconds);
+        if (!frame){throw new ConvertEror(ErrorCode.NothingToConvert,`no frame at ${seconds}s`)};
+
+        const canvas = frame.canvas;
+        const blob = canvas.convertToBlob ? await canvas.convertToBlob({type,quality}):
+        await new Promise((resolve)=>canvas.toBlob(resolve,type,quality));
+        
+        return new Uint8Array(await blob.arrayBuffer());
+    } catch (error){
+        throw to_convert_error(error,ErrorCode.NativeFailure);
+    }
+}
