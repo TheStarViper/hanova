@@ -1,10 +1,11 @@
 // @ts-nocheck
 
 import * as magickModule from "@imagemagick/magick-wasm";
-import { ConvertError,ErrorCode,to_convert_error } from "./errors.mjs";
+import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
 
 export const ImageError = ConvertError;
-export const summarize_errors = (error)=>to_convert_error(error,ErrorCode.NativeFailure);
+export const summarize_errors = (error) =>
+  to_convert_error(error, ErrorCode.NativeFailure);
 let ready = false;
 
 export async function initializeImageMagickz(wasm) {
@@ -27,7 +28,7 @@ export const MAGICK_BY_NAME = {
   pdf: magickModule.MagickFormat.Pdf,
   eps: magickModule.MagickFormat.Eps,
   ai: magickModule.MagickFormat.Ai,
-  svg: magickModule.MagickFormat.svg
+  svg: magickModule.MagickFormat.svg,
 };
 
 export const MAGICK_OUTPUT_ONLY = ["ico", "pdf", "eps", "ai"];
@@ -43,11 +44,11 @@ export const MAGICK_PROCESSORS = {
 export async function convert_bytes(bytes, format, quality, processor) {
   let output;
   try {
-    if(!ready){
-        throw new ConvertError(
+    if (!ready) {
+      throw new ConvertError(
         ErrorCode.NativeFailure,
         "ImageMagick is not initialized. Call init() (Node) or initMagick() (browser) first.",
-        );
+      );
     }
     magickModule.ImageMagick.read(bytes, (image) => {
       if (quality != null) image.quality = quality;
@@ -63,7 +64,7 @@ export async function convert_bytes(bytes, format, quality, processor) {
 }
 
 export async function detect_format(bytes) {
-  if(!ready){return 'unknown';}
+  if (!ready) return "unknown";
   try {
     let name = "unknown";
     magickModule.ImageMagick.read(bytes, (image) => {

@@ -2,9 +2,6 @@ packages:
   - backend
   - frontend
 
-allowBuilds:
-  '@parcel/watcher': set this to true or false
-  node-av: set this to true or false
-
 onlyBuiltDependencies:
   - esbuild
+  - node-av
