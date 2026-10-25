@@ -1,285 +1,196 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>Media & Image Converter Test</title>
+<title>Hanova converter test</title>
 <style>
-  body {
-    font-family: sans-serif;
-    max-width: 640px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-  }
-  .tabs {
-    display: flex;
-    border-bottom: 2px solid #ccc;
-    margin-bottom: 1.5rem;
-  }
-  .tab {
-    padding: 0.5rem 1.5rem;
-    cursor: pointer;
-    background: #f1f1f1;
-    border: 1px solid #ccc;
-    border-bottom: none;
-    margin-right: 0.25rem;
-    font-weight: bold;
-    border-radius: 4px 4px 0 0;
-  }
-  .tab.active {
-    background: #fff;
-    border-bottom: 2px solid #fff;
-    margin-bottom: -2px;
-    color: #0066cc;
-  }
-  .tab-content {
-    display: none;
-  }
-  .tab-content.active {
-    display: block;
-  }
-  .control-group {
-    margin-bottom: 1rem;
-  }
-  label {
-    display: block;
-    margin-bottom: 0.3rem;
-    font-size: 0.9rem;
-    font-weight: bold;
-  }
-  select, input[type="file"], button {
-    width: 100%;
-    padding: 0.5rem;
-    box-sizing: border-box;
-    margin-bottom: 0.5rem;
-  }
-  button {
-    cursor: pointer;
-    background: #0066cc;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
-  }
-  button#stop {
-    background: #cc3333;
-  }
-  button:hover {
-    opacity: 0.9;
-  }
-  #status {
-    margin-top: 1rem;
-    padding: 0.75rem;
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  video, audio, img {
-    width: 100%;
-    margin-top: 1rem;
-    max-height: 400px;
-    object-fit: contain;
-    display: none;
-  }
-  #download {
-    display: none;
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background: #28a745;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 4px;
-  }
+  body { font-family: sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem }
+  nav button { padding: .4rem 1rem; border: 1px solid #888; background: none; cursor: pointer }
+  nav button.active { background: #222; color: #fff }
+  section { display: none; margin-top: 1rem }
+  section.active { display: block }
+  .row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: .5rem }
+  img, video, audio { max-width: 100%; display: none; margin-top: .5rem }
 </style>
-
 <body>
-  <h3>Media & Image Converter Test</h3>
+  <h3>Hanova converter test</h3>
+  <nav>
+    <button data-tab="media" class="active">Video / audio (browser)</button>
+    <button data-tab="images">Images (server)</button>
+  </nav>
 
-  <!-- Tabs Header -->
-  <div class="tabs">
-    <div class="tab active" data-target="tab-media">Video & Audio</div>
-    <div class="tab" data-target="tab-image">Images</div>
-  </div>
+  <section id="media" class="active">
+    <div class="row">
+      <input type="file" id="file" accept="video/*,audio/*">
+      <select id="target"></select>
+      <select id="preset"><option value="">no preset (remux if possible)</option></select>
+    </div>
+    <div class="row">
+      <button id="go">Convert</button>
+      <button id="stop">Cancel</button>
+    </div>
+    <p id="status">Loading...</p>
+    <a id="download" style="display:none">Download result</a>
+    <video id="preview" controls></video>
+    <audio id="audioPreview" controls></audio>
+  </section>
 
-  <!-- Tab 1: Video & Audio -->
-  <div id="tab-media" class="tab-content active">
-    <div class="control-group">
-      <label for="mediaFile">Select Video or Audio File</label>
-      <input type="file" id="mediaFile" accept="video/*,audio/*">
+  <section id="images">
+    <div class="row">
+      <input type="file" id="imgFile" accept="image/*,.svg,.tga,.hdr,.psd,.exr,.qoi,.jxl,.avif,.ico,.tif,.tiff">
+      <select id="imgTarget"></select>
+      <label>quality <input type="range" id="imgQuality" min="1" max="100" value="80"> <span id="imgQ">80</span></label>
     </div>
-    <div class="control-group">
-      <label for="mediaTarget">Target Format</label>
-      <select id="mediaTarget"></select>
-    </div>
-    <div class="control-group">
-      <label for="mediaPreset">Preset (Optional)</label>
-      <select id="mediaPreset">
-        <option value="">no preset (remux if possible)</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Tab 2: Images -->
-  <div id="tab-image" class="tab-content">
-    <div class="control-group">
-      <label for="imageFile">Select Image File</label>
-      <input type="file" id="imageFile" accept="image/*">
-    </div>
-    <div class="control-group">
-      <label for="imageTarget">Target Format</label>
-      <select id="imageTarget"></select>
-    </div>
-    <div class="control-group">
-      <label for="imageQuality">Quality (1 - 100)</label>
-      <input type="number" id="imageQuality" value="80" min="1" max="100">
-    </div>
-  </div>
-
-  <!-- Common Actions & Status -->
-  <button id="go">Convert</button>
-  <button id="stop">Cancel</button>
-  <p id="status">Loading converter module...</p>
-
-  <a id="download">Download result</a>
-  <video id="preview" controls></video>
-  <audio id="audioPreview" controls></audio>
-  <img id="imagePreview" alt="Preview">
+    <div class="row"><button id="imgGo">Convert</button></div>
+    <p id="imgStatus">Open this tab to load the image engine.</p>
+    <a id="imgDownload" style="display:none">Download result</a>
+    <img id="imgPreview" alt="">
+  </section>
 
   <script type="module">
     const $ = (id) => document.getElementById(id);
-    const say = (msg) => { $('status').textContent = msg; };
+    const fmtMB = (n) => (n / 1e6).toFixed(2);
 
-    window.addEventListener('error', (e) => say('Error: ' + e.message));
-    window.addEventListener('unhandledrejection', (e) => say('Error: ' + (e.reason?.message ?? e.reason)));
-
-    let converter;
-    try {
-      // Adjust the import path to point to your main converter .mjs file
-      converter = await import('../src/bridge/orchestrator.mjs');
-    } catch (err) {
-      say('Failed to load the converter module: ' + err.message);
-      console.error(err);
-      throw err;
-    }
-
-    // Populate dropdowns from module exports
-    // Video & Audio formats
-    const mediaFormats = [...converter.VIDEO_FORMATS, ...converter.AUDIO_FORMATS];
-    for (const f of mediaFormats) $('mediaTarget').add(new Option(f, f));
-    $('mediaTarget').value = 'mkv';
-
-    // Image formats
-    for (const f of converter.IMAGE_FORMATS) $('imageTarget').add(new Option(f, f));
-    $('imageTarget').value = 'png';
-
-    // Note: If MEDIA_PRESETS is available in bridge/converter, populate presets; otherwise defaults to empty.
-    if (converter.MEDIA_PRESETS) {
-      for (const p of converter.MEDIA_PRESETS) $('mediaPreset').add(new Option(p, p));
-    }
-
-    say('Ready. Pick a file and click Convert.');
-
-    // Tab Switching Logic
-    let activeTab = 'media';
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.onclick = () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        tab.classList.add('active');
-        const targetId = tab.getAttribute('data-target');
-        $(targetId).classList.add('active');
-        activeTab = targetId === 'tab-media' ? 'media' : 'image';
-        
-        $('download').style.display = 'none';
-        $('preview').style.display = 'none';
-        $('audioPreview').style.display = 'none';
-        $('imagePreview').style.display = 'none';
+    // ---------- tabs ----------
+    let imagesLoaded = false;
+    document.querySelectorAll('nav button').forEach((b) => {
+      b.onclick = () => {
+        document.querySelectorAll('nav button, section').forEach((el) => el.classList.remove('active'));
+        b.classList.add('active');
+        $(b.dataset.tab).classList.add('active');
+        if (b.dataset.tab === 'images' && !imagesLoaded) { imagesLoaded = true; loadImageCaps(); }
       };
     });
 
-    const PLAYABLE_VIDEO = converter.VIDEO_FORMATS;
-    const PLAYABLE_AUDIO = converter.AUDIO_FORMATS;
-    const PLAYABLE_IMAGE = converter.IMAGE_FORMATS;
+    // ---------- media tab: runs in the browser ----------
+    const say = (msg) => { $('status').textContent = msg; };
+    window.addEventListener('error', (e) => say('Error: ' + e.message));
+    window.addEventListener('unhandledrejection', (e) => say('Error: ' + (e.reason?.message ?? e.reason)));
 
+    let bridge;
+    try {
+      bridge = await import('../src/bridge/mediabunny-bridge.mjs');
+      for (const f of bridge.MEDIA_FORMATS) $('target').add(new Option(f, f));
+      for (const p of bridge.MEDIA_PRESETS) $('preset').add(new Option(p, p));
+      $('target').value = 'mkv';
+      say('Ready. Pick a file.');
+    } catch (err) {
+      say('Failed to load the bridge: ' + err.message);
+      console.error(err);
+    }
+
+    const PLAYABLE = ['mp4', 'webm', 'mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'];
     let ctrl = null;
     $('stop').onclick = () => ctrl?.abort();
 
     $('go').onclick = async () => {
-      const isMedia = activeTab === 'media';
-      const fileInput = isMedia ? $('mediaFile') : $('imageFile');
-      const file = fileInput.files[0];
-
+      const file = $('file').files[0];
       if (!file) { say('Pick a file first.'); return; }
+      const target = $('target').value;
+      const info = bridge.MEDIA_INFO[target];
 
-      const target = isMedia ? $('mediaTarget').value : $('imageTarget').value;
-      const preset = isMedia ? ($('mediaPreset').value || undefined) : undefined;
-      const quality = isMedia ? undefined : parseInt($('imageQuality').value, 10) || 80;
-
-      // Hide previous outputs
       $('download').style.display = 'none';
       $('preview').style.display = 'none';
       $('audioPreview').style.display = 'none';
-      $('imagePreview').style.display = 'none';
-
       ctrl = new AbortController();
-      say('Reading file...');
 
       try {
         const bytes = new Uint8Array(await file.arrayBuffer());
         const t0 = performance.now();
-
-        say('Converting...');
-        
-        const options = {
-          preset,
-          quality,
+        say('Converting... 0%');
+        const out = await bridge.convert_media(bytes, target, {
+          preset: $('preset').value || undefined,
           signal: ctrl.signal,
           onProgress: (p) => say(`Converting... ${Math.round(p * 100)}%`),
-        };
-
-        // Use universal convert or specific conversion function
-        const out = await converter.convert(bytes, target, options);
-
-        const secs = ((performance.now() - t0) / 1000).toFixed(1);
-        
-        // Determine mime type / extension
-        const ext = target;
-        let mime = 'application/octet-stream';
-        if (PLAYABLE_VIDEO.includes(target)) mime = `video/${target === 'mov' ? 'quicktime' : target}`;
-        else if (PLAYABLE_AUDIO.includes(target)) mime = `audio/${target === 'm4a' ? 'mp4' : target}`;
-        else if (target === 'jpg' || target === 'jpeg') mime = 'image/jpeg';
-        else if (target === 'png') mime = 'image/png';
-        else if (target === 'webp') mime = 'image/webp';
-        else if (target === 'gif') mime = 'image/gif';
-
-        const blob = new Blob([out], { type: mime });
-        const url = URL.createObjectURL(blob);
-
-        say(`Done in ${secs}s: ${(bytes.length / 1e6).toFixed(1)} MB -> ${(out.length / 1e6).toFixed(1)} MB`);
-        
-        const downloadEl = $('download');
-        downloadEl.href = url;
-        downloadEl.download = `converted.${ext}`;
-        downloadEl.style.display = 'block';
-        downloadEl.textContent = `Download converted.${ext}`;
-
-        // Show appropriate preview
-        if (PLAYABLE_VIDEO.includes(target)) {
-          const el = $('preview');
-          el.src = url;
-          el.style.display = 'block';
-        } else if (PLAYABLE_AUDIO.includes(target)) {
-          const el = $('audioPreview');
-          el.src = url;
-          el.style.display = 'block';
-        } else if (PLAYABLE_IMAGE.includes(target)) {
-          const el = $('imagePreview');
+        });
+        const url = URL.createObjectURL(new Blob([out], { type: info.mime }));
+        say(`Done in ${((performance.now() - t0) / 1000).toFixed(1)}s: ${fmtMB(bytes.length)} MB -> ${fmtMB(out.length)} MB`);
+        $('download').href = url;
+        $('download').download = `converted.${info.ext}`;
+        $('download').style.display = 'inline';
+        if (PLAYABLE.includes(target)) {
+          const el = info.video ? $('preview') : $('audioPreview');
           el.src = url;
           el.style.display = 'block';
         }
-
       } catch (err) {
         say(`Error${err.code ? ' [' + err.code + ']' : ''}: ${err.message}`);
         console.error(err);
       }
     };
+
+    // ---------- images tab: runs on the Vite dev server ----------
+    const IMG_MIME = {
+      png: 'image/png', jpg: 'image/jpeg', bmp: 'image/bmp', gif: 'image/gif', webp: 'image/webp',
+      avif: 'image/avif', ico: 'image/x-icon', tiff: 'image/tiff', tga: 'image/x-tga',
+      hdr: 'image/vnd.radiance', jxl: 'image/jxl', qoi: 'image/qoi', psd: 'image/vnd.adobe.photoshop',
+      exr: 'image/x-exr', pdf: 'application/pdf', eps: 'application/postscript', ai: 'application/postscript',
+    };
+    const IMG_PREVIEW = ['png', 'jpg', 'bmp', 'gif', 'webp', 'avif', 'ico'];
+    const imgSay = (msg) => { $('imgStatus').textContent = msg; };
+
+    $('imgQuality').oninput = () => { $('imgQ').textContent = $('imgQuality').value; };
+
+    async function loadImageCaps() {
+      imgSay('Loading the image engine (first time loads the WASM)...');
+      try {
+        const res = await fetch('/api/capabilities');
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message ?? res.statusText);
+        for (const f of data.image.outputs) $('imgTarget').add(new Option(f, f));
+        $('imgTarget').value = 'jpg';
+        imgSay(`Ready. ${data.image.outputs.length} output formats.`);
+      } catch (err) {
+        imgSay('Image engine unavailable: ' + err.message);
+      }
+    }
+
+    $('imgGo').onclick = async () => {
+      const file = $('imgFile').files[0];
+      if (!file) { imgSay('Pick an image first.'); return; }
+      const target = $('imgTarget').value;
+      if (!target) { imgSay('The image engine did not load.'); return; }
+
+      $('imgDownload').style.display = 'none';
+      $('imgPreview').style.display = 'none';
+
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const t0 = performance.now();
+        imgSay('Converting...');
+
+        const res = await fetch(`/api/convert?target=${target}&quality=${$('imgQuality').value}`, {
+          method: 'POST',
+          body: bytes,
+        });
+        if (!res.ok) {
+          const e = await res.json().catch(() => ({ message: res.statusText }));
+          throw Object.assign(new Error(e.message), { code: e.code, step: e.step });
+        }
+        const out = new Uint8Array(await res.arrayBuffer());
+
+        const url = URL.createObjectURL(new Blob([out], { type: IMG_MIME[target] ?? 'application/octet-stream' }));
+        imgSay(`Done in ${((performance.now() - t0) / 1000).toFixed(2)}s: ${fmtMB(bytes.length)} MB -> ${fmtMB(out.length)} MB`);
+        $('imgDownload').href = url;
+        $('imgDownload').download = `converted.${target}`;
+        $('imgDownload').style.display = 'inline';
+        if (IMG_PREVIEW.includes(target)) {
+          $('imgPreview').src = url;
+          $('imgPreview').style.display = 'block';
+        }
+      } catch (err) {
+        imgSay(`Error${err.code ? ' [' + err.code + ']' : ''}${err.step ? ' (' + err.step + ')' : ''}: ${err.message}`);
+        console.error(err);
+      }
+    };
   </script>
 </body>
+
+<!-- ai file -->
+<!-- ai file -->
+<!-- ai file -->
+<!-- ai file -->
+<!-- ai file -->
+<!-- ai file -->
+<!-- ai file -->
+<!-- ai file -->
+<!-- ai file -->
+<!-- ai file -->
