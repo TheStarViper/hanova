@@ -1,6 +1,8 @@
 import mime from "mime";
-import { ALIASES, FORMATS } from "../../../backend/src/bridge/orchestrator.mjs";
-import type { ReturnObj } from "./converter.worker";
+import {
+  ALIASES,
+  EVERYFORMAT,
+} from "../../../backend/src/bridge/orchestrator.mjs";
 import { type CppManager } from "./cppManager";
 import { decodeSounds } from "./sound";
 
@@ -10,7 +12,7 @@ const ELLIPSIS = "...";
 export const JPEG_QUALITY = 85;
 export const WEBP_QUALITY = 90;
 
-export type Format = (typeof FORMATS)[number];
+export type Format = (typeof EVERYFORMAT)[number];
 
 export class FileManager {
   file: File | undefined;
@@ -134,7 +136,7 @@ export class FileManager {
 
     const extWithoutDot = ext.substring(1).toLowerCase();
 
-    if ((FORMATS as readonly string[]).includes(extWithoutDot)) {
+    if ((EVERYFORMAT as readonly string[]).includes(extWithoutDot)) {
       return extWithoutDot as Format;
     }
 

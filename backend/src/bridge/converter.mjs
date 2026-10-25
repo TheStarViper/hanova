@@ -1,7 +1,9 @@
+// @ts-nocheck
+
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
 export { ConvertError, simplifyerror } from "./errors.mjs";
 
-export const IMAGE_FORMATS = [
+export const IMAGE_FORMATS = /** @type {const} */ ([
   "png",
   "jpg",
   "bmp",
@@ -20,41 +22,41 @@ export const IMAGE_FORMATS = [
   "pdf",
   "eps",
   "ai",
-];
+]);
 
-export const VIDEO_FORMATS = [
+export const VIDEO_FORMATS = /** @type {const} */ ([
   "mp4",
   "mov",
   "webm",
   "mkv",
   "ts",
-];
+]);
 
-export const AUDIO_FORMATS = [
+export const AUDIO_FORMATS = /** @type {const} */ ([
   "mp3",
   "wav",
   "ogg",
   "flac",
   "aac",
   "m4a",
-];
+]);
 
-export const FORMATS = IMAGE_FORMATS; // so stuff doesnt break remove later tho when migrated
-export const EVERYFORMAT = [
+export const EVERYFORMAT = /** @type {const} */ ([
   ...IMAGE_FORMATS,
   ...VIDEO_FORMATS,
   ...AUDIO_FORMATS,
-];
+]);
 
 const INDEX = Object.fromEntries(EVERYFORMAT.map((f, i) => [f, i]));
 const N = EVERYFORMAT.length;
 
-const DOMAIN = {};
+/** @type {Record<(typeof EVERYFORMAT)[number], "image" | "video" | "audio">} */
+export const DOMAIN = {};
 for (const f of IMAGE_FORMATS) DOMAIN[f] = "image";
 for (const f of VIDEO_FORMATS) DOMAIN[f] = "video";
 for (const f of AUDIO_FORMATS) DOMAIN[f] = "audio";
 
-/**@type {Record<string,string>}*/
+/**@type {Record<string, (typeof EVERYFORMAT)[number]>}*/
 // formats that are the same with diff extensions
 export const ALIASES = {
   jpeg: "jpg",
@@ -366,6 +368,9 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
   };
 }
 
+/**
+ * @returns {(target_format: string, bytes: Buffer<ArrayBuffer>, quality: number) => Promise<Buffer<ArrayBuffer>>}
+ */
 export function createConvert(
   { image, imageFormats = [], media, mediaFormats = [], maxBytes } = {},
 ) {

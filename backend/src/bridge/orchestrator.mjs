@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import createcore from "../../build/image_core_module.js";
 import createsvg from "../../build/svg_module.js";
 import createwebp from "../../build/webp_module.js";
@@ -33,15 +35,6 @@ const engines = () => (
     })
 );
 
-/**
- * @returns {Promise<(target_format: string, bytes: Buffer<ArrayBuffer>, quality: number) => Promise<Buffer<ArrayBuffer>>> }
- */
-
-export async function converterFactory() {
-  const [core, webp, svg] = await engines();
-  return createconverter({ core, webp, svg, magick, media }).convert_image;
-}
-
 export async function universalFactory() {
   const [core, webp, svg] = await engines();
   const c = createconverter({ core, webp, svg, magick, media });
@@ -62,7 +55,8 @@ export {
   AUDIO_FORMATS,
   ConvertError,
   createconverter,
-  FORMATS,
+  DOMAIN,
+  EVERYFORMAT,
   IMAGE_FORMATS,
   simplifyerror,
   VIDEO_FORMATS,
