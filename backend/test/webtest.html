@@ -1,14 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <meta charset="utf-8">
 <title>Hanova converter test</title>
 <style>
-  body { font-family: sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem }
-  nav button { padding: .4rem 1rem; border: 1px solid #888; background: none; cursor: pointer }
-  nav button.active { background: #222; color: #fff }
-  section { display: none; margin-top: 1rem }
-  section.active { display: block }
-  .row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: .5rem }
-  img, video, audio { max-width: 100%; display: none; margin-top: .5rem }
+body { font-family: sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem }
+nav button { padding: .4rem 1rem; border: 1px solid #888; background: none; cursor: pointer }
+nav button.active { background: #222; color: #fff }
+section { display: none; margin-top: 1rem }
+section.active { display: block }
+.row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: .5rem }
+img, video, audio { max-width: 100%; display: none; margin-top: .5rem }
 </style>
 <body>
   <h3>Hanova converter test</h3>
@@ -19,9 +19,11 @@
 
   <section id="media" class="active">
     <div class="row">
-      <input type="file" id="file" accept="video/*,audio/*">
+      <input type="file" id="file" accept="video/*, audio/*">
       <select id="target"></select>
-      <select id="preset"><option value="">no preset (remux if possible)</option></select>
+      <select id="preset">
+        <option value="">no preset (remux if possible)</option>
+      </select>
     </div>
     <div class="row">
       <button id="go">Convert</button>
@@ -35,9 +37,19 @@
 
   <section id="images">
     <div class="row">
-      <input type="file" id="imgFile" accept="image/*,.svg,.tga,.hdr,.psd,.exr,.qoi,.jxl,.avif,.ico,.tif,.tiff">
+      <input
+        type="file"
+        id="imgFile"
+        accept="image/*, .svg, .tga, .hdr, .psd, .exr, .qoi, .jxl, .avif, .ico, .tif, .tiff"
+      >
       <select id="imgTarget"></select>
-      <label>quality <input type="range" id="imgQuality" min="1" max="100" value="80"> <span id="imgQ">80</span></label>
+      <label>quality <input
+          type="range"
+          id="imgQuality"
+          min="1"
+          max="100"
+          value="80"
+        > <span id="imgQ">80</span></label>
     </div>
     <div class="row"><button id="imgGo">Convert</button></div>
     <p id="imgStatus">Loading...</p>
@@ -46,126 +58,183 @@
   </section>
 
   <script type="module">
-    const $ = (id) => document.getElementById(id);
-    const fmtMB = (n) => (n / 1e6).toFixed(2);
-    const say = (msg) => { $('status').textContent = msg; };
-    const imgSay = (msg) => { $('imgStatus').textContent = msg; };
-    const describe = (err) =>
-      `Error${err.code ? ' [' + err.code + ']' : ''}${err.step ? ' (' + err.step + ')' : ''}: ${err.message}`;
+  const $ = (id) => document.getElementById(id);
+  const fmtMB = (n) => (n / 1e6).toFixed(2);
+  const say = (msg) => {
+    $("status").textContent = msg;
+  };
+  const imgSay = (msg) => {
+    $("imgStatus").textContent = msg;
+  };
+  const describe = (err) =>
+    `Error${err.code ? " [" + err.code + "]" : ""}${
+      err.step ? " (" + err.step + ")" : ""
+    }: ${err.message}`;
 
-    // tabs
-    document.querySelectorAll('nav button').forEach((b) => {
-      b.onclick = () => {
-        document.querySelectorAll('nav button, section').forEach((el) => el.classList.remove('active'));
-        b.classList.add('active');
-        $(b.dataset.tab).classList.add('active');
-      };
-    });
+  // tabs
+  document.querySelectorAll("nav button").forEach((b) => {
+    b.onclick = () => {
+      document.querySelectorAll("nav button, section").forEach((el) =>
+        el.classList.remove("active")
+      );
+      b.classList.add("active");
+      $(b.dataset.tab).classList.add("active");
+    };
+  });
 
-    window.addEventListener('error', (e) => say('Error: ' + e.message));
-    window.addEventListener('unhandledrejection', (e) => say('Error: ' + (e.reason?.message ?? e.reason)));
+  window.addEventListener("error", (e) => say("Error: " + e.message));
+  window.addEventListener(
+    "unhandledrejection",
+    (e) => say("Error: " + (e.reason?.message ?? e.reason)),
+  );
 
-    // one import: everything below goes through hanova.convert
-    let hanova;
-    try {
-      const {initMagick}=await import('../src/bridge/browserMagick.mjs');
-      await initMagick();
-      const mod = await import('../src/bridge/orchestrator.mjs');
-      hanova = {...(await mod.universalFactory()),MEDIA_INFO:mod.MEDIA_INFO,MEDIA_PRESETS:mod.MEDIA_PRESETS};
+  // one import: everything below goes through hanova.convert
+  let hanova;
+  try {
+    const { initMagick } = await import("../src/bridge/browserMagick.mjs");
+    await initMagick();
+    const mod = await import("../src/bridge/orchestrator.mjs");
+    hanova = {
+      ...(await mod.universalFactory()),
+      MEDIA_INFO: mod.MEDIA_INFO,
+      MEDIA_PRESETS: mod.MEDIA_PRESETS,
+    };
 
-      const caps = hanova.capabilities();
-      for (const format of [...caps.video.outputs, ...caps.audio.outputs]) $('target').add(new Option(format, format));
-      for (const p of hanova.MEDIA_PRESETS) $('preset').add(new Option(p, p));
-      for (const format of caps.image.outputs) $('imgTarget').add(new Option(format, format));
-      $('target').value = 'mkv';
-      $('imgTarget').value = 'jpg';
-      say('Ready. Pick a file.');
-      imgSay('Ready. Pick an image.');
-    } catch (error) {
-      say('Failed to load: ' + error.message + '\n' + (error.stack??'').split('\n').slice(0,4).join('\n'));
-      imgSay('Failed to load: ' + error.message);
-      console.error(error);
+    const caps = hanova.capabilities();
+    for (const format of [...caps.video.outputs, ...caps.audio.outputs]) {
+      $("target").add(new Option(format, format));
     }
+    for (const p of hanova.MEDIA_PRESETS) $("preset").add(new Option(p, p));
+    for (const format of caps.image.outputs) {
+      $("imgTarget").add(new Option(format, format));
+    }
+    $("target").value = "mkv";
+    $("imgTarget").value = "jpg";
+    say("Ready. Pick a file.");
+    imgSay("Ready. Pick an image.");
+  } catch (error) {
+    say(
+      "Failed to load: " + error.message + "\n"
+        + (error.stack ?? "").split("\n").slice(0, 4).join("\n"),
+    );
+    imgSay("Failed to load: " + error.message);
+    console.error(error);
+  }
 
-    // ---------- media ----------
-    const PLAYABLE = ['mp4', 'webm', 'mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'];
-    let ctrl = null;
-    $('stop').onclick = () => ctrl?.abort();
+  // ---------- media ----------
+  const PLAYABLE = ["mp4", "webm", "mp3", "wav", "ogg", "flac", "aac", "m4a"];
+  let ctrl = null;
+  $("stop").onclick = () => ctrl?.abort();
 
-    $('go').onclick = async () => {
-      const file = $('file').files[0];
-      if (!file) { say('Pick a file first.'); return; }
-      const target = $('target').value;
-      const info = hanova.MEDIA_INFO[target];
+  $("go").onclick = async () => {
+    const file = $("file").files[0];
+    if (!file) {
+      say("Pick a file first.");
+      return;
+    }
+    const target = $("target").value;
+    const info = hanova.MEDIA_INFO[target];
 
-      $('download').style.display = 'none';
-      $('preview').style.display = 'none';
-      $('audioPreview').style.display = 'none';
-      ctrl = new AbortController();
+    $("download").style.display = "none";
+    $("preview").style.display = "none";
+    $("audioPreview").style.display = "none";
+    ctrl = new AbortController();
 
-      try {
-        const bytes = new Uint8Array(await file.arrayBuffer());
-        const t0 = performance.now();
-        say('Converting... 0%');
-        const out = await hanova.convert(bytes, target, {
-          preset: $('preset').value || undefined,
-          signal: ctrl.signal,
-          onProgress: (p) => say(`Converting... ${Math.round(p * 100)}%`),
-        });
-        const url = URL.createObjectURL(new Blob([out], { type: info.mime }));
-        say(`Done in ${((performance.now() - t0) / 1000).toFixed(1)}s: ${fmtMB(bytes.length)} MB -> ${fmtMB(out.length)} MB`);
-        $('download').href = url;
-        $('download').download = `converted.${info.ext}`;
-        $('download').style.display = 'inline';
-        if (PLAYABLE.includes(target)) {
-          const el = info.video ? $('preview') : $('audioPreview');
-          el.src = url;
-          el.style.display = 'block';
-        }
-      } catch (err) {
-        say(describe(err));
-        console.error(err);
+    try {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const t0 = performance.now();
+      say("Converting... 0%");
+      const out = await hanova.convert(bytes, target, {
+        preset: $("preset").value || undefined,
+        signal: ctrl.signal,
+        onProgress: (p) => say(`Converting... ${Math.round(p * 100)}%`),
+      });
+      const url = URL.createObjectURL(new Blob([out], { type: info.mime }));
+      say(
+        `Done in ${((performance.now() - t0) / 1000).toFixed(1)}s: ${
+          fmtMB(bytes.length)
+        } MB -> ${fmtMB(out.length)} MB`,
+      );
+      $("download").href = url;
+      $("download").download = `converted.${info.ext}`;
+      $("download").style.display = "inline";
+      if (PLAYABLE.includes(target)) {
+        const el = info.video ? $("preview") : $("audioPreview");
+        el.src = url;
+        el.style.display = "block";
       }
-    };
+    } catch (err) {
+      say(describe(err));
+      console.error(err);
+    }
+  };
 
-    // ---------- images ----------
-    const IMG_MIME = {
-      png: 'image/png', jpg: 'image/jpeg', bmp: 'image/bmp', gif: 'image/gif', webp: 'image/webp',
-      avif: 'image/avif', ico: 'image/x-icon', tiff: 'image/tiff', tga: 'image/x-tga',
-      hdr: 'image/vnd.radiance', jxl: 'image/jxl', qoi: 'image/qoi', psd: 'image/vnd.adobe.photoshop',
-      exr: 'image/x-exr', pdf: 'application/pdf', eps: 'application/postscript', ai: 'application/postscript',
-    };
-    const IMG_PREVIEW = ['png', 'jpg', 'bmp', 'gif', 'webp', 'avif', 'ico'];
+  // ---------- images ----------
+  const IMG_MIME = {
+    png: "image/png",
+    jpg: "image/jpeg",
+    bmp: "image/bmp",
+    gif: "image/gif",
+    webp: "image/webp",
+    avif: "image/avif",
+    ico: "image/x-icon",
+    tiff: "image/tiff",
+    tga: "image/x-tga",
+    hdr: "image/vnd.radiance",
+    jxl: "image/jxl",
+    qoi: "image/qoi",
+    psd: "image/vnd.adobe.photoshop",
+    exr: "image/x-exr",
+    pdf: "application/pdf",
+    eps: "application/postscript",
+    ai: "application/postscript",
+  };
+  const IMG_PREVIEW = ["png", "jpg", "bmp", "gif", "webp", "avif", "ico"];
 
-    $('imgQuality').oninput = () => { $('imgQ').textContent = $('imgQuality').value; };
+  $("imgQuality").oninput = () => {
+    $("imgQ").textContent = $("imgQuality").value;
+  };
 
-    $('imgGo').onclick = async () => {
-      const file = $('imgFile').files[0];
-      if (!file) { imgSay('Pick an image first.'); return; }
-      const target = $('imgTarget').value;
+  $("imgGo").onclick = async () => {
+    const file = $("imgFile").files[0];
+    if (!file) {
+      imgSay("Pick an image first.");
+      return;
+    }
+    const target = $("imgTarget").value;
 
-      $('imgDownload').style.display = 'none';
-      $('imgPreview').style.display = 'none';
+    $("imgDownload").style.display = "none";
+    $("imgPreview").style.display = "none";
 
-      try {
-        const bytes = new Uint8Array(await file.arrayBuffer());
-        const t0 = performance.now();
-        imgSay('Converting...');
-        const out = await hanova.convert(bytes, target, { quality: Number($('imgQuality').value) });
-        const url = URL.createObjectURL(new Blob([out], { type: IMG_MIME[target] ?? 'application/octet-stream' }));
-        imgSay(`Done in ${((performance.now() - t0) / 1000).toFixed(2)}s: ${fmtMB(bytes.length)} MB -> ${fmtMB(out.length)} MB`);
-        $('imgDownload').href = url;
-        $('imgDownload').download = `converted.${target}`;
-        $('imgDownload').style.display = 'inline';
-        if (IMG_PREVIEW.includes(target)) {
-          $('imgPreview').src = url;
-          $('imgPreview').style.display = 'block';
-        }
-      } catch (err) {
-        imgSay(describe(err));
-        console.error(err);
+    try {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const t0 = performance.now();
+      imgSay("Converting...");
+      const out = await hanova.convert(bytes, target, {
+        quality: Number($("imgQuality").value),
+      });
+      const url = URL.createObjectURL(
+        new Blob([out], {
+          type: IMG_MIME[target] ?? "application/octet-stream",
+        }),
+      );
+      imgSay(
+        `Done in ${((performance.now() - t0) / 1000).toFixed(2)}s: ${
+          fmtMB(bytes.length)
+        } MB -> ${fmtMB(out.length)} MB`,
+      );
+      $("imgDownload").href = url;
+      $("imgDownload").download = `converted.${target}`;
+      $("imgDownload").style.display = "inline";
+      if (IMG_PREVIEW.includes(target)) {
+        $("imgPreview").src = url;
+        $("imgPreview").style.display = "block";
       }
-    };
+    } catch (err) {
+      imgSay(describe(err));
+      console.error(err);
+    }
+  };
   </script>
 </body>
 

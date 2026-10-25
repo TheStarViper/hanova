@@ -1,30 +1,29 @@
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { mkdirSync, readFileSync, writeFileSync } from "fs";
 
-const OUTPUT_DIR = './backend/test/output';
+const OUTPUT_DIR = "./backend/test/output";
 
-const INPUT_TO_TEST = 'small';
+const INPUT_TO_TEST = "small";
 
 var input_path;
-if (INPUT_TO_TEST === 'png') {
-  input_path = './backend/test/samples/test.png';
-} else if (INPUT_TO_TEST === 'small'){
-  input_path = './backend/test/samples/testsmall.png';
-} else if (INPUT_TO_TEST === 'webp'){
-  input_path = './backend/test/samples/testwebp.webp';
-} else if (INPUT_TO_TEST === 'svg'){
-  input_path = './backend/test/samples/testsvg.svg';
+if (INPUT_TO_TEST === "png") {
+  input_path = "./backend/test/samples/test.png";
+} else if (INPUT_TO_TEST === "small") {
+  input_path = "./backend/test/samples/testsmall.png";
+} else if (INPUT_TO_TEST === "webp") {
+  input_path = "./backend/test/samples/testwebp.webp";
+} else if (INPUT_TO_TEST === "svg") {
+  input_path = "./backend/test/samples/testsvg.svg";
 } else {
-  //fallback to png input fullsize
-  input_path = './backend/test/samples/test.png';
+  // fallback to png input fullsize
+  input_path = "./backend/test/samples/test.png";
 }
 
 mkdirSync(OUTPUT_DIR, { recursive: true });
 
-
 const moduleLoaders = {
-  core: () => import('../build/image_core_module.js'),
-  webp: () => import('../build/webp_module.js'),
-  svg: () => import('../build/svg_module.js'),
+  core: () => import("../build/image_core_module.js"),
+  webp: () => import("../build/webp_module.js"),
+  svg: () => import("../build/svg_module.js"),
 };
 
 const loadedModules = {};
@@ -39,26 +38,58 @@ async function getModule(name) {
 
 //         module |     function name |       quality |   extension |   file label addition
 const conversions = [
-  {module: 'core', fn: 'convert_to_png',  args: [],      ext: 'png',  label: 'PNG (roundtrip)' },
-  {module: 'core', fn: 'convert_to_jpeg', args: [90],    ext: 'jpg',  label: 'JPEG' },
-  {module: 'core', fn: 'convert_to_bmp',  args: [],      ext: 'bmp',  label: 'BMP' },
-  {module: 'core', fn: 'convert_to_tga',  args: [],      ext: 'tga',  label: 'TGA' },
-  {module: 'core', fn: 'convert_to_hdr',  args: [],      ext: 'hdr',  label: 'HDR' },
-  {module: 'core', fn: 'convert_to_ico',  args: [],      ext: 'ico',  label: 'ICO' },
-  {module: 'webp', fn: 'convert_to_webp', args: [0],   ext: 'webp', label: 'WebP' },
-  {module: 'svg', fn: 'convert_to_svg', args: [0],   ext: 'svg', label: 'SVG' },
-]; //soyjack pointing* look at this aura
+  {
+    module: "core",
+    fn: "convert_to_png",
+    args: [],
+    ext: "png",
+    label: "PNG (roundtrip)",
+  },
+  {
+    module: "core",
+    fn: "convert_to_jpeg",
+    args: [90],
+    ext: "jpg",
+    label: "JPEG",
+  },
+  { module: "core", fn: "convert_to_bmp", args: [], ext: "bmp", label: "BMP" },
+  { module: "core", fn: "convert_to_tga", args: [], ext: "tga", label: "TGA" },
+  { module: "core", fn: "convert_to_hdr", args: [], ext: "hdr", label: "HDR" },
+  { module: "core", fn: "convert_to_ico", args: [], ext: "ico", label: "ICO" },
+  {
+    module: "webp",
+    fn: "convert_to_webp",
+    args: [0],
+    ext: "webp",
+    label: "WebP",
+  },
+  { module: "svg", fn: "convert_to_svg", args: [0], ext: "svg", label: "SVG" },
+]; // soyjack pointing* look at this aura
 
 const decode_conversions = [
-  {module: 'webp', fn: 'convert_webp_to_png', args: [], ext: 'png', label: 'Webp -> png' },
-  {module: 'svg' , fn: 'convert_svg_to_png' , args: [], ext: 'png', label: 'Svg -> png' },
-]
+  {
+    module: "webp",
+    fn: "convert_webp_to_png",
+    args: [],
+    ext: "png",
+    label: "Webp -> png",
+  },
+  {
+    module: "svg",
+    fn: "convert_svg_to_png",
+    args: [],
+    ext: "png",
+    label: "Svg -> png",
+  },
+];
 
 async function runConversion(inputBytes, { module, fn, args, ext, label }) {
   const Module = await getModule(module);
 
-  if (typeof Module[fn] !== 'function') {
-    console.log(`SKIP  ${label.padEnd(20)}  ${fn} not found on ${module} module`);
+  if (typeof Module[fn] !== "function") {
+    console.log(
+      `SKIP  ${label.padEnd(20)}  ${fn} not found on ${module} module`,
+    );
     return;
   }
 
@@ -79,26 +110,30 @@ async function main() {
   const inputBytes = new Uint8Array(readFileSync(input_path));
   console.log(`Input: ${input_path} (${inputBytes.length} bytes)\n`);
 
-  const ext = input_path.split('.').pop().toLowerCase();
-  const isSTBreadable = ['png', 'jpg', 'jpeg', 'bmp', 'tga', 'hdr'].includes(ext);
+  const ext = input_path.split(".").pop().toLowerCase();
+  const isSTBreadable = ["png", "jpg", "jpeg", "bmp", "tga", "hdr"].includes(
+    ext,
+  );
 
-  if (isSTBreadable){
-    const core = await getModule('core');
+  if (isSTBreadable) {
+    const core = await getModule("core");
     const width = core.get_image_width(inputBytes);
     const height = core.get_image_height(inputBytes);
     console.log(`Detected dimensions: ${width}x${height}\n`);
     if (width === -1 || height === -1) {
-      throw new Error('Failed to read image, corrupt file or unsupported format');
+      throw new Error(
+        "Failed to read image, corrupt file or unsupported format",
+      );
     }
 
     for (const conversion of conversions) {
       await runConversion(inputBytes, conversion);
     }
-  } else if (ext=='webp'){
-    await runConversion(inputBytes,decode_conversions[0]);
-  } else if (ext=='svg'){
-    await runConversion(inputBytes,decode_conversions[1]);
-    //testing
+  } else if (ext == "webp") {
+    await runConversion(inputBytes, decode_conversions[0]);
+  } else if (ext == "svg") {
+    await runConversion(inputBytes, decode_conversions[1]);
+    // testing
     // const core = await getModule('core');
     // const outputBytes = new Uint8Array(readFileSync(`${OUTPUT_DIR}/test_output.png`));
     // const outW = core.get_image_width(outputBytes);
@@ -109,8 +144,7 @@ async function main() {
   }
 }
 
-
 main().catch((err) => {
-  console.error('\nFATAL:', err.message);
+  console.error("\nFATAL:", err.message);
   process.exit(1);
 });

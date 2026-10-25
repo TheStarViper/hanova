@@ -8,11 +8,8 @@
     "**/*-lock.json",
     "*.svg",
 
-    "imagemagick-bridge.mjs",
-    "orchestrator.mjs",
-    "bridge_test.mjs",
-    "fullimgecosystem.mjs",
-    "run.mjs"
+    "backend/build",
+    "backend/libraries"
   ],
   "plugins": [
     "npm:@dprint/typescript@0.96.1",
