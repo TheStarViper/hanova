@@ -36,11 +36,11 @@ export const TOOLTIP_DATA: Record<Format, TooltipDatum> = {
     blurb:
       "Image format with good compression ratio and encoding/decoding speed but very limited compatibility.",
   },
-  heic: {
-    title: "HEIF",
-    blurb:
-      "Image format with decent compression, mainly used for photos. Noteworthy for being the default image format on iPhone.",
-  },
+  // heic: {
+  //   title: "HEIF",
+  //   blurb:
+  //     "Image format with decent compression, mainly used for photos. Noteworthy for being the default image format on iPhone.",
+  // },
   svg: {
     title: "SVG",
     blurb:

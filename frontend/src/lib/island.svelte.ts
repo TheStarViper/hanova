@@ -211,12 +211,12 @@ export const ISLAND_DATA = [
     islandSpriteIndex: 14,
     spawnOffset: new Pos(-130, 100),
   },
-  {
-    name: "heic",
-    pos: new Pos(1150, 350),
-    islandSpriteIndex: 12,
-    spawnOffset: new Pos(180, 50),
-  },
+  // {
+  //   name: "heic",
+  //   pos: new Pos(1150, 350),
+  //   islandSpriteIndex: 12,
+  //   spawnOffset: new Pos(180, 50),
+  // },
   {
     name: "tiff",
     pos: new Pos(900, -150),
