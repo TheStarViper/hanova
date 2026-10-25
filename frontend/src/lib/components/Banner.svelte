@@ -3,6 +3,7 @@ import BannerSvg from "#lib/assets/banner.svg?raw";
 import { Banner } from "#lib/banner.svelte.js";
 import { decodeSounds } from "#lib/sound.js";
 import { Pos } from "#lib/utils.svelte.js";
+import type { Viewport } from "#lib/viewport.svelte.js";
 import { onMount } from "svelte";
 import { slide } from "svelte/transition";
 import Sprite from "./Sprite.svelte";
@@ -13,13 +14,22 @@ const MAIN_BANNER_OFFSET_PX = 14;
 
 interface Props {
   me: Banner;
+  viewport: Viewport;
   handleUpload: (files: FileList | undefined | null) => void;
 }
 
-let { me, handleUpload }: Props = $props();
+let { me, viewport, handleUpload }: Props = $props();
 
 let inputEl: HTMLInputElement;
 let textEl: HTMLDivElement;
+
+const SPRITE_WIDTH = 847;
+
+let scale: number = $derived.by(() => {
+  if (viewport.width >= SPRITE_WIDTH) return 1;
+
+  return viewport.width / SPRITE_WIDTH * 0.95;
+});
 
 onMount(() => {
   textEl.addEventListener("click", async () => {
@@ -34,26 +44,28 @@ onMount(() => {
 
 <input id="fileInput" type="file" bind:this={inputEl} style="display: none;" />
 
-<Sprite
-  top={me.pos.y}
-  left={me.pos.x}
-  viewport={null}
-  width={847}
-  layer={100}
-  hide={me.hide}
-  shadowOpacity={0.4}
->{@html BannerSvg}</Sprite>
-<div
-  id="banner-text-container"
-  bind:this={textEl}
-  class={me.hide ? "hide" : ""}
-  style:top="{me.pos.y - MAIN_BANNER_OFFSET_PX}px"
-  style:left="{me.pos.x}px"
-  style:cursor={me.uploadOnClick ? "pointer" : "default"}
->
-  {#key me.text}
-    <h2 transition:slide>{me.text}</h2>
-  {/key}
+<div class="banner-container" style:scale={scale}>
+  <Sprite
+    top={me.pos.y / scale}
+    left={me.pos.x}
+    viewport={null}
+    width={SPRITE_WIDTH}
+    layer={100}
+    hide={me.hide}
+    shadowOpacity={0.4}
+  >{@html BannerSvg}</Sprite>
+  <div
+    id="banner-text-container"
+    bind:this={textEl}
+    class={me.hide ? "hide" : ""}
+    style:top="{(me.pos.y / scale) - MAIN_BANNER_OFFSET_PX}px"
+    style:left="{me.pos.x}px"
+    style:cursor={me.uploadOnClick ? "pointer" : "default"}
+  >
+    {#key me.text}
+      <h2 transition:slide>{me.text}</h2>
+    {/key}
+  </div>
 </div>
 <div id="banner-overlay" class={!me.hide ? "show" : ""}></div>
 
@@ -65,6 +77,10 @@ onMount(() => {
 
 	transition: opacity 0.2s ease;
 
+	// approximate size of the main section of the banner
+	max-width: 700px;
+	width: 100%;
+
 	&.hide {
 		opacity: 0;
 	}
@@ -73,8 +89,6 @@ onMount(() => {
 		user-select: none;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 
-		// approximate size of the main section of the banner
-		max-width: 700px;
 		text-align: center;
 
 		transition: transform 0.2s ease;

@@ -22,6 +22,7 @@ interface Props {
 
   width?: number;
   height?: number;
+  scale?: number;
 
   handlers?: {
     click?: () => void;
@@ -62,6 +63,7 @@ $effect(() => {
   style:left="{props.left + (props.viewport?.offset.x ?? 0)}px"
   style:width={props.width !== undefined ? `${props.width}px` : "auto"}
   style:height={props.height !== undefined ? `${props.height}px` : "auto"}
+  style:scale={props.scale ?? 1}
   style:z-index={props.layer ?? 0}
   style:cursor={props.handlers?.click !== undefined ? "pointer" : ""}
   style:--shadow-opacity={props.shadowOpacity ?? 0}
