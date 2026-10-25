@@ -1,13 +1,15 @@
 // @ts-nocheck
 
 import * as magickModule from "@imagemagick/magick-wasm";
+import { ConvertError,ErrorCode,to_convert_error } from "./errors.mjs";
 
-export class ImageError extends Error {
-  constructor(code, message) {
-    super(message);
-    this.name = "ImageError";
-    this.code = code;
-  }
+export const ImageError = ConvertError;
+export const summarize_errors = (error)=>to_convert_error(error,ErrorCode.NativeFailure);
+let ready = false;
+
+export async function initializeImageMagick(wasm) {
+  await magickModule.initializeImageMagick(wasm);
+  ready = true;
 }
 
 export const MAGICK_BY_NAME = {
@@ -16,13 +18,19 @@ export const MAGICK_BY_NAME = {
   avif: magickModule.MagickFormat.Avif,
   tiff: magickModule.MagickFormat.Tiff,
   ico: magickModule.MagickFormat.Ico,
-  heic: magickModule.MagickFormat.Heic,
   jxl: magickModule.MagickFormat.Jxl,
   qoi: magickModule.MagickFormat.Qoi,
   psd: magickModule.MagickFormat.Psd,
-  eps: magickModule.MagickFormat.Eps,
   exr: magickModule.MagickFormat.Exr,
+  bmp: magickModule.MagickFormat.Bmp,
+  webp: magickModule.MagickFormat.WebP,
+  pdf: magickModule.MagickFormat.Pdf,
+  eps: magickModule.MagickFormat.Eps,
+  ai: magickModule.MagickFormat.Ai,
+  svg: magickModule.MagickFormat.svg
 };
+
+export const MAGICK_OUTPUT_ONLY = ["ico", "pdf", "eps", "ai"];
 
 export const MAGICK_PROCESSORS = {
   ico: (image) => {
@@ -35,6 +43,12 @@ export const MAGICK_PROCESSORS = {
 export async function convert_bytes(bytes, format, quality, processor) {
   let output;
   try {
+    if(!ready){
+        throw new ConvertError(
+        ErrorCode.NativeFailure,
+        "ImageMagick is not initialized. Call init() (Node) or initMagick() (browser) first.",
+        );
+    }
     magickModule.ImageMagick.read(bytes, (image) => {
       if (quality != null) image.quality = quality;
       if (processor) processor(image);
@@ -43,12 +57,13 @@ export async function convert_bytes(bytes, format, quality, processor) {
       });
     });
   } catch (error) {
-    throw summarize_errors(error);
+    throw to_convert_error(error, ErrorCode.NativeFailure);
   }
   return output;
 }
 
 export async function detect_format(bytes) {
+  if(!ready){return 'unknown';}
   try {
     let name = "unknown";
     magickModule.ImageMagick.read(bytes, (image) => {
@@ -103,56 +118,6 @@ export const FORMATS = {
   ".mos": magickModule.MagickFormat.Mos,
   ".mrw": magickModule.MagickFormat.Mrw,
 };
-
-export function summarize_errors(error) {
-  const m = /^(\w+)\s*(?:`([^']*)')?/.exec(error?.message ?? "");
-  const code = m?.[1] ?? "Unknown";
-  const detail = m?.[2] || "";
-
-  switch (code) {
-    case "NoEncodeDelegateForThisImageFormat":
-      return new ImageError(
-        code,
-        `Can't write ${detail}: format is read-only or not in this build`,
-      );
-    case "NoDecodeDelegateForThisImageFormat":
-      return new ImageError(
-        code,
-        `Can't read ${detail}: format is not supported`,
-      );
-    case "WidthOrHeightExceedsLimit":
-      return new ImageError(
-        code,
-        `Image is too large for this format (ICO max is 256x256)`,
-      );
-    default:
-      return new ImageError(code, error?.message ?? String(error));
-  }
-}
-
-/**
-export async function process_image(inputpath, outputpath, processorfunc) {
-	const inputbytes = fs.readFileSync(inputpath);
-	const format = FORMATS[extname(outputpath).toLowerCase()];
-	if (!format) throw new Error(`Unsupported output extension: ${outputpath}`);
-
-	let output;
-	try {
-		await magickModule.ImageMagick.read(
-			new Uint8Array(inputbytes),
-			async (image) => {
-				await processorfunc(image, magickModule);
-				image.write(format, (data) => {
-					output = Buffer.from(data);
-				});
-			},
-		);
-	} catch (error) {
-		throw summarize_errors(error);
-	}
-	fs.writeFileSync(outputpath, output);
-}
-*/
 
 export const {
   ImageMagick,

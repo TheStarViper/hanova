@@ -10,6 +10,7 @@ import {
     VIDEO_FORMATS, 
     AUDIO_FORMATS,
 } from './converter.mjs';
+import { AudioFifo } from 'node-av';
 
 const magick = {
     convert_bytes: bridge.convert_bytes,
@@ -41,8 +42,28 @@ export async function converterFactory(){
     return createconverter({core,webp,svg,magick,media}).convert_image;
 }
 
-export async function universalFactory
+export async function universalFactory(){
+    const [core,webp,svg]=await engines();
+    const c = createconverter({core,webp,svg,magick,media});
+    const convert = createConvert({
+        image:c.convert_image,
+        imageFormats:IMAGE_FORMATS,
+        media: (bytes,target,options)=>(
+            AUDIO_FORMATS.includes(target)?c.convert_audio:c.convert_video)(target,bytes,options),
+        mediaFormats: [...VIDEO_FORMATS,...AUDIO_FORMATS],
+    });
+    return {convert,...c};
+}
 
-export { IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS, FORMATS } from './converter.mjs';
-export {MEDIA_INFO,MEDIA_FORMATS,MEDIA_PRESETS,probe_media,thumbnail_at} from './mediabunny-bridge.mjs';
-export * from './errors.mjs';
+export {
+    createconverter,
+    FORMATS,
+    ALIASES,
+    ConvertError,
+    simplifyerror,
+    IMAGE_FORMATS,
+    VIDEO_FORMATS,
+    AUDIO_FORMATS,
+} from "./converter.mjs";
+export {ErrorCode,to_convert_error} from "./errors.mjs";
+export {MEDIA_INFO,MEDIA_FORMATS,MEDIA_PRESETS,probe_media,thumbnail_at} from "./mediabunny-bridge.mjs";
