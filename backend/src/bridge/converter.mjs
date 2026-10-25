@@ -57,7 +57,7 @@ const ALIASES = {jpeg:'jpg', //formats that are the same with diff extensions
 
 const has_media_options = (o) => Boolean(o.preset ||o.trim||o.video||o.audio);
 
-export function createconverter({core,webp,svg,magick,media}){
+export function createconverter({core,webp,svg,magick,media}={}){
     const unwrap = (r)=>{
         if (Array.isArray(r)||r instanceof Uint8Array){return r};
         if (r&&r.ok===false){
@@ -115,7 +115,6 @@ export function createconverter({core,webp,svg,magick,media}){
     }
 
     //magick
-
     if(magick){
         const MAGICK_COST = 5;
         const READABLE = ['png','jpg','bmp','tga','hdr'];

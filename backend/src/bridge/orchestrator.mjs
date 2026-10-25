@@ -35,3 +35,5 @@ export const convert = createConvert({
 });
 
 export { IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS, FORMATS } from './converter.mjs';
+export {MEDIA_INFO,MEDIA_FORMATS,MEDIA_PRESETS,probe_media,thumbnail_at} from './mediabunny-bridge.mjs';
+export * from './errors.mjs';
