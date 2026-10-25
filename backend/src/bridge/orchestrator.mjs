@@ -4,8 +4,11 @@ import createsvg from '../../build/svg_module.js';
 import * as bridge from './imagemagick-bridge.mjs';
 import * as mediabridge from './mediabunny-bridge.mjs';
 import {
-    createconverter, createConvert,
-    IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS,
+    createconverter, 
+    createConvert,
+    IMAGE_FORMATS, 
+    VIDEO_FORMATS, 
+    AUDIO_FORMATS,
 } from './converter.mjs';
 
 const magick = {
@@ -21,18 +24,24 @@ const media = {
     detect_format: mediabridge.detect_media_format,
 };
 
-const [core, webp, svg] = await Promise.all([createcore(), createwebp(), createsvg()]);
+let enginesPromise;
+const engines = () => (
+    enginesPromise??=Promise.all([createcore(),createwebp(),createsvg()]).catch((error)=>{
+        enginesPromise = undefined;
+        throw error;
+    })
+);
 
-export const { convert_image, convert_video, convert_audio, capabilities, search_path } =
-    createconverter({ core, webp, svg, magick, media });
+/**
+ * @returns {Promise<(target_format: string, bytes: Buffer<ArrayBuffer>, quality: number) => Promise<Buffer<ArrayBuffer>>> }
+ */
 
-export const convert = createConvert({
-    image: convert_image,
-    imageFormats: IMAGE_FORMATS,
-    media: (bytes, target, options) =>
-        (AUDIO_FORMATS.includes(target) ? convert_audio : convert_video)(target, bytes, options),
-    mediaFormats: [...VIDEO_FORMATS, ...AUDIO_FORMATS],
-});
+export async function converterFactory(){
+    const [core,webp,svg]= await engines();
+    return createconverter({core,webp,svg,magick,media}).convert_image;
+}
+
+export async function universalFactory
 
 export { IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS, FORMATS } from './converter.mjs';
 export {MEDIA_INFO,MEDIA_FORMATS,MEDIA_PRESETS,probe_media,thumbnail_at} from './mediabunny-bridge.mjs';

@@ -34,21 +34,28 @@ export const AUDIO_FORMATS = [
                         'aac',
                         'm4a'];
 
-export const FORMATS = [...IMAGE_FORMATS, ...VIDEO_FORMATS, ...AUDIO_FORMATS];
+export const FORMATS = IMAGE_FORMATS; //so stuff doesnt break remove later tho when migrated 
+export const EVERYFORMAT = [...IMAGE_FORMATS, ...VIDEO_FORMATS, ...AUDIO_FORMATS];
 
-const INDEX = Object.fromEntries(FORMATS.map((f,i)=>[f,i]));
-const N = FORMATS.length;
+const INDEX = Object.fromEntries(EVERYFORMAT.map((f,i)=>[f,i]));
+const N = EVERYFORMAT.length;
 
 const DOMAIN = {};
 for (const f of IMAGE_FORMATS){DOMAIN[f]='image';}
 for (const f of VIDEO_FORMATS){DOMAIN[f]='video';}
 for (const f of AUDIO_FORMATS){DOMAIN[f]='audio';}
 
+/**@type {Record<string,string>}*/ 
 //formats that are the same with diff extensions
 const ALIASES = {jpeg:'jpg',
                  jpe: 'jpg',
                  targa:'tga',
+                 icb:'tga',
+                 vda:'tga',
+                 vst:'tga',
                  tif: 'tiff',
+                 epsf:'eps',
+                 epsi:'epsi',
                  m4v: 'mp4',
                  matroska: 'mkv',
                  oga: 'ogg',
@@ -181,7 +188,7 @@ export function createconverter({core,webp,svg,magick,media}={}){
         }
         const path =[];
         for (let i = target; prev[i];i=prev[i][0]){
-            path.unshift({from: FORMATS[prev[i][0]],to: FORMATS[i],func: prev[i][1].func});
+            path.unshift({from: EVERYFORMAT[prev[i][0]],to: EVERYFORMAT[i],func: prev[i][1].func});
         }
         
         return path;
