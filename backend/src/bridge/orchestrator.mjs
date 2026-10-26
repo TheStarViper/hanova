@@ -7,9 +7,11 @@ import {
   createconverter,
   IMAGE_FORMATS,
   VIDEO_FORMATS,
+  DOCUMENT_FORMATS,
 } from "./converter.mjs";
 import * as bridge from "./imagemagick-bridge.mjs";
 import * as mediabridge from "./mediabunny-bridge.mjs";
+import * as docbridge from "./pandoc-bridge.mjs";
 
 const magick = {
   convert_bytes: bridge.convert_bytes,
@@ -22,6 +24,13 @@ const magick = {
 const media = {
   convert_media: mediabridge.convert_media,
   detect_format: mediabridge.detect_media_format,
+};
+
+const docs = {
+    convert_document: docbridge.convert_document,
+    detect_format: docbridge.detect_document_format,
+    inputs: docbridge.DOC_INPUTS,
+    outputs: docbridge.DOC_OUTPUTS,
 };
 
 let enginesPromise;
@@ -53,6 +62,9 @@ export async function universalFactory() {
         AUDIO_FORMATS.includes(target) ? c.convert_audio : c.convert_video
       )(target, bytes, options),
     mediaFormats: [...VIDEO_FORMATS, ...AUDIO_FORMATS],
+    doc: (bytes,target,options) =>
+        c.convert_document(target,bytes,options),
+    docFormats: DOCUMENT_FORMATS,
   });
   return { convert, ...c };
 }
@@ -66,6 +78,7 @@ export {
   IMAGE_FORMATS,
   simplifyerror,
   VIDEO_FORMATS,
+  DOCUMENT_FORMATS,
 } from "./converter.mjs";
 export { ErrorCode, to_convert_error } from "./errors.mjs";
 export {

@@ -294,7 +294,10 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
     options,
     domain,
   ) {
-    const detected_format = await detect(bytes);
+    const detected_format = options.from
+    ? (ALIASES[options.from]??options.from)
+    : await detect(bytes);
+
     target_format = ALIASES[target_format] ?? target_format;
 
     let current_index = INDEX[detected_format];
@@ -333,11 +336,11 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
       );
     }
 
-    if (
-      path.length === 0 && media && DOMAIN[target_format] !== "image"
-      && has_media_options(options)
-    ) {
-      path = [{
+    if (path.length === 0 && media && 
+        (DOMAIN[target_format] === "video" || 
+        DOMAIN[target_format] === "audio") 
+        && has_media_options(options)) { {
+        path = [{
         from: target_format,
         to: target_format,
         func: media_step(target_format),
@@ -373,6 +376,8 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
     convert_universal(target, bytes, options.quality, options, "video");
   const convert_audio = (target, bytes, options = {}) =>
     convert_universal(target, bytes, options.quality, options, "audio");
+  const convert_document = (target,bytes,options={}) =>
+    convert_universal(target,bytes, options.quality,options,"document");
 
   // what can be read/writen
   function capabilities() {
@@ -403,7 +408,7 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
 }
 
 export function createConvert(
-  { image, imageFormats = [], media, mediaFormats = [], maxBytes } = {},
+  { image, imageFormats = [], media, mediaFormats = [],doc,docFormats =  [], maxBytes } = {},
 ) {
   return async function convert(bytes, target, options = {}) {
     try {
@@ -431,7 +436,10 @@ export function createConvert(
       if (image && imageFormats.includes(target)) {
         return await image(target, bytes, options.quality ?? 80);
       }
-
+      if (doc && docFormats.includes(target)){
+        return await doc(bytes,target,options);
+      }
+      
       throw new ConvertError(
         ErrorCode.UnsupportedOutput,
         `Unsupported output format: "${target}"`,

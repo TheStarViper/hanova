@@ -149,7 +149,7 @@ export function detect_media_format(bytes) {
   if (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0) {
     return ((bytes[1] >> 1) & 3) === 0 ? "aac" : "mp3";
   }
-  if (bytes[0] === 0x47 && (bytes.length < 189 || bytes[188] === 0x47)) {
+  if (b[0] === 0x47 && b.length >= 189 && b[188] === 0x47) {
     return "ts";
   }
   return "unknown";
