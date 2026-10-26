@@ -6,6 +6,7 @@ interface TooltipDatum {
 }
 
 export const TOOLTIP_DATA: Record<Format, TooltipDatum> = {
+  // Images
   png: {
     title: "PNG",
     blurb:
@@ -89,6 +90,71 @@ export const TOOLTIP_DATA: Record<Format, TooltipDatum> = {
     title: "QOI",
     blurb:
       "Image format designed for extremely fast encoding and decoding. Very limited compatibility.",
+  },
+  ai: {
+    title: "AI",
+    blurb: "Vector image format used by Adobe Illustrator.",
+  },
+  pdf: {
+    title: "PDF",
+    blurb: "Document format that can be used to store images",
+  },
+
+  // Audio
+  mp3: {
+    title: "MP3",
+    blurb:
+      "The most common audio format in the world. Decent lossy quality and fairly small file sizes.",
+  },
+  wav: {
+    title: "WAV",
+    blurb:
+      "Lossless audio format with no compression. Very large file sizes, but very simple with excellent compability.",
+  },
+  ogg: {
+    title: "OGG (Vorbis)",
+    blurb: "Lossy audio format with great quality and decent compatibility.",
+  },
+  flac: {
+    title: "FLAC",
+    blurb:
+      "Audio format with excellent lossless compression, but fairly large file sizes.",
+  },
+  aac: {
+    title: "AAC",
+    blurb:
+      "Lossy audio format with good compression and excellent compatibility.",
+  },
+  m4a: {
+    title: "M4A",
+    blurb:
+      "Lossy audio format with good compression and excellent compatibility.",
+  },
+
+  // Video
+  mp4: {
+    title: "MP4",
+    blurb:
+      "The most common video format in the world. Good quality and near-universal compatibility.",
+  },
+  mov: {
+    title: "MOV",
+    blurb: "Video format used mainly in the Apple ecosystem.",
+  },
+  webm: {
+    title: "WebM",
+    blurb:
+      "Video format with excellent quality. Great compatibility in browsers, but okayish compatibility in native applications.",
+  },
+  mkv: {
+    title: "MKV",
+    blurb:
+      "Video format with great quality. Low compatibility in browsers but high compatibility in native applications.",
+  },
+  ts: {
+    title: "TS",
+    blurb:
+      "Specialized video format mainly used in broadcast television and live video streaming.",
   },
 };
 
