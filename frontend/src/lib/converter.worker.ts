@@ -1,6 +1,5 @@
-import { initMagick } from "../../../backend/src/bridge/browserMagick.mjs";
-import { universalFactory } from "../../../backend/src/bridge/orchestrator.mjs";
-import { type Format, JPEG_QUALITY, WEBP_QUALITY } from "./fileManager";
+import { converterFactory, type Format, initMagick } from "./backend";
+import { WEBP_QUALITY } from "./fileManager";
 
 type Bytes = Uint8Array<ArrayBuffer>;
 
@@ -20,22 +19,22 @@ export interface WorkerRequest {
 }
 export type WorkerResponse = ReturnObj;
 
-let universal: Awaited<ReturnType<typeof universalFactory>> | undefined;
+let converter: Awaited<ReturnType<typeof converterFactory>> | undefined;
 
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   let inBytes = event.data.inBytes;
   const outFormat = event.data.outFormat;
 
-  if (universal === undefined) {
+  if (converter === undefined) {
     await initMagick();
-    universal = await universalFactory();
+    converter = await converterFactory();
   }
 
   let response: ReturnObj;
 
   try {
     // syncronous and very slow, but we're in a worker so who cares
-    const outResult = await universal.convert(
+    const outResult = await converter.convert(
       outFormat.toLowerCase(),
       inBytes as any,
       WEBP_QUALITY,

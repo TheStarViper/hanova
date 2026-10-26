@@ -11,8 +11,8 @@ import Tooltip from "./Tooltip.svelte";
 import Treasure from "./Treasure.svelte";
 
 // misc imports
+import { type Format } from "#lib/backend.js";
 import type { CppManager } from "#lib/cppManager.js";
-import { type Format } from "#lib/fileManager.js";
 import { Pos } from "#lib/utils.svelte.js";
 import { World } from "#lib/world.svelte.js";
 import { onMount } from "svelte";

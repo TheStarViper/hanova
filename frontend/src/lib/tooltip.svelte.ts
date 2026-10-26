@@ -1,4 +1,4 @@
-import type { Format } from "./fileManager";
+import type { Format } from "./backend";
 
 interface TooltipDatum {
   title: string;

@@ -21,7 +21,7 @@ import Island7Svg from "#lib/assets/island7.svg?raw";
 import Island8Svg from "#lib/assets/island8.svg?raw";
 import Island9Svg from "#lib/assets/island9.svg?raw";
 
-import type { Format } from "./fileManager";
+import { type Format, FORMAT_TO_MEDIATYPE } from "./backend";
 
 export interface IslandSprite {
   svg: string;
@@ -283,6 +283,12 @@ export const ISLAND_DATA = [
   //   islandSpriteIndex: 18,
   //   spawnOffset: new Pos(160, 20),
   // },
+  {
+    name: "mp3",
+    pos: new Pos(2000, 1000),
+    islandSpriteIndex: 9,
+    spawnOffset: new Pos(-200, 30),
+  },
 ] as const satisfies IslandDatum[];
 
 export class Island {
@@ -301,6 +307,10 @@ export class Island {
 
   get pos() {
     return this.datum.pos;
+  }
+
+  get mediaType() {
+    return FORMAT_TO_MEDIATYPE[this.datum.name];
   }
 
   get sprite() {

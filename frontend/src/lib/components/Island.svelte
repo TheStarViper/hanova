@@ -18,7 +18,7 @@ export const COLOR_SUBSTITIONS: Record<string, string> = {
 </script>
 
 <script lang="ts">
-import type { Format } from "#lib/fileManager.js";
+import type { Format } from "#lib/backend.js";
 import { Island } from "#lib/island.svelte.js";
 import { TOOLTIP_DATA } from "#lib/tooltip.svelte.js";
 import type { Viewport } from "#lib/viewport.svelte.js";
