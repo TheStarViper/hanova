@@ -35,9 +35,9 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   try {
     // syncronous and very slow, but we're in a worker so who cares
     const outResult = await converter.convert(
-      outFormat.toLowerCase(),
       inBytes as any,
-      WEBP_QUALITY,
+      outFormat.toLowerCase(),
+      { quality: WEBP_QUALITY },
     );
     response = {
       ok: true,

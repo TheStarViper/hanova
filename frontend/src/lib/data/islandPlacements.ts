@@ -223,9 +223,15 @@ function islandCompletenessReport() {
     FORMAT_TO_MEDIATYPE[f] === "video"
   );
 
-  console.log(`missing image formats: ${missingImageFormats.join(", ")}`);
-  console.log(`missing audio formats: ${missingAudioFormats.join(", ")}`);
-  console.log(`missing video formats: ${missingVideoFormats.join(", ")}`);
+  if (missingImageFormats) {
+    console.log(`missing image formats: ${missingImageFormats.join(", ")}`);
+  }
+  if (missingAudioFormats) {
+    console.log(`missing audio formats: ${missingAudioFormats.join(", ")}`);
+  }
+  if (missingVideoFormats) {
+    console.log(`missing video formats: ${missingVideoFormats.join(", ")}`);
+  }
 }
 
-islandCompletenessReport();
+// islandCompletenessReport();

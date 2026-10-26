@@ -369,7 +369,8 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
 }
 
 /**
- * @returns {(target_format: string, bytes: Buffer<ArrayBuffer>, quality: number) => Promise<Buffer<ArrayBuffer>>}
+ * @typedef {{quality?: number, maxBytes?: number}} ConvertOptions
+ * @returns {(bytes: Buffer<ArrayBuffer>, target_format: string, quality: ConvertOptions) => Promise<Buffer<ArrayBuffer>>}
  */
 export function createConvert(
   { image, imageFormats = [], media, mediaFormats = [], maxBytes } = {},
