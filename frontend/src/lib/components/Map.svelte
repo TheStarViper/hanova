@@ -70,6 +70,7 @@ $effect(() => {
 {#if world.debugging}<DebuggingGrid {viewport} />{/if}
 <Banner
   me={world.banner}
+  {viewport}
   handleUpload={(files: FileList | undefined | null) => world.fileManager.handleUpload(files)}
 />
 <Compass viewport={world.viewport} href="./about" />

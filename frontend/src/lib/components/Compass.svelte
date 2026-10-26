@@ -18,6 +18,7 @@ let borderColor = $derived(hovered ? "var(--accent)" : undefined);
   <Sprite
     top={viewport.max.y - 180}
     left={viewport.max.x - 160}
+    scale={viewport.mobile ? 0.7 : 1}
     viewport={null}
     width={202}
     layer={5}

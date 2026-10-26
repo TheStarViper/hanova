@@ -24,6 +24,10 @@ h1 {
 	translate: 0 20vh;
 	font-size: 6rem;
 
+	@media (width <= 600px) {
+		scale: 2;
+	}
+
 	animation: fadeIn 0.5s ease;
 
 	&.cornered {

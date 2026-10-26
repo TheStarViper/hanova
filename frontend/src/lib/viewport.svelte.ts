@@ -21,6 +21,11 @@ export class Viewport {
   #dragStartX = 0;
   #dragStartY = 0;
 
+  width = $derived(this.max.x - this.min.x);
+  height = $derived(this.max.y - this.min.y);
+  center = $derived(new Pos(this.width / 2, this.height / 2));
+  mobile = $derived(this.width <= 600);
+
   constructor() {}
 
   init(): void {
@@ -42,18 +47,6 @@ export class Viewport {
     this.min.y = rect.top;
     this.max.x = rect.right;
     this.max.y = rect.bottom;
-  }
-
-  get width(): number {
-    return this.max.x - this.min.x;
-  }
-
-  get height(): number {
-    return this.max.y - this.min.y;
-  }
-
-  get center(): Pos {
-    return new Pos(this.width / 2, this.height / 2);
   }
 
   #initListeners() {
