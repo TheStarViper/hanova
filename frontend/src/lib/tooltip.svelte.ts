@@ -112,7 +112,7 @@ export const TOOLTIP_DATA: Record<Format, TooltipDatum> = {
       "Lossless audio format with no compression. Very large file sizes, but very simple with excellent compability.",
   },
   ogg: {
-    title: "OGG (Vorbis)",
+    title: "OGG",
     blurb: "Lossy audio format with great quality and decent compatibility.",
   },
   flac: {

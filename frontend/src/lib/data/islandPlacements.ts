@@ -127,8 +127,38 @@ const AUDIO_ISLANDS: IslandDatum[] = [
   {
     name: "mp3",
     pos: new Pos(0, 0),
-    islandSpriteIndex: 9,
+    islandSpriteIndex: 16,
     spawnOffset: new Pos(-200, 30),
+  },
+  {
+    name: "wav",
+    pos: new Pos(-500, 0),
+    islandSpriteIndex: 10,
+    spawnOffset: new Pos(0, 240),
+  },
+  {
+    name: "ogg",
+    pos: new Pos(-200, -400),
+    islandSpriteIndex: 15,
+    spawnOffset: new Pos(-80, 90),
+  },
+  {
+    name: "flac",
+    pos: new Pos(500, -400),
+    islandSpriteIndex: 10,
+    spawnOffset: new Pos(-140, -50),
+  },
+  {
+    name: "aac",
+    pos: new Pos(-700, -300),
+    islandSpriteIndex: 18,
+    spawnOffset: new Pos(0, -150),
+  },
+  {
+    name: "m4a",
+    pos: new Pos(-800, -480),
+    islandSpriteIndex: 6,
+    spawnOffset: new Pos(100, 0),
   },
 ];
 
@@ -136,8 +166,32 @@ const VIDEO_ISLANDS: IslandDatum[] = [
   {
     name: "mp4",
     pos: new Pos(0, 0),
-    islandSpriteIndex: 9,
+    islandSpriteIndex: 17,
     spawnOffset: new Pos(-200, 30),
+  },
+  {
+    name: "mov",
+    pos: new Pos(-430, 500),
+    islandSpriteIndex: 14,
+    spawnOffset: new Pos(-60, -180),
+  },
+  {
+    name: "webm",
+    pos: new Pos(100, 600),
+    islandSpriteIndex: 15,
+    spawnOffset: new Pos(-40, -140),
+  },
+  {
+    name: "mkv",
+    pos: new Pos(-500, -200),
+    islandSpriteIndex: 19,
+    spawnOffset: new Pos(130, 140),
+  },
+  {
+    name: "ts",
+    pos: new Pos(500, 300),
+    islandSpriteIndex: 18,
+    spawnOffset: new Pos(-100, 100),
   },
 ];
 
