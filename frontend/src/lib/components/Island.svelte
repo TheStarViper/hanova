@@ -18,7 +18,7 @@ export const COLOR_SUBSTITIONS: Record<string, string> = {
 </script>
 
 <script lang="ts">
-import type { Format } from "#lib/backend.js";
+import type { Format, MediaType } from "#lib/backend.js";
 import { Island } from "#lib/island.svelte.js";
 import { TOOLTIP_DATA } from "#lib/tooltip.svelte.js";
 import type { Viewport } from "#lib/viewport.svelte.js";
@@ -34,9 +34,18 @@ interface Props {
 
 let { me, viewport, debugging, allowHover, setTooltip }: Props = $props();
 
+const BORDER_COLOR_MAPPING: Record<MediaType, string> = {
+  image: "#ffc067",
+  audio: "#82ff66",
+  video: "#af66ff",
+  // docs: "#66c4ff",
+};
+
 let hovered: boolean = $state(false);
 let shadowOpacity = $derived(hovered && allowHover ? 1 : 0.7);
-let borderColor = $derived(hovered && allowHover ? "#FFC067" : undefined);
+let borderColor = $derived(
+  hovered && allowHover ? BORDER_COLOR_MAPPING[me.mediaType] : undefined,
+);
 
 let processedSvg: string = $derived.by(() => {
   let svg = me.sprite.svg;
