@@ -53,7 +53,44 @@ export async function convert_document(bytes,target,options = {}){
     if(options.signal?.aborted) {throw new ConvertError(ErrorCode.Cancelled, "Conversion was cancelled");}
 
     try{
-        const {convert}
+        const {convert} = await pandoc();
+        const opts = {
+            from: READ[from],
+            to: WRITE[target],
+            ...(STANDALONE.has(target)&&{standalone:true}),
+            ...options.pandoc,
+        };
+
+        const files = {};
+        let stdin = "";
+        if (BINARY_IN.has(from)){
+            const name = `input.${from}`;
+            files[name]=new Blob([bytes]);
+            opts["input-files"] = [name];
+        } else {
+            stdin = new TextDecoder().decode(bytes);
+        }
+
+        const outName = `output.${target}`;
+        if (BINARY_OUT.has(target)) {
+            opts["output-file"] = outName;
+        }
+
+        const result = await convert(opts,stdin,files);
+
+        if(BINARY_OUT.has(target)){
+            const out = result.files?.[outName];
+            if(!out){throw new ConvertError(ErrorCode.NativeFailure,"pandoc made no output");}
+            return out instanceof Uint8Array ? out : new Uint8Array(await out.arrayBuffer());
+        }
+
+        if(typeof result.stdout !=="string"){
+            throw new ConvertError(ErrorCode.NativeFailure,"pandoc no make output :P");
+        }
+
+        return new TextEncoder().encode(result.stdout);
+    } catch (error){
+        throw to_convert_error(error,ErrorCode.NativeFailure);
     }
 }
 
