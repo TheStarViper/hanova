@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Island, ISLAND_DATA } from "./island.svelte";
+import { ISLAND_DATA } from "./data/islandPlacements";
+import { Island } from "./island.svelte";
 import { aStar, getCostFactory, gridify, isWalkableFactory } from "./route";
 import { Pos } from "./utils.svelte";
 

@@ -1,8 +1,9 @@
 // class imports
 import { Banner } from "./banner.svelte";
 import { Boat, SAIL_DURATION } from "./boat.svelte";
+import { ISLAND_DATA } from "./data/islandPlacements";
 import { FileManager } from "./fileManager";
-import { Island, ISLAND_DATA } from "./island.svelte";
+import { Island } from "./island.svelte";
 import { Treasure } from "./treasure.svelte";
 import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
