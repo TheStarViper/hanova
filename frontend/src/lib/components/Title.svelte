@@ -17,19 +17,18 @@ h1 {
 	width: 100%;
 	text-align: center;
 
-	transition: translate 0.5s ease-in-out, scale 0.4s ease-in-out;
+	color: color-mix(var(--ink), white 5%);
+	text-shadow: 3px 3px rgba(0,0,0,0.2), -2px -2px rgba(255,255,255, 0.8);
 
-	color: var(--ink);
-	text-shadow: 1px 1px rgba(0,0,0,0.2);
-
+	transition: translate 0.5s ease-in-out, font-size 0.4s ease-in-out;
 	translate: 0 20vh;
-	scale: 3;
+	font-size: 6rem;
 
 	animation: fadeIn 0.5s ease;
 
 	&.cornered {
 		translate: calc(50% - 3em) 0.3rem;
-		scale: 1;
+		font-size: 2rem;
 	}
 }
 </style>

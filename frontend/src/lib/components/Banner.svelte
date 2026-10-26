@@ -71,6 +71,7 @@ onMount(() => {
 
 	h2 {
 		user-select: none;
+		color: var(--ink);
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 
 		// approximate size of the main section of the banner
