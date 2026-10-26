@@ -39,11 +39,22 @@ export const AUDIO_FORMATS = [
   "m4a",
 ];
 
+export const DOCUMENT_FORMATS = [ //add more later FIX
+    "docx",
+    "odt",
+    "epub",
+    "html",
+    "md",
+    "rst",
+    "tex",
+    "txt"
+];
 export const FORMATS = IMAGE_FORMATS; // so stuff doesnt break remove later tho when migrated
 export const EVERYFORMAT = [
   ...IMAGE_FORMATS,
   ...VIDEO_FORMATS,
   ...AUDIO_FORMATS,
+  ...DOCUMENT_FORMATS,
 ];
 
 const INDEX = Object.fromEntries(EVERYFORMAT.map((f, i) => [f, i]));
@@ -53,10 +64,12 @@ const DOMAIN = {};
 for (const f of IMAGE_FORMATS) DOMAIN[f] = "image";
 for (const f of VIDEO_FORMATS) DOMAIN[f] = "video";
 for (const f of AUDIO_FORMATS) DOMAIN[f] = "audio";
+for (const f of DOCUMENT_FORMATS) DOMAIN[f] = "document";
 
 /**@type {Record<string,string>}*/
 // formats that are the same with diff extensions
 export const ALIASES = {
+  //image
   jpeg: "jpg",
   jpe: "jpg",
   targa: "tga",
@@ -66,16 +79,26 @@ export const ALIASES = {
   tif: "tiff",
   epsf: "eps",
   epsi: "epsi",
+
+  //video
   m4v: "mp4",
   matroska: "mkv",
   oga: "ogg",
   wave: "wav",
+
+  //documents
+  markdown: "md",
+  mkd: "md",
+  mdown: "md",
+  latex: "tex",
+  htm: "html",
+  text: "txt",
 };
 
 const has_media_options = (o) =>
   Boolean(o.preset || o.trim || o.video || o.audio);
 
-export function createconverter({ core, webp, svg, magick, media } = {}) {
+export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
   const unwrap = (r) => {
     if (Array.isArray(r) || r instanceof Uint8Array) return r;
     if (r && r.ok === false) {
@@ -198,6 +221,16 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
     link(AUDIO_FORMATS, AUDIO_FORMATS);
   }
 
+  //pandoc
+  if (docs) {
+    const doc_step = (from,to)=>(bytes,_q,options)=> docs.convert_document(bytes,to,{...options,from});
+    for (const a of docs.inputs){
+        for (const b of docs.outputs){
+            if (a!==b){register(a,b,doc_step(a,b),1)}
+        }
+    }
+  }
+
   function search_path(start, target) {
     if (start === target) return [];
 
@@ -247,6 +280,9 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
     }
     if (format === "unknown" && magick) {
       format = await magick.detect_format(bytes);
+    }
+    if (format==='unknown'&&docs){
+        format = docs.detect_format(bytes);
     }
     return ALIASES[format] ?? format;
   }
