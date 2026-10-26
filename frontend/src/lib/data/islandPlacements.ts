@@ -1,7 +1,12 @@
+import { FORMAT_TO_MEDIATYPE, FORMATS } from "#lib/backend.js";
 import type { IslandDatum } from "#lib/island.svelte.js";
 import { Pos } from "#lib/utils.svelte.js";
 
-export const ISLAND_DATA = [
+const IMAGE_ISLANDS_OFFSET = new Pos(0, 0);
+const AUDIO_ISLANDS_OFFSET = new Pos(2000, -1500);
+const VIDEO_ISLANDS_OFFSET = new Pos(3500, -500);
+
+const IMAGE_ISLANDS: IslandDatum[] = [
   {
     name: "bmp",
     pos: new Pos(0, 500),
@@ -116,10 +121,57 @@ export const ISLAND_DATA = [
   //   islandSpriteIndex: 18,
   //   spawnOffset: new Pos(160, 20),
   // },
+];
+
+const AUDIO_ISLANDS: IslandDatum[] = [
   {
     name: "mp3",
-    pos: new Pos(2000, 1000),
+    pos: new Pos(0, 0),
     islandSpriteIndex: 9,
     spawnOffset: new Pos(-200, 30),
   },
-] as const satisfies IslandDatum[];
+];
+
+const VIDEO_ISLANDS: IslandDatum[] = [
+  {
+    name: "mp4",
+    pos: new Pos(0, 0),
+    islandSpriteIndex: 9,
+    spawnOffset: new Pos(-200, 30),
+  },
+];
+
+IMAGE_ISLANDS.forEach((i) => i.pos = Pos.add(i.pos, IMAGE_ISLANDS_OFFSET));
+AUDIO_ISLANDS.forEach((i) => i.pos = Pos.add(i.pos, AUDIO_ISLANDS_OFFSET));
+VIDEO_ISLANDS.forEach((i) => i.pos = Pos.add(i.pos, VIDEO_ISLANDS_OFFSET));
+
+export const ISLAND_DATA = [
+  ...IMAGE_ISLANDS,
+  ...AUDIO_ISLANDS,
+  ...VIDEO_ISLANDS,
+];
+
+function islandCompletenessReport() {
+  const formatsWithIslands = ISLAND_DATA.map((i) => i.name);
+  const missingFormats = FORMATS.filter((f) => !formatsWithIslands.includes(f));
+
+  console.log(
+    `${missingFormats.length}/${FORMATS.length} formats have islands`,
+  );
+
+  const missingImageFormats = missingFormats.filter((f) =>
+    FORMAT_TO_MEDIATYPE[f] === "image"
+  );
+  const missingAudioFormats = missingFormats.filter((f) =>
+    FORMAT_TO_MEDIATYPE[f] === "audio"
+  );
+  const missingVideoFormats = missingFormats.filter((f) =>
+    FORMAT_TO_MEDIATYPE[f] === "video"
+  );
+
+  console.log(`missing image formats: ${missingImageFormats.join(", ")}`);
+  console.log(`missing audio formats: ${missingAudioFormats.join(", ")}`);
+  console.log(`missing video formats: ${missingVideoFormats.join(", ")}`);
+}
+
+islandCompletenessReport();
