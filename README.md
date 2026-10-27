@@ -187,6 +187,13 @@ Week 4:
 - [x] Pathfinding algorithm improvements
 - [x] Tooltips
 
+Week 5:
+
+- [x] Improved island collision (ellipses rather than circles)
+- [x] Islands and tooltips for the audio and video formats
+- [x] Improved sprite colors
+- [x] Mobile support 
+
 Planned:
 
 - [ ] Mobile support
