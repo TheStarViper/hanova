@@ -43,7 +43,7 @@ $effect(() => {
 });
 </script>
 
-<Title cornered={world.titleCornered} />
+<Title cornered={world.titleCornered} {viewport} />
 
 <div
   class="world-layer"
