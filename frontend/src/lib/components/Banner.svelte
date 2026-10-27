@@ -44,7 +44,7 @@ onMount(() => {
 
 <input id="fileInput" type="file" bind:this={inputEl} style="display: none;" />
 
-<div class="banner-container" style:scale={scale}>
+<div id="banner-container" style:scale={scale}>
   <Sprite
     top={me.pos.y / scale}
     left={me.pos.x}
@@ -70,6 +70,10 @@ onMount(() => {
 <div id="banner-overlay" class={!me.hide ? "show" : ""}></div>
 
 <style lang="scss">
+#banner-container {
+	z-index: 101;
+}
+
 #banner-text-container {
 	position: absolute;
 	transform: translate(-50%, -50%);
