@@ -39,16 +39,77 @@ export const AUDIO_FORMATS = [
   "m4a",
 ];
 
-export const DOCUMENT_FORMATS = [ //add more later FIX
-    "docx",
-    "odt",
-    "epub",
-    "html",
-    "md",
-    "rst",
-    "tex",
-    "txt"
-];
+// key = what the app calls it 
+// read/write = pandoc's name for it
+// binary: zip containers, passed as files. standalone: full document, not a fragment.
+export const DOC_FORMATS = {
+  //office and ebook containers
+  docx:  { read: "docx", write: "docx", binary: true, mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
+  odt:   { read: "odt",  write: "odt",  binary: true, mime: "application/vnd.oasis.opendocument.text" },
+  epub:  { read: "epub", write: "epub3", binary: true, mime: "application/epub+zip" },
+  pptx:  {               write: "pptx", binary: true, mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation" },
+  rtf:   { read: "rtf",  write: "rtf", mime: "application/rtf" },
+  fb2:   { read: "fb2",  write: "fb2", mime: "application/x-fictionbook+xml" },
+
+  //web and slides
+  html:     { read: "html", write: "html5", standalone: true, mime: "text/html" },
+  revealjs: {               write: "revealjs", standalone: true, mime: "text/html" },
+  slidy:    {               write: "slidy",    standalone: true, mime: "text/html" },
+
+  //markdown family
+  md:         { read: "markdown",   write: "markdown",   mime: "text/markdown" },
+  gfm:        { read: "gfm",        write: "gfm",        mime: "text/markdown" },
+  commonmark: { read: "commonmark", write: "commonmark", mime: "text/markdown" },
+
+  //lightweight
+  rst:      { read: "rst",       write: "rst" },
+  org:      { read: "org",       write: "org" },
+  textile:  { read: "textile",   write: "textile" },
+  wiki:     { read: "mediawiki", write: "mediawiki" },
+  dokuwiki: { read: "dokuwiki",  write: "dokuwiki" },
+  jira:     { read: "jira",      write: "jira" },
+  muse:     { read: "muse",      write: "muse" },
+  vimwiki:  { read: "vimwiki",   write: "vimwiki" },
+  adoc:     {                    write: "asciidoc" },
+  xwiki:    {                    write: "xwiki" },
+  zimwiki:  {                    write: "zimwiki" },
+  tikiwiki: { read: "tikiwiki" },
+  twiki:    { read: "twiki" },
+  creole:   { read: "creole" },
+  t2t:      { read: "t2t" },
+
+  //technical
+  tex:     { read: "latex",  write: "latex", standalone: true, mime: "application/x-tex" },
+  beamer:  {                 write: "beamer", standalone: true, mime: "application/x-tex" },
+  typ:     { read: "typst",  write: "typst" },
+  texi:    {                 write: "texinfo" },
+  man:     { read: "man",    write: "man" },
+  ms:      {                 write: "ms" },
+  haddock: { read: "haddock", write: "haddock" },
+  ctx:     {                 write: "context", standalone: true },
+  icml:    {                 write: "icml", standalone: true },
+
+  //xml
+  dbk:  { read: "docbook", write: "docbook", standalone: true, mime: "application/xml" },
+  jats: { read: "jats",    write: "jats",    standalone: true, mime: "application/xml" },
+  tei:  {                  write: "tei",     standalone: true, mime: "application/xml" },
+  opml: { read: "opml",    write: "opml",    mime: "text/x-opml" },
+
+  //notebooks
+  ipynb:   { read: "ipynb",   write: "ipynb",   mime: "application/x-ipynb+json" },
+  bib:     { read: "bibtex",  write: "bibtex" },
+  csljson: { read: "csljson", write: "csljson", mime: "application/json" },
+  ris:     { read: "ris" },
+  endnote: { read: "endnotexml" },
+
+  //plain text
+  txt: { write: "plain" },
+};
+
+export const DOCUMENT_FORMATS = Object.keys(DOC_FORMATS);
+export const DOC_INPUTS  = DOCUMENT_FORMATS.filter((f) => DOC_FORMATS[f].read);
+export const DOC_OUTPUTS = DOCUMENT_FORMATS.filter((f) => DOC_FORMATS[f].write);
+
 export const FORMATS = IMAGE_FORMATS; // so stuff doesnt break remove later tho when migrated
 export const EVERYFORMAT = [
   ...IMAGE_FORMATS,
@@ -90,9 +151,19 @@ export const ALIASES = {
   markdown: "md",
   mkd: "md",
   mdown: "md",
+  markdn: "md",
   latex: "tex",
   htm: "html",
   text: "txt",
+  asciidoc: "adoc",
+  asc: "adoc",
+  mediawiki: "wiki",
+  docbook: "dbk",
+  typst: "typ",
+  bibtex: "bib",
+  texinfo: "texi",
+  epub3: "epub",
+  epub2: "epub",
 };
 
 const has_media_options = (o) =>
@@ -406,6 +477,7 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
     capabilities,
   };
 }
+}
 
 export function createConvert(
   { image, imageFormats = [], media, mediaFormats = [],doc,docFormats =  [], maxBytes } = {},
@@ -439,7 +511,7 @@ export function createConvert(
       if (doc && docFormats.includes(target)){
         return await doc(bytes,target,options);
       }
-      
+
       throw new ConvertError(
         ErrorCode.UnsupportedOutput,
         `Unsupported output format: "${target}"`,

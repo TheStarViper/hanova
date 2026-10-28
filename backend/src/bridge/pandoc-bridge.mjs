@@ -22,7 +22,7 @@ const latin1 = (bytes,start,end) => new TextDecoder("latin1").decode(bytes.subar
 export function detect_document_format(bytes){
     if (!bytes||bytes.length<8){return 'unknown';}
 
-    if(bytes[0]===0x50&&bytes[1]===0x4b&&(b[2] === 3 || b[2] === 5)){
+    if(bytes[0]===0x50&&bytes[1]===0x4b&&(bytes[2] === 3 || bytes[2] === 5)){
         const head = latin1(bytes,0,Math.min(bytes.length,1024));
         if (head.includes("application/epub+zip")){return "epub";}
         if (head.includes("application/vnd.oasis.opendocument.text")){return "odt";}

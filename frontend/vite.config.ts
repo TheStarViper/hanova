@@ -38,4 +38,6 @@ export default defineConfig({
       allow: [frontendRoot, backendRoot],
     },
   },
+  assetsInclude: ["**/*.wasm"],
+  optimizeDeps: {exclude: ["pandoc-wasm"]},
 });

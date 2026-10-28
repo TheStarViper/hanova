@@ -39,10 +39,11 @@ library that a file converter like file validation and safety functions.
 - [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image
   formats)
 - [mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
+- [pandoc](https://github.com/jgm/pandoc) (documents)
 
 ### Custom Compilation
 
-A few of the libraries used dont have a precompiled binary for use as a c++
+A few of the libraries used dont have a precompiled binary foar use as a c++
 library that can be compiled to wasm through emscripten. Because of this we had
 to compile the library from source via emscripten so we could use it for this
 purpose. This took a while of troubleshooting as there is limited documentation
