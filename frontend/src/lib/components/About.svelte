@@ -4,14 +4,7 @@ import {
   FORMAT_TO_MEDIATYPE,
   type MediaType,
 } from "#lib/backend.js";
-import Compass from "#lib/components/Compass.svelte";
 import { TOOLTIP_DATA, type TooltipDatum } from "#lib/tooltip.svelte.js";
-import { Viewport } from "#lib/viewport.svelte.js";
-import { onMount } from "svelte";
-
-let viewport = new Viewport();
-
-onMount(() => viewport.init());
 
 const tooltips = Object.entries(TOOLTIP_DATA) as [Format, TooltipDatum][];
 
@@ -59,7 +52,6 @@ function mediaTypeList(mediaType: MediaType): string {
     <a href="https://github.com/TheStarViper">Andrew</a> (C++ backend)
   </footer>
 </article>
-<Compass {viewport} href="./" />
 
 <style lang="scss">
 h1,

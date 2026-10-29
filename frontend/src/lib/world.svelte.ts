@@ -19,12 +19,11 @@ import { Tooltip } from "./tooltip.svelte";
 const USE_TIME_ESTIMATE = false;
 
 export class World {
-  viewport = new Viewport();
-  boat = new Boat(this.viewport);
+  boat: Boat;
   islands: Island[] = $state([]);
   fileManager: FileManager;
   treasure = new Treasure();
-  banner = new Banner(this.viewport);
+  banner: Banner;
   tooltip = new Tooltip();
 
   curves: CubicBezier[] = $state([]);
@@ -34,12 +33,12 @@ export class World {
   debugging = false;
   skipMenu = false;
 
-  constructor(public cppManager: CppManager) {
+  constructor(public cppManager: CppManager, public viewport: Viewport) {
     this.fileManager = new FileManager(cppManager, async () => this.dropHook());
+    this.boat = new Boat(viewport), this.banner = new Banner(viewport);
   }
 
   init() {
-    this.viewport.init();
     this.initIslands();
     this.fileManager.init();
 

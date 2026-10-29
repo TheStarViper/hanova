@@ -3,7 +3,6 @@
 import Banner from "./Banner.svelte";
 import Bezier from "./Bezier.svelte";
 import Boat from "./Boat.svelte";
-import Compass from "./Compass.svelte";
 import DebuggingGrid from "./DebuggingGrid.svelte";
 import Island from "./Island.svelte";
 import Title from "./Title.svelte";
@@ -14,19 +13,19 @@ import Treasure from "./Treasure.svelte";
 import { type Format } from "#lib/backend.js";
 import type { CppManager } from "#lib/cppManager.js";
 import { Pos } from "#lib/utils.svelte.js";
+import { Viewport } from "#lib/viewport.svelte.js";
 import { World } from "#lib/world.svelte.js";
 import { onMount } from "svelte";
 
 interface Props {
   cppManager: CppManager;
+  viewport: Viewport;
 }
 
-let { cppManager }: Props = $props();
+let { cppManager, viewport }: Props = $props();
 
 // svelte-ignore state_referenced_locally
-const world = new World(cppManager);
-
-let viewport = $derived(world.viewport);
+const world = new World(cppManager, viewport);
 
 onMount(() => {
   world.init();
@@ -73,7 +72,6 @@ $effect(() => {
   {viewport}
   handleUpload={(files: FileList | undefined | null) => world.fileManager.handleUpload(files)}
 />
-<Compass viewport={world.viewport} href="./about" />
 <Tooltip me={world.tooltip} viewport={world.viewport} />
 
 <style lang="scss">
