@@ -1,14 +1,29 @@
 <script lang="ts">
+import {
+  type Format,
+  FORMAT_TO_MEDIATYPE,
+  type MediaType,
+} from "#lib/backend.js";
 import Compass from "#lib/components/Compass.svelte";
+import { TOOLTIP_DATA, type TooltipDatum } from "#lib/tooltip.svelte.js";
 import { Viewport } from "#lib/viewport.svelte.js";
 import { onMount } from "svelte";
 
 let viewport = new Viewport();
 
 onMount(() => viewport.init());
+
+const tooltips = Object.entries(TOOLTIP_DATA) as [Format, TooltipDatum][];
+
+function mediaTypeList(mediaType: MediaType): string {
+  return tooltips
+    .filter(([format]) => FORMAT_TO_MEDIATYPE[format] === mediaType)
+    .map(([, tooltip]) => `<a href="${tooltip.url}">${tooltip.title}</a>`)
+    .join(", ");
+}
 </script>
 
-<article>
+<article id="about">
   <h1>About Hanova</h1>
 
   <blockquote>
@@ -25,11 +40,10 @@ onMount(() => viewport.init());
   <h2>Supported File Formats</h2>
 
   <section id="formats">
-    <p>Image: PNG, JPEG, BMP (more coming soon!)</p>
-    <p>Audio: (coming soon!)</p>
-    <p>Docs: (coming soon!)</p>
-    <p>3D objects: (coming soon!)</p>
-    <p>Video: (coming soon!)</p>
+    <p>Image: {@html mediaTypeList("image")}</p>
+    <p>Audio: {@html mediaTypeList("audio")}</p>
+    <p>Video: {@html mediaTypeList("video")}</p>
+    <p>Document: (coming soon!)</p>
   </section>
 
   <h2>Source Code</h2>
@@ -74,9 +88,13 @@ section#formats p {
 	text-indent: 2ch hanging;
 }
 
-a,
-a:visited {
-	color: var(--accent);
+:global {
+	#about {
+		a,
+		a:visited {
+			color: var(--accent);
+		}
+	}
 }
 
 blockquote {
