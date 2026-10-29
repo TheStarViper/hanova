@@ -196,7 +196,6 @@ Week 5:
 
 Planned:
 
-- [ ] Mobile support
 - [ ] Boat moves in circles around islands rather than beaching itself
 - [ ] Smoother animations and an overall better experience
 - [ ] Procedural island and water generation
