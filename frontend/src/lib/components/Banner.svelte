@@ -62,7 +62,7 @@ onMount(() => {
     {/key}
   </div>
 </div>
-<div id="banner-overlay" class={!me.hide ? "show" : ""}></div>
+<div id="banner-overlay" class={me.hide ? "hide" : ""}></div>
 
 <style lang="scss">
 #banner-container {
@@ -102,13 +102,13 @@ onMount(() => {
 	z-index: 99;
 
 	background: black;
-	opacity: 0;
+	opacity: 0.4;
 	transition: opacity 0.2s ease;
 
 	pointer-events: none;
 
-	&.show {
-		opacity: 0.4;
+	&.hide {
+		opacity: 0;
 	}
 }
 

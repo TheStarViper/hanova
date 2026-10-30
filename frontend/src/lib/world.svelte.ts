@@ -1,5 +1,5 @@
 // class imports
-import { Banner } from "./banner.svelte";
+import { Banner, INITIAL_BANNER_MESSAGE } from "./banner.svelte";
 import { Boat, SAIL_DURATION } from "./boat.svelte";
 import { ISLAND_DATA } from "./data/islandPlacements";
 import { FileManager } from "./fileManager";
@@ -55,7 +55,7 @@ export class World {
       this.titleCornered = true;
     } else {
       // normal values
-      this.banner.text = "Drag & drop a file to start";
+      this.banner.text = INITIAL_BANNER_MESSAGE;
       this.viewport.canDrag = false;
       this.titleCornered = false;
     }
