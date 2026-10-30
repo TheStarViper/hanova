@@ -5,6 +5,7 @@ import {
   type MediaType,
 } from "#lib/backend.js";
 import { TOOLTIP_DATA, type TooltipDatum } from "#lib/data/tooltipData.js";
+import { world } from "#lib/world.svelte.js";
 
 const tooltips = Object.entries(TOOLTIP_DATA) as [Format, TooltipDatum][];
 
@@ -30,21 +31,31 @@ function mediaTypeList(mediaType: MediaType): string {
     you'll unearth buried treasure: your converted file!
   </p>
 
-  <h2>Supported File Formats</h2>
+  <section id="settings">
+    <h2>Settings</h2>
+    <p>Hanova has a few settings that you can configure:</p>
+    <div>
+      <label for="quality">Conversion Quality</label>
+      <input id="quality" type="range" bind:value={world.quality} />
+      <span>{world.quality}%</span>
+    </div>
+  </section>
 
   <section id="formats">
+    <h2>Supported File Formats</h2>
     <p>Image: {@html mediaTypeList("image")}</p>
     <p>Audio: {@html mediaTypeList("audio")}</p>
     <p>Video: {@html mediaTypeList("video")}</p>
     <p>Document: (coming soon!)</p>
   </section>
 
-  <h2>Source Code</h2>
-
-  <p>
-    Check out our repo: <a href="https://github.com/TheStarViper/hanova"
-    >https://github.com/TheStarViper/hanova</a>
-  </p>
+  <section id="source">
+    <h2>Source Code</h2>
+    <p>
+      Check out our repo: <a href="https://github.com/TheStarViper/hanova"
+      >https://github.com/TheStarViper/hanova</a>
+    </p>
+  </section>
 
   <footer>
     Made by <a href="https://github.com/ethmarks">Ethan</a> (Svelte frontend) &
@@ -61,6 +72,7 @@ h2 {
 
 h2 {
 	font-size: 1.2rem;
+	margin-top: 3rem;
 }
 
 article {

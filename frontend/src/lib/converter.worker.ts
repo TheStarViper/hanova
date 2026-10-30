@@ -1,5 +1,4 @@
 import { converterFactory, type Format, initMagick } from "./backend";
-import { WEBP_QUALITY } from "./fileManager";
 
 type Bytes = Uint8Array<ArrayBuffer>;
 
@@ -16,6 +15,7 @@ export type ReturnObj = SuccessObj | FailObj;
 export interface WorkerRequest {
   inBytes: Bytes;
   outFormat: Format;
+  quality: number;
 }
 export type WorkerResponse = ReturnObj;
 
@@ -24,6 +24,7 @@ let converter: Awaited<ReturnType<typeof converterFactory>> | undefined;
 self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   let inBytes = event.data.inBytes;
   const outFormat = event.data.outFormat;
+  const quality = event.data.quality;
 
   if (converter === undefined) {
     await initMagick();
@@ -37,7 +38,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
     const outResult = await converter.convert(
       inBytes as any,
       outFormat.toLowerCase(),
-      { quality: WEBP_QUALITY },
+      { quality },
     );
     response = {
       ok: true,

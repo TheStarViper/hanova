@@ -67,6 +67,7 @@ export class FileManager {
     world.cppManager.startConversion({
       inBytes,
       outFormat: formatName,
+      quality: world.quality,
     });
   }
 
