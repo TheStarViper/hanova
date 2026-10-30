@@ -37,8 +37,8 @@ export class World {
   titleCornered: boolean = $state(false);
 
   // for various dev-only debugging visuals
-  debugging = true;
-  skipMenu = true;
+  debugging = false;
+  skipMenu = false;
 
   constructor() {}
 
