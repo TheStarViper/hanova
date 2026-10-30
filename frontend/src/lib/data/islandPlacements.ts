@@ -146,7 +146,7 @@ const AUDIO_ISLANDS: IslandDatum[] = [
     name: "flac",
     pos: new Pos(500, -400),
     islandSpriteIndex: 10,
-    spawnOffset: new Pos(-140, -50),
+    spawnOffset: new Pos(-180, -50),
   },
   {
     name: "aac",
