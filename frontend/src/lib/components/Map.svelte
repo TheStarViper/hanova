@@ -11,51 +11,34 @@ import Treasure from "./Treasure.svelte";
 
 // misc imports
 import { type Format } from "#lib/backend.js";
-import type { CppManager } from "#lib/cppManager.js";
 import { Pos } from "#lib/utils.svelte.js";
-import { Viewport } from "#lib/viewport.svelte.js";
 import { World } from "#lib/world.svelte.js";
-import { onMount } from "svelte";
 
 interface Props {
-  cppManager: CppManager;
-  viewport: Viewport;
+  world: World;
 }
 
-let { cppManager, viewport }: Props = $props();
+let { world }: Props = $props();
 
-// svelte-ignore state_referenced_locally
-const world = new World(cppManager, viewport);
-
-onMount(() => {
-  world.init();
-});
-
-let worldOffset = $derived(Pos.mul(viewport.center, 1 - viewport.zoom));
-
-$effect(() => {
-  document.body.style.cursor = world.viewport.canDrag
-    ? world.viewport.userIsDragging
-      ? "grabbing"
-      : "grab"
-    : "unset";
-});
+let worldOffset = $derived(
+  Pos.mul(world.viewport.center, 1 - world.viewport.zoom),
+);
 </script>
 
-<Title cornered={world.titleCornered} {viewport} />
+<Title cornered={world.titleCornered} viewport={world.viewport} />
 
 <div
   class="world-layer"
-  style:transform="translate({worldOffset.x}px, {worldOffset.y}px) scale({viewport.zoom})"
+  style:transform="translate({worldOffset.x}px, {worldOffset.y}px) scale({world.viewport.zoom})"
 >
-  <Boat me={world.boat} {viewport} />
+  <Boat me={world.boat} viewport={world.viewport} />
 
-  <Bezier curves={world.curves} {viewport} />
+  <Bezier curves={world.curves} viewport={world.viewport} />
 
   {#each world.islands as island}
     <Island
       me={island}
-      {viewport}
+      viewport={world.viewport}
       debugging={world.debugging}
       allowHover={world.banner.hide}
       setTooltip={(format: Format | null) => {
@@ -63,13 +46,13 @@ $effect(() => {
       }}
     />
   {/each}
-  <Treasure me={world.treasure} {viewport} />
+  <Treasure me={world.treasure} viewport={world.viewport} />
 </div>
 
-{#if world.debugging}<DebuggingGrid {viewport} />{/if}
+{#if world.debugging}<DebuggingGrid viewport={world.viewport} />{/if}
 <Banner
   me={world.banner}
-  {viewport}
+  viewport={world.viewport}
   handleUpload={(files: FileList | undefined | null) => world.fileManager.handleUpload(files)}
 />
 <Tooltip me={world.tooltip} viewport={world.viewport} />

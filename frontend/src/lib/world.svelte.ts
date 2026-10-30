@@ -11,7 +11,7 @@ import { Viewport } from "./viewport.svelte";
 // misc imports
 import type { CubicBezier } from "./bezier";
 import type { WorkerResponse } from "./converter.worker";
-import type { CppManager } from "./cppManager";
+import { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
 import { decodeSounds, playSound, preloadSounds } from "./sound";
 import { Tooltip } from "./tooltip.svelte";
@@ -19,11 +19,13 @@ import { Tooltip } from "./tooltip.svelte";
 const USE_TIME_ESTIMATE = false;
 
 export class World {
-  boat: Boat;
+  cppManager = new CppManager();
+  fileManager = new FileManager(this.cppManager, async () => this.dropHook());
+  viewport = new Viewport();
+  boat = new Boat(this.viewport);
   islands: Island[] = $state([]);
-  fileManager: FileManager;
   treasure = new Treasure();
-  banner: Banner;
+  banner = new Banner(this.viewport);
   tooltip = new Tooltip();
 
   curves: CubicBezier[] = $state([]);
@@ -33,12 +35,11 @@ export class World {
   debugging = false;
   skipMenu = false;
 
-  constructor(public cppManager: CppManager, public viewport: Viewport) {
-    this.fileManager = new FileManager(cppManager, async () => this.dropHook());
-    this.boat = new Boat(viewport), this.banner = new Banner(viewport);
-  }
+  constructor() {}
 
   init() {
+    this.viewport.init();
+    this.cppManager.init();
     this.initIslands();
     this.fileManager.init();
 
