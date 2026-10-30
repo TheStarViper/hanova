@@ -8,7 +8,7 @@ import { IslandManager } from "./components/Island.svelte";
 import { TooltipManager } from "./components/Tooltip.svelte";
 import { TreasureManager } from "./components/Treasure.svelte";
 import { ISLAND_DATA } from "./data/islandPlacements";
-import { FileManager } from "./fileManager";
+import { FileManager } from "./fileManager.svelte";
 import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
 
@@ -24,11 +24,7 @@ const USE_TIME_ESTIMATE = false;
 export class World {
   cppManager = new CppManager();
 
-  // If I try to import world.cppManager from the singleton, it throws errors,
-  // so I have to pass the relevant world fields into the constructor. I've no
-  // idea why fileManager is special like this, but whatever.
-  fileManager = new FileManager(this.cppManager, async () => this.dropHook());
-
+  fileManager = new FileManager();
   viewport = new Viewport();
   boat = new BoatManager();
   banner = new BannerManager();
@@ -38,6 +34,7 @@ export class World {
 
   curves: CubicBezier[] = $state([]);
   titleCornered: boolean = $state(false);
+  quality: number = $state(90);
 
   // for various dev-only debugging visuals
   debugging = false;

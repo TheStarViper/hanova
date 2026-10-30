@@ -1,13 +1,10 @@
 import mime from "mime";
 import { EXT_TO_FORMAT, type Format } from "./backend";
-import { type CppManager } from "./cppManager";
 import { decodeSounds } from "./sound";
+import { world } from "./world.svelte";
 
 const MAX_FILENAME_CHARS = 20;
 const ELLIPSIS = "...";
-
-export const JPEG_QUALITY = 85;
-export const WEBP_QUALITY = 90;
 
 export class FileManager {
   file: File | undefined;
@@ -16,10 +13,7 @@ export class FileManager {
 
   conversionStartTime: number | null = null;
 
-  constructor(
-    public cppManager: CppManager,
-    public dropHook?: () => Promise<void>,
-  ) {}
+  constructor() {}
 
   init() {
     document.addEventListener("dragover", (event: DragEvent) => {
@@ -54,7 +48,7 @@ export class FileManager {
     }
     this.file = files[0];
 
-    this.dropHook?.();
+    world.dropHook();
   }
 
   async convertTo(formatName: Format) {
@@ -70,7 +64,7 @@ export class FileManager {
     const inBytes = await this.file.bytes();
 
     this.conversionStartTime = Date.now();
-    this.cppManager.startConversion({
+    world.cppManager.startConversion({
       inBytes,
       outFormat: formatName,
     });
@@ -80,7 +74,7 @@ export class FileManager {
    * @returns undefined if the conversion never finished, true if everything worked, and a string if there was an error
    */
   downloadFile(): undefined | true | string {
-    const result = this.cppManager.response;
+    const result = world.cppManager.response;
 
     if (result === null || this.outFormat === undefined) return undefined;
     if (!result.ok) return result.error;
