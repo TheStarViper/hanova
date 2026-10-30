@@ -2,6 +2,7 @@
 
 <script lang="ts">
 import type { Viewport } from "#lib/viewport.svelte.js";
+import { world } from "#lib/world.svelte.js";
 import type { Snippet } from "svelte";
 
 interface Props {
@@ -10,11 +11,8 @@ interface Props {
   top: number;
   left: number;
 
-  /**
-   * I'm making this use an explicit null value rather than just
-   * undefined so that I don't forget to implement it everywhere
-   */
-  viewport: Viewport | null;
+  /** whether to track the viewport offset */
+  sticky?: boolean;
 
   label?: string;
   labelColor?: string;
@@ -60,8 +58,8 @@ $effect(() => {
   bind:this={el}
   class="svg-wrapper {props.sunk ? 'sunk' : ''}"
   style:opacity={props.hide ? "0" : "1"}
-  style:top="{props.top + (props.viewport?.offset.y ?? 0)}px"
-  style:left="{props.left + (props.viewport?.offset.x ?? 0)}px"
+  style:top="{props.top + (props.sticky ? 0 : world.viewport.offset.y)}px"
+  style:left="{props.left + (props.sticky ? 0 : world.viewport.offset.x)}px"
   style:width={props.width !== undefined ? `${props.width}px` : "auto"}
   style:height={props.height !== undefined ? `${props.height}px` : "auto"}
   style:scale={props.scale ?? 1}

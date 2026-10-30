@@ -23,9 +23,14 @@ export class World {
   fileManager = new FileManager(this.cppManager, async () => this.dropHook());
   viewport = new Viewport();
   boat = new Boat(this.viewport);
-  islands: Island[] = $state([]);
-  treasure = new Treasure();
   banner = new Banner(this.viewport);
+  islands = ISLAND_DATA.map((datum) =>
+    new Island(
+      datum,
+      (targetIsland: Island) => this.islandClickHandler(targetIsland),
+    )
+  );
+  treasure = new Treasure();
   tooltip = new Tooltip();
 
   curves: CubicBezier[] = $state([]);
@@ -40,7 +45,6 @@ export class World {
   init() {
     this.viewport.init();
     this.cppManager.init();
-    this.initIslands();
     this.fileManager.init();
 
     // ik I could massively simplify this, but I want to keep the logic explicit
@@ -216,13 +220,7 @@ export class World {
       () => this.boatArriveHandler(),
     );
   }
-
-  initIslands() {
-    this.islands = ISLAND_DATA.map((datum) => {
-      return new Island(
-        datum,
-        (targetIsland: Island) => this.islandClickHandler(targetIsland),
-      );
-    });
-  }
 }
+
+/** one singleton to rule them all */
+export const world = new World();

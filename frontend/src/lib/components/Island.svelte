@@ -19,21 +19,17 @@ export const COLOR_SUBSTITIONS: Record<string, string> = {
 </script>
 
 <script lang="ts">
-import type { Format, MediaType } from "#lib/backend.js";
+import type { MediaType } from "#lib/backend.js";
 import { Island } from "#lib/island.svelte.js";
 import { TOOLTIP_DATA } from "#lib/tooltip.svelte.js";
-import type { Viewport } from "#lib/viewport.svelte.js";
+import { world } from "#lib/world.svelte.js";
 import Sprite from "./Sprite.svelte";
 
 interface Props {
   me: Island;
-  viewport: Viewport;
-  debugging: boolean;
-  allowHover: boolean;
-  setTooltip: (format: Format | null) => void;
 }
 
-let { me, viewport, debugging, allowHover, setTooltip }: Props = $props();
+let { me }: Props = $props();
 
 const BORDER_COLOR_MAPPING: Record<MediaType, string> = {
   image: "#ffc067",
@@ -41,6 +37,8 @@ const BORDER_COLOR_MAPPING: Record<MediaType, string> = {
   video: "#af66ff",
   // docs: "#66c4ff",
 };
+
+let allowHover = $derived(world.banner.hide);
 
 let hovered: boolean = $state(false);
 let shadowOpacity = $derived(hovered && allowHover ? 1 : 0.7);
@@ -60,14 +58,13 @@ let processedSvg: string = $derived.by(() => {
 });
 
 $effect(() => {
-  setTooltip(hovered && allowHover ? me.name : null);
+  world.tooltip.target = hovered && allowHover ? me.name : null;
 });
 </script>
 
 <Sprite
   left={me.pos.x}
   top={me.pos.y}
-  {viewport}
   width={me.sprite.width}
   {shadowOpacity}
   {borderColor}
@@ -76,7 +73,7 @@ $effect(() => {
     click: allowHover
       ? () => {
         setTimeout(() => {
-          if (!viewport.userIsDragging) me.callBoat();
+          if (!world.viewport.userIsDragging) me.callBoat();
         }, 100);
       }
       : undefined,
@@ -87,9 +84,9 @@ $effect(() => {
 >{@html processedSvg}</Sprite>
 <div
   class="debug"
-  style:display={debugging ? "flex" : "none"}
-  style:left="{me.pos.x + viewport.offset.x}px"
-  style:top="{me.pos.y + viewport.offset.y}px"
+  style:display={world.debugging ? "flex" : "none"}
+  style:left="{me.pos.x + world.viewport.offset.x}px"
+  style:top="{me.pos.y + world.viewport.offset.y}px"
 >
   <span
     class="radius"

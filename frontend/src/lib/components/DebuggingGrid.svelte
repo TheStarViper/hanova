@@ -5,22 +5,16 @@ which is helpful when deciding where to place islands
 
 <script lang="ts">
 import { GRID_CELL_HEIGHT, GRID_CELL_WIDTH } from "#lib/route.js";
-import type { Viewport } from "#lib/viewport.svelte.js";
-
-interface Props {
-  viewport: Viewport;
-}
-
-let { viewport }: Props = $props();
+import { world } from "#lib/world.svelte.js";
 </script>
 
 <div
   id="devOnlyPathfindingGrid"
-  style:background-size="{GRID_CELL_WIDTH*viewport.zoom}px {GRID_CELL_HEIGHT*viewport.zoom}px"
-  style:background-position="{viewport.offset.x * viewport.zoom}px {viewport.offset.y * viewport.zoom}px"
-  style:width="{100/viewport.zoom}vw"
-  style:height="{100/viewport.zoom}vh"
-  style:--line-thickness="{2*viewport.zoom}px"
+  style:background-size="{GRID_CELL_WIDTH*world.viewport.zoom}px {GRID_CELL_HEIGHT*world.viewport.zoom}px"
+  style:background-position="{world.viewport.offset.x * world.viewport.zoom}px {world.viewport.offset.y * world.viewport.zoom}px"
+  style:width="{100/world.viewport.zoom}vw"
+  style:height="{100/world.viewport.zoom}vh"
+  style:--line-thickness="{2*world.viewport.zoom}px"
 >
 </div>
 

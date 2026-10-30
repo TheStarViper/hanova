@@ -1,13 +1,8 @@
 <script lang="ts">
-import { type Tooltip, TOOLTIP_DATA } from "#lib/tooltip.svelte.js";
-import type { Viewport } from "#lib/viewport.svelte.js";
+import { TOOLTIP_DATA } from "#lib/tooltip.svelte.js";
+import { world } from "#lib/world.svelte.js";
 
-interface Props {
-  me: Tooltip;
-  viewport: Viewport;
-}
-
-let { me, viewport }: Props = $props();
+let me = world.tooltip;
 
 let title = $state("");
 let blurb = $state("");
@@ -24,8 +19,8 @@ $effect(() => {
 
 <div
   class={me.target === null ? "" : "show"}
-  style:top="{viewport.mouseY}px"
-  style:left="{viewport.mouseX}px"
+  style:top="{world.viewport.mouseY}px"
+  style:left="{world.viewport.mouseX}px"
 >
   <h2>{title}</h2>
   <p>{blurb}</p>

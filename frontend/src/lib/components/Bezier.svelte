@@ -1,21 +1,16 @@
 <script lang="ts">
 import type { CubicBezier } from "#lib/bezier.js";
 import type { Pos } from "#lib/utils.svelte.js";
-import type { Viewport } from "#lib/viewport.svelte.js";
+import { world } from "#lib/world.svelte.js";
 import { draw, type TransitionConfig } from "svelte/transition";
-
-interface Props {
-  curves: CubicBezier[] | undefined;
-  viewport: Viewport;
-}
-
-let { curves, viewport }: Props = $props();
 
 const DRAW_DURATION = 600;
 const PADDING = 20;
 
+let curves = $derived(world.curves);
+
 let { minX, minY, width, height } = $derived.by(() => {
-  if (curves === undefined || curves.length === 0) {
+  if (curves.length === 0) {
     return { minX: 0, minY: 0, width: 0, height: 0 };
   }
 
@@ -43,7 +38,7 @@ let { minX, minY, width, height } = $derived.by(() => {
 });
 
 let d = $derived.by(() => {
-  if (curves === undefined || curves.length === 0) return "";
+  if (curves.length === 0) return "";
 
   const formatPos = (pos: Pos) => `${pos.x} ${pos.y}`;
   const makeM = (curve: CubicBezier) => `M ${formatPos(curve.p0)}`;
@@ -59,8 +54,8 @@ let d = $derived.by(() => {
 });
 
 let offset = $derived({
-  x: viewport.offset.x + minX,
-  y: viewport.offset.y + minY,
+  x: world.viewport.offset.x + minX,
+  y: world.viewport.offset.y + minY,
 });
 
 /**

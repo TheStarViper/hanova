@@ -1,9 +1,7 @@
 <script lang="ts">
 import BannerSvg from "#lib/assets/banner.svg";
-import { Banner } from "#lib/banner.svelte.js";
 import { decodeSounds } from "#lib/sound.js";
-import { Pos } from "#lib/utils.svelte.js";
-import type { Viewport } from "#lib/viewport.svelte.js";
+import { world } from "#lib/world.svelte.js";
 import { onMount } from "svelte";
 import { slide } from "svelte/transition";
 import Sprite from "./Sprite.svelte";
@@ -12,13 +10,7 @@ import Sprite from "./Sprite.svelte";
 // centered) is not the same as the center of the svg
 const MAIN_BANNER_OFFSET_PX = 14;
 
-interface Props {
-  me: Banner;
-  viewport: Viewport;
-  handleUpload: (files: FileList | undefined | null) => void;
-}
-
-let { me, viewport, handleUpload }: Props = $props();
+let me = world.banner;
 
 let inputEl: HTMLInputElement;
 let textEl: HTMLDivElement;
@@ -26,9 +18,9 @@ let textEl: HTMLDivElement;
 const SPRITE_WIDTH = 847;
 
 let scale: number = $derived.by(() => {
-  if (viewport.width >= SPRITE_WIDTH) return 1;
+  if (world.viewport.width >= SPRITE_WIDTH) return 1;
 
-  return viewport.width / SPRITE_WIDTH * 0.95;
+  return world.viewport.width / SPRITE_WIDTH * 0.95;
 });
 
 onMount(() => {
@@ -38,7 +30,10 @@ onMount(() => {
     // hijacking this user interaction to decode the sounds
     decodeSounds();
   });
-  inputEl.addEventListener("change", () => handleUpload(inputEl.files));
+  inputEl.addEventListener(
+    "change",
+    () => world.fileManager.handleUpload(inputEl.files),
+  );
 });
 </script>
 
@@ -48,7 +43,7 @@ onMount(() => {
   <Sprite
     top={me.pos.y / scale}
     left={me.pos.x}
-    viewport={null}
+    sticky
     width={SPRITE_WIDTH}
     layer={100}
     hide={me.hide}

@@ -1,15 +1,14 @@
 <script lang="ts">
 import CompassSvg from "#lib/assets/compass.svg";
-import type { Viewport } from "#lib/viewport.svelte.js";
+import { world } from "#lib/world.svelte.js";
 import Sprite from "./Sprite.svelte";
 
 interface Props {
   togglePage: () => void;
-  viewport: Viewport;
   label: string;
 }
 
-let { togglePage, viewport, label }: Props = $props();
+let { togglePage, label }: Props = $props();
 
 let hovered = $state(false);
 let borderColor = $derived(hovered ? "var(--accent)" : undefined);
@@ -20,10 +19,10 @@ let processedSvg = $derived(
 </script>
 
 <Sprite
-  top={viewport.max.y - 180}
-  left={viewport.max.x - 160}
-  scale={viewport.mobile ? 0.7 : 1}
-  viewport={null}
+  top={world.viewport.max.y - 180}
+  left={world.viewport.max.x - 160}
+  scale={world.viewport.mobile ? 0.7 : 1}
+  sticky
   width={202}
   layer={101}
   {borderColor}

@@ -1,17 +1,14 @@
 <script lang="ts">
-import { Viewport } from "#lib/viewport.svelte.js";
+import { world } from "#lib/world.svelte.js";
 
-interface Props {
-  cornered: boolean;
-  viewport: Viewport;
-}
-
-let { cornered, viewport }: Props = $props();
-
-let fontSizeRem: number = $derived(cornered ? 2 : viewport.mobile ? 3 : 6);
-let translateX: string = $derived(cornered ? "calc(50% - 3em)" : "0");
+let fontSizeRem: number = $derived(
+  world.titleCornered ? 2 : world.viewport.mobile ? 3 : 6,
+);
+let translateX: string = $derived(
+  world.titleCornered ? "calc(50% - 3em)" : "0",
+);
 let translateY: string = $derived(
-  cornered ? "0.3rem" : viewport.mobile ? "25vh" : "20vh",
+  world.titleCornered ? "0.3rem" : world.viewport.mobile ? "25vh" : "20vh",
 );
 </script>
 
