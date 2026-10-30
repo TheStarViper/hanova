@@ -30,7 +30,7 @@ export function detect_document_format(bytes){
     if (text.startsWith("%PDF")){return "pdf";}
     if (text.includes("<FictionBook")){return"fb2";}
     if (/<opml[\s>]/i.test(text)){return"opml";}
-    if (text.startsWith("{")&&text.includes('"nbformat')){return"ipynb";}
+    if (text.startsWith("{")&&text.includes('"nbformat"')){return"ipynb";}
     if (text.startsWith("{\\rtf")){return "rtf";}
     if (/^<!doctype html|^<html/i.test(text)){return "html";}
     if (/^\\documentclass|^\\begin\{document\}/.test(text)) return "tex";
@@ -40,11 +40,11 @@ export function detect_document_format(bytes){
 export async function convert_document(bytes,target,options = {}){
     const from = DOC_FORMATS[options.from];
     const to = DOC_FORMATS[target];
-    
-    if (!READ[from]){
-        throw new ConvertError(ErrorCode.UnsupportedInput, `Unsupported document input: "${from}"`);
+
+    if (!from?.read){
+        throw new ConvertError(ErrorCode.UnsupportedInput, `Unsupported document input: "${options.from}"`);
     }
-    if (!WRITE[target]) {
+    if (!to?.write) {
         throw new ConvertError(ErrorCode.UnsupportedOutput, `Unsupported document output: "${target}"`);
     }
     if(options.signal?.aborted) {throw new ConvertError(ErrorCode.Cancelled, "Conversion was cancelled");}
@@ -52,40 +52,49 @@ export async function convert_document(bytes,target,options = {}){
     try{
         const {convert} = await pandoc();
         const opts = {
-            from: READ[from],
-            to: WRITE[target],
-            ...(STANDALONE.has(target)&&{standalone:true}),
+            from: from.read,
+            to: to.write,
+            ...(to.standalone&&{standalone:true}),
             ...options.pandoc,
         };
 
         const files = {};
-        let stdin = "";
-        if (from.binary.has(from)){
-            const name = `input.${from}`;
-            files[name]=new Blob([bytes]);
+        let stdin = null;
+        if (from.binary){
+            const name = `input.${options.from}`;
+            files[name] = new Blob([bytes]);
             opts["input-files"] = [name];
         } else {
             stdin = new TextDecoder().decode(bytes);
         }
 
         const outName = `output.${target}`;
-        if (to.binary.has(target)) {
+        if (to.binary) {
             opts["output-file"] = outName;
         }
 
         const result = await convert(opts,stdin,files);
-
+        const problem = String(result.stderr??"").trim();
+        
+        let out;
         if(to.binary){
-            const out = result.files?.[outName];
-            if(!out){throw new ConvertError(ErrorCode.NativeFailure,"pandoc made no output");}
-            return out instanceof Uint8Array ? out : new Uint8Array(await out.arrayBuffer());
+            const file = result.files?.[outName];
+            if(file){
+                out = file instanceof Uint8Array ? file :
+                    typeof file ==="string"?new TextEncoder().encode(file) :
+                    new Uint8Array(await file.arrayBuffer());
+            }
+        } else if (typeof result.stdout ==="string"){
+            out = new TextEncoder().encode(result.stdout);
         }
 
-        if(typeof result.stdout !=="string"){
-            throw new ConvertError(ErrorCode.NativeFailure,"pandoc no make output :P");
+        if (!out||out.length===0){
+            throw new ConvertError(ErrorCode.NativeFailure,
+                problem?`pandoc:${problem.split("\n")[0]}` : "pandoc made empty file."
+            );
         }
 
-        return new TextEncoder().encode(result.stdout);
+        return out;
     } catch (error){
         throw to_convert_error(error,ErrorCode.NativeFailure);
     }
