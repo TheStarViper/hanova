@@ -3,17 +3,19 @@ import { type Format, FORMAT_TO_MEDIATYPE } from "#lib/backend.js";
 import { ISLAND_DATA, type IslandDatum } from "#lib/data/islandPlacements.js";
 import { ISLAND_SPRITES } from "#lib/data/islandSprites.js";
 import { Pos } from "#lib/utils.svelte.js";
+import { world } from "#lib/world.svelte.js";
 
 export class IslandManager {
-  callBoat: () => void;
   datum: IslandDatum;
 
   constructor(
     datum: IslandDatum,
-    islandClickHandler: (targetIsland: IslandManager) => void,
   ) {
     this.datum = datum;
-    this.callBoat = () => islandClickHandler(this);
+  }
+
+  callBoat() {
+    world.islandClickHandler(this);
   }
 
   get name() {
@@ -76,7 +78,6 @@ export const COLOR_SUBSTITIONS: Record<string, string> = {
 <script lang="ts">
 import type { MediaType } from "#lib/backend.js";
 import { TOOLTIP_DATA } from "#lib/data/tooltipData.js";
-import { world } from "#lib/world.svelte.js";
 import Sprite from "./Sprite.svelte";
 
 interface Props {

@@ -23,16 +23,16 @@ const USE_TIME_ESTIMATE = false;
 
 export class World {
   cppManager = new CppManager();
+
+  // If I try to import world.cppManager from the singleton, it throws errors,
+  // so I have to pass the relevant world fields into the constructor. I've no
+  // idea why fileManager is special like this, but whatever.
   fileManager = new FileManager(this.cppManager, async () => this.dropHook());
+
   viewport = new Viewport();
-  boat = new BoatManager(this.viewport);
+  boat = new BoatManager();
   banner = new BannerManager();
-  islands = ISLAND_DATA.map((datum) =>
-    new IslandManager(
-      datum,
-      (targetIsland: IslandManager) => this.islandClickHandler(targetIsland),
-    )
-  );
+  islands = ISLAND_DATA.map((datum) => new IslandManager(datum));
   treasure = new TreasureManager();
   tooltip = new TooltipManager();
 

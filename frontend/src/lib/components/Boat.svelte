@@ -2,7 +2,7 @@
 import type { Route } from "#lib/route.js";
 import { playSound } from "#lib/sound.js";
 import { ease, Pos } from "#lib/utils.svelte.js";
-import type { Viewport } from "#lib/viewport.svelte.js";
+import { world } from "#lib/world.svelte.js";
 
 // [TODO] replace this with an actual conversion time estimate
 /** in milliseconds */
@@ -14,11 +14,8 @@ export class BoatManager {
   hide = $state(true);
   sunk = $state(false);
   name = "Boat";
-  viewport: Viewport;
 
-  constructor(viewport: Viewport) {
-    this.viewport = viewport;
-  }
+  constructor() {}
 
   #moveAnimID: number | null = null;
   /**
@@ -38,10 +35,10 @@ export class BoatManager {
 
     if (this.#moveAnimID !== null) cancelAnimationFrame(this.#moveAnimID);
 
-    const shouldMoveViewport = this.pos.x > -this.viewport.offset.x
-      && this.pos.x < -this.viewport.offset.x + this.viewport.width
-      && this.pos.y > -this.viewport.offset.y
-      && this.pos.y < -this.viewport.offset.y + this.viewport.height;
+    const shouldMoveViewport = this.pos.x > -world.viewport.offset.x
+      && this.pos.x < -world.viewport.offset.x + world.viewport.width
+      && this.pos.y > -world.viewport.offset.y
+      && this.pos.y < -world.viewport.offset.y + world.viewport.height;
 
     // hopefully enough time for the sounds to decode
     setTimeout(() => playSound("sail1.ogg"), 50);
@@ -62,8 +59,8 @@ export class BoatManager {
       const newPos = route(progress);
 
       if (shouldMoveViewport) {
-        this.viewport.offset.x -= newPos.x - this.pos.x;
-        this.viewport.offset.y -= newPos.y - this.pos.y;
+        world.viewport.offset.x -= newPos.x - this.pos.x;
+        world.viewport.offset.y -= newPos.y - this.pos.y;
       }
 
       this.pos.x = newPos.x;
@@ -97,7 +94,6 @@ export class BoatManager {
 
 <script lang="ts">
 import BoatSvg from "#lib/assets/boat.svg";
-import { world } from "#lib/world.svelte.js";
 import Sprite from "./Sprite.svelte";
 
 let me = world.boat;

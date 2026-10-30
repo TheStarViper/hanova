@@ -4,7 +4,7 @@ import { ISLAND_DATA } from "./data/islandPlacements";
 import { aStar, getCostFactory, gridify, isWalkableFactory } from "./route";
 import { Pos } from "./utils.svelte";
 
-const islands = ISLAND_DATA.map((datum) => new IslandManager(datum, () => {}));
+const islands = ISLAND_DATA.map((datum) => new IslandManager(datum));
 
 describe("Can pathfind", () => {
   describe.each<IslandManager>(islands)(
