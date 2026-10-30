@@ -41,14 +41,9 @@ library that a file converter like file validation and safety functions.
 - [mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
 - [pandoc](https://github.com/jgm/pandoc) (documents)
 
-### Custom Compilation
+### Bridge System
 
-A few of the libraries used dont have a precompiled binary foar use as a c++
-library that can be compiled to wasm through emscripten. Because of this we had
-to compile the library from source via emscripten so we could use it for this
-purpose. This took a while of troubleshooting as there is limited documentation
-online about how to go about this and the libraries we had to compile in this
-form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
+Since this file conversion program uses alot of different libraries combined, a notable portion of the backend codebase is glue-code used to make it so that they can work together. We grabbed the WASM versions of programs like imagemagick and pandoc to use and bridged them using MJS, while mediabunny is a TypeScript library so that it can take advantage of hardware acceleration. However, since we had to balance a wide variety of ecosystems, they all had different error formats and spit out different types of errors, so to make things easier we made a unified error system that decoded all of the errors from the various libraries and made human-readable and simplified errors.
 
 ### Supported File Formats
 
@@ -121,6 +116,7 @@ form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
 - [x] m4s
 - [x] ts (MPEG Transport stem)
 - [x] m3u8 (HLS)
+
 </details>
 3D Files:
 

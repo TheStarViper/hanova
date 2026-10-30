@@ -8,6 +8,8 @@ import {
   IMAGE_FORMATS,
   VIDEO_FORMATS,
   DOCUMENT_FORMATS,
+  DOC_INPUTS,
+  DOC_OUTPUTS,
 } from "./converter.mjs";
 import * as bridge from "./imagemagick-bridge.mjs";
 import * as mediabridge from "./mediabunny-bridge.mjs";
@@ -29,8 +31,8 @@ const media = {
 const docs = {
     convert_document: docbridge.convert_document,
     detect_format: docbridge.detect_document_format,
-    inputs: docbridge.DOC_INPUTS,
-    outputs: docbridge.DOC_OUTPUTS,
+    inputs: DOC_INPUTS,
+    outputs: DOC_OUTPUTS,
 };
 
 let enginesPromise;
@@ -48,12 +50,12 @@ const engines = () => (
 
 export async function converterFactory() {
   const [core, webp, svg] = await engines();
-  return createconverter({ core, webp, svg, magick, media }).convert_image;
+  return createconverter({ core, webp, svg, magick, media,docs }).convert_image;
 }
 
 export async function universalFactory() {
   const [core, webp, svg] = await engines();
-  const c = createconverter({ core, webp, svg, magick, media });
+  const c = createconverter({ core, webp, svg, magick, media,docs });
   const convert = createConvert({
     image: c.convert_image,
     imageFormats: IMAGE_FORMATS,
@@ -79,6 +81,8 @@ export {
   simplifyerror,
   VIDEO_FORMATS,
   DOCUMENT_FORMATS,
+  DOC_FORMATS,
+  format_from_filename,
 } from "./converter.mjs";
 export { ErrorCode, to_convert_error } from "./errors.mjs";
 export {

@@ -169,6 +169,11 @@ export const ALIASES = {
 const has_media_options = (o) =>
   Boolean(o.preset || o.trim || o.video || o.audio);
 
+export const format_from_filename = (name) =>{
+  const ext = String(name).split(".").pop().toLowerCase();
+  return ALIASES[ext]??ext;
+};
+
 export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
   const unwrap = (r) => {
     if (Array.isArray(r) || r instanceof Uint8Array) return r;
@@ -349,11 +354,11 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
     if (format === "unknown" && media) {
       format = await media.detect_format(bytes);
     }
-    if (format === "unknown" && magick) {
-      format = await magick.detect_format(bytes);
-    }
     if (format==='unknown'&&docs){
         format = docs.detect_format(bytes);
+    }
+    if (format === "unknown" && magick) {
+      format = await magick.detect_format(bytes);
     }
     return ALIASES[format] ?? format;
   }
@@ -371,8 +376,8 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
 
     target_format = ALIASES[target_format] ?? target_format;
 
-    let current_index = INDEX[detected_format];
-    let target_index = INDEX[target_format];
+    const current_index = INDEX[detected_format];
+    const target_index = INDEX[target_format];
 
     if (current_index === undefined) {
       throw new ConvertError(
@@ -407,10 +412,8 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
       );
     }
 
-    if (path.length === 0 && media && 
-        (DOMAIN[target_format] === "video" || 
-        DOMAIN[target_format] === "audio") 
-        && has_media_options(options)) { {
+    const is_media = DOMAIN[target_format]==="video"||DOMAIN[target_format]==="audio";
+    if (path.length === 0 && media && is_media&&has_media_options(options)){ 
         path = [{
         from: target_format,
         to: target_format,
@@ -458,6 +461,7 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
         ["image", IMAGE_FORMATS],
         ["video", VIDEO_FORMATS],
         ["audio", AUDIO_FORMATS],
+        ["document", DOCUMENT_FORMATS],
       ]
     ) {
       out[kind] = {
@@ -473,11 +477,12 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
     convert_image,
     convert_video,
     convert_audio,
+    convert_document,
     search_path,
     capabilities,
   };
 }
-}
+
 
 export function createConvert(
   { image, imageFormats = [], media, mediaFormats = [],doc,docFormats =  [], maxBytes } = {},

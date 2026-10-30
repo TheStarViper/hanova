@@ -1,14 +1,5 @@
 import {ConvertError,ErrorCode,to_convert_error} from "./errors.mjs";
-
-const READ = {docx: "docs",odt: "odt",epub:"epub",html:"html",md:"markdown",rst:"rst",tex:"latex"};
-const WRITE = {docx: "docs",odt: "odt",epub:"epub3",html:"html",md:"markdown",rst:"rst",tex:"latex",txt:"plain"};
-
-export const DOC_INPUTS = Object.keys(READ);
-export const DOC_OUTPUTS = Object.keys(WRITE);
-
-const BINARY_IN = new Set(["docx","odt","epub"]);
-const BINARY_OUT = new Set(["docx","odt","epub"]);
-const STANDALONE = new Set(["html","tex"]);
+import { DOC_FORMATS } from "./converter.mjs";
 
 let pandocPromise;
 const pandoc = () =>(pandocPromise ??= import("pandoc-wasm").catch((error)=>{
@@ -35,7 +26,11 @@ export function detect_document_format(bytes){
 
     const start = bytes[0]===0xef&&bytes[1]===0xbb&&bytes[2]===0xbf?3:0;
     const text = latin1(bytes,start,Math.min(bytes.length,start+512)).trimStart();
+
     if (text.startsWith("%PDF")){return "pdf";}
+    if (text.includes("<FictionBook")){return"fb2";}
+    if (/<opml[\s>]/i.test(text)){return"opml";}
+    if (text.startsWith("{")&&text.includes('"nbformat')){return"ipynb";}
     if (text.startsWith("{\\rtf")){return "rtf";}
     if (/^<!doctype html|^<html/i.test(text)){return "html";}
     if (/^\\documentclass|^\\begin\{document\}/.test(text)) return "tex";
@@ -43,7 +38,9 @@ export function detect_document_format(bytes){
 }
 
 export async function convert_document(bytes,target,options = {}){
-    const from = options.from;
+    const from = DOC_FORMATS[options.from];
+    const to = DOC_FORMATS[target];
+    
     if (!READ[from]){
         throw new ConvertError(ErrorCode.UnsupportedInput, `Unsupported document input: "${from}"`);
     }
@@ -63,7 +60,7 @@ export async function convert_document(bytes,target,options = {}){
 
         const files = {};
         let stdin = "";
-        if (BINARY_IN.has(from)){
+        if (from.binary.has(from)){
             const name = `input.${from}`;
             files[name]=new Blob([bytes]);
             opts["input-files"] = [name];
@@ -72,13 +69,13 @@ export async function convert_document(bytes,target,options = {}){
         }
 
         const outName = `output.${target}`;
-        if (BINARY_OUT.has(target)) {
+        if (to.binary.has(target)) {
             opts["output-file"] = outName;
         }
 
         const result = await convert(opts,stdin,files);
 
-        if(BINARY_OUT.has(target)){
+        if(to.binary){
             const out = result.files?.[outName];
             if(!out){throw new ConvertError(ErrorCode.NativeFailure,"pandoc made no output");}
             return out instanceof Uint8Array ? out : new Uint8Array(await out.arrayBuffer());
