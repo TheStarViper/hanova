@@ -1,5 +1,5 @@
 <script lang="ts">
-import CompassSvg from "#lib/assets/compass.svg?raw";
+import CompassSvg from "#lib/assets/compass.svg";
 import type { Viewport } from "#lib/viewport.svelte.js";
 import Sprite from "./Sprite.svelte";
 

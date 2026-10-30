@@ -1,5 +1,5 @@
 <script lang="ts">
-import BannerSvg from "#lib/assets/banner.svg?raw";
+import BannerSvg from "#lib/assets/banner.svg";
 import { Banner } from "#lib/banner.svelte.js";
 import { decodeSounds } from "#lib/sound.js";
 import { Pos } from "#lib/utils.svelte.js";

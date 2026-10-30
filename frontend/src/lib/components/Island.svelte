@@ -13,6 +13,7 @@ export const COLOR_SUBSTITIONS: Record<string, string> = {
 
   "#eadfce": "var(--tree-fill)",
   "#efe6d2": "var(--tree-fill)",
+  "#e5dac9": "var(--tree-fill)",
   "#E5DAC9": "var(--tree-fill)",
 };
 </script>

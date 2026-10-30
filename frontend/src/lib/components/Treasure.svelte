@@ -1,5 +1,5 @@
 <script lang="ts">
-import TreasureSvg from "#lib/assets/treasure.svg?raw";
+import TreasureSvg from "#lib/assets/treasure.svg";
 import { Treasure } from "#lib/treasure.svelte.js";
 import type { Viewport } from "#lib/viewport.svelte.js";
 import Sprite from "./Sprite.svelte";

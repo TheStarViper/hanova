@@ -2,25 +2,25 @@ import type { IslandSprite } from "#lib/island.svelte.js";
 import { Ellipse, Pos } from "#lib/utils.svelte.js";
 
 // svg imports
-import Island1Svg from "#lib/assets/island1.svg?raw";
-import Island10Svg from "#lib/assets/island10.svg?raw";
-import Island11Svg from "#lib/assets/island11.svg?raw";
-import Island12Svg from "#lib/assets/island12.svg?raw";
-import Island13Svg from "#lib/assets/island13.svg?raw";
-import Island14Svg from "#lib/assets/island14.svg?raw";
-import Island15Svg from "#lib/assets/island15.svg?raw";
-import Island16Svg from "#lib/assets/island16.svg?raw";
-import Island17Svg from "#lib/assets/island17.svg?raw";
-import Island18Svg from "#lib/assets/island18.svg?raw";
-import Island19Svg from "#lib/assets/island19.svg?raw";
-import Island2Svg from "#lib/assets/island2.svg?raw";
-import Island3Svg from "#lib/assets/island3.svg?raw";
-import Island4Svg from "#lib/assets/island4.svg?raw";
-import Island5Svg from "#lib/assets/island5.svg?raw";
-import Island6Svg from "#lib/assets/island6.svg?raw";
-import Island7Svg from "#lib/assets/island7.svg?raw";
-import Island8Svg from "#lib/assets/island8.svg?raw";
-import Island9Svg from "#lib/assets/island9.svg?raw";
+import Island1Svg from "#lib/assets/island1.svg";
+import Island10Svg from "#lib/assets/island10.svg";
+import Island11Svg from "#lib/assets/island11.svg";
+import Island12Svg from "#lib/assets/island12.svg";
+import Island13Svg from "#lib/assets/island13.svg";
+import Island14Svg from "#lib/assets/island14.svg";
+import Island15Svg from "#lib/assets/island15.svg";
+import Island16Svg from "#lib/assets/island16.svg";
+import Island17Svg from "#lib/assets/island17.svg";
+import Island18Svg from "#lib/assets/island18.svg";
+import Island19Svg from "#lib/assets/island19.svg";
+import Island2Svg from "#lib/assets/island2.svg";
+import Island3Svg from "#lib/assets/island3.svg";
+import Island4Svg from "#lib/assets/island4.svg";
+import Island5Svg from "#lib/assets/island5.svg";
+import Island6Svg from "#lib/assets/island6.svg";
+import Island7Svg from "#lib/assets/island7.svg";
+import Island8Svg from "#lib/assets/island8.svg";
+import Island9Svg from "#lib/assets/island9.svg";
 
 export const ISLAND_SPRITES = {
   /**
