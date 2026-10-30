@@ -17,6 +17,7 @@ interface Props {
   viewport: Viewport | null;
 
   label?: string;
+  labelColor?: string;
 
   hide?: boolean;
 
@@ -72,7 +73,7 @@ $effect(() => {
   style:pointer-events={props.handlers === undefined ? "none" : "auto"}
 >
   {@render children()}
-  <span>{props.label}</span>
+  <span style:color={props.labelColor}>{props.label}</span>
 </div>
 
 <style lang="scss">

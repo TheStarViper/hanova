@@ -10,6 +10,8 @@
 	--ink: #261c26;
 	--bg-accent: #f2e9da;
 	--accent: #33576d;
+	--compass-line: var(--line);
+	--compass-label: #332b33;
 }
 
 body {
