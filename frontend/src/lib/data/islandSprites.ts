@@ -1,4 +1,3 @@
-import type { IslandSprite } from "#lib/island.svelte.js";
 import { Ellipse, Pos } from "#lib/utils.svelte.js";
 
 // svg imports
@@ -21,6 +20,15 @@ import Island6Svg from "#lib/assets/island6.svg";
 import Island7Svg from "#lib/assets/island7.svg";
 import Island8Svg from "#lib/assets/island8.svg";
 import Island9Svg from "#lib/assets/island9.svg";
+
+export interface IslandSprite {
+  svg: string;
+  width: number;
+  treasureOffset: Pos;
+  bound: Ellipse;
+}
+
+export type IslandSpriteIndex = keyof typeof ISLAND_SPRITES;
 
 export const ISLAND_SPRITES = {
   /**

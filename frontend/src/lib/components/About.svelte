@@ -4,7 +4,7 @@ import {
   FORMAT_TO_MEDIATYPE,
   type MediaType,
 } from "#lib/backend.js";
-import { TOOLTIP_DATA, type TooltipDatum } from "#lib/tooltip.svelte.js";
+import { TOOLTIP_DATA, type TooltipDatum } from "#lib/data/tooltipData.js";
 
 const tooltips = Object.entries(TOOLTIP_DATA) as [Format, TooltipDatum][];
 

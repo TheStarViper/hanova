@@ -1,10 +1,17 @@
-import { FORMAT_TO_MEDIATYPE, FORMATS } from "#lib/backend.js";
-import type { IslandDatum } from "#lib/island.svelte.js";
+import { type Format, FORMAT_TO_MEDIATYPE, FORMATS } from "#lib/backend.js";
 import { Pos } from "#lib/utils.svelte.js";
+import type { IslandSpriteIndex } from "./islandSprites";
 
 const IMAGE_ISLANDS_OFFSET = new Pos(0, 0);
 const AUDIO_ISLANDS_OFFSET = new Pos(2000, -1500);
 const VIDEO_ISLANDS_OFFSET = new Pos(3500, -500);
+
+export interface IslandDatum {
+  name: Format;
+  pos: Pos;
+  islandSpriteIndex: IslandSpriteIndex;
+  spawnOffset: Pos;
+}
 
 const IMAGE_ISLANDS: IslandDatum[] = [
   {

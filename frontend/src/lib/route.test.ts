@@ -1,20 +1,20 @@
 import { describe, expect, it } from "vitest";
+import { IslandManager } from "./components/Island.svelte";
 import { ISLAND_DATA } from "./data/islandPlacements";
-import { Island } from "./island.svelte";
 import { aStar, getCostFactory, gridify, isWalkableFactory } from "./route";
 import { Pos } from "./utils.svelte";
 
-const islands = ISLAND_DATA.map((datum) => new Island(datum, () => {}));
+const islands = ISLAND_DATA.map((datum) => new IslandManager(datum, () => {}));
 
 describe("Can pathfind", () => {
-  describe.each<Island>(islands)(
+  describe.each<IslandManager>(islands)(
     "from $name",
     (originIsland) => {
       const start = gridify(
         Pos.add(originIsland.pos, originIsland.spawnOffset),
       );
 
-      it.each<Island>(islands)(
+      it.each<IslandManager>(islands)(
         "to $name",
         (targetIsland) => {
           const goal = gridify(targetIsland.treasurePos);

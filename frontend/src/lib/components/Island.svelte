@@ -1,4 +1,59 @@
 <script lang="ts" module>
+import { type Format, FORMAT_TO_MEDIATYPE } from "#lib/backend.js";
+import { ISLAND_DATA, type IslandDatum } from "#lib/data/islandPlacements.js";
+import { ISLAND_SPRITES } from "#lib/data/islandSprites.js";
+import { Pos } from "#lib/utils.svelte.js";
+
+export class IslandManager {
+  callBoat: () => void;
+  datum: IslandDatum;
+
+  constructor(
+    datum: IslandDatum,
+    islandClickHandler: (targetIsland: IslandManager) => void,
+  ) {
+    this.datum = datum;
+    this.callBoat = () => islandClickHandler(this);
+  }
+
+  get name() {
+    return this.datum.name;
+  }
+
+  get pos() {
+    return this.datum.pos;
+  }
+
+  get mediaType() {
+    return FORMAT_TO_MEDIATYPE[this.datum.name];
+  }
+
+  get sprite() {
+    return ISLAND_SPRITES[this.datum.islandSpriteIndex];
+  }
+
+  get spawnOffset() {
+    return this.datum.spawnOffset;
+  }
+
+  get treasurePos() {
+    return Pos.add(this.pos, this.sprite.treasureOffset);
+  }
+
+  isInside(point: Pos): boolean {
+    return this.sprite.bound.isInside(Pos.sub(point, this.pos));
+  }
+
+  static findSpawnOffsetForFormat(formatName: Format): Pos | undefined {
+    const islandDatum = ISLAND_DATA.find(
+      (datum) => datum.name.toLowerCase() === formatName.toLowerCase(),
+    );
+    if (islandDatum === undefined) return undefined;
+
+    return Pos.add(islandDatum.pos, islandDatum.spawnOffset);
+  }
+}
+
 export const COLOR_SUBSTITIONS: Record<string, string> = {
   "#f9f2db": "var(--land)",
   "#F9F2DB": "var(--land)",
@@ -20,13 +75,12 @@ export const COLOR_SUBSTITIONS: Record<string, string> = {
 
 <script lang="ts">
 import type { MediaType } from "#lib/backend.js";
-import { Island } from "#lib/island.svelte.js";
-import { TOOLTIP_DATA } from "#lib/tooltip.svelte.js";
+import { TOOLTIP_DATA } from "#lib/data/tooltipData.js";
 import { world } from "#lib/world.svelte.js";
 import Sprite from "./Sprite.svelte";
 
 interface Props {
-  me: Island;
+  me: IslandManager;
 }
 
 let { me }: Props = $props();

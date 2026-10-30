@@ -1,4 +1,4 @@
-import type { Format } from "./backend";
+import type { Format } from "../backend";
 
 export interface TooltipDatum {
   title: string;
@@ -189,7 +189,3 @@ export const TOOLTIP_DATA: Record<Format, TooltipDatum> = {
     url: "https://en.wikipedia.org/wiki/MPEG_transport_stream",
   },
 };
-
-export class Tooltip {
-  target: Format | null = $state(null);
-}

@@ -1,5 +1,5 @@
 import { bezier, type CubicBezier, pathToBezier } from "./bezier";
-import type { Island } from "./island.svelte";
+import type { IslandManager } from "./components/Island.svelte";
 import { Pos } from "./utils.svelte";
 
 /**
@@ -14,8 +14,8 @@ export function linearRouteFactory(start: Pos, end: Pos): Route {
 
 export function aStarRouteFactory(
   startPos: Pos,
-  targetIsland: Island,
-  islands: Island[],
+  targetIsland: IslandManager,
+  islands: IslandManager[],
 ): [Route, CubicBezier[]] {
   const start = gridify(startPos);
   const goal = gridify(targetIsland.treasurePos);
@@ -164,7 +164,7 @@ export const GRID_CELL_WIDTH = 96 / 2;
 export const GRID_CELL_HEIGHT = 74 / 2;
 
 export function isWalkableFactory(
-  islands: Island[],
+  islands: IslandManager[],
 ): (coords: Coords) => boolean {
   const cache = new Map<Coords, boolean>();
 
@@ -184,7 +184,7 @@ export function isWalkableFactory(
 }
 
 export function getCostFactory(
-  targetIsland: Island,
+  targetIsland: IslandManager,
 ): (coords: Coords) => number {
   const cache = new Map<Coords, number>();
 

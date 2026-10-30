@@ -1,7 +1,30 @@
+<script lang="ts" module>
+import { world } from "#lib/world.svelte.js";
+
+export const INITIAL_BANNER_MESSAGE = "Drag & drop a file to start";
+
+export class BannerManager {
+  text: string = $state(INITIAL_BANNER_MESSAGE);
+
+  get uploadOnClick(): boolean {
+    return this.text.includes("Drag & drop");
+  }
+
+  constructor() {}
+
+  get pos() {
+    return world.viewport.center;
+  }
+
+  get hide() {
+    return this.text === "";
+  }
+}
+</script>
+
 <script lang="ts">
 import BannerSvg from "#lib/assets/banner.svg";
 import { decodeSounds } from "#lib/sound.js";
-import { world } from "#lib/world.svelte.js";
 import { onMount } from "svelte";
 import { slide } from "svelte/transition";
 import Sprite from "./Sprite.svelte";

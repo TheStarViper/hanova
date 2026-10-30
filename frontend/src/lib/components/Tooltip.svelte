@@ -1,5 +1,13 @@
+<script lang="ts" module>
+import type { Format } from "#lib/backend.js";
+
+export class TooltipManager {
+  target: Format | null = $state(null);
+}
+</script>
+
 <script lang="ts">
-import { TOOLTIP_DATA } from "#lib/tooltip.svelte.js";
+import { TOOLTIP_DATA } from "#lib/data/tooltipData.js";
 import { world } from "#lib/world.svelte.js";
 
 let me = world.tooltip;

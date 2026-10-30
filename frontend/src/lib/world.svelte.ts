@@ -1,10 +1,14 @@
 // class imports
-import { Banner, INITIAL_BANNER_MESSAGE } from "./banner.svelte";
-import { Boat, SAIL_DURATION } from "./boat.svelte";
+import {
+  BannerManager,
+  INITIAL_BANNER_MESSAGE,
+} from "./components/Banner.svelte";
+import { BoatManager, SAIL_DURATION } from "./components/Boat.svelte";
+import { IslandManager } from "./components/Island.svelte";
+import { TooltipManager } from "./components/Tooltip.svelte";
+import { TreasureManager } from "./components/Treasure.svelte";
 import { ISLAND_DATA } from "./data/islandPlacements";
 import { FileManager } from "./fileManager";
-import { Island } from "./island.svelte";
-import { Treasure } from "./treasure.svelte";
 import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
 
@@ -14,7 +18,6 @@ import type { WorkerResponse } from "./converter.worker";
 import { CppManager } from "./cppManager";
 import { aStarRouteFactory } from "./route";
 import { decodeSounds, playSound, preloadSounds } from "./sound";
-import { Tooltip } from "./tooltip.svelte";
 
 const USE_TIME_ESTIMATE = false;
 
@@ -22,16 +25,16 @@ export class World {
   cppManager = new CppManager();
   fileManager = new FileManager(this.cppManager, async () => this.dropHook());
   viewport = new Viewport();
-  boat = new Boat(this.viewport);
-  banner = new Banner(this.viewport);
+  boat = new BoatManager(this.viewport);
+  banner = new BannerManager();
   islands = ISLAND_DATA.map((datum) =>
-    new Island(
+    new IslandManager(
       datum,
-      (targetIsland: Island) => this.islandClickHandler(targetIsland),
+      (targetIsland: IslandManager) => this.islandClickHandler(targetIsland),
     )
   );
-  treasure = new Treasure();
-  tooltip = new Tooltip();
+  treasure = new TreasureManager();
+  tooltip = new TooltipManager();
 
   curves: CubicBezier[] = $state([]);
   titleCornered: boolean = $state(false);
@@ -97,7 +100,7 @@ export class World {
     const inFormatName = this.fileManager.getInputFormatName();
     if (inFormatName === undefined) return undefined;
 
-    const offset = Island.findSpawnOffsetForFormat(inFormatName);
+    const offset = IslandManager.findSpawnOffsetForFormat(inFormatName);
     return offset;
   }
 
@@ -179,7 +182,7 @@ export class World {
     this.viewport.userIsDragging = false;
   }
 
-  islandClickHandler(targetIsland: Island) {
+  islandClickHandler(targetIsland: IslandManager) {
     // hijacking this interaction to decode the sounds
     decodeSounds();
 
