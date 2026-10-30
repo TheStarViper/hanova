@@ -29,7 +29,8 @@ it would take an unreasonable amount of time to develop my own with the codecs
 and such so i opted for a prepackaged library. I have listed the libraries ive
 used down below, but before that, even though i used libraries for conversion
 there are still a ton of other things to do other than calling functions in the
-library that a file converter like file validation and safety functions.
+library that a file converter like file validation,safety functions,error handling,
+and glue code so that they can work seamlessly together
 
 ### Libraries Used:
 

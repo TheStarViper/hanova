@@ -1,6 +1,3 @@
-import createcore from "../../build/image_core_module.js";
-import createsvg from "../../build/svg_module.js";
-import createwebp from "../../build/webp_module.js";
 import {
   AUDIO_FORMATS,
   createConvert,
@@ -11,38 +8,56 @@ import {
   DOC_INPUTS,
   DOC_OUTPUTS,
 } from "./converter.mjs";
-import * as bridge from "./imagemagick-bridge.mjs";
-import * as mediabridge from "./mediabunny-bridge.mjs";
-import * as docbridge from "./pandoc-bridge.mjs";
 
-const magick = {
-  convert_bytes: bridge.convert_bytes,
-  detect_format: bridge.detect_format,
-  formats: bridge.MAGICK_BY_NAME,
-  outputonly: bridge.MAGICK_OUTPUT_ONLY,
-  processors: bridge.MAGICK_PROCESSORS,
-};
+//dynamic lib loading
+function lazy(fn){
+  let promise;
+  return () => (promise??=fn().catch((error)=>{
+    promise = undefined;
+    throw error;
+  }));
+}
 
-const media = {
-  convert_media: mediabridge.convert_media,
-  detect_format: mediabridge.detect_media_format,
-};
+const loadCore = lazy(async () => (await import("../../build/image_core_module.js")).default());
+const loadWebp = lazy(async () => (await import("../../build/webp_module.js")).default());
+const loadSvg = lazy(async () => (await import("../../build/svg_module.js")).default());
+const loadMagickBridge = lazy(() => import("./imagemagick-bridge.mjs"));
+const loadMediaBridge = lazy(() => import("./mediabunny-bridge.mjs"));
+const loadDocBridge = lazy(() => import("./pandoc-bridge.mjs"));
 
-const docs = {
-    convert_document: docbridge.convert_document,
-    detect_format: docbridge.detect_document_format,
+const MAGICK_NAMES = ["png","gif", "avif", "tiff", "ico", "jxl", "qoi", "psd", "exr", "bmp", "webp", "pdf", "eps", "ai"];
+const MAGICK_OUTPUT_ONLY = ["ico", "pdf", "eps", "ai"];
+
+function build({magickInit}={}){
+  const ensureMagick = lazy(async ()=>{await magickInit?.();});
+
+  const magick = {
+    formats: Object.fromEntries(MAGICK_NAMES.map((n)=>[n,n])),
+    outputonly: MAGICK_OUTPUT_ONLY,
+    processors: {ico: "ico"},
+    convert_bytes: async (bytes,name,quality,processor)=>{
+      await ensureMagick();
+      const b = await loadMagickBridge();
+      return b.convert_bytes(bytes,b.MAGICK_BY_NAME[name],quality,b.MAGICK_PROCESSOR[processor]);
+    },
+    detect_format: async (bytes)=>{
+      await ensureMagick();
+      return (await loadMagickBridge()).detect_format(bytes);
+    },
+  };
+
+  const media = {
+    convert_media: async (bytes, to, options) => (await loadMediaBridge()).convert_media(bytes, to, options),
+  };
+
+  const docs = {
+    convert_document: async (bytes, to, options) => (await loadDocBridge()).convert_document(bytes, to, options),
     inputs: DOC_INPUTS,
     outputs: DOC_OUTPUTS,
-};
+  };
 
-let enginesPromise;
-const engines = () => (
-  enginesPromise ??= Promise.all([createcore(), createwebp(), createsvg()])
-    .catch((error) => {
-      enginesPromise = undefined;
-      throw error;
-    })
-);
+  return createconverter({});
+}
 
 /**
  * @returns {Promise<(target_format: string, bytes: Buffer<ArrayBuffer>, quality: number) => Promise<Buffer<ArrayBuffer>>> }
