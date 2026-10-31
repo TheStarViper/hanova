@@ -18,18 +18,18 @@ function mediaTypeList(mediaType: MediaType): string {
 </script>
 
 <article id="about">
-  <h1>About Hanova</h1>
-
-  <blockquote>
-    Welcome to Hanova, a (fictional) archipelago off the coast of Madagascar!
-  </blockquote>
-
-  <p>
-    "Hanova" is the Malagasy word for "convert", and that's exactly what these
-    islands do. Drag-and-drop your file into the water, and sail it to the
-    island corresponding to your desired file format. Dig at the red X, and
-    you'll unearth buried treasure: your converted file!
-  </p>
+  <section id="top">
+    <h1>About Hanova</h1>
+    <blockquote>
+      Welcome to Hanova, a (fictional) archipelago off the coast of Madagascar!
+    </blockquote>
+    <p>
+      "Hanova" is the Malagasy word for "convert", and that's exactly what these
+      islands do. Drag-and-drop your file into the water, and sail it to the
+      island corresponding to your desired file format. Dig at the red X, and
+      you'll unearth buried treasure: your converted file!
+    </p>
+  </section>
 
   <section id="settings">
     <h2>Settings</h2>
@@ -72,20 +72,23 @@ h2 {
 
 h2 {
   font-size: 1.2rem;
-  margin-top: 3rem;
 }
 
 article {
-  margin: 5% auto;
+  min-width: 100%;
+  height: 100%;
   color: var(--ink);
-  max-width: 60ch;
-  padding: 1rem;
-  max-height: 100%;
   overflow-y: scroll;
 }
 
 p {
   margin-block: 0.5rem;
+}
+
+section {
+  margin: 3rem auto 0;
+  max-width: 60ch;
+  padding-inline: 1rem;
 }
 
 section#formats p {
