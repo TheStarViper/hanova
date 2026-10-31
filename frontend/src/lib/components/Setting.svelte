@@ -4,6 +4,7 @@ export type Setting = (typeof SETTINGS)[number];
 </script>
 
 <script lang="ts">
+import InfoSvg from "#lib/assets/info.svg";
 import { TOOLTIP_DATA } from "#lib/data/tooltipData.js";
 import { world } from "#lib/world.svelte.js";
 import { onMount } from "svelte";
@@ -28,20 +29,22 @@ const onchange: ChangeEventHandler<HTMLInputElement> = (event: Event) => {
 
 // svelte-ignore state_referenced_locally
 let elValue: number | string = $state(props.readonlyValue);
-let el: HTMLDivElement;
+let hoverEl: HTMLElement;
 
 onMount(() => {
-  el.addEventListener("mouseenter", () => {
+  hoverEl.addEventListener("mouseenter", () => {
     world.tooltip.target = props.id;
   });
-  el.addEventListener("mouseleave", () => {
+  hoverEl.addEventListener("mouseleave", () => {
     world.tooltip.target = null;
   });
 });
 </script>
 
-<div bind:this={el}>
-  <label for={props.id}>{TOOLTIP_DATA[props.id].title}</label>
+<div>
+  <label for={props.id}>{TOOLTIP_DATA[props.id].title} <span
+      bind:this={hoverEl}
+    >{@html InfoSvg}</span></label>
   <input
     id={props.id}
     type={props.inputType}
@@ -80,8 +83,26 @@ div {
     }
   }
 
+  .icon {
+    width: 20px;
+    margin: -5px;
+  }
+
   .percent {
     min-width: 4ch;
+  }
+
+  label {
+    display: flex;
+    gap: 0.5rem;
+
+    span {
+      color: var(--line);
+
+      @media (pointer: coarse) {
+        display: none;
+      }
+    }
   }
 
   input {
