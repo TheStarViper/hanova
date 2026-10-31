@@ -33,7 +33,6 @@ function mediaTypeList(mediaType: MediaType): string {
 
   <section id="settings">
     <h2>Settings</h2>
-    <p>Hanova has a few settings that you can configure:</p>
     <div>
       <label for="quality">Conversion Quality</label>
       <input id="quality" type="range" bind:value={world.quality} />
@@ -43,25 +42,46 @@ function mediaTypeList(mediaType: MediaType): string {
 
   <section id="formats">
     <h2>Supported File Formats</h2>
-    <p>Image: {@html mediaTypeList("image")}</p>
+    <p>Images: {@html mediaTypeList("image")}</p>
     <p>Audio: {@html mediaTypeList("audio")}</p>
-    <p>Video: {@html mediaTypeList("video")}</p>
-    <p>Document: (coming soon!)</p>
+    <p>Videos: {@html mediaTypeList("video")}</p>
+    <p>Documents: (coming soon!)</p>
   </section>
 
-  <section id="source">
-    <h2>Source Code</h2>
+  <section id="history">
+    <h2>History</h2>
     <p>
-      Check out our repo: <a href="https://github.com/TheStarViper/hanova"
-      >https://github.com/TheStarViper/hanova</a>
+      Hanova was created over the span of 7 weeks, for <a
+        href="https://thirdspace.hackclub.com/home"
+      >Third Space</a>. Andrew wanted to make a file converter backend, Ethan
+      wanted to make an antique nautical map UI, and Hanova was the resulting
+      compromise.
+    </p>
+    <p>
+      The name 'Hanova' was chosen by running the word 'convert' through random
+      languages in Google Translate until we found one that sounded novel and
+      interesting. (our backup was 'Umbreyta' from Icelandic).
     </p>
   </section>
 
-  <footer>
-    Made by <a href="https://github.com/ethmarks">Ethan</a> (Svelte frontend) &
-    <wbr />
-    <a href="https://github.com/TheStarViper">Andrew</a> (C++ backend)
-  </footer>
+  <section id="source">
+    <h2>Source</h2>
+    <p>
+      Source on GitHub here: <a href="https://github.com/TheStarViper/hanova"
+      >https://github.com/TheStarViper/hanova</a>
+    </p>
+    <p>Contributors:</p>
+    <ul>
+      <li>
+        Ethan (<a href="https://github.com/ethmarks">@ethmarks</a>): Frontend
+        with Svelte and TypeScript
+      </li>
+      <li>
+        Andrew (<a href="https://github.com/TheStarViper">@TheStarViper</a>):
+        Backend with C++ and JavaScript
+      </li>
+    </ul>
+  </section>
 </article>
 
 <style lang="scss">
@@ -123,11 +143,6 @@ blockquote {
   padding: 0.6rem 1rem;
   border-radius: 0.4rem;
   outline: 4px double var(--line);
-}
-
-footer {
-  margin-top: 3rem;
-  text-align: center;
 }
 
 #settings {
