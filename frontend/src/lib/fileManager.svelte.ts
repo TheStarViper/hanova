@@ -90,7 +90,7 @@ export class FileManager {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = this.outFilename;
+    a.download = this.applyFilenameTemplate();
     a.click();
     a.remove();
 
@@ -99,55 +99,64 @@ export class FileManager {
     return true;
   }
 
-  #parseFilename(): { base: string; ext: string | undefined } {
+  #parseFilename(): {
+    raw: string;
+    base: string;
+    inExt: string | undefined;
+  } {
     if (this.file === undefined) {
       throw new Error("can only parse filename if file is defined");
     }
-    const input = this.file.name;
+    const raw = this.file.name;
 
     // group 1: everything before the final dot
     // group 2: the final dot and everything after it, if it exists
     const regex = /^(.*?)(\.[^.]*)?$/;
 
-    const match = input.match(regex);
+    const match = raw.match(regex);
 
-    if (match === null) return { base: "file", ext: "" };
+    if (match === null) return { raw, base: "file", inExt: "" };
 
     // one-indexed because regex is weird like that
     const base: string = match[1];
-    const ext: string | undefined = match[2]; // includes dot btw
+    const inExt: string | undefined = match[2]; // includes dot btw
 
-    return { base, ext };
+    return { raw, base, inExt };
   }
 
   getInputFormatName(): Format | undefined {
-    const { ext } = this.#parseFilename();
-    if (ext === undefined) return undefined;
+    const { inExt } = this.#parseFilename();
+    if (inExt === undefined) return undefined;
 
-    const extWithoutDot = ext.substring(1).toLowerCase();
+    const extWithoutDot = inExt.substring(1).toLowerCase();
 
     return EXT_TO_FORMAT[extWithoutDot];
   }
 
   get displayifiedFilename(): string {
-    const { base, ext } = this.#parseFilename();
+    const { base, inExt } = this.#parseFilename();
 
-    const maxBaseLength = MAX_FILENAME_CHARS - (ext?.length ?? 0);
+    const maxBaseLength = MAX_FILENAME_CHARS - (inExt?.length ?? 0);
 
-    if (base.length <= maxBaseLength) return base + ext;
+    if (base.length <= maxBaseLength) return base + inExt;
 
     const truncatedBase = base.substring(0, maxBaseLength - 1);
 
-    return truncatedBase + ELLIPSIS + ext;
+    return truncatedBase + ELLIPSIS + inExt;
   }
 
-  get outFilename(): string {
-    const { base } = this.#parseFilename();
+  applyFilenameTemplate(): string {
+    const { raw, base, inExt } = this.#parseFilename();
+    const outExt = this.outFormat;
 
-    if (this.outFormat === undefined) {
-      throw new Error("can't get out filename until out format is set");
-    }
+    const EXT_FALLBACK = "???";
 
-    return `${base}.${this.outFormat}`;
+    const outFilename = world.filenameTemplate
+      .replaceAll("{raw}", raw)
+      .replaceAll("{base}", base)
+      .replaceAll("{inExt}", inExt ?? EXT_FALLBACK)
+      .replaceAll("{outExt}", outExt ?? EXT_FALLBACK);
+
+    return outFilename;
   }
 }

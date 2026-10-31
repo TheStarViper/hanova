@@ -34,7 +34,10 @@ export class World {
 
   curves: CubicBezier[] = $state([]);
   titleCornered: boolean = $state(false);
+
+  // user-configurable settings
   quality: number = $state(90);
+  filenameTemplate: string = $state("{base}.{outExt}");
 
   // for various dev-only debugging visuals
   debugging = false;
