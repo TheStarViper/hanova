@@ -150,7 +150,6 @@ export const DOC_FORMATS = {
   dokuwiki: { read: "dokuwiki",  write: "dokuwiki" },
   jira:     { read: "jira",      write: "jira" },
   muse:     { read: "muse",      write: "muse" },
-  vimwiki:  { read: "vimwiki",   write: "vimwiki" },
   adoc:     {                    write: "asciidoc" },
   xwiki:    {                    write: "xwiki" },
   zimwiki:  {                    write: "zimwiki" },
@@ -178,7 +177,6 @@ export const DOC_FORMATS = {
 
   //notebooks
   ipynb:   { read: "ipynb",   write: "ipynb",   mime: "application/x-ipynb+json" },
-  bib:     { read: "bibtex",  write: "bibtex" },
   csljson: { read: "csljson", write: "csljson", mime: "application/json" },
   ris:     { read: "ris" },
   endnote: { read: "endnotexml" },

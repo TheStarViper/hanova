@@ -28,6 +28,8 @@ export default defineConfig({
       "@mediabunny/flac-encoder",
       "@mediabunny/aac-encoder",
       'pandoc-wasm',
+      '@ffmpeg/ffmpeg',
+      '@ffmpeg/core',
     ],
   },
 });
