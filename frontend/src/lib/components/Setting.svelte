@@ -77,17 +77,6 @@ div {
     text-align: center;
   }
 
-  @media (width >= 600px) {
-    label:last-of-type {
-      text-align: right;
-    }
-  }
-
-  .icon {
-    width: 20px;
-    margin: -5px;
-  }
-
   .percent {
     min-width: 4ch;
   }
