@@ -24,7 +24,7 @@ let elValue: number | string = $state(props.readonlyValue);
 </script>
 
 <div>
-  <label for={props.id}>Conversion Quality</label>
+  <label for={props.id}>{props.display}</label>
   <input
     id={props.id}
     type={props.inputType}
@@ -42,9 +42,10 @@ let elValue: number | string = $state(props.readonlyValue);
 div {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  align-items: center;
+  column-gap: 1rem;
 
-  width: fit-content;
+  width: 100%;
   margin: 1rem auto;
   background: var(--bg-accent);
   padding: 0.3rem 0.8rem;
@@ -64,6 +65,10 @@ div {
 
   .percent {
     min-width: 4ch;
+  }
+
+  input {
+    flex: 1 1 0;
   }
 
   input[type="range"] {
@@ -105,6 +110,18 @@ div {
 
     &::-moz-range-thumb {
       @include range-thumb;
+    }
+  }
+
+  input[type="text"] {
+    background: var(--compass-bg);
+    border-radius: 5px;
+    border: 3px double var(--line);
+    box-shadow: 2px 2px color-mix(var(--line), transparent 30%);
+    height: 2rem;
+
+    &:focus {
+      outline: none;
     }
   }
 }

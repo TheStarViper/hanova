@@ -43,6 +43,14 @@ function mediaTypeList(mediaType: MediaType): string {
       updateValue={((newVal: number | string) => world.quality = newVal as number)}
       percent
     />
+    <Setting
+      id="template"
+      display="Filename Template"
+      inputType="text"
+      readonlyValue={world.filenameTemplate}
+      updateValue={((newVal: number | string) => world.filenameTemplate = newVal as string)}
+      percent
+    />
   </section>
 
   <section id="formats">
