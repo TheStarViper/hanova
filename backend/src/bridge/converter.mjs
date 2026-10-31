@@ -39,6 +39,87 @@ export const AUDIO_FORMATS = [
   "m4a",
 ];
 
+export const MEDIA_INFO = {
+  mp4:  { ext: "mp4",  mime: "video/mp4",        video: true,  encoders: ["aac"] },
+  mov:  { ext: "mov",  mime: "video/quicktime",  video: true,  encoders: ["aac"] },
+  webm: { ext: "webm", mime: "video/webm",       video: true },
+  mkv:  { ext: "mkv",  mime: "video/x-matroska", video: true },
+  ts:   { ext: "ts",   mime: "video/mp2t",       video: true,  encoders: ["aac"] },
+  mp3:  { ext: "mp3",  mime: "audio/mpeg",       video: false, encoders: ["mp3"],  audioCodec: "mp3" },
+  wav:  { ext: "wav",  mime: "audio/wav",        video: false },
+  ogg:  { ext: "ogg",  mime: "audio/ogg",        video: false },
+  flac: { ext: "flac", mime: "audio/flac",       video: false, encoders: ["flac"], audioCodec: "flac" },
+  aac:  { ext: "aac",  mime: "audio/aac",        video: false, encoders: ["aac"],  audioCodec: "aac" },
+  m4a:  { ext: "m4a",  mime: "audio/mp4",        video: false, encoders: ["aac"],  audioCodec: "aac" },
+};
+export const MEDIA_FORMATS = Object.keys(MEDIA_INFO);
+export const MEDIA_PRESETS = ["potato", "small", "balanced", "high", "max"];
+
+const ascii = (bytes,start,end)=>String.fromCharCode(...bytes.subarray(start,end));
+const latin1 = (bytes,start,end) => new TextDecoder("latin1").decode(bytes.subarray(start,end));
+
+export function detect_media_format(bytes) {
+  if (!bytes || bytes.length < 12) return "unknown";
+
+  // video
+  if (ascii(bytes, 4, 8) === "ftyp") {
+    const brand = ascii(bytes, 4, 8);
+    if (brand === "qt  ") return "mov";
+    if (brand === "M4A " || brand === "M4B ") return "m4a";
+    return "mp4";
+  }
+
+  if (
+    bytes[0] === 0x1a && bytes[1] === 0x45 && bytes[2] === 0xdf
+    && bytes[3] === 0xa3
+  ) {
+    return ascii(bytes, 0, Math.min(64, bytes.length)).includes("webm")
+      ? "webm"
+      : "mkv";
+  }
+
+  // audio
+  if (ascii(bytes, 0, 4) === "OggS") return "ogg";
+  if (ascii(bytes, 0, 4) === "fLaC") return "flac";
+  if (ascii(bytes, 0, 4) === "RIFF" && ascii(bytes, 8, 12) === "WAVE") {
+    return "wav";
+  }
+  if (ascii(bytes, 0, 3) === "ID3") return "mp3";
+  if (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0) {
+    return ((bytes[1] >> 1) & 3) === 0 ? "aac" : "mp3";
+  }
+  if (bytes[0] === 0x47 && bytes.length >= 189 && bytes[188] === 0x47) {
+    return "ts";
+  }
+  return "unknown";
+}
+
+export function detect_document_format(b) {
+  if (!b || b.length < 8) return "unknown";
+
+  if (b[0] === 0x50 && b[1] === 0x4b && (b[2] === 3 || b[2] === 5)) {
+    const head = latin1(b, 0, Math.min(b.length, 1024));
+    if (head.includes("application/epub+zip")) return "epub";
+    if (head.includes("application/vnd.oasis.opendocument.text")) return "odt";
+    const tail = latin1(b, Math.max(0, b.length - 65536), b.length);
+    if (tail.includes("word/document.xml")) return "docx";
+    if (tail.includes("ppt/presentation.xml")) return "pptx";
+    return "unknown";
+  }
+
+  const start = b[0] === 0xef && b[1] === 0xbb && b[2] === 0xbf ? 3 : 0;
+  const text = latin1(b, start, Math.min(b.length, start + 1024)).trimStart();
+
+  if (text.startsWith("%PDF")) return "pdf";
+  if (text.startsWith("{\\rtf")) return "rtf";
+  if (text.includes("<FictionBook")) return "fb2";
+  if (/<opml[\s>]/i.test(text)) return "opml";
+  if (text.startsWith("{") && text.includes('"nbformat"')) return "ipynb";
+  if (/^<!doctype html|^<html/i.test(text)) return "html";
+  if (/^\\documentclass|^\\begin\{document\}/.test(text)) return "tex";
+  return "unknown";
+}
+
 // key = what the app calls it 
 // read/write = pandoc's name for it
 // binary: zip containers, passed as files. standalone: full document, not a fragment.
@@ -219,12 +300,7 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
     for (const from of Object.keys(STB_ENCODER)) {
       for (const to of Object.keys(STB_ENCODER)) {
         if (from !== to) {
-          register(
-            from,
-            to,
-            (bytes, q) => unwrap(core[STB_ENCODER[to]](bytes, q)),
-            1,
-          );
+          register(from, to, async (bytes, q) => unwrap((await use(core))[STB_ENCODER[to]](bytes, q)), 1);
         }
       }
     }
@@ -232,23 +308,13 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
 
   // libwebp
   if (webp) {
-    register(
-      "png",
-      "webp",
-      (bytes, q) => unwrap(webp.convert_to_webp(bytes, q)),
-      1,
-    );
-    register(
-      "webp",
-      "png",
-      (bytes) => unwrap(webp.convert_webp_to_png(bytes)),
-      1,
-    );
+    register("png", "webp", async (bytes, q) => unwrap((await use(webp)).convert_to_webp(bytes, q)), 1);
+    register("webp", "png", async (bytes) => unwrap((await use(webp)).convert_webp_to_png(bytes)), 1);
   }
 
   // nanosvg
   if (svg) {
-    register("svg", "png", (bytes) => unwrap(svg.convert_svg_to_png(bytes)), 1);
+    register("svg", "png", async (bytes) => unwrap((await use(svg)).convert_svg_to_png(bytes)), 1);
   }
 
   // magick
@@ -349,17 +415,14 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
     return path;
   }
 
+  const use = (engine) => (typeof engine ==="function"?engine():engine);
+  
   async function detect(bytes) {
-    let format = core ? core.validate_file_format(bytes) : "unknown";
-    if (format === "unknown" && media) {
-      format = await media.detect_format(bytes);
-    }
-    if (format==='unknown'&&docs){
-        format = docs.detect_format(bytes);
-    }
-    if (format === "unknown" && magick) {
-      format = await magick.detect_format(bytes);
-    }
+    let format = "unknown";
+    if (media) {format = detect_media_format(bytes);}
+    if (format ==="unknown"&&docs){format = detect_document_format(bytes);}
+    if (format ==="unknown"&&core){format = (await use(core)).validate_file_format(bytes);}
+    if (format ==="unknown"&&magick){format = await magick.detect_format(bytes);}
     return ALIASES[format] ?? format;
   }
 

@@ -56,21 +56,19 @@ function build({magickInit}={}){
     outputs: DOC_OUTPUTS,
   };
 
-  return createconverter({});
+  return createconverter({core: loadCore, webp: loadWebp, svg: loadSvg, magick,media,docs});
 }
 
 /**
  * @returns {Promise<(target_format: string, bytes: Buffer<ArrayBuffer>, quality: number) => Promise<Buffer<ArrayBuffer>>> }
  */
 
-export async function converterFactory() {
-  const [core, webp, svg] = await engines();
-  return createconverter({ core, webp, svg, magick, media,docs }).convert_image;
+export async function converterFactory(options) {
+  return build(options).convert_image;
 }
 
-export async function universalFactory() {
-  const [core, webp, svg] = await engines();
-  const c = createconverter({ core, webp, svg, magick, media,docs });
+export async function universalFactory(options) {
+  const c = build(options);
   const convert = createConvert({
     image: c.convert_image,
     imageFormats: IMAGE_FORMATS,
@@ -86,6 +84,15 @@ export async function universalFactory() {
   return { convert, ...c };
 }
 
+export const preload = {
+  image: ()=>Promise.all([loadCore(),loadWebp(),loadSvg()]),
+  media: ()=> loadMediaBridge(),
+  document: ()=>loadDocBridge(),
+};
+
+export const probe_media = async (...args)=>(await loadMediaBridge()).probe_media(...args);
+export const thumbnail_at = async (...args)=>(await loadMediaBridge()).thumbnail_at(...args);
+
 export {
   ALIASES,
   AUDIO_FORMATS,
@@ -97,13 +104,9 @@ export {
   VIDEO_FORMATS,
   DOCUMENT_FORMATS,
   DOC_FORMATS,
-  format_from_filename,
-} from "./converter.mjs";
-export { ErrorCode, to_convert_error } from "./errors.mjs";
-export {
   MEDIA_FORMATS,
   MEDIA_INFO,
   MEDIA_PRESETS,
-  probe_media,
-  thumbnail_at,
-} from "./mediabunny-bridge.mjs";
+  format_from_filename,
+} from "./converter.mjs";
+export { ErrorCode, to_convert_error } from "./errors.mjs";
