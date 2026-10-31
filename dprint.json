@@ -8,6 +8,8 @@
     "**/*-lock.json",
     "*.svg",
 
+    "reset.css",
+
     "backend/build",
     "backend/libraries"
   ],
@@ -15,7 +17,8 @@
     "npm:@dprint/typescript@0.96.1",
     "npm:@dprint/json@0.25.2",
     "npm:dprint-plugin-markup@0.27.5",
-    "npm:dprint-plugin-yaml@0.6.0"
+    "npm:dprint-plugin-yaml@0.6.0",
+    "npm:dprint-plugin-malva@0.16.0"
   ],
   "lineWidth": 80
 }

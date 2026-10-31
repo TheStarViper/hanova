@@ -2,13 +2,41 @@
 <meta charset="utf-8">
 <title>Hanova converter test</title>
 <style>
-body { font-family: sans-serif; max-width: 680px; margin: 2rem auto; padding: 0 1rem }
-nav button { padding: .4rem 1rem; border: 1px solid #888; background: none; cursor: pointer }
-nav button.active { background: #222; color: #fff }
-section { display: none; margin-top: 1rem }
-section.active { display: block }
-.row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; margin-bottom: .5rem }
-img, video, audio { max-width: 100%; display: none; margin-top: .5rem }
+body {
+  font-family: sans-serif;
+  max-width: 680px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+nav button {
+  padding: 0.4rem 1rem;
+  border: 1px solid #888;
+  background: none;
+  cursor: pointer;
+}
+nav button.active {
+  background: #222;
+  color: #fff;
+}
+section {
+  display: none;
+  margin-top: 1rem;
+}
+section.active {
+  display: block;
+}
+.row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+img, video, audio {
+  max-width: 100%;
+  display: none;
+  margin-top: 0.5rem;
+}
 </style>
 <body>
   <h3>Hanova converter test</h3>
@@ -30,7 +58,7 @@ img, video, audio { max-width: 100%; display: none; margin-top: .5rem }
       <button id="stop">Cancel</button>
     </div>
     <p id="status">Loading...</p>
-    <a id="download" style="display:none">Download result</a>
+    <a id="download" style="display: none">Download result</a>
     <video id="preview" controls></video>
     <audio id="audioPreview" controls></audio>
   </section>
@@ -53,7 +81,7 @@ img, video, audio { max-width: 100%; display: none; margin-top: .5rem }
     </div>
     <div class="row"><button id="imgGo">Convert</button></div>
     <p id="imgStatus">Loading...</p>
-    <a id="imgDownload" style="display:none">Download result</a>
+    <a id="imgDownload" style="display: none">Download result</a>
     <img id="imgPreview" alt="">
   </section>
 

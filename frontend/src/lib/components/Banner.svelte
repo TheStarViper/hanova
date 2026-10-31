@@ -60,7 +60,7 @@ onMount(() => {
 });
 </script>
 
-<input id="fileInput" type="file" bind:this={inputEl} style="display: none;" />
+<input id="fileInput" type="file" bind:this={inputEl} style="display: none" />
 
 <div id="banner-container" style:scale={scale}>
   <Sprite
@@ -89,53 +89,53 @@ onMount(() => {
 
 <style lang="scss">
 #banner-container {
-	z-index: 101;
+  z-index: 101;
 }
 
 #banner-text-container {
-	position: absolute;
-	transform: translate(-50%, -50%);
-	z-index: 101;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 101;
 
-	transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease;
 
-	// approximate size of the main section of the banner
-	max-width: 700px;
-	width: 100%;
+  // approximate size of the main section of the banner
+  max-width: 700px;
+  width: 100%;
 
-	&.hide {
-		opacity: 0;
-	}
+  &.hide {
+    opacity: 0;
+  }
 
-	h2 {
-		user-select: none;
-		color: var(--ink);
-		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  h2 {
+    user-select: none;
+    color: var(--ink);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 
-		text-align: center;
+    text-align: center;
 
-		transition: transform 0.2s ease;
-	}
+    transition: transform 0.2s ease;
+  }
 }
 
 #banner-overlay {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	z-index: 99;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
 
-	background: black;
-	opacity: 0.4;
-	transition: opacity 0.2s ease;
+  background: black;
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
 
-	pointer-events: none;
+  pointer-events: none;
 
-	&.hide {
-		opacity: 0;
-	}
+  &.hide {
+    opacity: 0;
+  }
 }
 
 #fileInput {
-	display: none;
+  display: none;
 }
 </style>

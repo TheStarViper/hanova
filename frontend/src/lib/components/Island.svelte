@@ -165,32 +165,32 @@ $effect(() => {
 
 <style lang="scss">
 .debug {
-	position: relative;
+  position: relative;
 
-	* {
-		position: absolute;
-		transform: translate(-50%, -50%);
-		pointer-events: none;
-	}
+  * {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
 
-	.radius {
-		width: calc(var(--xAxis) * 2);
-		height: calc(var(--yAxis) * 2);
-		transform-origin: top left;
-		border: 5px solid red;
-		border-radius: 50%;
-	}
-	.spawn {
-		width: 96px;
-		height: 74px;
-		border: 7px solid lime;
-		border-radius: 9999px;
-	}
-	.treasure {
-		width: 30px;
-		height: 30px;
-		border: 5px solid fuchsia;
-		border-radius: 9999px;
-	}
+  .radius {
+    width: calc(var(--xAxis) * 2);
+    height: calc(var(--yAxis) * 2);
+    transform-origin: top left;
+    border: 5px solid red;
+    border-radius: 50%;
+  }
+  .spawn {
+    width: 96px;
+    height: 74px;
+    border: 7px solid lime;
+    border-radius: 9999px;
+  }
+  .treasure {
+    width: 30px;
+    height: 30px;
+    border: 5px solid fuchsia;
+    border-radius: 9999px;
+  }
 }
 </style>

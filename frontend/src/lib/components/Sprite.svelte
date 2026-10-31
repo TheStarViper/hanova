@@ -76,50 +76,48 @@ $effect(() => {
 
 <style lang="scss">
 .svg-wrapper {
-	position: absolute;
-	transform: translate(-50%, -50%);
+  position: absolute;
+  transform: translate(-50%, -50%);
 
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-	& > :global(:not(span)) {
-		filter: drop-shadow(var(--border-width) 0 0 var(--border-color))
-			drop-shadow(
-				calc(var(--border-width) * -1) 0 0 var(--border-color)
-			)
-			drop-shadow(0 var(--border-width) 0 var(--border-color))
-			drop-shadow(
-				0 calc(var(--border-width) * -1) 0 var(--border-color)
-			);
-		transition: filter 0.3s ease;
-	}
+  & > :global(:not(span)) {
+    filter: drop-shadow(var(--border-width) 0 0 var(--border-color))
+      drop-shadow(calc(var(--border-width) * -1) 0 0 var(--border-color))
+      drop-shadow(0 var(--border-width) 0 var(--border-color)) drop-shadow(
+      0 calc(var(--border-width) * -1)
+      0 var(--border-color)
+    );
+    transition: filter 0.3s ease;
+  }
 
-	filter: drop-shadow(0 0 30px hsl(41 40% 60% / var(--shadow-opacity)));
+  filter: drop-shadow(0 0 30px hsl(41 40% 60% / var(--shadow-opacity)));
 
-	transition-duration: 0.3s;
-	transition-timing-function: ease;
-	transition-property: filter, opacity;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+  transition-property: filter, opacity;
 
-	span {
-		font-style: italic;
-		user-select: none;
-		color: var(--ink);
-	}
+  span {
+    font-style: italic;
+    user-select: none;
+    color: var(--ink);
+  }
 }
 
 .sunk {
-	animation: sink 1s ease both;
+  animation: sink 1s ease both;
 }
 
 @keyframes sink {
-	from {
-		transform: translate(-50%, -50%);
-		clip-path: xywh(0 0 100% 100%);
-	}
-	to {
-		transform: translate(-50%, 0) rotate(6deg);
-		clip-path: xywh(0 0 100% 0);
-	}
+  from {
+    transform: translate(-50%, -50%);
+    clip-path: xywh(0 0 100% 100%);
+  }
+  to {
+    transform: translate(-50%, 0) rotate(6deg);
+    clip-path: xywh(0 0 100% 0);
+  }
 }
 </style>

@@ -73,7 +73,7 @@ const hold = (_node: Element): TransitionConfig => ({
     viewBox="{minX} {minY} {width} {height}"
     {width}
     {height}
-    style="transform: translate({offset.x}px, {offset.y}px);"
+    style="transform: translate({offset.x}px, {offset.y}px)"
   >
     <defs>
       <mask id="reveal">
@@ -104,9 +104,9 @@ const hold = (_node: Element): TransitionConfig => ({
 
 <style lang="scss">
 .bezier-wrapper {
-	position: absolute;
-	top: 0;
-	left: 0;
-	pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
 </style>

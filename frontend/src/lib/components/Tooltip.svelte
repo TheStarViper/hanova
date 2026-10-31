@@ -36,30 +36,30 @@ $effect(() => {
 
 <style lang="scss">
 div {
-	position: absolute;
-	transform: translate(-15%, -20%);
-	user-select: none;
-	pointer-events: none;
+  position: absolute;
+  transform: translate(-15%, -20%);
+  user-select: none;
+  pointer-events: none;
 
-	background: #fffae5ff;
-	border: 5px double #6f5d64ff;
-	padding: 0.5rem 0.4rem;
-	border-radius: 0.5rem;
-	max-width: 20ch;
+  background: #fffae5ff;
+  border: 5px double #6f5d64ff;
+  padding: 0.5rem 0.4rem;
+  border-radius: 0.5rem;
+  max-width: 20ch;
 
-	clip-path: xywh(0 0 0 0);
-	transition: clip-path 0.3s ease;
+  clip-path: xywh(0 0 0 0);
+  transition: clip-path 0.3s ease;
 
-	&.show {
-		clip-path: xywh(0 0 100% 100%);
-	}
+  &.show {
+    clip-path: xywh(0 0 100% 100%);
+  }
 
-	h2 {
-		font-size: 1rem;
-	}
+  h2 {
+    font-size: 1rem;
+  }
 
-	p {
-		font-size: 0.7rem;
-	}
+  p {
+    font-size: 0.7rem;
+  }
 }
 </style>

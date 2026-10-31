@@ -38,16 +38,16 @@ const url = "https://thestarviper.github.io/hanova/";
 
 <style lang="scss">
 main {
-	width: 100%;
-	height: 100%;
-	position: relative;
-	overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 
-	border: 2px solid var(--line);
-	outline: 1px solid var(--line);
-	outline-offset: 0.4rem;
+  border: 2px solid var(--line);
+  outline: 1px solid var(--line);
+  outline-offset: 0.4rem;
 
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 </style>

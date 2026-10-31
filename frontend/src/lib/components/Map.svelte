@@ -39,9 +39,9 @@ let worldOffset = $derived(
 
 <style lang="scss">
 .world-layer {
-	position: absolute;
-	inset: 0;
-	transform-origin: 0 0;
-	pointer-events: none;
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
 }
 </style>

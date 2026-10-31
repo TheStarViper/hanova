@@ -20,21 +20,32 @@ import { world } from "#lib/world.svelte.js";
 
 <style lang="scss">
 #devOnlyPathfindingGrid {
-	position: absolute;
-	top: 0;
-	left: 0;
-	pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 
-	width: 100vw;
-	height: 100vh;
+  width: 100vw;
+  height: 100vh;
 
-	--line-thickness: 2px;
+  --line-thickness: 2px;
 
-	background-image:
-		// grid lines
-		linear-gradient(to right, red var(--line-thickness), transparent var(--line-thickness)),
-		linear-gradient(to bottom, red var(--line-thickness), transparent var(--line-thickness)),
-		// cell centers
-		radial-gradient(circle at 50% 50%, blue var(--line-thickness), transparent var(--line-thickness));
+  background-image: // grid lines
+    linear-gradient(
+      to right,
+      red var(--line-thickness),
+      transparent var(--line-thickness)
+    ),
+    linear-gradient(
+    to bottom,
+    red var(--line-thickness),
+    transparent var(--line-thickness)
+  ),
+     // cell centers
+    radial-gradient(
+      circle at 50% 50%,
+      blue var(--line-thickness),
+      transparent var(--line-thickness)
+    );
 }
 </style>

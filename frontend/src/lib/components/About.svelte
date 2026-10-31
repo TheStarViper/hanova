@@ -67,116 +67,116 @@ function mediaTypeList(mediaType: MediaType): string {
 <style lang="scss">
 h1,
 h2 {
-	text-align: center;
+  text-align: center;
 }
 
 h2 {
-	font-size: 1.2rem;
-	margin-top: 3rem;
+  font-size: 1.2rem;
+  margin-top: 3rem;
 }
 
 article {
-	margin: 5% auto;
-	color: var(--ink);
-	max-width: 60ch;
-	padding: 1rem;
-	max-height: 100%;
-	overflow-y: scroll;
+  margin: 5% auto;
+  color: var(--ink);
+  max-width: 60ch;
+  padding: 1rem;
+  max-height: 100%;
+  overflow-y: scroll;
 }
 
 p {
-	margin-block: 0.5rem;
+  margin-block: 0.5rem;
 }
 
 section#formats p {
-	text-indent: 2ch hanging;
+  text-indent: 2ch hanging;
 }
 
 :global {
-	#about {
-		a,
-		a:visited {
-			color: var(--accent);
-		}
-	}
+  #about {
+    a,
+    a:visited {
+      color: var(--accent);
+    }
+  }
 }
 
 blockquote {
-	width: fit-content;
-	margin: 1rem auto;
-	background: var(--bg-accent);
-	padding: 0.6rem 1rem;
-	border-radius: 0.4rem;
-	outline: 4px double var(--line);
+  width: fit-content;
+  margin: 1rem auto;
+  background: var(--bg-accent);
+  padding: 0.6rem 1rem;
+  border-radius: 0.4rem;
+  outline: 4px double var(--line);
 }
 
 footer {
-	margin-top: 3rem;
-	text-align: center;
+  margin-top: 3rem;
+  text-align: center;
 }
 
 #settings {
-	div {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
 
-		width: fit-content;
-		margin: 1rem auto;
-		background: var(--bg-accent);
-		padding: 0.3rem 0.8rem;
-		border-radius: 0.4rem;
-		outline: 4px double var(--line);
+    width: fit-content;
+    margin: 1rem auto;
+    background: var(--bg-accent);
+    padding: 0.3rem 0.8rem;
+    border-radius: 0.4rem;
+    outline: 4px double var(--line);
 
-		.percent {
-			min-width: 4ch;
-		}
+    .percent {
+      min-width: 4ch;
+    }
 
-		label:last-of-type {
-			text-align: right;
-		}
+    label:last-of-type {
+      text-align: right;
+    }
 
-		input[type="range"] {
-			background: none;
+    input[type="range"] {
+      background: none;
 
-			@mixin range-track {
-				background: var(--compass-bg);
-				border: 3px double var(--line);
-				box-shadow: 2px 2px color-mix(var(--line), transparent 30%);
-				height: 8px;
-				border-radius: 5px;
-			}
+      @mixin range-track {
+        background: var(--compass-bg);
+        border: 3px double var(--line);
+        box-shadow: 2px 2px color-mix(var(--line), transparent 30%);
+        height: 8px;
+        border-radius: 5px;
+      }
 
-			@mixin range-thumb {
-				width: 20px;
-				height: 20px;
-				background: var(--line);
-				box-shadow: 1px 1px color-mix(var(--ink), transparent 30%);
-				border: none;
-				outline: 1px solid var(--compass-bg);
-				outline-offset: -3px;
-				border-radius: 50%;
-				cursor: pointer;
-			}
+      @mixin range-thumb {
+        width: 20px;
+        height: 20px;
+        background: var(--line);
+        box-shadow: 1px 1px color-mix(var(--ink), transparent 30%);
+        border: none;
+        outline: 1px solid var(--compass-bg);
+        outline-offset: -3px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
 
-			&::-webkit-slider-runnable-track {
-				@include range-track;
-			}
+      &::-webkit-slider-runnable-track {
+        @include range-track;
+      }
 
-			&::-moz-range-track {
-				@include range-track;
-			}
+      &::-moz-range-track {
+        @include range-track;
+      }
 
-			&::-webkit-slider-thumb {
-				@include range-thumb;
-				-webkit-appearance: none;
-				margin-top: -7px;
-			}
+      &::-webkit-slider-thumb {
+        @include range-thumb;
+        -webkit-appearance: none;
+        margin-top: -7px;
+      }
 
-			&::-moz-range-thumb {
-				@include range-thumb;
-			}
-		}
-	}
+      &::-moz-range-thumb {
+        @include range-thumb;
+      }
+    }
+  }
 }
 </style>
