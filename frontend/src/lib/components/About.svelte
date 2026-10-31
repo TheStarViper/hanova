@@ -79,6 +79,18 @@ article {
   height: 100%;
   color: var(--ink);
   overflow-y: scroll;
+
+  & > :last-child {
+    margin-bottom: 3rem;
+
+    @media (width < 1400px) {
+      padding-bottom: 15rem;
+    }
+
+    @media (width < 600px) {
+      padding-bottom: 10rem;
+    }
+  }
 }
 
 p {
@@ -131,12 +143,19 @@ footer {
     border-radius: 0.4rem;
     outline: 4px double var(--line);
 
-    .percent {
-      min-width: 4ch;
+    @media (width < 600px) {
+      flex-direction: column;
+      text-align: center;
     }
 
-    label:last-of-type {
-      text-align: right;
+    @media (width >= 600px) {
+      label:last-of-type {
+        text-align: right;
+      }
+    }
+
+    .percent {
+      min-width: 4ch;
     }
 
     input[type="range"] {
