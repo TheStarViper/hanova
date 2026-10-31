@@ -1,0 +1,111 @@
+<script lang="ts">
+import type {
+  ChangeEventHandler,
+  HTMLInputTypeAttribute,
+} from "svelte/elements";
+
+interface Props {
+  id: string;
+  display: string;
+  inputType: HTMLInputTypeAttribute;
+  readonlyValue: string | number;
+  updateValue: (newVal: string | number) => void;
+  percent?: boolean;
+}
+
+let props: Props = $props();
+
+const onchange: ChangeEventHandler<HTMLInputElement> = (event: Event) => {
+  props.updateValue(elValue);
+};
+
+// svelte-ignore state_referenced_locally
+let elValue: number | string = $state(props.readonlyValue);
+</script>
+
+<div>
+  <label for={props.id}>Conversion Quality</label>
+  <input
+    id={props.id}
+    type={props.inputType}
+    {onchange}
+    bind:value={elValue}
+  />
+  {#if props.inputType === "range"}
+    <label for={props.id} class={props.percent ? "percent" : ""}>{elValue}{
+      props.percent ? "%" : ""
+    }</label>
+  {/if}
+</div>
+
+<style lang="scss">
+div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+
+  width: fit-content;
+  margin: 1rem auto;
+  background: var(--bg-accent);
+  padding: 0.3rem 0.8rem;
+  border-radius: 0.4rem;
+  outline: 4px double var(--line);
+
+  @media (width < 600px) {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  @media (width >= 600px) {
+    label:last-of-type {
+      text-align: right;
+    }
+  }
+
+  .percent {
+    min-width: 4ch;
+  }
+
+  input[type="range"] {
+    background: none;
+
+    @mixin range-track {
+      background: var(--compass-bg);
+      border: 3px double var(--line);
+      box-shadow: 2px 2px color-mix(var(--line), transparent 30%);
+      height: 8px;
+      border-radius: 5px;
+    }
+
+    @mixin range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--line);
+      box-shadow: 1px 1px color-mix(var(--ink), transparent 30%);
+      border: none;
+      outline: 1px solid var(--compass-bg);
+      outline-offset: -3px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    &::-webkit-slider-runnable-track {
+      @include range-track;
+    }
+
+    &::-moz-range-track {
+      @include range-track;
+    }
+
+    &::-webkit-slider-thumb {
+      @include range-thumb;
+      -webkit-appearance: none;
+      margin-top: -7px;
+    }
+
+    &::-moz-range-thumb {
+      @include range-thumb;
+    }
+  }
+}
+</style>

@@ -7,6 +7,8 @@ import {
 import { TOOLTIP_DATA, type TooltipDatum } from "#lib/data/tooltipData.js";
 import { world } from "#lib/world.svelte.js";
 
+import Setting from "./Setting.svelte";
+
 const tooltips = Object.entries(TOOLTIP_DATA) as [Format, TooltipDatum][];
 
 function mediaTypeList(mediaType: MediaType): string {
@@ -33,11 +35,14 @@ function mediaTypeList(mediaType: MediaType): string {
 
   <section id="settings">
     <h2>Settings</h2>
-    <div>
-      <label for="quality">Conversion Quality</label>
-      <input id="quality" type="range" bind:value={world.quality} />
-      <label for="quality" class="percent">{world.quality}%</label>
-    </div>
+    <Setting
+      id="quality"
+      display="Conversion Quality"
+      inputType="range"
+      readonlyValue={world.quality}
+      updateValue={((newVal: number | string) => world.quality = newVal as number)}
+      percent
+    />
   </section>
 
   <section id="formats">
@@ -143,77 +148,5 @@ blockquote {
   padding: 0.6rem 1rem;
   border-radius: 0.4rem;
   outline: 4px double var(--line);
-}
-
-#settings {
-  div {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-
-    width: fit-content;
-    margin: 1rem auto;
-    background: var(--bg-accent);
-    padding: 0.3rem 0.8rem;
-    border-radius: 0.4rem;
-    outline: 4px double var(--line);
-
-    @media (width < 600px) {
-      flex-direction: column;
-      text-align: center;
-    }
-
-    @media (width >= 600px) {
-      label:last-of-type {
-        text-align: right;
-      }
-    }
-
-    .percent {
-      min-width: 4ch;
-    }
-
-    input[type="range"] {
-      background: none;
-
-      @mixin range-track {
-        background: var(--compass-bg);
-        border: 3px double var(--line);
-        box-shadow: 2px 2px color-mix(var(--line), transparent 30%);
-        height: 8px;
-        border-radius: 5px;
-      }
-
-      @mixin range-thumb {
-        width: 20px;
-        height: 20px;
-        background: var(--line);
-        box-shadow: 1px 1px color-mix(var(--ink), transparent 30%);
-        border: none;
-        outline: 1px solid var(--compass-bg);
-        outline-offset: -3px;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-
-      &::-webkit-slider-runnable-track {
-        @include range-track;
-      }
-
-      &::-moz-range-track {
-        @include range-track;
-      }
-
-      &::-webkit-slider-thumb {
-        @include range-thumb;
-        -webkit-appearance: none;
-        margin-top: -7px;
-      }
-
-      &::-moz-range-thumb {
-        @include range-thumb;
-      }
-    }
-  }
 }
 </style>
