@@ -17,5 +17,59 @@ const FFMPEG_AUDIO = {
 
 let ffmpegPromise;
 function load(){
-    
+    ffmpegPromise ??=(async ()=>{
+        const [{FFmpeg},core,wasm]= await Promise.all([
+            import("@ffmpeg/ffmpeg"),
+            import("@ffmpeg/core?url"),
+            import("@ffmpeg/core/wasm?url"),
+        ]);
+        const ffmpeg = new FFmpeg();
+        await ffmpeg.load({coreURL:core.default,wasmURL: wasm.default});
+        return ffmpeg;
+    })().catch((error)=>{
+        ffmpegPromise = undefined;
+        throw error;
+    });
+    return ffmpegPromise;
+}
+
+let chain = Promise.resolve();
+function exclusive(fn){
+    const run = chain.then(fn);
+    chain = run.catch(()=>{});
+    return run;
+}
+
+export function convert_audio(bytes,target,options={}){
+
+    const encoder = FFMPEG_AUDIO[target];
+    if (!encoder){
+        throw new ConvertError(ErrorCode.UnsupportedOutput, `ffmpeg can't write "${target}"`);
+    }
+
+    if (options.signal?.aborted){
+        throw new ConvertError(ErrorCode.Cancelled, "Conversion was cancelled");
+    }
+
+    return exclusive(async ()=>{
+        const outName = `output.${target}`;
+        const log =[];
+        let ffmpeg;
+        let aborted = false;
+
+        const onLog = ({message}) => {log.push(message); if(log.length > 12){log.shift();}};
+        const onProgress = ({progress})=>options.onProgress?.(Math.max(0,Math.min(1,progress)));
+        const onAbort = () => {
+            aborted = true;
+            ffmpegPromise = undefined; //kill worker
+            ffmpeg?.terminate(); //unload
+        };
+
+        try{
+            ffmpeg = await load();
+            ffmpeg.on("log",onLog);
+            ffmpeg.on("progress",onProgress);
+            
+        }
+    })
 }
