@@ -14,7 +14,9 @@ let hovered = $state(false);
 let borderColor = $derived(hovered ? "var(--accent)" : undefined);
 
 let processedSvg = $derived(
-  CompassSvg.replaceAll("#6e5c5e", "var(--compass-line)"),
+  CompassSvg
+    .replaceAll("#6e5c5e", "var(--compass-line)")
+    .replaceAll("#fef7d8", "var(--compass-bg)"),
 );
 </script>
 
