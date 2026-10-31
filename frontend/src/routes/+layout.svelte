@@ -1,7 +1,7 @@
 <script lang="ts">
 import "#lib/assets/reset.css";
 import "#lib/assets/global.css";
-import favicon from "#lib/assets/boat.svg";
+import favicon from "#lib/assets/boat.svg?url";
 import screenshot from "#lib/assets/screenshot2.png";
 
 let { children } = $props();
