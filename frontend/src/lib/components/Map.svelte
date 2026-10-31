@@ -6,7 +6,6 @@ import Boat from "./Boat.svelte";
 import DebuggingGrid from "./DebuggingGrid.svelte";
 import Island from "./Island.svelte";
 import Title from "./Title.svelte";
-import Tooltip from "./Tooltip.svelte";
 import Treasure from "./Treasure.svelte";
 
 // misc imports
@@ -34,7 +33,6 @@ let worldOffset = $derived(
 </div>
 
 <Banner />
-<Tooltip />
 {#if world.debugging}<DebuggingGrid />{/if}
 
 <style lang="scss">

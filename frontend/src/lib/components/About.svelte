@@ -14,7 +14,11 @@ const tooltips = Object.entries(TOOLTIP_DATA) as [Format, TooltipDatum][];
 function mediaTypeList(mediaType: MediaType): string {
   return tooltips
     .filter(([format]) => FORMAT_TO_MEDIATYPE[format] === mediaType)
-    .map(([, tooltip]) => `<a href="${tooltip.url}">${tooltip.title}</a>`)
+    .map(([, tooltip]) =>
+      tooltip.url === undefined
+        ? `<span>${tooltip.title}</span>`
+        : `<a href="${tooltip.url}">${tooltip.title}</a>`
+    )
     .join(", ");
 }
 </script>
@@ -37,7 +41,6 @@ function mediaTypeList(mediaType: MediaType): string {
     <h2>Settings</h2>
     <Setting
       id="quality"
-      display="Conversion Quality"
       inputType="range"
       readonlyValue={world.quality}
       updateValue={((newVal: number | string) => world.quality = newVal as number)}
@@ -45,7 +48,6 @@ function mediaTypeList(mediaType: MediaType): string {
     />
     <Setting
       id="template"
-      display="Filename Template"
       inputType="text"
       readonlyValue={world.filenameTemplate}
       updateValue={((newVal: number | string) => world.filenameTemplate = newVal as string)}

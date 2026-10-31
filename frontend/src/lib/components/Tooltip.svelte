@@ -1,13 +1,11 @@
 <script lang="ts" module>
-import type { Format } from "#lib/backend.js";
-
+import { TOOLTIP_DATA, type TooltipKey } from "#lib/data/tooltipData.js";
 export class TooltipManager {
-  target: Format | null = $state(null);
+  target: TooltipKey | null = $state(null);
 }
 </script>
 
 <script lang="ts">
-import { TOOLTIP_DATA } from "#lib/data/tooltipData.js";
 import { world } from "#lib/world.svelte.js";
 
 let me = world.tooltip;
@@ -31,7 +29,7 @@ $effect(() => {
   style:left="{world.viewport.mouseX}px"
 >
   <h2>{title}</h2>
-  <p>{blurb}</p>
+  <p>{@html blurb}</p>
 </div>
 
 <style lang="scss">
@@ -40,6 +38,7 @@ div {
   transform: translate(-15%, -20%);
   user-select: none;
   pointer-events: none;
+  z-index: 101;
 
   background: #fffae5ff;
   border: 5px double #6f5d64ff;
@@ -60,6 +59,16 @@ div {
 
   p {
     font-size: 0.7rem;
+
+    :global {
+      ul {
+        padding-left: 1rem;
+
+        li {
+          text-indent: 1ch hanging;
+        }
+      }
+    }
   }
 }
 </style>

@@ -1,12 +1,15 @@
+import type { Setting } from "#lib/components/Setting.svelte";
 import type { Format } from "../backend";
+
+export type TooltipKey = Format | Setting;
 
 export interface TooltipDatum {
   title: string;
   blurb: string;
-  url: string;
+  url?: string;
 }
 
-export const TOOLTIP_DATA: Record<Format, TooltipDatum> = {
+export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
   // Images
   png: {
     title: "PNG",
@@ -187,5 +190,23 @@ export const TOOLTIP_DATA: Record<Format, TooltipDatum> = {
     blurb:
       "Specialized video format mainly used in broadcast television and live video streaming.",
     url: "https://en.wikipedia.org/wiki/MPEG_transport_stream",
+  },
+
+  // Settings
+  quality: {
+    title: "Conversion Quality",
+    blurb:
+      "The quality used to convert the file. Lower quality decreases file size, but at the cost of quality.",
+  },
+  template: {
+    title: "Filename Template",
+    blurb: `The template used to generate the output filename.
+    <ul>
+      <li>{raw} = the original filename.</li>
+      <li>{base} = the part of the original filename before the dot.</li>
+      <li>{inExt} = extension of the input file.</li>
+      <li>{outExt} = the extension of the output format.</li>
+      </ul>
+      `,
   },
 };

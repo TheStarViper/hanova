@@ -2,6 +2,7 @@
 import About from "#lib/components/About.svelte";
 import Compass from "#lib/components/Compass.svelte";
 import Map from "#lib/components/Map.svelte";
+import Tooltip from "#lib/components/Tooltip.svelte";
 import { world } from "#lib/world.svelte.js";
 import { onMount } from "svelte";
 
@@ -28,6 +29,7 @@ onMount(() => {
   {togglePage}
   label={page === "map" ? "To About & Settings" : "To Islands"}
 />
+<Tooltip />
 
 {#if page === "map"}
   <Map />

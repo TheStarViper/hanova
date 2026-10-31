@@ -1,12 +1,19 @@
+<script lang="ts" module>
+export const SETTINGS = ["quality", "template"] as const;
+export type Setting = (typeof SETTINGS)[number];
+</script>
+
 <script lang="ts">
+import { TOOLTIP_DATA } from "#lib/data/tooltipData.js";
+import { world } from "#lib/world.svelte.js";
+import { onMount } from "svelte";
 import type {
   ChangeEventHandler,
   HTMLInputTypeAttribute,
 } from "svelte/elements";
 
 interface Props {
-  id: string;
-  display: string;
+  id: Setting;
   inputType: HTMLInputTypeAttribute;
   readonlyValue: string | number;
   updateValue: (newVal: string | number) => void;
@@ -21,10 +28,20 @@ const onchange: ChangeEventHandler<HTMLInputElement> = (event: Event) => {
 
 // svelte-ignore state_referenced_locally
 let elValue: number | string = $state(props.readonlyValue);
+let el: HTMLDivElement;
+
+onMount(() => {
+  el.addEventListener("mouseenter", () => {
+    world.tooltip.target = props.id;
+  });
+  el.addEventListener("mouseleave", () => {
+    world.tooltip.target = null;
+  });
+});
 </script>
 
-<div>
-  <label for={props.id}>{props.display}</label>
+<div bind:this={el}>
+  <label for={props.id}>{TOOLTIP_DATA[props.id].title}</label>
   <input
     id={props.id}
     type={props.inputType}
