@@ -1,9 +1,4 @@
-import {
-  type Format,
-  FORMAT_TO_MEDIATYPE,
-  FORMATS,
-  type MediaType,
-} from "#lib/backend.js";
+import type { Format, MediaType } from "#lib/backend.js";
 import { Pos } from "#lib/utils.svelte.js";
 import type { IslandSpriteIndex } from "./islandSprites";
 
@@ -183,34 +178,3 @@ export const ISLAND_DATA: IslandDatum[] = [
     spawnOffset: new Pos(-100, 100),
   },
 ];
-
-function islandCompletenessReport() {
-  const formatsWithIslands = ISLAND_DATA.map((i) => i.name);
-  const missingFormats = FORMATS.filter((f) => !formatsWithIslands.includes(f));
-
-  console.log(
-    `${missingFormats.length}/${FORMATS.length} formats have islands`,
-  );
-
-  const missingImageFormats = missingFormats.filter((f) =>
-    FORMAT_TO_MEDIATYPE[f] === "image"
-  );
-  const missingAudioFormats = missingFormats.filter((f) =>
-    FORMAT_TO_MEDIATYPE[f] === "audio"
-  );
-  const missingVideoFormats = missingFormats.filter((f) =>
-    FORMAT_TO_MEDIATYPE[f] === "video"
-  );
-
-  if (missingImageFormats) {
-    console.log(`missing image formats: ${missingImageFormats.join(", ")}`);
-  }
-  if (missingAudioFormats) {
-    console.log(`missing audio formats: ${missingAudioFormats.join(", ")}`);
-  }
-  if (missingVideoFormats) {
-    console.log(`missing video formats: ${missingVideoFormats.join(", ")}`);
-  }
-}
-
-// islandCompletenessReport();

@@ -5,7 +5,9 @@ import {
 } from "../../../backend/src/bridge/converter.mjs";
 
 export type Format = (typeof EVERYFORMAT)[number];
-export type MediaType = (typeof DOMAIN)[Format];
+
+export const MEDIA_TYPES = Array.from(new Set(Object.values(DOMAIN)));
+export type MediaType = (typeof MEDIA_TYPES)[number];
 
 export const EXT_TO_FORMAT = {
   ...Object.fromEntries(EVERYFORMAT.map((f) => [f, f])),
