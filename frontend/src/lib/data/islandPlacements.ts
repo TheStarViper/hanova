@@ -1,10 +1,11 @@
-import { type Format, FORMAT_TO_MEDIATYPE, FORMATS } from "#lib/backend.js";
+import {
+  type Format,
+  FORMAT_TO_MEDIATYPE,
+  FORMATS,
+  type MediaType,
+} from "#lib/backend.js";
 import { Pos } from "#lib/utils.svelte.js";
 import type { IslandSpriteIndex } from "./islandSprites";
-
-const IMAGE_ISLANDS_OFFSET = new Pos(0, 0);
-const AUDIO_ISLANDS_OFFSET = new Pos(2000, -1500);
-const VIDEO_ISLANDS_OFFSET = new Pos(3500, -500);
 
 export interface IslandDatum {
   name: Format;
@@ -13,7 +14,14 @@ export interface IslandDatum {
   spawnOffset: Pos;
 }
 
-const IMAGE_ISLANDS: IslandDatum[] = [
+export const ISLAND_CLUSTER_CENTERS: Record<MediaType, Pos> = {
+  image: new Pos(0, 0),
+  audio: new Pos(2000, -1500),
+  video: new Pos(3500, -500),
+};
+
+export const ISLAND_DATA: IslandDatum[] = [
+  // Image
   {
     name: "bmp",
     pos: new Pos(0, 500),
@@ -56,12 +64,6 @@ const IMAGE_ISLANDS: IslandDatum[] = [
     islandSpriteIndex: 14,
     spawnOffset: new Pos(-130, 100),
   },
-  // {
-  //   name: "heic",
-  //   pos: new Pos(1150, 350),
-  //   islandSpriteIndex: 12,
-  //   spawnOffset: new Pos(180, 50),
-  // },
   {
     name: "tiff",
     pos: new Pos(900, -150),
@@ -110,27 +112,8 @@ const IMAGE_ISLANDS: IslandDatum[] = [
     islandSpriteIndex: 9,
     spawnOffset: new Pos(-200, 30),
   },
-  // {
-  //   name: "ORA",
-  //   pos: new Pos(900, 1200),
-  //   islandSpriteIndex: 1,
-  //   spawnOffset: new Pos(0, 0),
-  // },
-  // {
-  //   name: "XCF",
-  //   pos: new Pos(1300, 1050),
-  //   islandSpriteIndex: 1,
-  //   spawnOffset: new Pos(0, 0),
-  // },
-  // {
-  //   name: "PDF",
-  //   pos: new Pos(1050, 670),
-  //   islandSpriteIndex: 18,
-  //   spawnOffset: new Pos(160, 20),
-  // },
-];
 
-const AUDIO_ISLANDS: IslandDatum[] = [
+  // Audio
   {
     name: "mp3",
     pos: new Pos(0, 0),
@@ -167,9 +150,8 @@ const AUDIO_ISLANDS: IslandDatum[] = [
     islandSpriteIndex: 6,
     spawnOffset: new Pos(100, 0),
   },
-];
 
-const VIDEO_ISLANDS: IslandDatum[] = [
+  // Video
   {
     name: "mp4",
     pos: new Pos(0, 0),
@@ -200,16 +182,6 @@ const VIDEO_ISLANDS: IslandDatum[] = [
     islandSpriteIndex: 18,
     spawnOffset: new Pos(-100, 100),
   },
-];
-
-IMAGE_ISLANDS.forEach((i) => i.pos = Pos.add(i.pos, IMAGE_ISLANDS_OFFSET));
-AUDIO_ISLANDS.forEach((i) => i.pos = Pos.add(i.pos, AUDIO_ISLANDS_OFFSET));
-VIDEO_ISLANDS.forEach((i) => i.pos = Pos.add(i.pos, VIDEO_ISLANDS_OFFSET));
-
-export const ISLAND_DATA = [
-  ...IMAGE_ISLANDS,
-  ...AUDIO_ISLANDS,
-  ...VIDEO_ISLANDS,
 ];
 
 function islandCompletenessReport() {

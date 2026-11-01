@@ -1,17 +1,25 @@
 <script lang="ts" module>
 import { type Format, FORMAT_TO_MEDIATYPE } from "#lib/backend.js";
-import { ISLAND_DATA, type IslandDatum } from "#lib/data/islandPlacements.js";
+import {
+  ISLAND_CLUSTER_CENTERS,
+  ISLAND_DATA,
+  type IslandDatum,
+} from "#lib/data/islandPlacements.js";
 import { ISLAND_SPRITES } from "#lib/data/islandSprites.js";
 import { Pos } from "#lib/utils.svelte.js";
 import { world } from "#lib/world.svelte.js";
 
 export class IslandManager {
   datum: IslandDatum;
+  pos: Pos;
 
   constructor(
     datum: IslandDatum,
   ) {
     this.datum = datum;
+    this.pos = $derived(
+      Pos.add(this.datum.pos, ISLAND_CLUSTER_CENTERS[this.mediaType]),
+    );
   }
 
   callBoat() {
@@ -20,10 +28,6 @@ export class IslandManager {
 
   get name() {
     return this.datum.name;
-  }
-
-  get pos() {
-    return this.datum.pos;
   }
 
   get mediaType() {
