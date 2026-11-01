@@ -206,6 +206,32 @@ export const DOC_FORMATS = {
   txt: { write: "plain" },
 };
 
+const FFMPEG_AUDIO = {
+    mp3: {args: ["-c:a","libmp3lame", "-f","mp3"]},
+    wav: {args: ["-c:a","pcm_s16le", "-f","wav"]},
+    ogg: {args: ["-c:a","libopus", "-f","ogg"]},
+    flac: {args: ["-c:a","flac", "-f","flac"]},
+    aac: {args: ["-c:a","aac", "-f","adts"]},
+    m4a: {args: ["-c:a","aac", "-f","ipod"]},
+
+    //ffmpeg only
+    aiff:{args: ["-c:a","pcm_s16be", "-f","aiff"],mime:"audio/aiff"},
+    au:  {args: ["-c:a","pcm_s16be", "-f","au"  ],mime:"audio/basic"},
+    caf: {args: ["-c:a","pcm_s16le", "-f","caf" ],mime:"audio/x-cad"},
+    ac3: {args: ["-c:a","ac3"      , "-f","ac3" ],mime:"audio/ac3"},
+    mp2: {args: ["-c:a","mp2"      , "-f","mp2" ],mime:"audio/mpeg"},
+    wma: {args: ["-c:a","wmav2"    , "-f","asf" ],mime:"audio/x-ms-wma"},
+    opus:{args: ["-c:a","libopus"  , "-f","opus"],mime:"audio/ogg"},
+    weba:{args: ["-c:a","libopus"  , "-f","webm"],mime:"audio/webm"},
+    mka: {args: ["-c:a","libopus","-f","matroska"],mime:"audio/x-matroska"},
+    m4r: {args: ["-c:a","aac"      , "-f","ipod"],mime:"audio/mp4"},
+    alac:{args: ["-c:a","alac"     , "-f","ipod"],mime:"audio/mp4",ext:"m4a"},
+    tta: {args: ["-c:a","tta"      , "-f","tta" ],mime:"audio/x-tta"},
+
+    //input only
+    amr: {mime: "audio/amr"},
+};
+
 export const DOCUMENT_FORMATS = Object.keys(DOC_FORMATS);
 export const DOC_INPUTS  = DOCUMENT_FORMATS.filter((f) => DOC_FORMATS[f].read);
 export const DOC_OUTPUTS = DOCUMENT_FORMATS.filter((f) => DOC_FORMATS[f].write);

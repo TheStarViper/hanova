@@ -40,6 +40,7 @@ and glue code so that they can work seamlessly together
 - [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image
   formats)
 - [mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
+- [ffmpeg](https://github.com/ffmpeg/ffmpeg) (audio)
 - [pandoc](https://github.com/jgm/pandoc) (documents)
 
 ### Bridge System
@@ -52,9 +53,9 @@ Since this file conversion program uses alot of different libraries combined, a 
 <summary><h3>Images</h3></summary>
 
 - [x] png
-- [x] jpeg
+- [x] jpeg / jpg / jpe
 - [x] bmp
-- [x] tga
+- [x] tga / targa / icb / vda / vst
 - [x] hdr
 - [x] ico
 - [x] gif
@@ -62,10 +63,10 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] webp
 - [x] avif
 - [x] svg
-- [x] eps
+- [x] eps / epsf / epsi
 - [x] ai (adobe illustrator not artificial intellegence)
 - [x] qoi
-- [x] tiff
+- [x] tiff / tif
 - [x] jxl
 - [x] psd
 
@@ -75,43 +76,52 @@ Since this file conversion program uses alot of different libraries combined, a 
 <summary><h3>Audio</h3></summary>
 
 - [x] mp3
-- [x] wav
+- [x] wav / wave
 - [x] flac
-- [x] ogg
+- [x] ogg / oga
 - [x] aac
 - [x] m4a
 - [ ] opus
-- [ ] wma
-- [ ] aiff
+- [x] wma
+- [x] aiff
 - [ ] alac
 - [ ] amr
-- [ ] ac3
+- [x] ac3
+- [x] mp2
+- [x] au
+- [x] caf
 
 </details>
 
 <details>
 <summary><h3>Docs</h3></summary>
 
-- [ ] pdf
-- [ ] txt
-- [ ] md
-- [ ] rtf
-- [ ] doc
-- [ ] docx
-- [ ] html
-- [ ] epub
-- [ ] pptx
-- [ ] csv
-- [ ] odt
-- [ ] xls
+- [x] pdf
+- [x] txt / text
+- [x] md / markdown / mkd / mdown / markdn
+- [x] rtf
+- [x] docx
+- [x] html / htm
+- [x] epub / epub2 / epub3
+- [x] pptx
+- [x] fb2
+- [x] gfm
+- [x] tex / latex
+- [x] ms
+- [x] ctx
+- [x] dbk / docbook
+- [x] opml
+- [x] odt
+- [x] xls
+- [x] adoc / asciidoc / asc
 
 </details>
 
 <details>
 <summary><h3>Video</h3></summary>
 
-- [x] mp4
-- [x] mkv
+- [x] mp4 / m4v
+- [x] mkv / matroksa
 - [x] webm
 - [x] mov
 - [x] m4s
