@@ -8,6 +8,7 @@ import {
   DOC_INPUTS,
   DOC_OUTPUTS,
 } from "./converter.mjs";
+import { convert_audio } from "./ffmpeg-bridge.mjs";
 
 //dynamic lib loading
 function lazy(fn){
@@ -24,6 +25,8 @@ const loadSvg = lazy(async () => (await import("../../build/svg_module.js")).def
 const loadMagickBridge = lazy(() => import("./imagemagick-bridge.mjs"));
 const loadMediaBridge = lazy(() => import("./mediabunny-bridge.mjs"));
 const loadDocBridge = lazy(() => import("./pandoc-bridge.mjs"));
+const loadFfmpegBridge = lazy(()=>import("./ffmpeg-bridge.mjs"));
+const inBrowser = typeof document !=="undefined";
 
 const MAGICK_NAMES = ["png","gif", "avif", "tiff", "ico", "jxl", "qoi", "psd", "exr", "bmp", "webp", "pdf", "eps", "ai"];
 const MAGICK_OUTPUT_ONLY = ["ico", "pdf", "eps", "ai"];
@@ -46,6 +49,7 @@ function build({magickInit}={}){
     },
   };
 
+  const ffmpeg = inBrowser ? {convert_audio: async (bytes,to,options)=>(await loadFfmpegBridge()).convert_audio(bytes,to,options)} : undefined;
   const media = {
     convert_media: async (bytes, to, options) => (await loadMediaBridge()).convert_media(bytes, to, options),
   };
@@ -56,7 +60,7 @@ function build({magickInit}={}){
     outputs: DOC_OUTPUTS,
   };
 
-  return createconverter({core: loadCore, webp: loadWebp, svg: loadSvg, magick,media,docs});
+  return createconverter({core: loadCore, webp: loadWebp, svg: loadSvg, magick,media,docs,ffmpeg});
 }
 
 /**
