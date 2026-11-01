@@ -3,7 +3,8 @@
 import Banner from "./Banner.svelte";
 import Bezier from "./Bezier.svelte";
 import Boat from "./Boat.svelte";
-import DebuggingGrid from "./DebuggingGrid.svelte";
+import EditorGrid from "./EditorGrid.svelte";
+import EditorIslands from "./EditorIslands.svelte";
 import Island from "./Island.svelte";
 import Title from "./Title.svelte";
 import Treasure from "./Treasure.svelte";
@@ -30,10 +31,12 @@ let worldOffset = $derived(
   {#each world.islands as island}
     <Island me={island} />
   {/each}
+
+  {#if world.debugging}<EditorIslands />{/if}
 </div>
 
 <Banner />
-{#if world.debugging}<DebuggingGrid />{/if}
+{#if world.debugging}<EditorGrid />{/if}
 
 <style lang="scss">
 .world-layer {
