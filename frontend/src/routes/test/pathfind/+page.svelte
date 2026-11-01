@@ -70,7 +70,14 @@ async function runTest() {
   status = true;
 }
 
-onMount(runTest);
+let start: number = $state(0);
+let end: number = $state(0);
+
+onMount(async () => {
+  start = Date.now();
+  await runTest();
+  end = Date.now();
+});
 </script>
 
 <h1>Pathfinding Test</h1>
@@ -79,7 +86,8 @@ onMount(runTest);
   {#if status === undefined}
     Starting...
   {:else if status === true}
-    Finished! {pathfindableCount} out of {totalCount} islands are pathfindable
+    Finished! {pathfindableCount} out of {totalCount} islands are pathfindable.
+    Took {(end - start) / 1000} seconds.
   {:else}
     {status[0]} -> {status[1]} ({currentIndex}/{totalCount})
   {/if}
