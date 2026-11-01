@@ -30,6 +30,32 @@ export const VIDEO_FORMATS = [
   "ts",
 ];
 
+export const FFMPEG_AUDIO = {
+  mp3: {args: ["-c:a","libmp3lame", "-f","mp3"]},
+  wav: {args: ["-c:a","pcm_s16le", "-f","wav"]},
+  ogg: {args: ["-c:a","libopus", "-f","ogg"]},
+  flac: {args: ["-c:a","flac", "-f","flac"]},
+  aac: {args: ["-c:a","aac", "-f","adts"]},
+  m4a: {args: ["-c:a","aac", "-f","ipod"]},
+
+  //ffmpeg only
+  aiff:{args: ["-c:a","pcm_s16be", "-f","aiff"],mime:"audio/aiff"},
+  au:  {args: ["-c:a","pcm_s16be", "-f","au"  ],mime:"audio/basic"},
+  caf: {args: ["-c:a","pcm_s16le", "-f","caf" ],mime:"audio/x-cad"},
+  ac3: {args: ["-c:a","ac3"      , "-f","ac3" ],mime:"audio/ac3"},
+  mp2: {args: ["-c:a","mp2"      , "-f","mp2" ],mime:"audio/mpeg"},
+  wma: {args: ["-c:a","wmav2"    , "-f","asf" ],mime:"audio/x-ms-wma"},
+  opus:{args: ["-c:a","libopus"  , "-f","opus"],mime:"audio/ogg"},
+  weba:{args: ["-c:a","libopus"  , "-f","webm"],mime:"audio/webm"},
+  mka: {args: ["-c:a","libopus","-f","matroska"],mime:"audio/x-matroska"},
+  m4r: {args: ["-c:a","aac"      , "-f","ipod"],mime:"audio/mp4"},
+  alac:{args: ["-c:a","alac"     , "-f","ipod"],mime:"audio/mp4",ext:"m4a"},
+  tta: {args: ["-c:a","tta"      , "-f","tta" ],mime:"audio/x-tta"},
+
+  //input only
+  amr: {mime: "audio/amr"},
+};
+
 const MEDIABUNNY_AUDIO = [
   "mp3",
   "wav",
@@ -37,8 +63,10 @@ const MEDIABUNNY_AUDIO = [
   "flac",
   "aac",
   "m4a",
+  "opus",
 ];
-export const FFMPEG_ONLY_AUDIO = ["aiff","au","caf","ac3","mp2","wma"];
+
+export const FFMPEG_ONLY_AUDIO = Object.keys(FFMPEG_AUDIO).filter((f) => !MEDIABUNNY_AUDIO.includes(f));
 export const AUDIO_FORMATS = [...MEDIABUNNY_AUDIO,...FFMPEG_ONLY_AUDIO];
 
 export const MEDIA_INFO = {
@@ -62,6 +90,12 @@ export const MEDIA_INFO = {
   mp2:  {ext: "mp2",   mime: "audio/mpeg",       video: false, engine: "ffmpeg"},
   wma:  {ext: "wma",   mime: "audio/x-ms-wma",   video: false, engine: "ffmpeg"},
 };
+
+for (const f of FFMPEG_ONLY_AUDIO){
+  const spec = FFMPEG_AUDIO[f];
+  MEDIA_INFO[f]={ext:spec.ext??f,mime:spec.mime??"audio/octet-stream",video:false,engine:"ffmpeg"};
+}
+
 export const MEDIA_FORMATS = Object.keys(MEDIA_INFO);
 export const MEDIA_PRESETS = ["potato", "small", "balanced", "high", "max"];
 
@@ -112,6 +146,8 @@ export function detect_media_format(bytes) {
     const layer = (bytes[1]>>1)&3;
     return layer ===0?"aac":layer ===2?"mp2":"mp3";
   }
+  if(ascii(bytes,0,5)==="#!AMR"){return "amr";}
+  if(ascii(bytes,0,4)==="TTA1"){return "tta";}
   return "unknown";
 }
 
@@ -204,32 +240,6 @@ export const DOC_FORMATS = {
 
   //plain text
   txt: { write: "plain" },
-};
-
-const FFMPEG_AUDIO = {
-    mp3: {args: ["-c:a","libmp3lame", "-f","mp3"]},
-    wav: {args: ["-c:a","pcm_s16le", "-f","wav"]},
-    ogg: {args: ["-c:a","libopus", "-f","ogg"]},
-    flac: {args: ["-c:a","flac", "-f","flac"]},
-    aac: {args: ["-c:a","aac", "-f","adts"]},
-    m4a: {args: ["-c:a","aac", "-f","ipod"]},
-
-    //ffmpeg only
-    aiff:{args: ["-c:a","pcm_s16be", "-f","aiff"],mime:"audio/aiff"},
-    au:  {args: ["-c:a","pcm_s16be", "-f","au"  ],mime:"audio/basic"},
-    caf: {args: ["-c:a","pcm_s16le", "-f","caf" ],mime:"audio/x-cad"},
-    ac3: {args: ["-c:a","ac3"      , "-f","ac3" ],mime:"audio/ac3"},
-    mp2: {args: ["-c:a","mp2"      , "-f","mp2" ],mime:"audio/mpeg"},
-    wma: {args: ["-c:a","wmav2"    , "-f","asf" ],mime:"audio/x-ms-wma"},
-    opus:{args: ["-c:a","libopus"  , "-f","opus"],mime:"audio/ogg"},
-    weba:{args: ["-c:a","libopus"  , "-f","webm"],mime:"audio/webm"},
-    mka: {args: ["-c:a","libopus","-f","matroska"],mime:"audio/x-matroska"},
-    m4r: {args: ["-c:a","aac"      , "-f","ipod"],mime:"audio/mp4"},
-    alac:{args: ["-c:a","alac"     , "-f","ipod"],mime:"audio/mp4",ext:"m4a"},
-    tta: {args: ["-c:a","tta"      , "-f","tta" ],mime:"audio/x-tta"},
-
-    //input only
-    amr: {mime: "audio/amr"},
 };
 
 export const DOCUMENT_FORMATS = Object.keys(DOC_FORMATS);
@@ -412,8 +422,9 @@ export function createconverter({ core, webp, svg, magick, media, docs, ffmpeg }
   const ffmpeg_step = (to) =>(bytes,_q,options)=>ffmpeg.convert_audio(bytes,to,options);
   if (ffmpeg){
     const FFMPEG_COST = 5;
+    const writable = AUDIO_FORMATS.filter((f)=>FFMPEG_AUDIO[f]?.args);
     for (const a of [...VIDEO_FORMATS,...AUDIO_FORMATS]){
-      for (const b of AUDIO_FORMATS){
+      for (const b of writable){
         if (a!==b&!has(a,b)) {register(a,b,ffmpeg_step(b),FFMPEG_COST);}
       }
     }

@@ -1,4 +1,5 @@
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
+import {FFMPEG_AUDIO} from "./converter.mjs";
 
 let ffmpegPromise;
 function load(){
@@ -27,7 +28,7 @@ function exclusive(fn){
 
 export function convert_audio(bytes,target,options={}){
 
-    const encoder = FFMPEG_AUDIO[target];
+    const encoder = FFMPEG_AUDIO[target]?.args;
     if (!encoder){
         throw new ConvertError(ErrorCode.UnsupportedOutput, `ffmpeg can't write "${target}"`);
     }

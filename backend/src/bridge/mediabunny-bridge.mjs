@@ -42,6 +42,7 @@ const OUTPUT_FORMATS = {
   flac: () => new mediabunny.FlacOutputFormat(),
   aac: () => new mediabunny.AdtsOutputFormat(),
   m4a: () => new mediabunny.Mp4OutputFormat(), // uses mp4 container
+  opus: ()=> new mediabunny.OggOutputFormat(), //opus uses ogg container
 };
 
 export const MEDIA_INFO = {

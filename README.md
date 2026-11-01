@@ -1,6 +1,6 @@
 # Hanova
 
-Hanova is a file conversion website with a nautical twist!
+Hanova is a local file conversion website with a nautical twist!
 
 [![Screenshot of Hanova](./frontend/src/lib/assets/screenshot3.png)](https://thestarviper.github.io/hanova/)
 
@@ -19,7 +19,7 @@ buried **treasure**: your converted file!
 > [!TIP]
 > **<https://thestarviper.github.io/hanova/>**
 
-## Backend (C++)
+## Backend (C++ & Mjs)
 
 For the backend I(Andrew) have decided to use C++ as it is the language I'm the
 most familar with. I compiled the backend through emscripten to a wasm package
@@ -43,7 +43,9 @@ and glue code so that they can work seamlessly together
 - [ffmpeg](https://github.com/ffmpeg/ffmpeg) (audio)
 - [pandoc](https://github.com/jgm/pandoc) (documents)
 
-### Bridge System
+### Mjs Bridge System
+
+Alot of the libraries that are commonly used for file conversions dont come as C++ packages and instead are pre-compiled wasm files. So we opted to use a Mjs bridge system to link together and use a bunch of different wasm libs at the same time with a dynamic loading function. stb_image,nanosvg,& stb_image are all libs that we can compile through emscripten. Imagemagick,ffmpeg, & pandoc come as pre-packaged wasm files that we converse with using MJS. Mediabunny however isnt wasm as wasm does not have support for hardware acceleration which is fine for smaller files like documents & images but is sluggish without hardware accel for video files.
 
 Since this file conversion program uses alot of different libraries combined, a notable portion of the backend codebase is glue-code used to make it so that they can work together. We grabbed the WASM versions of programs like imagemagick and pandoc to use and bridged them using MJS, while mediabunny is a TypeScript library so that it can take advantage of hardware acceleration. However, since we had to balance a wide variety of ecosystems, they all had different error formats and spit out different types of errors, so to make things easier we made a unified error system that decoded all of the errors from the various libraries and made human-readable and simplified errors.
 
@@ -81,7 +83,6 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] ogg / oga
 - [x] aac
 - [x] m4a
-- [ ] opus
 - [x] wma
 - [x] aiff
 - [ ] alac
@@ -90,6 +91,12 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] mp2
 - [x] au
 - [x] caf
+- [ ] opus
+- [ ] weba
+- [ ] mka
+- [ ] m4r
+- [ ] alac
+- [ ] tta
 
 </details>
 
