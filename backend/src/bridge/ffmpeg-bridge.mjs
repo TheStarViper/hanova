@@ -41,21 +41,18 @@ export function convert_audio(bytes,target,options={}){
         const outName = `output.${target}`;
         const log =[];
         let ffmpeg;
-        let aborted = false;
+        let dead = false;
+        let cancelled = false;
 
+        const onCancel = () => {cancelled = true; kill();};
         const onLog = ({message}) => {log.push(message); if(log.length > 12){log.shift();}};
         const onProgress = ({progress})=>options.onProgress?.(Math.max(0,Math.min(1,progress)));
-        const onAbort = () => {
-            aborted = true;
-            ffmpegPromise = undefined; //kill worker
-            ffmpeg?.terminate(); //unload
-        };
-
+        
         try{
             ffmpeg = await load();
             ffmpeg.on("log",onLog);
             ffmpeg.on("progress",onProgress);
-            options.signal?.addEventListener("abort",onAbort,{once:true});
+            options.signal?.addEventListener("abort",onCancel,{once:true});
 
             await ffmpeg.writeFile("input",bytes.slice());
             const a = options.audio ?? {};
@@ -69,8 +66,9 @@ export function convert_audio(bytes,target,options={}){
 
             const code = await ffmpeg.exec(args);
             if (code !==0){
-                const last = [...log].reverse().find((l)=>l.trim())??"no details";
-                throw new ConvertError(ErrorCode.NativeFailure,`ffmpeg: ${last}`);
+                kill();
+                const detail = log.filter((l) =>l.trim()).slice(-4).join(" | ") || "no details";
+                throw new ConvertError(ErrorCode.NativeFailure, `ffmpeg (${args.join(" ")}): ${detail}`);
             }
 
             const data = await ffmpeg.readFile(outName);
@@ -79,18 +77,21 @@ export function convert_audio(bytes,target,options={}){
             }
             return data.slice();
         } catch (error){
-            if (aborted || options.signal?.aborted){
-                throw new ConvertError(ErrorCode.Cancelled,"conversion canceled",{cause:error});
+            const msg = String(error?.message??error);
+            if (!dead && (error?.name==="RuntimeError"||/abort|out of bounds|unreachable|memory/i.test(msg))) {kill();}
+
+            if (cancelled || options.signal?.aborted){
+                throw new ConvertError(ErrorCode.Cancelled, "Conversion was Cancelled", {cause: error});
             }
-            throw to_convert_error(error,ErrorCode.NativeFailure);
+            throw to_convert_error(error, ErrorCode.NativeFailure);
         } finally {
-            options.signal?.removeEventListener("abort",onAbort);
-            if(ffmpeg&&!aborted){
+            options.signal?.removeEventListener("abort",onCancel);
+            if(ffmpeg&&!dead){
                 ffmpeg.off("log",onLog);
                 ffmpeg.off("progress",onProgress);
                 await ffmpeg.deleteFile("input").catch(()=>{});
                 await ffmpeg.deleteFile(outName).catch(()=>{});
             }
         }
-    })
+    });
 }

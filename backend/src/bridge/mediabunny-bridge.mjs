@@ -3,6 +3,7 @@ import { registerFlacEncoder } from "@mediabunny/flac-encoder";
 import { registerMp3Encoder } from "@mediabunny/mp3-encoder";
 import * as mediabunny from "mediabunny";
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
+import { MEDIA_INFO } from "./converter.mjs";
 
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
 const ENCODERS = {
@@ -159,12 +160,8 @@ export function detect_media_format(bytes) {
 export async function convert_media(inputdata, target, options = {}) {
   const make = OUTPUT_FORMATS[target];
   if (!make) {
-    throw new ConvertError(
-      ErrorCode.UnsupportedOutput,
-      `Unsupported media output: "${target}" (supported: ${
-        MEDIA_FORMATS.join(", ")
-      })`,
-    );
+    throw new ConvertError(ErrorCode.UnsupportedOutput,
+            `Unsupported media output: "${target}" (supported: ${Object.keys(OUTPUT_FORMATS).join(', ')})`);
   }
 
   if (options.preset && !PRESETS[options.preset]) {

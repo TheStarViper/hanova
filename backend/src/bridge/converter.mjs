@@ -45,7 +45,7 @@ export const FFMPEG_AUDIO = {
   ac3: {args: ["-c:a","ac3"      , "-f","ac3" ],mime:"audio/ac3"},
   mp2: {args: ["-c:a","mp2"      , "-f","mp2" ],mime:"audio/mpeg"},
   wma: {args: ["-c:a","wmav2"    , "-f","asf" ],mime:"audio/x-ms-wma"},
-  opus:{args: ["-c:a","libopus"  , "-f","opus"],mime:"audio/ogg"},
+  //opus:{args: ["-c:a","libopus"  , "-f","opus"],mime:"audio/ogg"},
   weba:{args: ["-c:a","libopus"  , "-f","webm"],mime:"audio/webm"},
   mka: {args: ["-c:a","libopus","-f","matroska"],mime:"audio/x-matroska"},
   m4r: {args: ["-c:a","aac"      , "-f","ipod"],mime:"audio/mp4"},
@@ -81,6 +81,7 @@ export const MEDIA_INFO = {
   flac: { ext: "flac", mime: "audio/flac",       video: false, encoders: ["flac"], audioCodec: "flac" },
   aac:  { ext: "aac",  mime: "audio/aac",        video: false, encoders: ["aac"],  audioCodec: "aac" },
   m4a:  { ext: "m4a",  mime: "audio/mp4",        video: false, encoders: ["aac"],  audioCodec: "aac" },
+  opus: { ext: "opus", mime: "audio/ogg",        video: false, audioCodec: "opus"},
 
   //ffmpeg
   aiff: {ext: "aiff",  mime: "audio/aiff",       video: false, engine: "ffmpeg"},
