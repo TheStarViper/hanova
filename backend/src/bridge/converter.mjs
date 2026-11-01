@@ -378,9 +378,8 @@ export function createconverter({ core, webp, svg, magick, media, docs, ffmpeg }
       }
     };
     link(VIDEO_FORMATS, VIDEO_FORMATS);
-    link(VIDEO_FORMATS, AUDIO_FORMATS);
-    link(AUDIO_FORMATS, AUDIO_FORMATS);
-    link(MEDIABUNNY_AUDIO,MEDIABUNNY_AUDIO);
+    link(VIDEO_FORMATS, MEDIABUNNY_AUDIO);
+    link(MEDIABUNNY_AUDIO, MEDIABUNNY_AUDIO);
   }
 
   //ffmpeg

@@ -71,9 +71,9 @@ export function convert_audio(bytes,target,options={}){
             ffmpeg.on("progress",onProgress);
             options.signal?.addEventListener("abort",onAbort,{once:true});
 
-            await ffmpeg.writeFile("input",bytes);
+            await ffmpeg.writeFile("input",bytes.slice());
             const a = options.audio ?? {};
-            const args = ["-i","input","vn"];
+            const args = ["-i","input","-vn"];
             if (options.trim?.start!=null){args.push("-ss",String(options.trim.start));}
             if (options.trim?.end != null) args.push("-to", String(options.trim.end));
             if (typeof a.bitrate === "number") args.push("-b:a", String(a.bitrate));
