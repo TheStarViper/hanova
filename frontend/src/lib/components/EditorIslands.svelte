@@ -1,4 +1,5 @@
 <script lang="ts">
+import { ISLAND_CLUSTER_CENTERS } from "#lib/data/islandPlacements.js";
 import { world } from "#lib/world.svelte.js";
 </script>
 
@@ -33,20 +34,29 @@ import { world } from "#lib/world.svelte.js";
       ></span>
     </div>
   {/each}
+  <div id="islandClusterDebugs">
+    {#each Object.values(ISLAND_CLUSTER_CENTERS) as pos}
+      <span
+        class="clusterCenter"
+        style:left="{pos.x}px"
+        style:top="{pos.y}px"
+      ></span>
+    {/each}
+  </div>
 </div>
 
 <style lang="scss">
 #islandDebugs {
   position: absolute;
 
+  span {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
   .islandDebug {
     position: relative;
-
-    * {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
 
     .radius {
       width: calc(var(--xAxis) * 2);
@@ -59,13 +69,25 @@ import { world } from "#lib/world.svelte.js";
       width: 96px;
       height: 74px;
       border: 7px solid lime;
-      border-radius: 9999px;
+      border-radius: 50%;
     }
     .treasure {
       width: 30px;
       height: 30px;
       border: 5px solid fuchsia;
-      border-radius: 9999px;
+      border-radius: 50%;
+    }
+  }
+
+  #islandClusterDebugs {
+    position: relative;
+
+    .clusterCenter {
+      width: 100px;
+      height: 100px;
+      background-color: color-mix(cyan 30%, transparent);
+      border: 7px solid cyan;
+      border-radius: 50%;
     }
   }
 }
