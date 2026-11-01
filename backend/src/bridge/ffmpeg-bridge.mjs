@@ -69,7 +69,42 @@ export function convert_audio(bytes,target,options={}){
             ffmpeg = await load();
             ffmpeg.on("log",onLog);
             ffmpeg.on("progress",onProgress);
-            
+            options.signal?.addEventListener("abort",onAbort,{once:true});
+
+            await ffmpeg.writeFile("input",bytes);
+            const a = options.audio ?? {};
+            const args = ["-i","input","vn"];
+            if (options.trim?.start!=null){args.push("-ss",String(options.trim.start));}
+            if (options.trim?.end != null) args.push("-to", String(options.trim.end));
+            if (typeof a.bitrate === "number") args.push("-b:a", String(a.bitrate));
+            if (typeof a.sampleRate === "number") args.push("-ar", String(a.sampleRate));
+            if (typeof a.numberOfChannels === "number") args.push("-ac", String(a.numberOfChannels));
+            args.push(...encoder, "-y", outName);
+
+            const code = await ffmpeg.exec(args);
+            if (code !==0){
+                const last = [...log].reverse().find((l)=>l.trim())??"no details";
+                throw new ConvertError(ErrorCode.NativeFailure,`ffmpeg: ${last}`);
+            }
+
+            const data = await ffmpeg.readFile(outName);
+            if (!data ||data.length===0){
+                throw new ConvertError(ErrorCode.NativeFailure, "ffmpeg made empty file");
+            }
+            return data.slice();
+        } catch (error){
+            if (aborted || options.signal?.aborted){
+                throw new ConvertError(ErrorCode.Cancelled,"conversion canceled",{cause:error});
+            }
+            throw to_convert_error(error,ErrorCode.NativeFailure);
+        } finally {
+            options.signal?.removeEventListener("abort",onAbort);
+            if(ffmpeg&&!aborted){
+                ffmpeg.off("log",onLog);
+                ffmpeg.off("progress",onProgress);
+                await ffmpeg.deleteFile("input").catch(()=>{});
+                await ffmpeg.deleteFile(outName).catch(()=>{});
+            }
         }
     })
 }

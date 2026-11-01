@@ -30,7 +30,7 @@ export const VIDEO_FORMATS = [
   "ts",
 ];
 
-export const AUDIO_FORMATS = [
+const MEDIABUNNY_AUDIO = [
   "mp3",
   "wav",
   "ogg",
@@ -38,6 +38,8 @@ export const AUDIO_FORMATS = [
   "aac",
   "m4a",
 ];
+export const FFMPEG_ONLY_AUDIO = ["aiff","au","caf","ac3","mp2","wma"];
+export const AUDIO_FORMATS = [...MEDIABUNNY_AUDIO,...FFMPEG_ONLY_AUDIO];
 
 export const MEDIA_INFO = {
   mp4:  { ext: "mp4",  mime: "video/mp4",        video: true,  encoders: ["aac"] },
@@ -51,6 +53,14 @@ export const MEDIA_INFO = {
   flac: { ext: "flac", mime: "audio/flac",       video: false, encoders: ["flac"], audioCodec: "flac" },
   aac:  { ext: "aac",  mime: "audio/aac",        video: false, encoders: ["aac"],  audioCodec: "aac" },
   m4a:  { ext: "m4a",  mime: "audio/mp4",        video: false, encoders: ["aac"],  audioCodec: "aac" },
+
+  //ffmpeg
+  aiff: {ext: "aiff",  mime: "audio/aiff",       video: false, engine: "ffmpeg"},
+  au:   {ext: "au",    mime: "audio/basic",      video: false, engine: "ffmpeg"},
+  caf:  {ext: "caf",   mime: "audio/x-caf",      video: false, engine: "ffmpeg"},
+  ac3:  {ext: "ac3",   mime: "audio/ac3",        video: false, engine: "ffmpeg"},
+  mp2:  {ext: "mp2",   mime: "audio/mpeg",       video: false, engine: "ffmpeg"},
+  wma:  {ext: "wma",   mime: "audio/x-ms-wma",   video: false, engine: "ffmpeg"},
 };
 export const MEDIA_FORMATS = Object.keys(MEDIA_INFO);
 export const MEDIA_PRESETS = ["potato", "small", "balanced", "high", "max"];
@@ -90,6 +100,17 @@ export function detect_media_format(bytes) {
   }
   if (bytes[0] === 0x47 && bytes.length >= 189 && bytes[188] === 0x47) {
     return "ts";
+  }
+
+  //ffmpeg audio
+  if (ascii(bytes,0,4)==="FORM"&&ascii(bytes,8,12)==="AIFF"){return "aiff";}
+  if (ascii(bytes,0,4)===".snd"){return "au";}
+  if (ascii(bytes,0,4)==="caff"){return "caf";}
+  if (bytes[0]===0x0b&&bytes[1]===0x77){return "ac3";}
+  if (bytes[0]===0x30&&bytes[1]===0x26&&bytes[2]===0xb2&&bytes[3]===0x75){return "wma";}
+  if (bytes[0]===0xff&&(bytes[1]&0xe0)===0xe0){
+    const layer = (bytes[1]>>1)&3;
+    return layer ===0?"aac":layer ===2?"mp2":"mp3";
   }
   return "unknown";
 }
@@ -253,7 +274,7 @@ export const format_from_filename = (name) =>{
   return ALIASES[ext]??ext;
 };
 
-export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
+export function createconverter({ core, webp, svg, magick, media, docs, ffmpeg } = {}) {
   const unwrap = (r) => {
     if (Array.isArray(r) || r instanceof Uint8Array) return r;
     if (r && r.ok === false) {
@@ -359,6 +380,18 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
     link(VIDEO_FORMATS, VIDEO_FORMATS);
     link(VIDEO_FORMATS, AUDIO_FORMATS);
     link(AUDIO_FORMATS, AUDIO_FORMATS);
+    link(MEDIABUNNY_AUDIO,MEDIABUNNY_AUDIO);
+  }
+
+  //ffmpeg
+  const ffmpeg_step = (to) =>(bytes,_q,options)=>ffmpeg.convert_audio(bytes,to,options);
+  if (ffmpeg){
+    const FFMPEG_COST = 5;
+    for (const a of [...VIDEO_FORMATS,...AUDIO_FORMATS]){
+      for (const b of AUDIO_FORMATS){
+        if (a!==b&!has(a,b)) {register(a,b,ffmpeg_step(b),FFMPEG_COST);}
+      }
+    }
   }
 
   //pandoc
@@ -473,13 +506,20 @@ export function createconverter({ core, webp, svg, magick, media, docs } = {}) {
       );
     }
 
+    if (options.engine==="ffmpeg"&&
+       ffmpeg&&
+       DOMAIN[target_format]==="audio"&&
+       (DOMAIN[detected_format]==="audio"||
+       DOMAIN[detected_format]==="video")){
+        path = [{from: detected_format, to: target_format, func: ffmpeg_step(target_format)}];
+    }
+
     const is_media = DOMAIN[target_format]==="video"||DOMAIN[target_format]==="audio";
-    if (path.length === 0 && media && is_media&&has_media_options(options)){ 
-        path = [{
-        from: target_format,
-        to: target_format,
-        func: media_step(target_format),
-      }];
+    if (path.length === 0 && is_media&&has_media_options(options)){ 
+      const via_ffmpeg = MEDIA_INFO[target_format]?.engine ==="ffmpeg";
+      if (via_ffmpeg ? ffmpeg : media){
+        path = [{ from: target_format, to: target_format, func: (via_ffmpeg ? ffmpeg_step : media_step)(target_format) }];
+      }
     }
 
     let data = bytes;
