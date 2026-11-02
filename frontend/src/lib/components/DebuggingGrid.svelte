@@ -9,7 +9,7 @@ import { world } from "#lib/world.svelte.js";
 </script>
 
 <div
-  id="devOnlyPathfindingGrid"
+  id="gridDebug"
   style:background-size="{GRID_CELL_WIDTH*world.viewport.zoom}px {GRID_CELL_HEIGHT*world.viewport.zoom}px"
   style:background-position="{world.viewport.offset.x * world.viewport.zoom}px {world.viewport.offset.y * world.viewport.zoom}px"
   style:width="{100/world.viewport.zoom}vw"
@@ -19,7 +19,7 @@ import { world } from "#lib/world.svelte.js";
 </div>
 
 <style lang="scss">
-#devOnlyPathfindingGrid {
+#gridDebug {
   position: absolute;
   top: 0;
   left: 0;

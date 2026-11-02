@@ -1,17 +1,25 @@
 <script lang="ts" module>
 import { type Format, FORMAT_TO_MEDIATYPE } from "#lib/backend.js";
-import { ISLAND_DATA, type IslandDatum } from "#lib/data/islandPlacements.js";
+import {
+  ISLAND_CLUSTER_CENTERS,
+  ISLAND_DATA,
+  type IslandDatum,
+} from "#lib/data/islandPlacements.js";
 import { ISLAND_SPRITES } from "#lib/data/islandSprites.js";
 import { Pos } from "#lib/utils.svelte.js";
 import { world } from "#lib/world.svelte.js";
 
 export class IslandManager {
   datum: IslandDatum;
+  pos: Pos;
 
   constructor(
     datum: IslandDatum,
   ) {
     this.datum = datum;
+    this.pos = $derived(
+      Pos.add(this.datum.pos, ISLAND_CLUSTER_CENTERS[this.mediaType]),
+    );
   }
 
   callBoat() {
@@ -20,10 +28,6 @@ export class IslandManager {
 
   get name() {
     return this.datum.name;
-  }
-
-  get pos() {
-    return this.datum.pos;
   }
 
   get mediaType() {
@@ -137,60 +141,3 @@ $effect(() => {
   }}
   label={TOOLTIP_DATA[me.name].title}
 >{@html processedSvg}</Sprite>
-<div
-  class="debug"
-  style:display={world.debugging ? "flex" : "none"}
-  style:left="{me.pos.x + world.viewport.offset.x}px"
-  style:top="{me.pos.y + world.viewport.offset.y}px"
->
-  <span
-    class="radius"
-    style:--xAxis="{me.sprite.bound.xAxis}px"
-    style:--yAxis="{me.sprite.bound.yAxis}px"
-    style:left="{me.sprite.bound.xOffset}px"
-    style:top="{me.sprite.bound.yOffset}px"
-    style:rotate="{me.sprite.bound.degrees}deg"
-  ></span>
-  <span
-    class="spawn"
-    style:left="{me.spawnOffset.x}px"
-    style:top="{me.spawnOffset.y}px"
-  ></span>
-  <span
-    class="treasure"
-    style:left="{me.sprite.treasureOffset.x}px"
-    style:top="{me.sprite.treasureOffset.y}px"
-  ></span>
-</div>
-
-<style lang="scss">
-.debug {
-  position: relative;
-
-  * {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-  }
-
-  .radius {
-    width: calc(var(--xAxis) * 2);
-    height: calc(var(--yAxis) * 2);
-    transform-origin: top left;
-    border: 5px solid red;
-    border-radius: 50%;
-  }
-  .spawn {
-    width: 96px;
-    height: 74px;
-    border: 7px solid lime;
-    border-radius: 9999px;
-  }
-  .treasure {
-    width: 30px;
-    height: 30px;
-    border: 5px solid fuchsia;
-    border-radius: 9999px;
-  }
-}
-</style>
