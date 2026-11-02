@@ -13,6 +13,7 @@ import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
 
 // misc imports
+import { dev } from "$app/env";
 import type { CubicBezier } from "./bezier";
 import type { WorkerResponse } from "./converter.worker";
 import { CppManager } from "./cppManager";
@@ -40,8 +41,8 @@ export class World {
   filenameTemplate: string = $state("{base}.{outExt}");
 
   // for various dev-only debugging visuals
-  debugging = false;
-  skipMenu = false;
+  devOverlay = $state(fromLocalStorage("devOverlay"));
+  skipMenu = $state(fromLocalStorage("skipMenu"));
 
   constructor() {}
 
@@ -223,6 +224,11 @@ export class World {
       () => this.boatArriveHandler(),
     );
   }
+}
+
+function fromLocalStorage(key: string): boolean {
+  if (typeof window === "undefined" || !dev) return false;
+  return localStorage.getItem("skipMenu") === "true";
 }
 
 /** one singleton to rule them all */

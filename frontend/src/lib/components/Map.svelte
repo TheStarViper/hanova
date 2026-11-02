@@ -32,11 +32,11 @@ let worldOffset = $derived(
     <Island me={island} />
   {/each}
 
-  {#if world.debugging}<EditorIslands />{/if}
+  {#if world.devOverlay}<EditorIslands />{/if}
 </div>
 
 <Banner />
-{#if world.debugging}<EditorGrid />{/if}
+{#if world.devOverlay}<EditorGrid />{/if}
 
 <style lang="scss">
 .world-layer {

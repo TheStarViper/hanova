@@ -6,6 +6,7 @@ import {
 } from "#lib/backend.js";
 import { TOOLTIP_DATA, type TooltipDatum } from "#lib/data/tooltipData.js";
 import { world } from "#lib/world.svelte.js";
+import { dev } from "$app/env";
 
 import Setting from "./Setting.svelte";
 
@@ -21,6 +22,13 @@ function mediaTypeList(mediaType: MediaType): string {
     )
     .join(", ");
 }
+
+$effect(() => {
+  if (typeof window === "undefined") return;
+
+  localStorage.setItem("devOverlay", world.devOverlay ? "true" : "false");
+  localStorage.setItem("skipMenu", world.skipMenu ? "true" : "false");
+});
 </script>
 
 <article id="about">
@@ -36,6 +44,31 @@ function mediaTypeList(mediaType: MediaType): string {
       you'll unearth buried treasure: your converted file!
     </p>
   </section>
+
+  {#if dev}
+    <section id="dev">
+      <h2>Secret dev panel shhhh</h2>
+
+      <p>Settings:</p>
+      <div>
+        <span>
+          <label for="overlay">Dev Overlay</label>
+          <input id="overlay" type="checkbox" bind:checked={world.devOverlay} />
+        </span>
+
+        <span>
+          <label for="skipmenu">Skip menu</label>
+          <input id="skipmenu" type="checkbox" bind:checked={world.skipMenu} />
+        </span>
+      </div>
+
+      <p>Tests:</p>
+      <ul>
+        <li><a href="test/pathfind">Pathfinding test</a></li>
+        <li><a href="test/pathfind">Island completeness</a></li>
+      </ul>
+    </section>
+  {/if}
 
   <section id="settings">
     <h2>Settings</h2>
@@ -140,6 +173,29 @@ section {
 
 section#formats p {
   text-indent: 2ch hanging;
+}
+
+section#dev {
+  padding: 1rem;
+  background: var(--bg-accent);
+  clip-path: xywh(0 0 100% 100% round 1rem);
+
+  border: 15px solid;
+  // stripes based on https://css-tricks.com/stripes-css/
+  border-image: repeating-linear-gradient(
+    -45deg,
+    var(--line),
+    var(--line) 10px,
+    #ffc067 10px,
+    #ffc067 20px
+  ) 20;
+  border-radius: 1rem;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    padding-left: 2rem;
+  }
 }
 
 :global {
