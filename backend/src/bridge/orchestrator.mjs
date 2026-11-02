@@ -7,6 +7,7 @@ import {
   DOCUMENT_FORMATS,
   DOC_INPUTS,
   DOC_OUTPUTS,
+  ConvertError,
 } from "./converter.mjs";
 import { convert_audio } from "./ffmpeg-bridge.mjs";
 
@@ -41,7 +42,9 @@ function build({magickInit}={}){
     convert_bytes: async (bytes,name,quality,processor)=>{
       await ensureMagick();
       const b = await loadMagickBridge();
-      return b.convert_bytes(bytes,b.MAGICK_BY_NAME[name],quality,b.MAGICK_PROCESSOR[processor]);
+      const format = b.MAGICK_BY_NAME?.[name];
+      if (format===undefined){throw new Error(`Imagemagick cant write "${name}"`);}
+      return b.convert_bytes(bytes,format,quality,processor ? b.MAGICK_PROCESSORS?.[processor]:undefined);
     },
     detect_format: async (bytes)=>{
       await ensureMagick();

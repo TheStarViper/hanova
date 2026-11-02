@@ -76,50 +76,6 @@ export async function detect_format(bytes) {
   }
 }
 
-export const FORMATS = {
-  ".png": magickModule.MagickFormat.Png,
-  ".jpg": magickModule.MagickFormat.Jpeg,
-  ".jpeg": magickModule.MagickFormat.Jpeg,
-  ".jpe": magickModule.MagickFormat.Jpeg,
-  ".bmp": magickModule.MagickFormat.Bmp,
-  ".webp": magickModule.MagickFormat.WebP,
-  ".gif": magickModule.MagickFormat.Gif,
-  ".avif": magickModule.MagickFormat.Avif,
-  ".tiff": magickModule.MagickFormat.Tiff,
-  ".tif": magickModule.MagickFormat.Tif,
-  ".heic": magickModule.MagickFormat.Heic,
-  ".heif": magickModule.MagickFormat.Heif,
-  ".jxl": magickModule.MagickFormat.Jxl,
-  ".ico": magickModule.MagickFormat.Ico,
-  ".psd": magickModule.MagickFormat.Psd,
-  ".pdf": magickModule.MagickFormat.Pdf, // FIX add document conversion
-  ".eps": magickModule.MagickFormat.Eps,
-  ".ai": magickModule.MagickFormat.Ai,
-  ".ora": magickModule.MagickFormat.Ora,
-  ".xcf": magickModule.MagickFormat.Xcf,
-  ".qoi": magickModule.MagickFormat.Qoi,
-  ".exr": magickModule.MagickFormat.Exr,
-
-  // camera formats
-  ".raw": magickModule.MagickFormat.Raw,
-  ".dng": magickModule.MagickFormat.Dng,
-  ".cr2": magickModule.MagickFormat.Cr2,
-  ".cr3": magickModule.MagickFormat.Cr3,
-  ".nef": magickModule.MagickFormat.Nef,
-  ".arw": magickModule.MagickFormat.Arw,
-  ".orf": magickModule.MagickFormat.Orf,
-  ".rw2": magickModule.MagickFormat.Rw2,
-  ".raf": magickModule.MagickFormat.Raf,
-  ".pef": magickModule.MagickFormat.Pef,
-  ".srw": magickModule.MagickFormat.Srw,
-  ".x3f": magickModule.MagickFormat.X3f,
-  ".3fr": magickModule.MagickFormat.ThreeFr,
-  ".fff": magickModule.MagickFormat.Fff,
-  ".iiq": magickModule.MagickFormat.Iiq,
-  ".mos": magickModule.MagickFormat.Mos,
-  ".mrw": magickModule.MagickFormat.Mrw,
-};
-
 export const {
   ImageMagick,
   Magick,

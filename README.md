@@ -11,7 +11,7 @@ corresponding to your desired file format. Dig at the red X, and you'll unearth
 buried **treasure**: your converted file!
 
 > [!NOTE]
-> Hanova is still under heavy development. It is in a functional state now, but
+> Hanova is still under heavy development. It's in a functional state now, but
 > it isn't feature-complete, and there may be bugs. A lot of bugs.
 
 ## Demo
@@ -30,18 +30,17 @@ and such so i opted for a prepackaged library. I have listed the libraries ive
 used down below, but before that, even though i used libraries for conversion
 there are still a ton of other things to do other than calling functions in the
 library that a file converter like file validation,safety functions,error handling,
-and glue code so that they can work seamlessly together
+and glue code so that they can work seamlessly together.
 
 ### Libraries Used:
 
-- [stb_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
-- [libwebp](https://github.com/webmproject/libwebp) (webp)
-- [imagetracerjs](https://github.com/jankovicsandras/imagetracerjs) (svg)
-- [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image
-  formats)
-- [mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
-- [ffmpeg](https://github.com/ffmpeg/ffmpeg) (audio)
-- [pandoc](https://github.com/jgm/pandoc) (documents)
+- [STB_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
+- [Libwebp](https://github.com/webmproject/libwebp) (webp)
+- [Imagetracerjs](https://github.com/jankovicsandras/imagetracerjs) (svg vectorizer & rasterizer)
+- [Imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image formats)
+- [Mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
+- [FFmpeg](https://github.com/ffmpeg/ffmpeg) (audio)
+- [Pandoc](https://github.com/jgm/pandoc) (documents)
 
 ### Mjs Bridge System
 
@@ -70,10 +69,10 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] tiff / tif
 - [x] jxl
 - [x] psd
-- [x] svg (We have a vectorizer that turns bitmaps to vectorized svgs)
+- [x] svg (We have a vectorizer that turns bitmaps to vectorized svgs and a rasterizer for vectors to bitmaps)
 
-[![Before](befire.jpg)](https://thestarviper.github.io/hanova/)
-[![After](after.svg)](https://thestarviper.github.io/hanova/)
+[before](before.jpg)
+[after](after.svg)
 
 </details>
 
@@ -88,8 +87,6 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] m4a
 - [x] wma
 - [x] aiff
-- [ ] alac
-- [ ] amr
 - [x] ac3
 - [x] mp2
 - [x] au
@@ -100,6 +97,8 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] m4r
 - [x] alac
 - [x] tta
+- [ ] alac
+- [ ] amr
 
 </details>
 
