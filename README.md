@@ -64,13 +64,16 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] exr
 - [x] webp
 - [x] avif
-- [x] svg
 - [x] eps / epsf / epsi
 - [x] ai (adobe illustrator not artificial intellegence)
 - [x] qoi
 - [x] tiff / tif
 - [x] jxl
 - [x] psd
+- [x] svg (We have a vectorizer that turns bitmaps to vectorized svgs)
+
+[![Before](befire.jpg)](https://thestarviper.github.io/hanova/)
+[![After](after.svg)](https://thestarviper.github.io/hanova/)
 
 </details>
 
