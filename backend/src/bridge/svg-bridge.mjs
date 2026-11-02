@@ -65,3 +65,32 @@ export async function render_svg(bytes,options = {}){
         throw to_convert_error(error,ErrorCode.NativeFailure);
     }
 }
+
+export async function trace_svg(bytes,options={}){
+    try {
+        needDom;
+        const [ImageTracer,bitmap] = await Promise.all([
+            tracer(),
+            createImageBitmap(new Blob([bytes],{type: "image/png"})),
+        ]);
+
+        const max = options.traceMaxSide ?? 1024;
+        const k = Math.min(1,max/Math.max(bitmap.width,bitmap.height));
+        const w = Math.max(1,Math.round(bitmap.width*k));
+        const h = Math.max(1,Math.round(bitmap.height*k));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+
+        const ctx = canvas.getContext("2d",{willReadFrequently: true});
+        ctx.drawImage(bitmap,0,0,w,h);
+        bitmap.close?.();
+
+        const config = typeof options.svg ==="string"?options.svg : {viewbox: true,...options.svg};
+        const svg = ImageTracer.imagedataToSVG(ctx.getImageData(0,0,w,h),config);
+        return new TextEncoder().encode(svg);
+    } catch (error){
+        throw to_convert_error(error,ErrorCode.NativeFailure);
+    }
+}
