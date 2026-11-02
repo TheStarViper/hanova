@@ -34,8 +34,8 @@ export async function render_svg(bytes,options = {}){
                 img.src = url;
             });
         
-        let w = image.naturalWidth;
-        let h = image.naturalHeight;
+        let w = Image.naturalWidth;
+        let h = Image.naturalHeight;
         if (!w||!h){
             const vb = /viewBox\s*=\s*["']\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)/i.exec(text); //wtf
             const ratio = vb?Number(vb[2])/Number(vb[1]) : 1;
@@ -56,7 +56,7 @@ export async function render_svg(bytes,options = {}){
         const canvas = document.createElement("canvas");
         canvas.width = outW;
         canvas.height = outH;
-        canvas.getContext("2d").drawImag(img,0,0,outW,outH);
+        canvas.getContext("2d").drawImage(img,0,0,outW,outH);
         return await canvasToPng(canvas);
         } finally {
             URL.revokeObjectURL(url);

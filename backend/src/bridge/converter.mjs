@@ -318,7 +318,7 @@ export const format_from_filename = (name) =>{
   return ALIASES[ext]??ext;
 };
 
-export function createconverter({ core, webp, svg, magick, media, docs, ffmpeg,vector} = {}) {
+export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector} = {}) {
   const unwrap = (r) => {
     if (Array.isArray(r) || r instanceof Uint8Array) return r;
     if (r && r.ok === false) {
@@ -376,21 +376,9 @@ export function createconverter({ core, webp, svg, magick, media, docs, ffmpeg,v
   }
 
   // svg
-  if (svg||vector){
-    register("svg","png",async (bytes,_q,options)=>{
-      if (vector){
-        try{
-          return await vector.render_svg(bytes,options);
-        } catch (error){
-          if(!svg) {throw error;}
-        }
-        return unwrap((await use(svg)).convert_svg_to_png(bytes));
-      }
-    },1);
-  }
-  
   if(vector){
     register("png","svg",(bytes,_q,options)=>vector.trace_svg(bytes,options),2);
+    register("svg","png",(bytes,_q,options)=>vector.render_svg(bytes,options),1);
   }
 
   // magick
