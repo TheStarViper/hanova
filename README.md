@@ -36,7 +36,7 @@ and glue code so that they can work seamlessly together
 
 - [stb_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
 - [libwebp](https://github.com/webmproject/libwebp) (webp)
-- [nanosvg](https://github.com/memononen/nanosvg) (svg)
+- [imagetracerjs](https://github.com/jankovicsandras/imagetracerjs) (svg)
 - [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image
   formats)
 - [mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
@@ -91,12 +91,12 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] mp2
 - [x] au
 - [x] caf
-- [ ] opus
-- [ ] weba
-- [ ] mka
-- [ ] m4r
-- [ ] alac
-- [ ] tta
+- [x] opus
+- [x] weba
+- [x] mka
+- [x] m4r
+- [x] alac
+- [x] tta
 
 </details>
 

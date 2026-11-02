@@ -178,9 +178,16 @@ export function detect_document_format(b) {
   return "unknown";
 }
 
-// key = what the app calls it 
+export function detect_svg(bytes){
+  if (!bytes||bytes.length<5) {return "unknown";}
+  const start = bytes[0]===0xef && bytes[1]===0xbb&&bytes[2]===0xbf?3:0;
+  const head = latin1(bytes,start,Math.min(bytes.length,start+16384));
+  return /svg[\s>]/.test(head)?"svg":"unknown";
+}
+
 // read/write = pandoc's name for it
-// binary: zip containers, passed as files. standalone: full document, not a fragment.
+// binary: zip containers passed as files. 
+// standalone: full document
 export const DOC_FORMATS = {
   //office and ebook containers
   docx:  { read: "docx", write: "docx", binary: true, mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
@@ -311,7 +318,7 @@ export const format_from_filename = (name) =>{
   return ALIASES[ext]??ext;
 };
 
-export function createconverter({ core, webp, svg, magick, media, docs, ffmpeg } = {}) {
+export function createconverter({ core, webp, svg, magick, media, docs, ffmpeg,vector} = {}) {
   const unwrap = (r) => {
     if (Array.isArray(r) || r instanceof Uint8Array) return r;
     if (r && r.ok === false) {
@@ -368,9 +375,22 @@ export function createconverter({ core, webp, svg, magick, media, docs, ffmpeg }
     register("webp", "png", async (bytes) => unwrap((await use(webp)).convert_webp_to_png(bytes)), 1);
   }
 
-  // nanosvg
-  if (svg) {
-    register("svg", "png", async (bytes) => unwrap((await use(svg)).convert_svg_to_png(bytes)), 1);
+  // svg
+  if (svg||vector){
+    register("svg","png",async (bytes,_q,options)=>{
+      if (vector){
+        try{
+          return await vector.render_svg(bytes,options);
+        } catch (error){
+          if(!svg) {throw error;}
+        }
+        return unwrap((await use(svg)).convert_svg_to_png(bytes));
+      }
+    },1);
+  }
+  
+  if(vector){
+    register("png","svg",(bytes,_q,options)=>vector.trace_svg(bytes,options),2);
   }
 
   // magick
@@ -489,6 +509,7 @@ export function createconverter({ core, webp, svg, magick, media, docs, ffmpeg }
     let format = "unknown";
     if (media) {format = detect_media_format(bytes);}
     if (format ==="unknown"&&docs){format = detect_document_format(bytes);}
+    if (format ==="unknown") {format = detect_svg(bytes);}
     if (format ==="unknown"&&core){format = (await use(core)).validate_file_format(bytes);}
     if (format ==="unknown"&&magick){format = await magick.detect_format(bytes);}
     return ALIASES[format] ?? format;

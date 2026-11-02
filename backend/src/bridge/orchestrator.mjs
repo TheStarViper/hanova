@@ -21,7 +21,7 @@ function lazy(fn){
 
 const loadCore = lazy(async () => (await import("../../build/image_core_module.js")).default());
 const loadWebp = lazy(async () => (await import("../../build/webp_module.js")).default());
-const loadSvg = lazy(async () => (await import("../../build/svg_module.js")).default());
+const loadSvgBridge = lazy(() => import("./svg-bridge.mjs"));
 const loadMagickBridge = lazy(() => import("./imagemagick-bridge.mjs"));
 const loadMediaBridge = lazy(() => import("./mediabunny-bridge.mjs"));
 const loadDocBridge = lazy(() => import("./pandoc-bridge.mjs"));
@@ -54,13 +54,19 @@ function build({magickInit}={}){
     convert_media: async (bytes, to, options) => (await loadMediaBridge()).convert_media(bytes, to, options),
   };
 
+  const vector = inBrowser ?
+    {render_svg: async (bytes,options)=>(await loadSvgBridge()).render_svg(bytes,options),
+     trace_svg: async (bytes,options)=>(await loadSvgBridge()).trace_svg(bytes,options),
+    }
+    : undefined;
+
   const docs = {
     convert_document: async (bytes, to, options) => (await loadDocBridge()).convert_document(bytes, to, options),
     inputs: DOC_INPUTS,
     outputs: DOC_OUTPUTS,
   };
 
-  return createconverter({core: loadCore, webp: loadWebp, svg: loadSvg, magick,media,docs,ffmpeg});
+  return createconverter({core: loadCore, webp: loadWebp, magick,media,docs,ffmpeg,vector});
 }
 
 /**
