@@ -2,7 +2,7 @@
 
 Hanova is a file conversion website with a nautical twist!
 
-[![Screenshot of Hanova](./frontend/src/lib/assets/screenshot3.png)](https://thestarviper.github.io/hanova/)
+[![Screenshot of Hanova](./frontend/src/lib/assets/screenshot5.png)](https://thestarviper.github.io/hanova/)
 
 Welcome to Hanova, a (fictional) archipelago off the coast of Madagascar!
 "Hanova" is the Malagasy word for "transform", and that's exactly what these
@@ -147,7 +147,7 @@ might change the art direction or use custom assets in the future.
 
 ### Pathfinding
 
-![Debugging mode, where the pathfinding grid and island collision boundaries are drawn in red and overlayed on the rest of the map](./frontend/src/lib/assets/debug_screenshot2.png)
+![Debugging mode, where the pathfinding grid and island collision boundaries are drawn in red and overlayed on the rest of the map](./frontend/src/lib/assets/debug_screenshot3.png)
 
 The boat uses the A* algorithm to pathfind from its current position to the
 target island without clipping through any other islands. The generated path is
@@ -194,14 +194,14 @@ Week 5:
 - [x] Improved sprite colors
 - [x] Mobile support 
 
-Planned:
+Week 6:
 
-- [ ] Boat moves in circles around islands rather than beaching itself
-- [ ] Smoother animations and an overall better experience
-- [ ] Procedural island and water generation
-- [ ] ...and probably more
-
-</details>
+- [x] New About page
+- [x] Quality and filename template settings
+- [x] Developer/debugging overlays
+- [x] [Pathfinding test page](https://thestarviper.github.io/hanova/test/pathfind) and [Island completeness page](https://thestarviper.github.io/hanova/test/islandCompleteness)
+- [x] Optimization with [SVGO](https://github.com/r3dDoX/vite-plugin-svgo)
+- [x] Big frontend refactors
 
 ## Compiling yourself
 
