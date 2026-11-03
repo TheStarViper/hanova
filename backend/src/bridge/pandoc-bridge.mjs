@@ -2,7 +2,7 @@ import {ConvertError,ErrorCode,to_convert_error} from "./errors.mjs";
 import { DOC_FORMATS } from "./converter.mjs";
 
 let pandocPromise;
-const pandoc = () =>(pandocPromise ??= import("pandoc-wasm").catch((error)=>{
+const pandoc = () =>(pandocPromise ??= import("pandoc-wasm").catch((error)=>{ //loader
         pandocPromise = undefined;
         throw error;
     })

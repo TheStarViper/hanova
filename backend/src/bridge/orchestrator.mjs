@@ -9,10 +9,8 @@ import {
   DOC_OUTPUTS,
   ConvertError,
 } from "./converter.mjs";
-import { convert_audio } from "./ffmpeg-bridge.mjs";
 
-//dynamic lib loading
-function lazy(fn){
+function lazy(fn){ //dynamic library loading
   let promise;
   return () => (promise??=fn().catch((error)=>{
     promise = undefined;

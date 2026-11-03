@@ -34,7 +34,7 @@ export const MAGICK_BY_NAME = {
 export const MAGICK_OUTPUT_ONLY = ["ico", "pdf", "eps", "ai"];
 
 export const MAGICK_PROCESSORS = {
-  ico: (image) => {
+  ico: (image) => {//resize automatically for ico format
     if (image.width > 256 || image.height > 256) {
       image.resize(new magickModule.MagickGeometry(256, 256));
     }

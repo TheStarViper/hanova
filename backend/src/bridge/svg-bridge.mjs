@@ -3,7 +3,7 @@ import {ConvertError, ErrorCode, to_convert_error} from "./errors.mjs";
 const MAX_SIZE = 8192;
 
 let svgPromise;
-const tracer = () => (
+const tracer = () => ( //loader
     svgPromise ??= import ("imagetracerjs").then((m)=>m.default??m).catch((error)=>{
     svgPromise = undefined;
     throw error;

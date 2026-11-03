@@ -2,7 +2,7 @@ import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
 import {FFMPEG_AUDIO} from "./converter.mjs";
 
 let ffmpegPromise;
-function load(){
+function load(){ //loader
     ffmpegPromise ??=(async ()=>{
         const [{FFmpeg},core,wasm]= await Promise.all([
             import("@ffmpeg/ffmpeg"),

@@ -152,7 +152,7 @@ export function guard(fn, fallbackcode = ErrorCode.Unknown) {
   };
 }
 
-const USER_MESSAGES = { // front end user messages
+const USER_MESSAGES = { // error messages for the front end to use
   [ErrorCode.UnsupportedInput]: "This file type isnt supported",
   [ErrorCode.UnsupportedOutput]: "We dont support conversions to this file",
   [ErrorCode.NoPath]: "No route to travel to convert these formats",
@@ -172,13 +172,13 @@ const USER_MESSAGES = { // front end user messages
     "an unsupported parameter was given (eg: infinite quality level)",
 };
 
-export function usermessage(error) {
+export function usermessage(error) { //fetch the real message from the error code
   const e = to_convert_error(error);
   return USER_MESSAGES[e.code] ?? USER_MESSAGES[ErrorCode.Unknown];
 }
 
 export function installglobalerrorhandlers(
-  onError = (errorrrrrrr) =>
+  onError = (errorrrrrrr) => //why is the variable called errorrrrrrr
     console.error(errorrrrrrr.code, errorrrrrrr.message, errorrrrrrr.cause),
 ) {
   if (typeof window !== "undefined") {

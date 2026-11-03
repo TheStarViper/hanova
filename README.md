@@ -69,12 +69,12 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] tiff / tif
 - [x] jxl
 - [x] psd
-- [x] svg (We have a vectorizer that turns bitmaps to vectorized svgs and a rasterizer for vectors to bitmaps)
-
-[before](before.jpg)
-[after](after.svg)
-
+- [x] svg (We have a vectorizer that turns bitmaps to vectorized svgs and a rasterizer for vectors to bitmaps) </br>
+<img src="before.jpg" width="300">
+<img src="after.svg" width="300"></br>
+### left before, right after
 </details>
+
 
 <details>
 <summary><h3>Audio</h3></summary>
@@ -138,7 +138,9 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [x] m3u8 (HLS)
 
 </details>
-3D Files:
+
+<details>
+<summary><h3>3D Files</h3></summary>
 
 - [ ] obj
 - [ ] fbx
@@ -147,6 +149,7 @@ Since this file conversion program uses alot of different libraries combined, a 
 - [ ] glb
 - [ ] blend
 
+</details>
 
 ## Frontend (Svelte)
 

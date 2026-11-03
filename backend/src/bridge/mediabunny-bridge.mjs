@@ -56,63 +56,21 @@ export const MEDIA_INFO = {
   m3u8: { ext: "m3u8", mime: "video/idkbruhwth", video: true }, // FIX
 
   // audio
-  mp3: {
-    ext: "mp3",
-    mime: "audio/mpeg",
-    video: false,
-    encoders: ["mp3"],
-    audioCodec: "mp3",
-  },
+  mp3: {ext: "mp3",mime: "audio/mpeg",video: false,encoders: ["mp3"],audioCodec: "mp3",},
   wav: { ext: "wav", mime: "audio/wav", video: false },
   ogg: { ext: "ogg", mime: "audio/ogg", video: false },
-  flac: {
-    ext: "flac",
-    mime: "audio/flac",
-    video: false,
-    encoders: ["flac"],
-    audioCodec: "flac",
-  },
-  aac: {
-    ext: "aac",
-    mime: "audio/aac",
-    video: false,
-    encoders: ["aac"],
-    audioCodec: "aac",
-  },
-  m4a: {
-    ext: "m4a",
-    mime: "audio/mp4",
-    video: false,
-    encoders: ["aac"],
-    audioCodec: "aac",
-  },
+  flac: {ext: "flac",mime: "audio/flac",video: false,encoders: ["flac"],audioCodec: "flac",},
+  aac: {ext: "aac",mime: "audio/aac",video: false,encoders: ["aac"],audioCodec: "aac",},
+  m4a: {ext: "m4a",mime: "audio/mp4",video: false,encoders: ["aac"],audioCodec: "aac",},
 };
 
 const PRESETS = {
-  potato: {
-    video: { height: 360, bitrate: mediabunny.QUALITY_VERY_LOW },
-    audio: { bitrate: mediabunny.QUALITY_VERY_LOW },
-  },
-  small: {
-    video: { height: 480, bitrate: mediabunny.QUALITY_LOW },
-    audio: { bitrate: mediabunny.QUALITY_LOW },
-  },
-  balanced: {
-    video: { height: 720, bitrate: mediabunny.QUALITY_MEDIUM },
-    audio: { bitrate: mediabunny.QUALITY_MEDIUM },
-  },
-  high: {
-    video: { height: 1080, bitrate: mediabunny.QUALITY_HIGH },
-    audio: { bitrate: mediabunny.QUALITY_HIGH },
-  },
-  hdmax: {
-    video: { height: 1080, bitrate: mediabunny.QUALITY_VERY_HIGH },
-    audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },
-  },
-  fourkmax: {
-    video: { height: 3840, bitrate: mediabunny.QUALITY_VERY_HIGH },
-    audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },
-  },
+  potato: {video: { height: 360, bitrate: mediabunny.QUALITY_VERY_LOW },audio: { bitrate: mediabunny.QUALITY_VERY_LOW },},
+  small: {video: { height: 480, bitrate: mediabunny.QUALITY_LOW },audio: { bitrate: mediabunny.QUALITY_LOW },},
+  balanced: {video: { height: 720, bitrate: mediabunny.QUALITY_MEDIUM },audio: { bitrate: mediabunny.QUALITY_MEDIUM },},
+  high: {video: { height: 1080, bitrate: mediabunny.QUALITY_HIGH },audio: { bitrate: mediabunny.QUALITY_HIGH },},
+  hdmax: {video: { height: 1080, bitrate: mediabunny.QUALITY_VERY_HIGH },audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },},
+  fourkmax: {video: { height: 3840, bitrate: mediabunny.QUALITY_VERY_HIGH },audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },},
 };
 
 export const MEDIA_PRESETS = Object.keys(PRESETS);
