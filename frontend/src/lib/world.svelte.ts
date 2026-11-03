@@ -228,7 +228,7 @@ export class World {
 
 function fromLocalStorage(key: string): boolean {
   if (typeof window === "undefined" || !dev) return false;
-  return localStorage.getItem("skipMenu") === "true";
+  return localStorage.getItem(key) === "true";
 }
 
 /** one singleton to rule them all */
