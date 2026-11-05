@@ -41,11 +41,10 @@ export const FFMPEG_AUDIO = {
   //ffmpeg only
   aiff:{args: ["-c:a","pcm_s16be", "-f","aiff"],mime:"audio/aiff"},
   au:  {args: ["-c:a","pcm_s16be", "-f","au"  ],mime:"audio/basic"},
-  caf: {args: ["-c:a","pcm_s16le", "-f","caf" ],mime:"audio/x-cad"},
+  caf: {args: ["-c:a","pcm_s16le", "-f","caf" ],mime:"audio/x-caf"},
   ac3: {args: ["-c:a","ac3"      , "-f","ac3" ],mime:"audio/ac3"},
   mp2: {args: ["-c:a","mp2"      , "-f","mp2" ],mime:"audio/mpeg"},
   wma: {args: ["-c:a","wmav2"    , "-f","asf" ],mime:"audio/x-ms-wma"},
-  //opus:{args: ["-c:a","libopus"  , "-f","opus"],mime:"audio/ogg"},
   weba:{args: ["-c:a","libopus"  , "-f","webm"],mime:"audio/webm"},
   mka: {args: ["-c:a","libopus","-f","matroska"],mime:"audio/x-matroska"},
   m4r: {args: ["-c:a","aac"      , "-f","ipod"],mime:"audio/mp4"},
@@ -82,14 +81,6 @@ export const MEDIA_INFO = {
   aac:  { ext: "aac",  mime: "audio/aac",        video: false, encoders: ["aac"],  audioCodec: "aac" },
   m4a:  { ext: "m4a",  mime: "audio/mp4",        video: false, encoders: ["aac"],  audioCodec: "aac" },
   opus: { ext: "opus", mime: "audio/ogg",        video: false, audioCodec: "opus"},
-
-  //ffmpeg
-  aiff: {ext: "aiff",  mime: "audio/aiff",       video: false, engine: "ffmpeg"},
-  au:   {ext: "au",    mime: "audio/basic",      video: false, engine: "ffmpeg"},
-  caf:  {ext: "caf",   mime: "audio/x-caf",      video: false, engine: "ffmpeg"},
-  ac3:  {ext: "ac3",   mime: "audio/ac3",        video: false, engine: "ffmpeg"},
-  mp2:  {ext: "mp2",   mime: "audio/mpeg",       video: false, engine: "ffmpeg"},
-  wma:  {ext: "wma",   mime: "audio/x-ms-wma",   video: false, engine: "ffmpeg"},
 };
 
 for (const f of FFMPEG_ONLY_AUDIO){
@@ -108,7 +99,7 @@ export function detect_media_format(bytes) {
 
   // video
   if (ascii(bytes, 4, 8) === "ftyp") {
-    const brand = ascii(bytes, 4, 8);
+    const brand = ascii(bytes, 8, 12);
     if (brand === "qt  ") return "mov";
     if (brand === "M4A " || brand === "M4B ") return "m4a";
     return "mp4";
@@ -130,9 +121,6 @@ export function detect_media_format(bytes) {
     return "wav";
   }
   if (ascii(bytes, 0, 3) === "ID3") return "mp3";
-  if (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0) {
-    return ((bytes[1] >> 1) & 3) === 0 ? "aac" : "mp3";
-  }
   if (bytes[0] === 0x47 && bytes.length >= 189 && bytes[188] === 0x47) {
     return "ts";
   }
@@ -283,7 +271,6 @@ export const ALIASES = {
   vst: "tga",
   tif: "tiff",
   epsf: "eps",
-  epsi: "epsi",
 
   //video
   m4v: "mp4",
@@ -304,14 +291,12 @@ export const ALIASES = {
   mediawiki: "wiki",
   docbook: "dbk",
   typst: "typ",
-  bibtex: "bib",
   texinfo: "texi",
   epub3: "epub",
   epub2: "epub",
 };
 
-const has_media_options = (o) =>
-  Boolean(o.preset || o.trim || o.video || o.audio);
+const has_media_options = (o) => Boolean(o.preset || o.trim || o.video || o.audio);
 
 export const format_from_filename = (name) =>{
   const ext = String(name).split(".").pop().toLowerCase();
@@ -385,7 +370,6 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
   if (magick) {
     const MAGICK_COST = 5;
     const READABLE = ["png", "jpg", "bmp", "tga", "hdr"];
-    const has = (from, to) => table[INDEX[from]][INDEX[to]] !== null;
 
     const WRITABLE = Object.keys(magick.formats).filter(
       (f) =>
@@ -434,7 +418,7 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     const writable = AUDIO_FORMATS.filter((f)=>FFMPEG_AUDIO[f]?.args);
     for (const a of [...VIDEO_FORMATS,...AUDIO_FORMATS]){
       for (const b of writable){
-        if (a!==b&!has(a,b)) {register(a,b,ffmpeg_step(b),FFMPEG_COST);}
+        if (a!==b&&!has(a,b)) {register(a,b,ffmpeg_step(b),FFMPEG_COST);}
       }
     }
   }
