@@ -28,6 +28,10 @@ $effect(() => {
 
   localStorage.setItem("devOverlay", world.devOverlay ? "true" : "false");
   localStorage.setItem("skipMenu", world.skipMenu ? "true" : "false");
+  localStorage.setItem(
+    "islandEditMode",
+    world.islandEditMode ? "true" : "false",
+  );
 });
 </script>
 
@@ -59,6 +63,15 @@ $effect(() => {
         <span>
           <label for="skipmenu">Skip menu</label>
           <input id="skipmenu" type="checkbox" bind:checked={world.skipMenu} />
+        </span>
+
+        <span>
+          <label for="islandEditMode">Island edit mode</label>
+          <input
+            id="islandEditMode"
+            type="checkbox"
+            bind:checked={world.islandEditMode}
+          />
         </span>
       </div>
 

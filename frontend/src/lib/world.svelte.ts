@@ -43,6 +43,7 @@ export class World {
   // for various dev-only debugging visuals
   devOverlay = $state(fromLocalStorage("devOverlay"));
   skipMenu = $state(fromLocalStorage("skipMenu"));
+  islandEditMode = $state(fromLocalStorage("islandEditMode"));
 
   constructor() {}
 
