@@ -198,7 +198,7 @@ export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
     blurb:
       "The quality used to convert the file. Lower quality decreases file size, but at the cost of quality.",
   },
-  template: {
+  filenameTemplate: {
     title: "Filename Template",
     blurb: `The template used to generate the output filename.
     <ul>

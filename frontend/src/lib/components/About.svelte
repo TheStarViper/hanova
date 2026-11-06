@@ -85,20 +85,8 @@ $effect(() => {
 
   <section id="settings">
     <h2>Settings</h2>
-    <Setting
-      id="quality"
-      inputType="range"
-      readonlyValue={world.quality}
-      updateValue={((newVal: number | string) => world.quality = newVal as number)}
-      percent
-    />
-    <Setting
-      id="template"
-      inputType="text"
-      readonlyValue={world.filenameTemplate}
-      updateValue={((newVal: number | string) => world.filenameTemplate = newVal as string)}
-      percent
-    />
+    <Setting field="quality" />
+    <Setting field="filenameTemplate" />
   </section>
 
   <section id="formats">

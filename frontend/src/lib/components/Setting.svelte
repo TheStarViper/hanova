@@ -1,39 +1,28 @@
 <script lang="ts" module>
-export const SETTINGS = ["quality", "template"] as const;
+export const SETTINGS = [
+  "quality",
+  "filenameTemplate",
+] as const satisfies (keyof World)[];
 export type Setting = (typeof SETTINGS)[number];
 </script>
 
 <script lang="ts">
 import InfoSvg from "#lib/assets/info.svg";
 import { TOOLTIP_DATA } from "#lib/data/tooltipData.js";
-import { world } from "#lib/world.svelte.js";
+import { World, world } from "#lib/world.svelte.js";
 import { onMount } from "svelte";
-import type {
-  ChangeEventHandler,
-  HTMLInputTypeAttribute,
-} from "svelte/elements";
 
 interface Props {
-  id: Setting;
-  inputType: HTMLInputTypeAttribute;
-  readonlyValue: string | number;
-  updateValue: (newVal: string | number) => void;
-  percent?: boolean;
+  field: Setting;
 }
 
-let props: Props = $props();
+let { field }: Props = $props();
 
-const onchange: ChangeEventHandler<HTMLInputElement> = (event: Event) => {
-  props.updateValue(elValue);
-};
-
-// svelte-ignore state_referenced_locally
-let elValue: number | string = $state(props.readonlyValue);
 let hoverEl: HTMLElement;
 
 onMount(() => {
   hoverEl.addEventListener("mouseenter", () => {
-    world.tooltip.target = props.id;
+    world.tooltip.target = field;
   });
   hoverEl.addEventListener("mouseleave", () => {
     world.tooltip.target = null;
@@ -42,19 +31,23 @@ onMount(() => {
 </script>
 
 <div>
-  <label for={props.id}>{TOOLTIP_DATA[props.id].title} <span
-      bind:this={hoverEl}
-    >{@html InfoSvg}</span></label>
-  <input
-    id={props.id}
-    type={props.inputType}
-    {onchange}
-    bind:value={elValue}
-  />
-  {#if props.inputType === "range"}
-    <label for={props.id} class={props.percent ? "percent" : ""}>{elValue}{
-      props.percent ? "%" : ""
-    }</label>
+  <label for={field}>{TOOLTIP_DATA[field]?.title}
+    <span bind:this={hoverEl}>{@html InfoSvg}</span>
+  </label>
+
+  {#if field === "quality"}
+    <input
+      id={field}
+      type="range"
+      bind:value={world[field]}
+    />
+    <label for={field} class="percent">{world[field]}%</label>
+  {:else if field === "filenameTemplate"}
+    <input
+      id={field}
+      type="text"
+      bind:value={world[field]}
+    />
   {/if}
 </div>
 
