@@ -19,3 +19,57 @@ function assimp(){ //loadah
     return assimpPromise;
 }
 
+function toBase64(bytes){
+    let s = "";
+    for (let i = 0; i<bytes.length;i+=0x8000){
+        s += String.fromCharCode(...bytes.subarray(i,i+0x8000));
+    }
+    return btoa(s);
+}
+
+function embedBuffers(){
+    const gltf = JSON.parse(new TextDecoder().decode(files[mainName]));
+    for (const buffer of gltf.buffers??[]){
+        const data = buffer.uri && (files[buffer.uri]??files[decodeURIComponent(buffer.uri)]);
+        if (data) {
+            buffer.uri = `data:application/octet-stream;base64,${toBase64(data)}`;
+        }
+    }
+    return new TextEncoder().encode(JSON.stringify(gltf));
+}
+
+export async function convert_model(bytes,target,options={}){
+    const from = MODEL_FORMATS[options.from];
+    const to = MODEL_FORMATS[target];
+
+    if (!from?.read){
+        throw new ConvertError(ErrorCode.UnsupportedInput, `Unsupported 3D input: "${options.from}"`);
+    }
+    if (!to?.write) {
+    throw new ConvertError(ErrorCode.UnsupportedOutput, `Can only write glb or gltf, not "${target}"`);
+    }
+    
+    let list,result;
+    try{
+        const ajs = await assimp();
+        list = new ajs.FileList();
+        list.AddFile(`model.${options.from}`,bytes);
+
+        for (const [name,data]of Object.entries(options.files ?? {})){
+            list.AddFile(name,data instanceof Uint8Array ? data : new Uint8Array(data));
+        }
+
+        result = ajs.ConvertFileList(list,to.write);
+        if (!result.IsSuccess()||result.FileCount() ===0){
+            throw new ConvertError(
+                ErrorCode.CorruptInput,
+                `assimp could not convert this ${options.from} file (${result.GetErrorCode?.() ?? "unknown error"})`,
+            );
+        }
+        
+        const files = {};
+        for (let i = 0;i<result.FileCount();i++){
+            
+        }
+    }
+}
