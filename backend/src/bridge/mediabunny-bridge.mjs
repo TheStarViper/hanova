@@ -115,7 +115,10 @@ const PRESETS = /** @type {const} */ {
   },
 };
 
-/** @type {(keyof PRESETS)[]} */
+/**
+ * @typedef {keyof PRESETS} QualityPreset
+ * @type {(QualityPreset)[]}
+ */
 export const MEDIA_PRESETS = Object.keys(PRESETS);
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);
 

@@ -369,8 +369,9 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
 }
 
 /**
- * @typedef {{quality?: number, maxBytes?: number}} ConvertOptions
- * @returns {(bytes: Buffer<ArrayBuffer>, target_format: string, quality: ConvertOptions) => Promise<Buffer<ArrayBuffer>>}
+ * @import { QualityPreset } from "./mediabunny-bridge.mjs"
+ * @typedef {{quality?: number, preset?: QualityPreset, maxBytes?: number}} ConvertOptions
+ * @returns {(bytes: Buffer<ArrayBuffer>, target_format: string, options: ConvertOptions) => Promise<Buffer<ArrayBuffer>>}
  */
 export function createConvert(
   { image, imageFormats = [], media, mediaFormats = [], maxBytes } = {},
