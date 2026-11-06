@@ -1,6 +1,6 @@
 <script lang="ts" module>
 export const SETTINGS = [
-  "quality",
+  "qualityPresetIdx",
   "filenameTemplate",
 ] as const satisfies (keyof World)[];
 export type Setting = (typeof SETTINGS)[number];
@@ -8,6 +8,7 @@ export type Setting = (typeof SETTINGS)[number];
 
 <script lang="ts">
 import InfoSvg from "#lib/assets/info.svg";
+import { QUALITY_PRESETS } from "#lib/backend.js";
 import { TOOLTIP_DATA } from "#lib/data/tooltipData.js";
 import { World, world } from "#lib/world.svelte.js";
 import { onMount } from "svelte";
@@ -19,6 +20,10 @@ interface Props {
 let { field }: Props = $props();
 
 let hoverEl: HTMLElement;
+
+const maxQualityPresetChars = QUALITY_PRESETS
+  .map((p) => p.length)
+  .sort((a, b) => b - a)[0];
 
 onMount(() => {
   hoverEl.addEventListener("mouseenter", () => {
@@ -35,13 +40,18 @@ onMount(() => {
     <span bind:this={hoverEl}>{@html InfoSvg}</span>
   </label>
 
-  {#if field === "quality"}
+  {#if field === "qualityPresetIdx"}
     <input
       id={field}
+      min="0"
+      max={QUALITY_PRESETS.length - 1}
+      step="1"
       type="range"
       bind:value={world[field]}
     />
-    <label for={field} class="percent">{world[field]}%</label>
+    <label for={field} style:min-width="{maxQualityPresetChars * 0.75}ch">{
+      world["qualityPreset"]
+    }</label>
   {:else if field === "filenameTemplate"}
     <input
       id={field}
@@ -70,11 +80,7 @@ div {
     text-align: center;
   }
 
-  .percent {
-    min-width: 4ch;
-  }
-
-  label {
+  label:first-child {
     display: flex;
     gap: 0.5rem;
 
@@ -85,6 +91,11 @@ div {
         display: none;
       }
     }
+  }
+
+  label:last-child {
+    text-align: right;
+    text-transform: capitalize;
   }
 
   input {

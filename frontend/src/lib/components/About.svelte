@@ -85,7 +85,7 @@ $effect(() => {
 
   <section id="settings">
     <h2>Settings</h2>
-    <Setting field="quality" />
+    <Setting field="qualityPresetIdx" />
     <Setting field="filenameTemplate" />
   </section>
 

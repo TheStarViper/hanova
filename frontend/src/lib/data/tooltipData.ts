@@ -193,7 +193,7 @@ export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
   },
 
   // Settings
-  quality: {
+  qualityPresetIdx: {
     title: "Conversion Quality",
     blurb:
       "The quality used to convert the file. Lower quality decreases file size, but at the cost of quality.",

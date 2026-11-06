@@ -14,6 +14,7 @@ import { Viewport } from "./viewport.svelte";
 
 // misc imports
 import { dev } from "$app/env";
+import { QUALITY_PRESETS } from "./backend";
 import type { CubicBezier } from "./bezier";
 import type { WorkerResponse } from "./converter.worker";
 import { CppManager } from "./cppManager";
@@ -37,7 +38,8 @@ export class World {
   titleCornered: boolean = $state(false);
 
   // user-configurable settings
-  quality: number = $state(90);
+  qualityPresetIdx: number = $state(4);
+  qualityPreset = $derived(QUALITY_PRESETS[this.qualityPresetIdx]);
   filenameTemplate: string = $state("{base}.{outExt}");
 
   // for various dev-only debugging visuals
