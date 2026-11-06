@@ -88,7 +88,7 @@ export const MEDIA_INFO = {
   },
 };
 
-const PRESETS = {
+const PRESETS = /** @type {const} */ {
   potato: {
     video: { height: 360, bitrate: mediabunny.QUALITY_VERY_LOW },
     audio: { bitrate: mediabunny.QUALITY_VERY_LOW },
@@ -115,6 +115,7 @@ const PRESETS = {
   },
 };
 
+/** @type {(keyof PRESETS)[]} */
 export const MEDIA_PRESETS = Object.keys(PRESETS);
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);
 
