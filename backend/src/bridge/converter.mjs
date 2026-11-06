@@ -370,7 +370,7 @@ export const format_from_filename = (name) =>{
   return ALIASES[ext]??ext;
 };
 
-export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector} = {}) {
+export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector,models} = {}) {
   const unwrap = (r) => {
     if (Array.isArray(r) || r instanceof Uint8Array) return r;
     if (r && r.ok === false) {
@@ -495,8 +495,18 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     const doc_step = (from,to)=>(bytes,_q,options)=> docs.convert_document(bytes,to,{...options,from});
     for (const a of docs.inputs){
         for (const b of docs.outputs){
-            if (a!==b){register(a,b,doc_step(a,b),1)}
+          if (a!==b){register(a,b,doc_step(a,b),1);}
         }
+    }
+  }
+
+  if (models){
+    const model_step = (from,to) => (bytes,_q,options)=>
+      models.convert_model(bytes,to,{...options,from}); //FIX make actual function first
+    for (const a of MODEL_INPUTS){
+      for (const b of MODEL_OUTPUTS){
+        if (a!==b){register(a,b,model_step(a,b),1);}
+      }
     }
   }
 
@@ -549,6 +559,7 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     if (media) {format = detect_media_format(bytes);}
     if (format ==="unknown"&&docs){format = detect_document_format(bytes);}
     if (format ==="unknown") {format = detect_svg(bytes);}
+    if (format ==="unknown") {format = detect_model_format(bytes);}
     if (format ==="unknown"&&core){format = (await use(core)).validate_file_format(bytes);}
     if (format ==="unknown"&&magick){format = await magick.detect_format(bytes);}
     return ALIASES[format] ?? format;
@@ -650,6 +661,8 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     convert_universal(target, bytes, options.quality, options, "audio");
   const convert_document = (target,bytes,options={}) =>
     convert_universal(target,bytes, options.quality,options,"document");
+  const convert_model = (target,bytes,options={}) =>
+    convert_universal(target, bytes, options.quality, options, "model");
 
   // what can be read/writen
   function capabilities() {
@@ -660,6 +673,7 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
         ["video", VIDEO_FORMATS],
         ["audio", AUDIO_FORMATS],
         ["document", DOCUMENT_FORMATS],
+        ["model", MODEL_FORMAT_NAMES],
       ]
     ) {
       out[kind] = {
@@ -683,7 +697,11 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
 
 
 export function createConvert(
-  { image, imageFormats = [], media, mediaFormats = [],doc,docFormats =  [], maxBytes } = {},
+  { image, imageFormats = [], 
+    media, mediaFormats = [],
+    doc,docFormats =  [],
+    model,modelFormats=[],
+    maxBytes } = {},
 ) {
   return async function convert(bytes, target, options = {}) {
     try {
@@ -713,6 +731,9 @@ export function createConvert(
       }
       if (doc && docFormats.includes(target)){
         return await doc(bytes,target,options);
+      }
+      if (model&& modelFormats.includes(target)){
+        return await model(bytes,target,options);
       }
 
       throw new ConvertError(
