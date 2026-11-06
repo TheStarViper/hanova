@@ -203,6 +203,13 @@ Week 6:
 - [x] Optimization with [SVGO](https://github.com/r3dDoX/vite-plugin-svgo)
 - [x] Big frontend refactors
 
+Week 7:
+
+- [x] Quality setting uses presets instead of raw numbers
+- [ ] Island editor dev tool
+- [ ] More island sprites
+- [ ] Pirates if you try to convert incompatible formats
+
 ## Compiling yourself
 
 Prerequisites:
