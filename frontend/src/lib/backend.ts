@@ -16,8 +16,9 @@ export type MediaType = (typeof MEDIA_TYPES)[number];
 /** returns value normalized from 0 to 100 */
 export function QualityPresetToNum(preset: QualityPreset): number {
   const idx = MEDIA_PRESETS.indexOf(preset);
-  const scale = 100 / MEDIA_PRESETS.length;
-  const num = idx * scale;
+  const scale = (100 - 1) / MEDIA_PRESETS.length;
+  // can't let it be 0, because 0 means lossless
+  const num = (idx * scale) + 1;
   return Math.round(num);
 }
 
