@@ -93,7 +93,7 @@ const PRESETS = /** @type {const} */ {
     video: { height: 360, bitrate: mediabunny.QUALITY_VERY_LOW },
     audio: { bitrate: mediabunny.QUALITY_VERY_LOW },
   },
-  small: {
+  "low": {
     video: { height: 480, bitrate: mediabunny.QUALITY_LOW },
     audio: { bitrate: mediabunny.QUALITY_LOW },
   },
@@ -105,11 +105,11 @@ const PRESETS = /** @type {const} */ {
     video: { height: 1080, bitrate: mediabunny.QUALITY_HIGH },
     audio: { bitrate: mediabunny.QUALITY_HIGH },
   },
-  hdmax: {
+  "very high": {
     video: { height: 1080, bitrate: mediabunny.QUALITY_VERY_HIGH },
     audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },
   },
-  fourkmax: {
+  lossless: {
     video: { height: 3840, bitrate: mediabunny.QUALITY_VERY_HIGH },
     audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },
   },
