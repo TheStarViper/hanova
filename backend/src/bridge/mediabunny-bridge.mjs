@@ -46,24 +46,6 @@ const OUTPUT_FORMATS = {
   opus: ()=> new mediabunny.OggOutputFormat(), //opus uses ogg container
 };
 
-export const MEDIA_INFO = {
-  // video
-  mp4: { ext: "mp4", mime: "video/mp4", video: true, encoders: ["aac"] },
-  mkv: { ext: "mkv", mime: "video/x-matroska", video: true },
-  webm: { ext: "webm", mime: "video/webm", video: true },
-  ts: { ext: "ts", mime: "video/mp2t", video: true, encoders: ["aac"] },
-  mov: { ext: "mov", mime: "video/quicktime", video: true, encoders: ["aac"] },
-  m3u8: { ext: "m3u8", mime: "video/idkbruhwth", video: true }, // FIX
-
-  // audio
-  mp3: {ext: "mp3",mime: "audio/mpeg",video: false,encoders: ["mp3"],audioCodec: "mp3",},
-  wav: { ext: "wav", mime: "audio/wav", video: false },
-  ogg: { ext: "ogg", mime: "audio/ogg", video: false },
-  flac: {ext: "flac",mime: "audio/flac",video: false,encoders: ["flac"],audioCodec: "flac",},
-  aac: {ext: "aac",mime: "audio/aac",video: false,encoders: ["aac"],audioCodec: "aac",},
-  m4a: {ext: "m4a",mime: "audio/mp4",video: false,encoders: ["aac"],audioCodec: "aac",},
-};
-
 const PRESETS = {
   potato: {video: { height: 360, bitrate: mediabunny.QUALITY_VERY_LOW },audio: { bitrate: mediabunny.QUALITY_VERY_LOW },},
   small: {video: { height: 480, bitrate: mediabunny.QUALITY_LOW },audio: { bitrate: mediabunny.QUALITY_LOW },},

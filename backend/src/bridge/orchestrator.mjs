@@ -1,3 +1,4 @@
+import { convert_model } from "./assimp-bridge.mjs";
 import {
   AUDIO_FORMATS,
   createConvert,
@@ -8,6 +9,7 @@ import {
   DOC_INPUTS,
   DOC_OUTPUTS,
   ConvertError,
+  MODEL_FORMAT_NAMES,
 } from "./converter.mjs";
 
 function lazy(fn){ //dynamic library loading
@@ -25,6 +27,7 @@ const loadMagickBridge = lazy(() => import("./imagemagick-bridge.mjs"));
 const loadMediaBridge = lazy(() => import("./mediabunny-bridge.mjs"));
 const loadDocBridge = lazy(() => import("./pandoc-bridge.mjs"));
 const loadFfmpegBridge = lazy(()=>import("./ffmpeg-bridge.mjs"));
+const loadAssimpBridge = lazy(()=> import("./assimp-bridge.mjs"));
 const inBrowser = typeof document !=="undefined";
 
 const MAGICK_NAMES = ["png","gif", "avif", "tiff", "ico", "jxl", "qoi", "psd", "exr", "bmp", "webp", "pdf", "eps", "ai"];
@@ -67,7 +70,11 @@ function build({magickInit}={}){
     outputs: DOC_OUTPUTS,
   };
 
-  return createconverter({core: loadCore, webp: loadWebp, magick,media,docs,ffmpeg,vector});
+  const models = {
+    convert_model: async (bytes,to,options)=>(await loadAssimpBridge()).convert_model(bytes,to,options),
+  };
+
+  return createconverter({core: loadCore, webp: loadWebp, magick,media,docs,ffmpeg,vector,models});
 }
 
 /**
@@ -91,6 +98,9 @@ export async function universalFactory(options) {
     doc: (bytes,target,options) =>
         c.convert_document(target,bytes,options),
     docFormats: DOCUMENT_FORMATS,
+    model: (bytes,target,o) => 
+      c.convert_model(target,bytes,o),
+    modelFormats: MODEL_FORMAT_NAMES,
   });
   return { convert, ...c };
 }

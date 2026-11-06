@@ -117,6 +117,10 @@ export const MEDIA_PRESETS = ["potato", "small", "balanced", "high", "max"];
 
 const ascii = (bytes,start,end)=>String.fromCharCode(...bytes.subarray(start,end));
 const latin1 = (bytes,start,end) => new TextDecoder("latin1").decode(bytes.subarray(start,end));
+const skipBom = (bytes) => (bytes[0]===0xef &&
+                            bytes[1]===0xbb &&
+                            bytes[2]===0xbf ? 3 : 0
+);
 
 export function detect_model_format(bytes){
   if (!bytes||bytes.length<16) return "unknown";
@@ -132,18 +136,18 @@ export function detect_model_format(bytes){
 
   if (bytes[0]===0x4d&&
       bytes[1]===0x4d&&
-      view.getUint32(2, true) === b.length
+      view.getUint32(2, true) === bytes.length
   ) {return "3ds";}
-  if (b[0] === 0x50 && b[1] === 0x4b) {// zip: 3mf is a zip with a model part
-    return latin1(b, Math.max(0, b.length - 65536), b.length).includes("3D/3dmodel.model") ? "3mf" : "unknown";
+  if (bytes[0] === 0x50 && bytes[1] === 0x4b) {// zip: 3mf is a zip with a model part
+    return latin1(bytes, Math.max(0, bytes.length - 65536), bytes.length).includes("3D/3dmodel.model") ? "3mf" : "unknown";
   }
 
-  if (b.length >= 84) {
+  if (bytes.length >= 84) {
     const count = view.getUint32(80, true);
-    if (count > 0 && 84 + count * 50 === b.length) return "stl";
+    if (count > 0 && 84 + count * 50 === bytes.length) return "stl";
   }
 
-  const start = bytes[0]===0xef && bytes[1]===0xbb&&bytes[2]===0xbf?3:0;
+  const start = skipBom(bytes);
   const text = latin1(bytes,start,Math.min(bytes.length,start+4096)).trimStart();
   if (/^solid[\s\S]*\bfacet\b/.test(text)) {return "stl";}
   if (text.includes("<COLLADA")) return "dae";
@@ -199,21 +203,21 @@ export function detect_media_format(bytes) {
   return "unknown";
 }
 
-export function detect_document_format(b) {
-  if (!b || b.length < 8) return "unknown";
+export function detect_document_format(bytes) {
+  if (!bytes || bytes.length < 8) return "unknown";
 
-  if (b[0] === 0x50 && b[1] === 0x4b && (b[2] === 3 || b[2] === 5)) {
-    const head = latin1(b, 0, Math.min(b.length, 1024));
+  if (bytes[0] === 0x50 && bytes[1] === 0x4b && (bytes[2] === 3 || bytes[2] === 5)) {
+    const head = latin1(bytes, 0, Math.min(bytes.length, 1024));
     if (head.includes("application/epub+zip")) return "epub";
     if (head.includes("application/vnd.oasis.opendocument.text")) return "odt";
-    const tail = latin1(b, Math.max(0, b.length - 65536), b.length);
+    const tail = latin1(bytes, Math.max(0, bytes.length - 65536), bytes.length);
     if (tail.includes("word/document.xml")) return "docx";
     if (tail.includes("ppt/presentation.xml")) return "pptx";
     return "unknown";
   }
 
-  const start = b[0] === 0xef && b[1] === 0xbb && b[2] === 0xbf ? 3 : 0;
-  const text = latin1(b, start, Math.min(b.length, start + 1024)).trimStart();
+  const start = skipBom(bytes);
+  const text = latin1(bytes, start, Math.min(bytes.length, start + 1024)).trimStart();
 
   if (text.startsWith("%PDF")) return "pdf";
   if (text.startsWith("{\\rtf")) return "rtf";
@@ -227,7 +231,7 @@ export function detect_document_format(b) {
 
 export function detect_svg(bytes){
   if (!bytes||bytes.length<5) {return "unknown";}
-  const start = bytes[0]===0xef && bytes[1]===0xbb&&bytes[2]===0xbf?3:0;
+  const start = skipBom(bytes);
   const head = latin1(bytes,start,Math.min(bytes.length,start+16384));
   return /svg[\s>]/.test(head)?"svg":"unknown";
 }

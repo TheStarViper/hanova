@@ -69,7 +69,18 @@ export async function convert_model(bytes,target,options={}){
         
         const files = {};
         for (let i = 0;i<result.FileCount();i++){
-            
+            const file = result.GetFile(i);
+            files[file.GetPath()] = file.GetContent().slice();
         }
+
+        const names = Object.keys(files);
+        if (target==="glb") {return files[names[0]];}
+        const main = names.find((n)=>n.endsWith(".gltf")) ?? names[0];
+        return embedBuffers(files,main);
+    } catch (error){
+        throw to_convert_error(error,ErrorCode.NativeFailure);
+    } finally {
+        result?.delete?.();
+        list?.delete?.();
     }
 }
