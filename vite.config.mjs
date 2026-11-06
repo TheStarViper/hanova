@@ -22,6 +22,7 @@ export default defineConfig({
   server: { fs: { allow: [here] } },
   assetsInclude: ['**/*.wasm'],
   optimizeDeps: {
+    include: ['assimps'],
     exclude: [
       "@imagemagick/magick-wasm",
       "@mediabunny/mp3-encoder",

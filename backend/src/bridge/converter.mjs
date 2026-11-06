@@ -1,6 +1,30 @@
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
 export { ConvertError, simplifyerror } from "./errors.mjs";
 
+export const MODEL_FORMATS = {
+  blend: {read: true, mime:"application/octet-stream"},
+  glb: {read:true, write: "glb2", mime: "model/gltf-binary"},
+  gltf: {read:true, write: "gltf2", mime: "model/gltf+json"},
+  obj: {read: true, mime: "model/obj"},
+  fbx: {read: true, mime: "application/octet-stream"},
+  dae: {read: true, mime: "model/vnd.collada+xml"},
+  stl: {read: true, mime: "model/stl"},
+  ply: {read: true, mime: "application/octet-stream"},
+  "3ds": {read: true, mime: "application/octet-stream"},
+  "3mf": {read: true, mime: "model/3mf"},
+  off: {read:true, mime: "application/octet-stream"},
+  x: {read:true, mime: "application/octet-stream"},
+  ase: {read:true, mime: "application/octet-stream"},
+  lwo: {read:true, mime: "application/octet-stream"},
+  dxf: {read:true, mime: "application/dxf"},
+  ac: {read:true, mime: "application/octet-stream"},
+  ms3d: {read:true, mime: "application/octet-stream"},
+};
+
+export const MODEL_FORMAT_NAMES = Object.keys(MODEL_FORMATS);
+export const MODEL_INPUTS = MODEL_FORMAT_NAMES.filter((f)=> MODEL_FORMATS[f].read);
+export const MODEL_OUTPUTS = MODEL_FORMAT_NAMES.filter((f)=> MODEL_FORMATS[f].write);
+
 export const IMAGE_FORMATS = [
   "png",
   "jpg",
