@@ -118,6 +118,41 @@ export const MEDIA_PRESETS = ["potato", "small", "balanced", "high", "max"];
 const ascii = (bytes,start,end)=>String.fromCharCode(...bytes.subarray(start,end));
 const latin1 = (bytes,start,end) => new TextDecoder("latin1").decode(bytes.subarray(start,end));
 
+export function detect_model_format(bytes){
+  if (!bytes||bytes.length<16) return "unknown";
+  const head = ascii(bytes,0,Math.min(bytes.length,24));
+  const view = new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
+
+  if (head.startsWith("gtTF")) {return "glb";}
+  if (head.startsWith("Kaydara FBX Binary")) {return "fbx";}
+  if (head.startsWith("BLENDER")) {return "blend";}
+  if (/^ply\r?\n/.test(head)) {return "ply";}
+  if (/^(ST|C|N|4|n)*OFF\r?\n/.test(head)) {return "off";}
+  if (head.startsWith("xof ")) {return "x";}
+
+  if (bytes[0]===0x4d&&
+      bytes[1]===0x4d&&
+      view.getUint32(2, true) === b.length
+  ) {return "3ds";}
+  if (b[0] === 0x50 && b[1] === 0x4b) {// zip: 3mf is a zip with a model part
+    return latin1(b, Math.max(0, b.length - 65536), b.length).includes("3D/3dmodel.model") ? "3mf" : "unknown";
+  }
+
+  if (b.length >= 84) {
+    const count = view.getUint32(80, true);
+    if (count > 0 && 84 + count * 50 === b.length) return "stl";
+  }
+
+  const start = bytes[0]===0xef && bytes[1]===0xbb&&bytes[2]===0xbf?3:0;
+  const text = latin1(bytes,start,Math.min(bytes.length,start+4096)).trimStart();
+  if (/^solid[\s\S]*\bfacet\b/.test(text)) {return "stl";}
+  if (text.includes("<COLLADA")) return "dae";
+  if (text.startsWith("{") && /"asset"\s*:/.test(text) && /"version"/.test(text)) return "gltf";
+  if (/^v\s+[-\d.]/m.test(text) && /^(f|vn|vt|o|g|mtllib|usemtl)\s/m.test(text)) return "obj";
+  return "unknown";
+}
+
+
 export function detect_media_format(bytes) {
   if (!bytes || bytes.length < 12) return "unknown";
 
@@ -272,6 +307,7 @@ export const EVERYFORMAT = [
   ...VIDEO_FORMATS,
   ...AUDIO_FORMATS,
   ...DOCUMENT_FORMATS,
+  ...MODEL_FORMAT_NAMES,
 ];
 
 const INDEX = Object.fromEntries(EVERYFORMAT.map((f, i) => [f, i]));
@@ -282,6 +318,7 @@ for (const f of IMAGE_FORMATS) DOMAIN[f] = "image";
 for (const f of VIDEO_FORMATS) DOMAIN[f] = "video";
 for (const f of AUDIO_FORMATS) DOMAIN[f] = "audio";
 for (const f of DOCUMENT_FORMATS) DOMAIN[f] = "document";
+for (const f of MODEL_FORMAT_NAMES) DOMAIN[f] = "model";
 
 /**@type {Record<string,string>}*/
 // formats that are the same with diff extensions
@@ -318,6 +355,12 @@ export const ALIASES = {
   texinfo: "texi",
   epub3: "epub",
   epub2: "epub",
+
+  //models
+  collada: "dae",
+  blender: "blend",
+  glb2: "glb",
+  gltf2: "gltf",
 };
 
 const has_media_options = (o) => Boolean(o.preset || o.trim || o.video || o.audio);
