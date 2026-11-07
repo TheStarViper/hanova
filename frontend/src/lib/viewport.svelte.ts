@@ -1,4 +1,5 @@
 import { ease, Pos } from "./utils.svelte";
+import { world } from "./world.svelte";
 
 const DRAG_SENSITIVITY = 1;
 const SCROLL_SENSITIVITY = 1.0015;
@@ -83,11 +84,15 @@ export class Viewport {
       if (newZoom > MIN_ZOOM && newZoom < MAX_ZOOM) {
         this.zoom = newZoom;
       }
+
+      world.updateEditTarget();
     });
 
     document.addEventListener("mousemove", (event) => {
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;
+
+      world.updateEditTarget();
     });
   }
 

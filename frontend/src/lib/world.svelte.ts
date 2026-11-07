@@ -7,7 +7,7 @@ import { BoatManager, SAIL_DURATION } from "./components/Boat.svelte";
 import { IslandManager } from "./components/Island.svelte";
 import { TooltipManager } from "./components/Tooltip.svelte";
 import { TreasureManager } from "./components/Treasure.svelte";
-import { ISLAND_DATA } from "./data/islandPlacements";
+import { ISLAND_CLUSTER_CENTERS, ISLAND_DATA } from "./data/islandPlacements";
 import { FileManager } from "./fileManager.svelte";
 import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
@@ -239,6 +239,29 @@ export class World {
       duration,
       () => this.boatArriveHandler(),
     );
+  }
+
+  updateEditTarget() {
+    if (this.islandEditTarget === null) return;
+
+    const mouseX = this.viewport.mouseX - this.viewport.min.x;
+    const mouseY = this.viewport.mouseY - this.viewport.min.y;
+
+    const worldX =
+      (mouseX - this.viewport.center.x * (1 - this.viewport.zoom))
+        / this.viewport.zoom
+      - this.viewport.offset.x;
+
+    const worldY =
+      (mouseY - this.viewport.center.y * (1 - this.viewport.zoom))
+        / this.viewport.zoom
+      - this.viewport.offset.y;
+
+    const clusterCenter =
+      ISLAND_CLUSTER_CENTERS[this.islandEditTarget.mediaType];
+
+    this.islandEditTarget.datum.pos.x = Math.round(worldX - clusterCenter.x);
+    this.islandEditTarget.datum.pos.y = Math.round(worldY - clusterCenter.y);
   }
 }
 
