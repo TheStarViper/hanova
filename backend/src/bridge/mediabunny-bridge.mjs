@@ -48,14 +48,15 @@ const OUTPUT_FORMATS = {
   opus: ()=> new mediabunny.OggOutputFormat(), //opus uses ogg container
 };
 
-const PRESETS = {
+/** @typedef {keyof PRESETS} QualityPreset */
+const PRESETS /** @type {const} */ = ({
   potato: {video: { height: 360, bitrate: mediabunny.QUALITY_VERY_LOW },audio: { bitrate: mediabunny.QUALITY_VERY_LOW },},
   small: {video: { height: 480, bitrate: mediabunny.QUALITY_LOW },audio: { bitrate: mediabunny.QUALITY_LOW },},
   balanced: {video: { height: 720, bitrate: mediabunny.QUALITY_MEDIUM },audio: { bitrate: mediabunny.QUALITY_MEDIUM },},
   high: {video: { height: 1080, bitrate: mediabunny.QUALITY_HIGH },audio: { bitrate: mediabunny.QUALITY_HIGH },},
   hdmax: {video: { height: 1080, bitrate: mediabunny.QUALITY_VERY_HIGH },audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },},
   fourkmax: {video: { height: 3840, bitrate: mediabunny.QUALITY_VERY_HIGH },audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },},
-};
+});
 
 export const MEDIA_PRESETS = Object.keys(PRESETS);
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);

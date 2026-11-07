@@ -21,7 +21,7 @@ export const MODEL_FORMATS = /** @type {const} */ ({
 });
 
 /**
- * @typedef {keyof typeof MODEL_FORMATS} ModelFormat
+ * @typedef {keyof MODEL_FORMATS} ModelFormat
  * @type {ModelFormat[]}
  */
 export const MODEL_FORMAT_NAMES = Object.keys(MODEL_FORMATS);
@@ -96,7 +96,7 @@ export const MEDIABUNNY_AUDIO = /** @type {const} */ ([
 ]);
 
 /**
- * @typedef {keyof typeof FFMPEG_AUDIO} FfmpegAudio  
+ * @typedef {keyof FFMPEG_AUDIO} FfmpegAudio  
  * @typedef {(typeof MEDIABUNNY_AUDIO)[number]} MediabunnyAudio
  * @type {(Exclude<FfmpegAudio, MediabunnyAudio>[]}  
 */
@@ -193,7 +193,7 @@ export const DOC_FORMATS = /** @type {const} */ ({
 });
 
 /** 
- * @typedef {keyof typeof DOC_FORMATS} DocumentFormat
+ * @typedef {keyof DOC_FORMATS} DocumentFormat
  * @type {DocumentFormat[]}
  */
 export const DOCUMENT_FORMATS = Object.keys(DOC_FORMATS);
