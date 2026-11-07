@@ -48,6 +48,7 @@ onMount(() => {
       step="1"
       type="range"
       bind:value={world[field]}
+      style:--notch-spacing="{100 / (QUALITY_PRESETS.length - 1)}%"
     />
     <label for={field} style:min-width="{maxQualityPresetChars * 0.75}ch">{
       world["qualityPreset"]
@@ -107,6 +108,13 @@ div {
 
     @mixin range-track {
       background: var(--compass-bg);
+      background-image: repeating-linear-gradient(
+        to right,
+        var(--line) 0,
+        var(--line) 5px,
+        transparent 5px,
+        transparent var(--notch-spacing)
+      );
       border: 3px double var(--line);
       box-shadow: 2px 2px color-mix(var(--line), transparent 30%);
       height: 8px;
