@@ -20,5 +20,7 @@
       "language_servers": ["dprint", "svelte-language-server", "hackatime"],
       "formatter": "language_server"
     },
-  }
+  },
+
+  "soft_wrap": "none"
 }
