@@ -2,7 +2,6 @@
 import { type Format, FORMAT_TO_MEDIATYPE } from "#lib/backend.js";
 import {
   ISLAND_CLUSTER_CENTERS,
-  ISLAND_DATA,
   type IslandDatum,
 } from "#lib/data/islandPlacements.js";
 import { ISLAND_SPRITES } from "#lib/data/islandSprites.js";
@@ -11,19 +10,23 @@ import { Pos } from "#lib/utils.svelte.js";
 import { world } from "#lib/world.svelte.js";
 
 export class IslandManager {
+  name: Format;
   datum: IslandDatum;
   pos: Pos;
 
-  isCompatible = $derived(
-    isFormatCompatible(world.fileManager.file?.name, this.name),
-  );
+  isCompatible: boolean;
 
   constructor(
+    name: Format,
     datum: IslandDatum,
   ) {
+    this.name = name;
     this.datum = datum;
     this.pos = $derived(
       Pos.add(this.datum.pos, ISLAND_CLUSTER_CENTERS[this.mediaType]),
+    );
+    this.isCompatible = $derived(
+      isFormatCompatible(world.fileManager.file?.name, this.name),
     );
   }
 
@@ -48,12 +51,8 @@ export class IslandManager {
     }, 100);
   }
 
-  get name() {
-    return this.datum.name;
-  }
-
   get mediaType() {
-    return FORMAT_TO_MEDIATYPE[this.datum.name];
+    return FORMAT_TO_MEDIATYPE[this.name];
   }
 
   get sprite() {

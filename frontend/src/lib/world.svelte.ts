@@ -4,10 +4,14 @@ import {
   INITIAL_BANNER_MESSAGE,
 } from "./components/Banner.svelte";
 import { BoatManager, SAIL_DURATION } from "./components/Boat.svelte";
-import { IslandManager } from "./components/Island.svelte";
+import Island, { IslandManager } from "./components/Island.svelte";
 import { TooltipManager } from "./components/Tooltip.svelte";
 import { TreasureManager } from "./components/Treasure.svelte";
-import { ISLAND_CLUSTER_CENTERS, ISLAND_DATA } from "./data/islandPlacements";
+import {
+  ISLAND_CLUSTER_CENTERS,
+  ISLAND_DATA,
+  type IslandDatum,
+} from "./data/islandPlacements";
 import { FileManager } from "./fileManager.svelte";
 import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
@@ -30,9 +34,11 @@ export class World {
   viewport = new Viewport();
   boat = new BoatManager();
   banner = new BannerManager();
-  islands = ISLAND_DATA.map((datum) => new IslandManager(datum));
   treasure = new TreasureManager();
   tooltip = new TooltipManager();
+
+  islands: IslandManager[];
+  formatToIsland: Record<Format, IslandManager>;
 
   curves: CubicBezier[] = $state([]);
   titleCornered: boolean = $state(false);
@@ -49,15 +55,20 @@ export class World {
   islandEditTarget: IslandManager | null = $state(null);
 
   constructor() {
-  }
+    this.islands = [];
+    // @ts-expect-error
+    this.formatToIsland = {};
 
-  formatToIsland = this.islands.reduce(
-    (acc, island) => {
-      acc[island.name] = island;
-      return acc;
-    },
-    {} as Record<Format, IslandManager>,
-  );
+    for (const format of Object.keys(ISLAND_DATA) as Format[]) {
+      const datum = ISLAND_DATA[format];
+      if (datum === null) continue;
+
+      const island = new IslandManager(format as Format, datum);
+
+      this.islands.push(island);
+      this.formatToIsland[format] = island;
+    }
+  }
 
   init() {
     this.viewport.init();
@@ -247,13 +258,11 @@ export class World {
     const mouseX = this.viewport.mouseX - this.viewport.min.x;
     const mouseY = this.viewport.mouseY - this.viewport.min.y;
 
-    const worldX =
-      (mouseX - this.viewport.center.x * (1 - this.viewport.zoom))
+    const worldX = (mouseX - this.viewport.center.x * (1 - this.viewport.zoom))
         / this.viewport.zoom
       - this.viewport.offset.x;
 
-    const worldY =
-      (mouseY - this.viewport.center.y * (1 - this.viewport.zoom))
+    const worldY = (mouseY - this.viewport.center.y * (1 - this.viewport.zoom))
         / this.viewport.zoom
       - this.viewport.offset.y;
 
