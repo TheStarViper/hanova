@@ -8,7 +8,6 @@ import {
   DOCUMENT_FORMATS,
   DOC_INPUTS,
   DOC_OUTPUTS,
-  ConvertError,
   MODEL_FORMAT_NAMES,
 } from "./converter.mjs";
 
@@ -28,6 +27,7 @@ const loadMediaBridge = lazy(() => import("./mediabunny-bridge.mjs"));
 const loadDocBridge = lazy(() => import("./pandoc-bridge.mjs"));
 const loadFfmpegBridge = lazy(()=>import("./ffmpeg-bridge.mjs"));
 const loadAssimpBridge = lazy(()=> import("./assimp-bridge.mjs"));
+const loadThreeBridge = lazy(()=>import("./three-bridge.mjs"));
 const inBrowser = typeof document !=="undefined";
 
 const MAGICK_NAMES = ["png","gif", "avif", "tiff", "ico", "jxl", "qoi", "psd", "exr", "bmp", "webp", "pdf", "eps", "ai"];
@@ -74,7 +74,8 @@ function build({magickInit}={}){
     convert_model: async (bytes,to,options)=>(await loadAssimpBridge()).convert_model(bytes,to,options),
   };
 
-  return createconverter({core: loadCore, webp: loadWebp, magick,media,docs,ffmpeg,vector,models});
+  const three = inBrowser ? { export_model: async (bytes,to,options)=>(await loadThreeBridge()).export_model(bytes,to,options)} : undefined;
+  return createconverter({core: loadCore, webp: loadWebp, magick,media,docs,ffmpeg,vector,models,three});
 }
 
 /**
@@ -129,5 +130,7 @@ export {
   MEDIA_INFO,
   MEDIA_PRESETS,
   format_from_filename,
+  MODEL_FORMATS,
+  MODEL_FORMAT_NAMES,
 } from "./converter.mjs";
 export { ErrorCode, to_convert_error } from "./errors.mjs";

@@ -520,7 +520,7 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
       register("glb",to,(bytes,_q,options)=>three.export_model(bytes,to,options),2);
     }
   }
-  
+
   function search_path(start, target) {
     if (start === target) return [];
 
@@ -701,6 +701,7 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     convert_video,
     convert_audio,
     convert_document,
+    convert_model,
     search_path,
     capabilities,
   };

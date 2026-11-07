@@ -41,7 +41,8 @@ and glue code so that they can work seamlessly together.
 - [Mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
 - [FFmpeg](https://github.com/ffmpeg/ffmpeg) (audio)
 - [Pandoc](https://github.com/jgm/pandoc) (documents)
-- [Assimpjs](https://github.com/kovacsv/assimpjs) (3d models)
+- [Assimpjs](https://github.com/kovacsv/assimpjs) (3d models imports)
+- [Threejs](https://github.com/mrdoob/three.js/) (3d models exports)
 
 ### Mjs Bridge System
 
