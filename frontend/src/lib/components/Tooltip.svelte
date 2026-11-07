@@ -20,6 +20,14 @@ let blurb = $state("");
 let compatible = $state(false);
 
 $effect(() => {
+  if (world.islandEditTarget !== null) {
+    title = `Editing ${world.islandEditTarget.name}`;
+    blurb =
+      `X: ${world.islandEditTarget.pos.x}, Y: ${world.islandEditTarget.pos.y}`;
+
+    return;
+  }
+
   if (me.target === null) return;
 
   const datum = TOOLTIP_DATA[me.target];
@@ -31,7 +39,7 @@ $effect(() => {
 </script>
 
 <div
-  class={me.target === null ? "" : "show"}
+  class={me.target === null && world.islandEditTarget === null ? "" : "show"}
   style:top="{world.viewport.mouseY}px"
   style:left="{world.viewport.mouseX}px"
 >
