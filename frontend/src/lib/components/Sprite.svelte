@@ -37,6 +37,9 @@ interface Props {
   borderWidth?: number;
 
   sunk?: boolean;
+
+  /** default is `pointer` */
+  cursor?: string;
 }
 
 let { children, ...props }: Props = $props();
@@ -64,7 +67,7 @@ $effect(() => {
   style:height={props.height !== undefined ? `${props.height}px` : "auto"}
   style:scale={props.scale ?? 1}
   style:z-index={props.layer ?? 0}
-  style:cursor={props.handlers?.click !== undefined ? "pointer" : ""}
+  style:cursor={props.handlers?.click !== undefined ? props.cursor ?? "pointer" : ""}
   style:--shadow-opacity={props.shadowOpacity ?? 0}
   style:--border-color={props.borderColor ?? "transparent"}
   style:--border-width="{props.borderWidth ?? 1}px"

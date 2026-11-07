@@ -1,10 +1,41 @@
 import mime from "mime";
-import { EXT_TO_FORMAT, type Format } from "./backend";
+import {
+  EXT_TO_FORMAT,
+  type Format,
+  FORMAT_TO_MEDIATYPE,
+  type MediaType,
+} from "./backend";
 import { decodeSounds } from "./sound";
 import { world } from "./world.svelte";
 
 const MAX_FILENAME_CHARS = 20;
 const ELLIPSIS = "...";
+
+const COMPATIBLE_MEDIA_TYPES: Record<MediaType, MediaType[]> = {
+  image: ["image"],
+  audio: ["audio"],
+  video: ["video", "audio"],
+};
+
+export function isFormatCompatible(
+  fileName: string | undefined,
+  queryFormat: Format,
+): boolean {
+  // fallback to true if a file hasn't been dropped yet
+  if (fileName === undefined) return true;
+  const boatFormat: Format | undefined = world.fileManager.getInputFormatName(
+    fileName,
+  );
+  // fallback to true if input format can't be detected
+  if (boatFormat === undefined) return true;
+
+  const boatMediaType = FORMAT_TO_MEDIATYPE[boatFormat];
+  const queryMediaType = FORMAT_TO_MEDIATYPE[queryFormat];
+  const compatibles = COMPATIBLE_MEDIA_TYPES[boatMediaType];
+
+  const isCompatible = compatibles.includes(queryMediaType);
+  return isCompatible;
+}
 
 export class FileManager {
   file: File | undefined;
@@ -90,7 +121,7 @@ export class FileManager {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = this.applyFilenameTemplate();
+    a.download = this.applyFilenameTemplate(world.filenameTemplate);
     a.click();
     a.remove();
 
@@ -99,16 +130,11 @@ export class FileManager {
     return true;
   }
 
-  #parseFilename(): {
+  #parseFilename(raw: string): {
     raw: string;
     base: string;
     inExt: string | undefined;
   } {
-    if (this.file === undefined) {
-      throw new Error("can only parse filename if file is defined");
-    }
-    const raw = this.file.name;
-
     // group 1: everything before the final dot
     // group 2: the final dot and everything after it, if it exists
     const regex = /^(.*?)(\.[^.]*)?$/;
@@ -124,8 +150,8 @@ export class FileManager {
     return { raw, base, inExt };
   }
 
-  getInputFormatName(): Format | undefined {
-    const { inExt } = this.#parseFilename();
+  getInputFormatName(raw: string): Format | undefined {
+    const { inExt } = this.#parseFilename(raw);
     if (inExt === undefined) return undefined;
 
     const extWithoutDot = inExt.substring(1).toLowerCase();
@@ -134,7 +160,11 @@ export class FileManager {
   }
 
   get displayifiedFilename(): string {
-    const { base, inExt } = this.#parseFilename();
+    if (this.file === undefined) {
+      throw new Error("can't displayify filename until file has been dropped");
+    }
+
+    const { base, inExt } = this.#parseFilename(this.file.name);
 
     const maxBaseLength = MAX_FILENAME_CHARS - (inExt?.length ?? 0);
 
@@ -145,13 +175,19 @@ export class FileManager {
     return truncatedBase + ELLIPSIS + inExt;
   }
 
-  applyFilenameTemplate(): string {
-    const { raw, base, inExt } = this.#parseFilename();
+  applyFilenameTemplate(template: string): string {
+    if (this.file === undefined) {
+      throw new Error(
+        "can't apply filename template until file has been dropped",
+      );
+    }
+
+    const { raw, base, inExt } = this.#parseFilename(this.file.name);
     const outExt = this.outFormat;
 
     const EXT_FALLBACK = "???";
 
-    const outFilename = world.filenameTemplate
+    const outFilename = template
       .replaceAll("{raw}", raw)
       .replaceAll("{base}", base)
       .replaceAll("{inExt}", inExt ?? EXT_FALLBACK)

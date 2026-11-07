@@ -40,6 +40,7 @@ div {
   pointer-events: none;
   z-index: 101;
 
+  color: var(--ink);
   background: #fffae5ff;
   border: 5px double #6f5d64ff;
   padding: 0.5rem 0.4rem;

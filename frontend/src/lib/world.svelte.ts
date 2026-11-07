@@ -101,10 +101,18 @@ export class World {
   }
 
   #getSpawnOffset(): Pos | undefined {
-    const inFormatName = this.fileManager.getInputFormatName();
+    const fileName = this.fileManager.file?.name;
+    if (fileName === undefined) return undefined;
+    const inFormatName = this.fileManager.getInputFormatName(fileName);
     if (inFormatName === undefined) return undefined;
 
-    const offset = IslandManager.findSpawnOffsetForFormat(inFormatName);
+    const islandDatum = this.islands.find(
+      (datum) => datum.name.toLowerCase() === inFormatName.toLowerCase(),
+    );
+    if (islandDatum === undefined) return undefined;
+
+    const offset = Pos.add(islandDatum.pos, islandDatum.spawnOffset);
+
     return offset;
   }
 
