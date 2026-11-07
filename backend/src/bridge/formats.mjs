@@ -1,4 +1,6 @@
-export const MODEL_FORMATS = {
+// @ts-nocheck
+
+export const MODEL_FORMATS = /** @type {const} */ ({
   blend: {read: true, mime:"application/octet-stream"},
   glb: {read:true, write: "glb2", mime: "model/gltf-binary"},
   gltf: {read:true, write: "gltf2", mime: "model/gltf+json"},
@@ -16,15 +18,19 @@ export const MODEL_FORMATS = {
   dxf: {read:true, mime: "application/dxf"},
   ac: {read:true, mime: "application/octet-stream"},
   ms3d: {read:true, mime: "application/octet-stream"},
-};
+});
 
+/**
+ * @typedef {keyof MODEL_FORMATS} ModelFormat
+ * @type {ModelFormat[]}
+ */
 export const MODEL_FORMAT_NAMES = Object.keys(MODEL_FORMATS);
 export const MODEL_INPUTS = MODEL_FORMAT_NAMES.filter((f)=> MODEL_FORMATS[f].read);
 export const MODEL_OUTPUTS = MODEL_FORMAT_NAMES.filter((f)=> MODEL_FORMATS[f].write);
 export const THREE_MODEL_OUTPUTS = ["obj","stl","ply"];
 
 
-export const IMAGE_FORMATS = [
+export const IMAGE_FORMATS = /** @type {const} */ ([
   "png",
   "jpg",
   "bmp",
@@ -43,17 +49,17 @@ export const IMAGE_FORMATS = [
   "pdf",
   "eps",
   "ai",
-];
+]);
 
-export const VIDEO_FORMATS = [
+export const VIDEO_FORMATS = /** @type {const} */ ([
   "mp4",
   "mov",
   "webm",
   "mkv",
   "ts",
-];
+]);
 
-export const FFMPEG_AUDIO = {
+export const FFMPEG_AUDIO = /** @type {const} */ ({
   mp3: {args: ["-c:a","libmp3lame", "-f","mp3"]},
   wav: {args: ["-c:a","pcm_s16le", "-f","wav"]},
   ogg: {args: ["-c:a","libopus", "-f","ogg"]},
@@ -76,10 +82,10 @@ export const FFMPEG_AUDIO = {
 
   //input only
   amr: {mime: "audio/amr"},
-};
+});
 
 
-export const MEDIABUNNY_AUDIO = [
+export const MEDIABUNNY_AUDIO = /** @type {const} */ ([
   "mp3",
   "wav",
   "ogg",
@@ -87,8 +93,13 @@ export const MEDIABUNNY_AUDIO = [
   "aac",
   "m4a",
   "opus",
-];
+]);
 
+/**
+ * @typedef {keyof FFMPEG_AUDIO} FfmpegAudio  
+ * @typedef {(typeof MEDIABUNNY_AUDIO)[number]} MediabunnyAudio
+ * @type {(Exclude<FfmpegAudio, MediabunnyAudio>[]}  
+*/
 export const FFMPEG_ONLY_AUDIO = Object.keys(FFMPEG_AUDIO).filter((f) => !MEDIABUNNY_AUDIO.includes(f));
 export const AUDIO_FORMATS = [...MEDIABUNNY_AUDIO,...FFMPEG_ONLY_AUDIO];
 
@@ -119,7 +130,7 @@ export const MEDIA_PRESETS = ["potato", "small", "balanced", "high", "max"];
 // read/write = pandoc's name for it
 // binary: zip containers passed as files. 
 // standalone: full document
-export const DOC_FORMATS = {
+export const DOC_FORMATS = /** @type {const} */ ({
   //office and ebook containers
   docx:  { read: "docx", write: "docx", binary: true, mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
   odt:   { read: "odt",  write: "odt",  binary: true, mime: "application/vnd.oasis.opendocument.text" },
@@ -179,13 +190,21 @@ export const DOC_FORMATS = {
 
   //plain text
   txt: { write: "plain" },
-};
+});
 
+/** 
+ * @typedef {keyof DOC_FORMATS} DocumentFormat
+ * @type {DocumentFormat[]}
+ */
 export const DOCUMENT_FORMATS = Object.keys(DOC_FORMATS);
 export const DOC_INPUTS  = DOCUMENT_FORMATS.filter((f) => DOC_FORMATS[f].read);
 export const DOC_OUTPUTS = DOCUMENT_FORMATS.filter((f) => DOC_FORMATS[f].write);
 
 export const FORMATS = IMAGE_FORMATS; // so stuff doesnt break remove later tho when migrated
+
+/**
+ * @typedef {(typeof EVERYFORMAT)[number]} Format
+ */
 export const EVERYFORMAT = [
   ...IMAGE_FORMATS,
   ...VIDEO_FORMATS,
@@ -194,6 +213,10 @@ export const EVERYFORMAT = [
   ...MODEL_FORMAT_NAMES,
 ];
 
+/**
+ * @typedef {"image" | "video" | "audio" | "document" | "model"} MediaType
+ * @type {Record<Format, MediaType>}
+ */
 export const DOMAIN = {};
 for (const f of IMAGE_FORMATS) DOMAIN[f] = "image";
 for (const f of VIDEO_FORMATS) DOMAIN[f] = "video";
@@ -202,6 +225,7 @@ for (const f of DOCUMENT_FORMATS) DOMAIN[f] = "document";
 for (const f of MODEL_FORMAT_NAMES) DOMAIN[f] = "model";
 
 // formats that are the same with diff extensions
+/** @type Record<string, Format> */
 export const ALIASES = {
   //image
   jpeg: "jpg",

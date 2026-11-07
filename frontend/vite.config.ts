@@ -55,4 +55,7 @@ export default defineConfig(({ mode }) => ({
       allow: [frontendRoot, backendRoot],
     },
   },
+  worker: {
+    format: "es",
+  },
 }));

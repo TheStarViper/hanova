@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 export const ErrorCode = Object.freeze({
   UnsupportedInput: "UnsupportedInput",
   UnsupportedOutput: "UnsupportedOutput",

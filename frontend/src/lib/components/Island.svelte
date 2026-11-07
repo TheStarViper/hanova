@@ -90,7 +90,8 @@ const BORDER_COLOR_MAPPING: Record<MediaType, string> = {
   image: "#ffc067",
   audio: "#82ff66",
   video: "#af66ff",
-  // docs: "#66c4ff",
+  document: "#66c4ff",
+  model: "#ed49b6",
 };
 
 let allowHover = $derived(world.banner.hide);
