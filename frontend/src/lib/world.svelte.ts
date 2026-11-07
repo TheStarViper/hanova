@@ -14,7 +14,7 @@ import { Viewport } from "./viewport.svelte";
 
 // misc imports
 import { dev } from "$app/env";
-import { QUALITY_PRESETS } from "./backend";
+import { type Format, QUALITY_PRESETS } from "./backend";
 import type { CubicBezier } from "./bezier";
 import type { WorkerResponse } from "./converter.worker";
 import { CppManager } from "./cppManager";
@@ -47,7 +47,16 @@ export class World {
   skipMenu = $state(fromLocalStorage("skipMenu"));
   islandEditMode = $state(fromLocalStorage("islandEditMode"));
 
-  constructor() {}
+  constructor() {
+  }
+
+  formatToIsland = this.islands.reduce(
+    (acc, island) => {
+      acc[island.name] = island;
+      return acc;
+    },
+    {} as Record<Format, IslandManager>,
+  );
 
   init() {
     this.viewport.init();
@@ -103,16 +112,11 @@ export class World {
   #getSpawnOffset(): Pos | undefined {
     const fileName = this.fileManager.file?.name;
     if (fileName === undefined) return undefined;
-    const inFormatName = this.fileManager.getInputFormatName(fileName);
-    if (inFormatName === undefined) return undefined;
+    const inFormat = this.fileManager.getInputFormatName(fileName);
+    if (inFormat === undefined) return undefined;
 
-    const islandDatum = this.islands.find(
-      (datum) => datum.name.toLowerCase() === inFormatName.toLowerCase(),
-    );
-    if (islandDatum === undefined) return undefined;
-
-    const offset = Pos.add(islandDatum.pos, islandDatum.spawnOffset);
-
+    const island = this.formatToIsland[inFormat];
+    const offset = Pos.add(island.pos, island.spawnOffset);
     return offset;
   }
 

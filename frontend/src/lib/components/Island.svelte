@@ -6,6 +6,7 @@ import {
   type IslandDatum,
 } from "#lib/data/islandPlacements.js";
 import { ISLAND_SPRITES } from "#lib/data/islandSprites.js";
+import { isFormatCompatible } from "#lib/fileManager.svelte.js";
 import { Pos } from "#lib/utils.svelte.js";
 import { world } from "#lib/world.svelte.js";
 
@@ -77,7 +78,6 @@ export const COLOR_SUBSTITIONS: Record<string, string> = {
 <script lang="ts">
 import type { MediaType } from "#lib/backend.js";
 import { TOOLTIP_DATA } from "#lib/data/tooltipData.js";
-import { isFormatCompatible } from "#lib/fileManager.svelte.js";
 import Sprite from "./Sprite.svelte";
 
 interface Props {
@@ -85,8 +85,6 @@ interface Props {
 }
 
 let { me }: Props = $props();
-
-const NOT_ALLOWED_COLOR = "#ce2727";
 
 const BORDER_COLOR_MAPPING: Record<MediaType, string> = {
   image: "#ffc067",
