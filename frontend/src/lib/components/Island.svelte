@@ -6,12 +6,17 @@ import {
   type IslandDatum,
 } from "#lib/data/islandPlacements.js";
 import { ISLAND_SPRITES } from "#lib/data/islandSprites.js";
+import { isFormatCompatible } from "#lib/fileManager.svelte.js";
 import { Pos } from "#lib/utils.svelte.js";
 import { world } from "#lib/world.svelte.js";
 
 export class IslandManager {
   datum: IslandDatum;
   pos: Pos;
+
+  isCompatible = $derived(
+    isFormatCompatible(world.fileManager.file?.name, this.name),
+  );
 
   constructor(
     datum: IslandDatum,
@@ -48,15 +53,6 @@ export class IslandManager {
 
   isInside(point: Pos): boolean {
     return this.sprite.bound.isInside(Pos.sub(point, this.pos));
-  }
-
-  static findSpawnOffsetForFormat(formatName: Format): Pos | undefined {
-    const islandDatum = ISLAND_DATA.find(
-      (datum) => datum.name.toLowerCase() === formatName.toLowerCase(),
-    );
-    if (islandDatum === undefined) return undefined;
-
-    return Pos.add(islandDatum.pos, islandDatum.spawnOffset);
   }
 }
 
@@ -102,8 +98,11 @@ let allowHover = $derived(world.banner.hide);
 let hovered: boolean = $state(false);
 let shadowOpacity = $derived(hovered && allowHover ? 1 : 0.7);
 let borderColor = $derived(
-  hovered && allowHover ? BORDER_COLOR_MAPPING[me.mediaType] : undefined,
+  hovered && allowHover
+    ? BORDER_COLOR_MAPPING[me.mediaType]
+    : undefined,
 );
+let cursor = $derived(me.isCompatible ? undefined : "not-allowed");
 
 let processedSvg: string = $derived.by(() => {
   let svg = me.sprite.svg;
@@ -127,14 +126,17 @@ $effect(() => {
   width={me.sprite.width}
   {shadowOpacity}
   {borderColor}
+  {cursor}
   borderWidth={2}
   handlers={{
     click: allowHover
-      ? () => {
-        setTimeout(() => {
-          if (!world.viewport.userIsDragging) me.callBoat();
-        }, 100);
-      }
+      ? me.isCompatible
+        ? () => {
+          setTimeout(() => {
+            if (!world.viewport.userIsDragging) me.callBoat();
+          }, 100);
+        }
+        : () => {}
       : undefined,
     hover: () => (hovered = true),
     unhover: () => (hovered = false),
