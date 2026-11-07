@@ -23,35 +23,7 @@ const N = EVERYFORMAT.length;
 
 /**@type {Record<string,string>}*/
 
-const has_media_options = (o) => Boolean(o.preset || o.trim || o.video || o.audio);
-
-export const format_from_filename = (name) =>{
-  const ext = String(name).split(".").pop().toLowerCase();
-  return ALIASES[ext]??ext;
-};
-
 export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector,models,three} = {}) {
-  const unwrap = (r) => {
-    if (Array.isArray(r) || r instanceof Uint8Array) return r;
-    if (r && r.ok === false) {
-      throw new ConvertError(
-        ErrorCode.NativeFailure,
-        `native conversion failed: ${
-          r.error ?? r.errorType ?? "unknown error"
-        }`,
-      );
-    }
-
-    if (r?.data instanceof Uint8Array) {
-      const out = r.data.slice();
-      r.delete?.();
-      return out;
-    }
-    throw new ConvertError(
-      ErrorCode.NativeFailure,
-      `unexpected native result: ${Object.keys(r ?? {})}`,
-    );
-  };
 
   const table = Array.from({ length: N }, () => Array(N).fill(null));
   const has = (from, to) => table[INDEX[from]][INDEX[to]] !== null;
@@ -217,8 +189,6 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
 
     return path;
   }
-
-  const use = (engine) => (typeof engine ==="function"?engine():engine);
   
   async function detect(bytes) {
     let format = "unknown";
