@@ -131,7 +131,6 @@ export {
   MEDIA_FORMATS,
   MEDIA_INFO,
   MEDIA_PRESETS,
-  format_from_filename,
   MODEL_FORMATS,
   MODEL_FORMAT_NAMES,
 } from "./converter.mjs";

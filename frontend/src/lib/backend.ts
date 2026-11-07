@@ -24,7 +24,7 @@ export const EXT_TO_FORMAT = {
   ...ALIASES,
 };
 
-export { initMagick } from "../../../backend/src/bridge/browserMagick.mjs";
+export { initMagick } from "../../../backend/src/bridge/browserWasm.mjs";
 export {
   DOMAIN as FORMAT_TO_MEDIATYPE,
   EVERYFORMAT as FORMATS,

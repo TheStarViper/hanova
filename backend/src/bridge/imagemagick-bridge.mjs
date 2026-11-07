@@ -8,7 +8,7 @@ export const summarize_errors = (error) =>
   to_convert_error(error, ErrorCode.NativeFailure);
 let ready = false;
 
-export async function initializeImageMagickz(wasm) {
+export async function initializeImageMagick(wasm) {
   await magickModule.initializeImageMagick(wasm);
   ready = true;
 }
@@ -34,7 +34,7 @@ export const MAGICK_BY_NAME = {
 export const MAGICK_OUTPUT_ONLY = ["ico", "pdf", "eps", "ai"];
 
 export const MAGICK_PROCESSORS = {
-  ico: (image) => {//resize automatically for ico format
+  ico: (image) => { // resize automatically for ico format
     if (image.width > 256 || image.height > 256) {
       image.resize(new magickModule.MagickGeometry(256, 256));
     }
@@ -84,5 +84,4 @@ export const {
   MagickGeometry,
   Channels,
   EvaluateOperator,
-  initializeImageMagick,
 } = magickModule;
