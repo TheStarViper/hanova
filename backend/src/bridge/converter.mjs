@@ -2,9 +2,20 @@ import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
 import {
   EVERYFORMAT, IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS,
   DOCUMENT_FORMATS, MODEL_FORMAT_NAMES, MODEL_INPUTS, MODEL_OUTPUTS,
+  MODEL_FORMATS,DOC_INPUTS,DOC_OUTPUTS,FORMATS,DOC_FORMATS,
+  MEDIA_FORMATS,MEDIA_PRESETS,MEDIABUNNY_AUDIO,
   THREE_MODEL_OUTPUTS, FFMPEG_AUDIO, MEDIA_INFO, ALIASES, DOMAIN
 } from "./formats.mjs";
-import { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detectors.mjs";
+import { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detector.mjs";
+
+export {
+  EVERYFORMAT, IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS,
+  DOCUMENT_FORMATS, MODEL_FORMAT_NAMES, MODEL_INPUTS, MODEL_OUTPUTS,
+  MODEL_FORMATS,DOC_INPUTS,DOC_OUTPUTS,FORMATS,DOC_FORMATS,
+  MEDIA_FORMATS,MEDIA_PRESETS,MEDIABUNNY_AUDIO,
+  THREE_MODEL_OUTPUTS, FFMPEG_AUDIO, MEDIA_INFO, ALIASES, DOMAIN
+} from "./formats.mjs";
+export { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detector.mjs";
 export { ConvertError, simplifyerror } from "./errors.mjs";
 
 const INDEX = Object.fromEntries(EVERYFORMAT.map((f, i) => [f, i]));

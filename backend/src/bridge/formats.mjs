@@ -79,7 +79,7 @@ export const FFMPEG_AUDIO = {
 };
 
 
-const MEDIABUNNY_AUDIO = [
+export const MEDIABUNNY_AUDIO = [
   "mp3",
   "wav",
   "ogg",
@@ -194,7 +194,7 @@ export const EVERYFORMAT = [
   ...MODEL_FORMAT_NAMES,
 ];
 
-const DOMAIN = {};
+export const DOMAIN = {};
 for (const f of IMAGE_FORMATS) DOMAIN[f] = "image";
 for (const f of VIDEO_FORMATS) DOMAIN[f] = "video";
 for (const f of AUDIO_FORMATS) DOMAIN[f] = "audio";
