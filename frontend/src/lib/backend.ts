@@ -35,5 +35,7 @@ export {
 export {
   DOMAIN as FORMAT_TO_MEDIATYPE,
   EVERYFORMAT as FORMATS,
-  universalFactory as converterFactory,
+} from "../../../backend/src/bridge/converter.mjs";
+export {
+  universalFactory as converterFactory
 } from "../../../backend/src/bridge/orchestrator.mjs";
