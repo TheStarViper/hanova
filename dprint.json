@@ -11,7 +11,8 @@
     "reset.css",
 
     "backend/build",
-    "backend/libraries"
+    "backend/libraries",
+    "backend/src/bridge"
   ],
   "plugins": [
     "npm:@dprint/typescript@0.96.1",

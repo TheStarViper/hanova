@@ -13,6 +13,8 @@ export const ISLAND_CLUSTER_CENTERS: Record<MediaType, Pos> = {
   image: new Pos(0, 0),
   audio: new Pos(2000, -1500),
   video: new Pos(3500, -500),
+  document: new Pos(-3000, -3000),
+  model: new Pos(-3000, 3000),
 };
 
 export const ISLAND_DATA: IslandDatum[] = [

@@ -1,17 +1,23 @@
 <script lang="ts" module>
+import { type Format, FORMATS } from "#lib/backend.js";
 import { TOOLTIP_DATA, type TooltipKey } from "#lib/data/tooltipData.js";
 export class TooltipManager {
   target: TooltipKey | null = $state(null);
+  island: IslandManager | undefined = $derived(
+    world.formatToIsland[this.target as any as Format],
+  );
 }
 </script>
 
 <script lang="ts">
 import { world } from "#lib/world.svelte.js";
+import type { IslandManager } from "./Island.svelte";
 
 let me = world.tooltip;
 
 let title = $state("");
 let blurb = $state("");
+let compatible = $state(false);
 
 $effect(() => {
   if (me.target === null) return;
@@ -20,6 +26,7 @@ $effect(() => {
 
   title = datum.title;
   blurb = datum.blurb;
+  compatible = me.island?.isCompatible ?? true;
 });
 </script>
 
@@ -30,6 +37,13 @@ $effect(() => {
 >
   <h2>{title}</h2>
   <p>{@html blurb}</p>
+  {#if !compatible}
+    <h3>
+      Can't convert: {
+        world.fileManager.getInputFormatName(world.fileManager.file?.name ?? "")
+      } -> {me.target}
+    </h3>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -40,6 +54,7 @@ div {
   pointer-events: none;
   z-index: 101;
 
+  color: var(--ink);
   background: #fffae5ff;
   border: 5px double #6f5d64ff;
   padding: 0.5rem 0.4rem;
@@ -55,6 +70,11 @@ div {
 
   h2 {
     font-size: 1rem;
+  }
+
+  h3 {
+    font-size: 0.9rem;
+    color: #ce2727;
   }
 
   p {
