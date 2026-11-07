@@ -24,6 +24,7 @@ export const MODEL_FORMATS = {
 export const MODEL_FORMAT_NAMES = Object.keys(MODEL_FORMATS);
 export const MODEL_INPUTS = MODEL_FORMAT_NAMES.filter((f)=> MODEL_FORMATS[f].read);
 export const MODEL_OUTPUTS = MODEL_FORMAT_NAMES.filter((f)=> MODEL_FORMATS[f].write);
+export const THREE_MODEL_OUTPUTS = ["obj","stl","ply"];
 
 export const IMAGE_FORMATS = [
   "png",
@@ -374,7 +375,7 @@ export const format_from_filename = (name) =>{
   return ALIASES[ext]??ext;
 };
 
-export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector,models} = {}) {
+export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector,models,three} = {}) {
   const unwrap = (r) => {
     if (Array.isArray(r) || r instanceof Uint8Array) return r;
     if (r && r.ok === false) {
@@ -514,6 +515,12 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     }
   }
 
+  if (three){
+    for (const to of THREE_MODEL_OUTPUTS){
+      register("glb",to,(bytes,_q,options)=>three.export_model(bytes,to,options),2);
+    }
+  }
+  
   function search_path(start, target) {
     if (start === target) return [];
 
