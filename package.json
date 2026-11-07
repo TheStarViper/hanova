@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "vite": "^8.3.5"
+  },
+  "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "assimpjs": "^0.0.10",
+    "imagetracerjs": "^1.2.6",
+    "three": "^0.187.0"
+  }
+}

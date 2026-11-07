@@ -1,10 +1,9 @@
-// @ts-nocheck
-
 import { registerAacEncoder } from "@mediabunny/aac-encoder";
 import { registerFlacEncoder } from "@mediabunny/flac-encoder";
 import { registerMp3Encoder } from "@mediabunny/mp3-encoder";
 import * as mediabunny from "mediabunny";
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
+import { MEDIA_INFO } from "./converter.mjs";
 
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
 const ENCODERS = {
@@ -44,81 +43,18 @@ const OUTPUT_FORMATS = {
   flac: () => new mediabunny.FlacOutputFormat(),
   aac: () => new mediabunny.AdtsOutputFormat(),
   m4a: () => new mediabunny.Mp4OutputFormat(), // uses mp4 container
+  opus: ()=> new mediabunny.OggOutputFormat(), //opus uses ogg container
 };
 
-export const MEDIA_INFO = {
-  // video
-  mp4: { ext: "mp4", mime: "video/mp4", video: true, encoders: ["aac"] },
-  mkv: { ext: "mkv", mime: "video/x-matroska", video: true },
-  webm: { ext: "webm", mime: "video/webm", video: true },
-  ts: { ext: "ts", mime: "video/mp2t", video: true, encoders: ["aac"] },
-  mov: { ext: "mov", mime: "video/quicktime", video: true, encoders: ["aac"] },
-  m3u8: { ext: "m3u8", mime: "video/idkbruhwth", video: true }, // FIX
-
-  // audio
-  mp3: {
-    ext: "mp3",
-    mime: "audio/mpeg",
-    video: false,
-    encoders: ["mp3"],
-    audioCodec: "mp3",
-  },
-  wav: { ext: "wav", mime: "audio/wav", video: false },
-  ogg: { ext: "ogg", mime: "audio/ogg", video: false },
-  flac: {
-    ext: "flac",
-    mime: "audio/flac",
-    video: false,
-    encoders: ["flac"],
-    audioCodec: "flac",
-  },
-  aac: {
-    ext: "aac",
-    mime: "audio/aac",
-    video: false,
-    encoders: ["aac"],
-    audioCodec: "aac",
-  },
-  m4a: {
-    ext: "m4a",
-    mime: "audio/mp4",
-    video: false,
-    encoders: ["aac"],
-    audioCodec: "aac",
-  },
+const PRESETS = {
+  potato: {video: { height: 360, bitrate: mediabunny.QUALITY_VERY_LOW },audio: { bitrate: mediabunny.QUALITY_VERY_LOW },},
+  small: {video: { height: 480, bitrate: mediabunny.QUALITY_LOW },audio: { bitrate: mediabunny.QUALITY_LOW },},
+  balanced: {video: { height: 720, bitrate: mediabunny.QUALITY_MEDIUM },audio: { bitrate: mediabunny.QUALITY_MEDIUM },},
+  high: {video: { height: 1080, bitrate: mediabunny.QUALITY_HIGH },audio: { bitrate: mediabunny.QUALITY_HIGH },},
+  hdmax: {video: { height: 1080, bitrate: mediabunny.QUALITY_VERY_HIGH },audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },},
+  fourkmax: {video: { height: 3840, bitrate: mediabunny.QUALITY_VERY_HIGH },audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },},
 };
 
-const PRESETS = /** @type {const} */ {
-  potato: {
-    video: { height: 360, bitrate: mediabunny.QUALITY_VERY_LOW },
-    audio: { bitrate: mediabunny.QUALITY_VERY_LOW },
-  },
-  "low": {
-    video: { height: 480, bitrate: mediabunny.QUALITY_LOW },
-    audio: { bitrate: mediabunny.QUALITY_LOW },
-  },
-  balanced: {
-    video: { height: 720, bitrate: mediabunny.QUALITY_MEDIUM },
-    audio: { bitrate: mediabunny.QUALITY_MEDIUM },
-  },
-  high: {
-    video: { height: 1080, bitrate: mediabunny.QUALITY_HIGH },
-    audio: { bitrate: mediabunny.QUALITY_HIGH },
-  },
-  "very high": {
-    video: { height: 1080, bitrate: mediabunny.QUALITY_VERY_HIGH },
-    audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },
-  },
-  lossless: {
-    video: { height: 3840, bitrate: mediabunny.QUALITY_VERY_HIGH },
-    audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },
-  },
-};
-
-/**
- * @typedef {keyof PRESETS} QualityPreset
- * @type {(QualityPreset)[]}
- */
 export const MEDIA_PRESETS = Object.keys(PRESETS);
 export const MEDIA_FORMATS = Object.keys(OUTPUT_FORMATS);
 
@@ -155,7 +91,7 @@ export function detect_media_format(bytes) {
   if (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0) {
     return ((bytes[1] >> 1) & 3) === 0 ? "aac" : "mp3";
   }
-  if (bytes[0] === 0x47 && (bytes.length < 189 || bytes[188] === 0x47)) {
+  if (bytes[0] === 0x47 && bytes.length >= 189 && bytes[188] === 0x47) {
     return "ts";
   }
   return "unknown";
@@ -164,12 +100,8 @@ export function detect_media_format(bytes) {
 export async function convert_media(inputdata, target, options = {}) {
   const make = OUTPUT_FORMATS[target];
   if (!make) {
-    throw new ConvertError(
-      ErrorCode.UnsupportedOutput,
-      `Unsupported media output: "${target}" (supported: ${
-        MEDIA_FORMATS.join(", ")
-      })`,
-    );
+    throw new ConvertError(ErrorCode.UnsupportedOutput,
+            `Unsupported media output: "${target}" (supported: ${Object.keys(OUTPUT_FORMATS).join(', ')})`);
   }
 
   if (options.preset && !PRESETS[options.preset]) {

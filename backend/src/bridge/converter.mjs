@@ -1,83 +1,36 @@
-// @ts-nocheck
-
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
+import {
+  EVERYFORMAT, IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS,
+  DOCUMENT_FORMATS, MODEL_FORMAT_NAMES, MODEL_INPUTS, MODEL_OUTPUTS,
+  MODEL_FORMATS,DOC_INPUTS,DOC_OUTPUTS,FORMATS,DOC_FORMATS,
+  MEDIA_FORMATS,MEDIA_PRESETS,MEDIABUNNY_AUDIO,
+  THREE_MODEL_OUTPUTS, FFMPEG_AUDIO, MEDIA_INFO, ALIASES, DOMAIN
+} from "./formats.mjs";
+import { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detector.mjs";
+
+export {
+  EVERYFORMAT, IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS,
+  DOCUMENT_FORMATS, MODEL_FORMAT_NAMES, MODEL_INPUTS, MODEL_OUTPUTS,
+  MODEL_FORMATS,DOC_INPUTS,DOC_OUTPUTS,FORMATS,DOC_FORMATS,
+  MEDIA_FORMATS,MEDIA_PRESETS,MEDIABUNNY_AUDIO,
+  THREE_MODEL_OUTPUTS, FFMPEG_AUDIO, MEDIA_INFO, ALIASES, DOMAIN
+} from "./formats.mjs";
+export { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detector.mjs";
 export { ConvertError, simplifyerror } from "./errors.mjs";
-
-export const IMAGE_FORMATS = /** @type {const} */ ([
-  "png",
-  "jpg",
-  "bmp",
-  "hdr",
-  "tga",
-  "webp",
-  "svg",
-  "gif",
-  "avif",
-  "tiff",
-  "ico",
-  "jxl",
-  "qoi",
-  "psd",
-  "exr",
-  "pdf",
-  "eps",
-  "ai",
-]);
-
-export const VIDEO_FORMATS = /** @type {const} */ ([
-  "mp4",
-  "mov",
-  "webm",
-  "mkv",
-  "ts",
-]);
-
-export const AUDIO_FORMATS = /** @type {const} */ ([
-  "mp3",
-  "wav",
-  "ogg",
-  "flac",
-  "aac",
-  "m4a",
-]);
-
-export const EVERYFORMAT = /** @type {const} */ ([
-  ...IMAGE_FORMATS,
-  ...VIDEO_FORMATS,
-  ...AUDIO_FORMATS,
-]);
 
 const INDEX = Object.fromEntries(EVERYFORMAT.map((f, i) => [f, i]));
 const N = EVERYFORMAT.length;
 
-/** @type {Record<(typeof EVERYFORMAT)[number], "image" | "video" | "audio">} */
-export const DOMAIN = {};
-for (const f of IMAGE_FORMATS) DOMAIN[f] = "image";
-for (const f of VIDEO_FORMATS) DOMAIN[f] = "video";
-for (const f of AUDIO_FORMATS) DOMAIN[f] = "audio";
+/**@type {Record<string,string>}*/
 
-/**@type {Record<string, (typeof EVERYFORMAT)[number]>}*/
-// formats that are the same with diff extensions
-export const ALIASES = {
-  jpeg: "jpg",
-  jpe: "jpg",
-  targa: "tga",
-  icb: "tga",
-  vda: "tga",
-  vst: "tga",
-  tif: "tiff",
-  epsf: "eps",
-  epsi: "epsi",
-  m4v: "mp4",
-  matroska: "mkv",
-  oga: "ogg",
-  wave: "wav",
+const has_media_options = (o) => Boolean(o.preset || o.trim || o.video || o.audio);
+
+export const format_from_filename = (name) =>{
+  const ext = String(name).split(".").pop().toLowerCase();
+  return ALIASES[ext]??ext;
 };
 
-const has_media_options = (o) =>
-  Boolean(o.preset || o.trim || o.video || o.audio);
-
-export function createconverter({ core, webp, svg, magick, media } = {}) {
+export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector,models,three} = {}) {
   const unwrap = (r) => {
     if (Array.isArray(r) || r instanceof Uint8Array) return r;
     if (r && r.ok === false) {
@@ -122,12 +75,7 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
     for (const from of Object.keys(STB_ENCODER)) {
       for (const to of Object.keys(STB_ENCODER)) {
         if (from !== to) {
-          register(
-            from,
-            to,
-            (bytes, q) => unwrap(core[STB_ENCODER[to]](bytes, q)),
-            1,
-          );
+          register(from, to, async (bytes, q) => unwrap((await use(core))[STB_ENCODER[to]](bytes, q)), 1);
         }
       }
     }
@@ -135,30 +83,20 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
 
   // libwebp
   if (webp) {
-    register(
-      "png",
-      "webp",
-      (bytes, q) => unwrap(webp.convert_to_webp(bytes, q)),
-      1,
-    );
-    register(
-      "webp",
-      "png",
-      (bytes) => unwrap(webp.convert_webp_to_png(bytes)),
-      1,
-    );
+    register("png", "webp", async (bytes, q) => unwrap((await use(webp)).convert_to_webp(bytes, q)), 1);
+    register("webp", "png", async (bytes) => unwrap((await use(webp)).convert_webp_to_png(bytes)), 1);
   }
 
-  // nanosvg
-  if (svg) {
-    register("svg", "png", (bytes) => unwrap(svg.convert_svg_to_png(bytes)), 1);
+  // svg
+  if(vector){
+    register("png","svg",(bytes,_q,options)=>vector.trace_svg(bytes,options),2);
+    register("svg","png",(bytes,_q,options)=>vector.render_svg(bytes,options),1);
   }
 
   // magick
   if (magick) {
     const MAGICK_COST = 5;
     const READABLE = ["png", "jpg", "bmp", "tga", "hdr"];
-    const has = (from, to) => table[INDEX[from]][INDEX[to]] !== null;
 
     const WRITABLE = Object.keys(magick.formats).filter(
       (f) =>
@@ -196,8 +134,46 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
       }
     };
     link(VIDEO_FORMATS, VIDEO_FORMATS);
-    link(VIDEO_FORMATS, AUDIO_FORMATS);
-    link(AUDIO_FORMATS, AUDIO_FORMATS);
+    link(VIDEO_FORMATS, MEDIABUNNY_AUDIO);
+    link(MEDIABUNNY_AUDIO, MEDIABUNNY_AUDIO);
+  }
+
+  //ffmpeg
+  const ffmpeg_step = (to) =>(bytes,_q,options)=>ffmpeg.convert_audio(bytes,to,options);
+  if (ffmpeg){
+    const FFMPEG_COST = 5;
+    const writable = AUDIO_FORMATS.filter((f)=>FFMPEG_AUDIO[f]?.args);
+    for (const a of [...VIDEO_FORMATS,...AUDIO_FORMATS]){
+      for (const b of writable){
+        if (a!==b&&!has(a,b)) {register(a,b,ffmpeg_step(b),FFMPEG_COST);}
+      }
+    }
+  }
+
+  //pandoc
+  if (docs) {
+    const doc_step = (from,to)=>(bytes,_q,options)=> docs.convert_document(bytes,to,{...options,from});
+    for (const a of docs.inputs){
+        for (const b of docs.outputs){
+          if (a!==b){register(a,b,doc_step(a,b),1);}
+        }
+    }
+  }
+
+  if (models){
+    const model_step = (from,to) => (bytes,_q,options)=>
+      models.convert_model(bytes,to,{...options,from}); //FIX make actual function first
+    for (const a of MODEL_INPUTS){
+      for (const b of MODEL_OUTPUTS){
+        if (a!==b){register(a,b,model_step(a,b),1);}
+      }
+    }
+  }
+
+  if (three){
+    for (const to of THREE_MODEL_OUTPUTS){
+      register("glb",to,(bytes,_q,options)=>three.export_model(bytes,to,options),2);
+    }
   }
 
   function search_path(start, target) {
@@ -242,14 +218,16 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
     return path;
   }
 
+  const use = (engine) => (typeof engine ==="function"?engine():engine);
+  
   async function detect(bytes) {
-    let format = core ? core.validate_file_format(bytes) : "unknown";
-    if (format === "unknown" && media) {
-      format = await media.detect_format(bytes);
-    }
-    if (format === "unknown" && magick) {
-      format = await magick.detect_format(bytes);
-    }
+    let format = "unknown";
+    if (media) {format = detect_media_format(bytes);}
+    if (format ==="unknown"&&docs){format = detect_document_format(bytes);}
+    if (format ==="unknown") {format = detect_svg(bytes);}
+    if (format ==="unknown") {format = detect_model_format(bytes);}
+    if (format ==="unknown"&&core){format = (await use(core)).validate_file_format(bytes);}
+    if (format ==="unknown"&&magick){format = await magick.detect_format(bytes);}
     return ALIASES[format] ?? format;
   }
 
@@ -260,11 +238,14 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
     options,
     domain,
   ) {
-    const detected_format = await detect(bytes);
+    const detected_format = options.from
+    ? (ALIASES[options.from]??options.from)
+    : await detect(bytes);
+
     target_format = ALIASES[target_format] ?? target_format;
 
-    let current_index = INDEX[detected_format];
-    let target_index = INDEX[target_format];
+    const current_index = INDEX[detected_format];
+    const target_index = INDEX[target_format];
 
     if (current_index === undefined) {
       throw new ConvertError(
@@ -299,15 +280,20 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
       );
     }
 
-    if (
-      path.length === 0 && media && DOMAIN[target_format] !== "image"
-      && has_media_options(options)
-    ) {
-      path = [{
-        from: target_format,
-        to: target_format,
-        func: media_step(target_format),
-      }];
+    if (options.engine==="ffmpeg"&&
+       ffmpeg&&
+       DOMAIN[target_format]==="audio"&&
+       (DOMAIN[detected_format]==="audio"||
+       DOMAIN[detected_format]==="video")){
+        path = [{from: detected_format, to: target_format, func: ffmpeg_step(target_format)}];
+    }
+
+    const is_media = DOMAIN[target_format]==="video"||DOMAIN[target_format]==="audio";
+    if (path.length === 0 && is_media&&has_media_options(options)){ 
+      const via_ffmpeg = MEDIA_INFO[target_format]?.engine ==="ffmpeg";
+      if (via_ffmpeg ? ffmpeg : media){
+        path = [{ from: target_format, to: target_format, func: (via_ffmpeg ? ffmpeg_step : media_step)(target_format) }];
+      }
     }
 
     let data = bytes;
@@ -339,6 +325,10 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
     convert_universal(target, bytes, options.quality, options, "video");
   const convert_audio = (target, bytes, options = {}) =>
     convert_universal(target, bytes, options.quality, options, "audio");
+  const convert_document = (target,bytes,options={}) =>
+    convert_universal(target,bytes, options.quality,options,"document");
+  const convert_model = (target,bytes,options={}) =>
+    convert_universal(target, bytes, options.quality, options, "model");
 
   // what can be read/writen
   function capabilities() {
@@ -348,6 +338,8 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
         ["image", IMAGE_FORMATS],
         ["video", VIDEO_FORMATS],
         ["audio", AUDIO_FORMATS],
+        ["document", DOCUMENT_FORMATS],
+        ["model", MODEL_FORMAT_NAMES],
       ]
     ) {
       out[kind] = {
@@ -363,18 +355,20 @@ export function createconverter({ core, webp, svg, magick, media } = {}) {
     convert_image,
     convert_video,
     convert_audio,
+    convert_document,
+    convert_model,
     search_path,
     capabilities,
   };
 }
 
-/**
- * @import { QualityPreset } from "./mediabunny-bridge.mjs"
- * @typedef {{quality?: number, preset?: QualityPreset, maxBytes?: number}} ConvertOptions
- * @returns {(bytes: Buffer<ArrayBuffer>, target_format: string, options: ConvertOptions) => Promise<Buffer<ArrayBuffer>>}
- */
+
 export function createConvert(
-  { image, imageFormats = [], media, mediaFormats = [], maxBytes } = {},
+  { image, imageFormats = [], 
+    media, mediaFormats = [],
+    doc,docFormats =  [],
+    model,modelFormats=[],
+    maxBytes } = {},
 ) {
   return async function convert(bytes, target, options = {}) {
     try {
@@ -401,6 +395,12 @@ export function createConvert(
       }
       if (image && imageFormats.includes(target)) {
         return await image(target, bytes, options.quality ?? 80);
+      }
+      if (doc && docFormats.includes(target)){
+        return await doc(bytes,target,options);
+      }
+      if (model&& modelFormats.includes(target)){
+        return await model(bytes,target,options);
       }
 
       throw new ConvertError(
