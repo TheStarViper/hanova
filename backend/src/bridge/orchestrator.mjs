@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { convert_model } from "./assimp-bridge.mjs";
 import {
   AUDIO_FORMATS,

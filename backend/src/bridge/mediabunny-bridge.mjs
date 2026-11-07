@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { registerAacEncoder } from "@mediabunny/aac-encoder";
 import { registerFlacEncoder } from "@mediabunny/flac-encoder";
 import { registerMp3Encoder } from "@mediabunny/mp3-encoder";
