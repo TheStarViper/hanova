@@ -27,8 +27,25 @@ export class IslandManager {
     );
   }
 
-  callBoat() {
-    world.islandClickHandler(this);
+  isInside(point: Pos): boolean {
+    return this.sprite.bound.isInside(Pos.sub(point, this.pos));
+  }
+
+  handleClick() {
+    if (!this.isCompatible) return;
+
+    if (world.islandEditMode) {
+      world.islandEditTarget = world.islandEditTarget === this ? null : this;
+      return;
+    }
+
+    setTimeout(() => {
+      // if the user is still holding the mouse down after 100ms, they're
+      // probably trying to drag, not click
+      if (world.viewport.mouseDown) return;
+
+      world.islandClickHandler(this);
+    }, 100);
   }
 
   get name() {
@@ -49,10 +66,6 @@ export class IslandManager {
 
   get treasurePos() {
     return Pos.add(this.pos, this.sprite.treasureOffset);
-  }
-
-  isInside(point: Pos): boolean {
-    return this.sprite.bound.isInside(Pos.sub(point, this.pos));
   }
 }
 
@@ -86,6 +99,7 @@ interface Props {
 
 let { me }: Props = $props();
 
+const EDIT_TARGET_COLOR = "black";
 const BORDER_COLOR_MAPPING: Record<MediaType, string> = {
   image: "#ffc067",
   audio: "#82ff66",
@@ -98,7 +112,9 @@ let allowHover = $derived(world.banner.hide);
 let hovered: boolean = $state(false);
 let shadowOpacity = $derived(hovered && allowHover ? 1 : 0.7);
 let borderColor = $derived(
-  hovered && allowHover
+  world.islandEditTarget === me
+    ? EDIT_TARGET_COLOR
+    : hovered && allowHover
     ? BORDER_COLOR_MAPPING[me.mediaType]
     : undefined,
 );
@@ -130,13 +146,7 @@ $effect(() => {
   borderWidth={2}
   handlers={{
     click: allowHover
-      ? me.isCompatible
-        ? () => {
-          setTimeout(() => {
-            if (!world.viewport.userIsDragging) me.callBoat();
-          }, 100);
-        }
-        : () => {}
+      ? () => me.handleClick()
       : undefined,
     hover: () => (hovered = true),
     unhover: () => (hovered = false),

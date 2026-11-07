@@ -46,6 +46,7 @@ export class World {
   devOverlay = $state(fromLocalStorage("devOverlay"));
   skipMenu = $state(fromLocalStorage("skipMenu"));
   islandEditMode = $state(fromLocalStorage("islandEditMode"));
+  islandEditTarget: IslandManager | null = $state(null);
 
   constructor() {
   }
@@ -195,7 +196,7 @@ export class World {
     setTimeout(() => this.reset(), 2000);
 
     this.viewport.canDrag = false;
-    this.viewport.userIsDragging = false;
+    this.viewport.mouseDown = false;
   }
 
   islandClickHandler(targetIsland: IslandManager) {

@@ -14,7 +14,7 @@ export class Viewport {
   zoom: number = $state(1);
 
   canDrag = $state(false);
-  userIsDragging = $state(false);
+  mouseDown = $state(false);
 
   mouseX = $state(0);
   mouseY = $state(0);
@@ -53,17 +53,17 @@ export class Viewport {
     window.addEventListener("pointerdown", (event) => {
       if (!this.canDrag) return;
 
-      this.userIsDragging = true;
+      this.mouseDown = true;
       this.#dragStartX = event.clientX;
       this.#dragStartY = event.clientY;
     });
-    window.addEventListener("pointerup", () => (this.userIsDragging = false));
+    window.addEventListener("pointerup", () => (this.mouseDown = false));
     window.addEventListener(
       "pointercancel",
-      () => (this.userIsDragging = false),
+      () => (this.mouseDown = false),
     );
     window.addEventListener("pointermove", (event) => {
-      if (!this.userIsDragging) return;
+      if (!this.mouseDown) return;
 
       const dragDeltaX = event.clientX - this.#dragStartX;
       const dragDeltaY = event.clientY - this.#dragStartY;
