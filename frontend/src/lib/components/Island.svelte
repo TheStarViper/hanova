@@ -20,7 +20,7 @@ export class IslandManager {
   spawnOffset: Pos;
   treasurePos: Pos;
 
-  #islandSpriteIndex: IslandSpriteIndex;
+  islandSpriteIndex: IslandSpriteIndex;
   sprite: IslandSprite;
 
   /** doesnt consider cluster offset */
@@ -35,7 +35,7 @@ export class IslandManager {
     this.name = name;
     this.datum = datum;
     this.localPos = new Pos(this.datum.x, this.datum.y);
-    this.#islandSpriteIndex = this.datum.islandSpriteIndex;
+    this.islandSpriteIndex = $state(this.datum.islandSpriteIndex);
 
     this.pos = $derived(
       Pos.add(this.localPos, ISLAND_CLUSTER_CENTERS[this.mediaType]),
@@ -45,7 +45,7 @@ export class IslandManager {
       this.datum.spawnOffsetY,
     );
     this.sprite = $derived(
-      ISLAND_SPRITES[this.#islandSpriteIndex],
+      ISLAND_SPRITES[this.islandSpriteIndex],
     );
     this.treasurePos = $derived(
       Pos.add(this.pos, this.sprite.treasureOffset),
@@ -80,9 +80,21 @@ export class IslandManager {
     return FORMAT_TO_MEDIATYPE[this.name];
   }
 
+  cycleSprite(delta: number) {
+    const keys = Object.keys(ISLAND_SPRITES).map(Number) as IslandSpriteIndex[];
+
+    const currentIdx = keys.indexOf(this.islandSpriteIndex);
+    let nextIdx = (currentIdx + delta) % keys.length;
+    if (nextIdx < 0) nextIdx += keys.length;
+
+    this.islandSpriteIndex = keys[nextIdx];
+
+    world.updateEditTarget();
+  }
+
   exportToDatum(): IslandDatum {
     return {
-      islandSpriteIndex: this.#islandSpriteIndex,
+      islandSpriteIndex: this.islandSpriteIndex,
       x: this.localPos.x,
       y: this.localPos.y,
       spawnOffsetX: this.spawnOffset.x,

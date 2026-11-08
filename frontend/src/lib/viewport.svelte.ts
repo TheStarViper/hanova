@@ -88,6 +88,17 @@ export class Viewport {
       world.updateEditTarget();
     });
 
+    window.addEventListener("keypress", (event) => {
+      switch (event.key) {
+        case "w":
+          world.islandEditTarget?.cycleSprite(1);
+          break;
+        case "s":
+          world.islandEditTarget?.cycleSprite(-1);
+          break;
+      }
+    });
+
     document.addEventListener("mousemove", (event) => {
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;

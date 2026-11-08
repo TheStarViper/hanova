@@ -21,9 +21,12 @@ let incompatible = $state(false);
 
 $effect(() => {
   if (world.islandEditTarget !== null) {
-    title = `Editing ${world.islandEditTarget.name}`;
-    blurb =
-      `X: ${world.islandEditTarget.pos.x}, Y: ${world.islandEditTarget.pos.y}`;
+    const target = world.islandEditTarget;
+    title = `Editing ${target.name}`;
+    blurb = `
+    X: ${target.pos.x} Y: ${target.pos.y} <br>
+    Sprite: ${target.islandSpriteIndex}
+    `;
 
     return;
   }
