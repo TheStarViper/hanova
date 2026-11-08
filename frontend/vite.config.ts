@@ -81,5 +81,10 @@ export default defineConfig(({ mode }) => ({
   },
   worker: {
     format: "es",
+    rollupOptions: {
+      external: [
+        "wasi_snapshot_preview1",
+      ],
+    },
   },
 }));
