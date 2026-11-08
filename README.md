@@ -19,6 +19,15 @@ buried **treasure**: your converted file!
 > [!TIP]
 > **<https://thestarviper.github.io/hanova/>**
 
+## Additional Features
+  additional features other than the basics
+
+- converting video to audio
+- rasterizing images
+- vectorizing images
+- compressing video/audio/images
+- 3d model file conversion
+
 ## Backend (C++ & Mjs)
 
 For the backend I(Andrew) have decided to use C++ as it is the language I'm the

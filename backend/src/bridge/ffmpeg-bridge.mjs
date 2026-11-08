@@ -95,3 +95,48 @@ export function convert_audio(bytes,target,options={}){
         }
     });
 }
+
+export function convert_audio_to_video(bytes,target,options={}){
+    const width = options.video?.width || 1280;
+    const height = options.video?.height || 720;
+    const bgColor = options.backgroundColor || 'black';
+    const waveColor = options.waveColor || 'cyan';
+    const mode = options.mode || 'line';
+
+    return exclusive(async()=>{
+        const outName = `output-waveform.${target}`;
+        const log = [];
+        let ffmpeg;
+        let dead = false;
+        let cancelled = false;
+
+        const onCancel = () => {cancelled = true; kill();};
+        const onLog = ({message}) => {log.push(message); if(log.length > 12){log.shift();}};
+        const onProgress = ({progress})=>options.onProgress?.(Math.max(0,Math.min(1,progress)));
+        try{
+            ffmpeg = await load();
+            ffmpeg.on("log",onLog);
+            ffmpeg.on("progress",onProgress);
+            options.signal?.addEventListener("abort",onCancel,{once:true});
+
+            await ffmpeg.writeFile("input",bytes.slice());
+
+            const args = [
+                '-i', 'input',
+                '-f', 'lavfi',
+                '-i', `color=c=${bgColor}:s=${width}x${height}`,
+                '-filter_complex',
+                `[0:a]showwaves=size=${width}x${height}:colors=${waveColor}:mode=${mode}[wave];[1:v][wave]overlay=format=auto:shortest=1[v]`,
+                '-map', '[v]',
+                '-map', '0:a',
+                '-c:v', 'libx264',
+                '-pix_fmt', 'yuv420p',
+                '-c:a', 'aac',
+                '-y',
+                outName
+            ];
+
+            
+        }
+    })
+}
