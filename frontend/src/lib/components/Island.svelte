@@ -13,8 +13,12 @@ export class IslandManager {
   name: Format;
   datum: IslandDatum;
   pos: Pos;
+  spawnOffset: Pos;
 
-  isCompatible: boolean;
+  /** doesnt consider cluster offset */
+  localPos: Pos;
+  /** compatibility with the file manager's file */
+  incompatible: boolean;
 
   constructor(
     name: Format,
@@ -22,11 +26,16 @@ export class IslandManager {
   ) {
     this.name = name;
     this.datum = datum;
+    this.localPos = new Pos(this.datum.x, this.datum.y);
     this.pos = $derived(
-      Pos.add(this.datum.pos, ISLAND_CLUSTER_CENTERS[this.mediaType]),
+      Pos.add(this.localPos, ISLAND_CLUSTER_CENTERS[this.mediaType]),
     );
-    this.isCompatible = $derived(
-      isFormatCompatible(world.fileManager.file?.name, this.name),
+    this.spawnOffset = new Pos(
+      this.datum.spawnOffsetX,
+      this.datum.spawnOffsetY,
+    );
+    this.incompatible = $derived(
+      !isFormatCompatible(world.fileManager.file?.name, this.name),
     );
   }
 
@@ -35,7 +44,7 @@ export class IslandManager {
   }
 
   handleClick() {
-    if (!this.isCompatible) return;
+    if (this.incompatible) return;
 
     if (world.islandEditMode) {
       world.islandEditTarget = world.islandEditTarget === this ? null : this;
@@ -57,10 +66,6 @@ export class IslandManager {
 
   get sprite() {
     return ISLAND_SPRITES[this.datum.islandSpriteIndex];
-  }
-
-  get spawnOffset() {
-    return this.datum.spawnOffset;
   }
 
   get treasurePos() {
@@ -117,7 +122,7 @@ let borderColor = $derived(
     ? BORDER_COLOR_MAPPING[me.mediaType]
     : undefined,
 );
-let cursor = $derived(me.isCompatible ? undefined : "not-allowed");
+let cursor = $derived(me.incompatible ? "not-allowed" : undefined);
 
 let processedSvg: string = $derived.by(() => {
   let svg = me.sprite.svg;

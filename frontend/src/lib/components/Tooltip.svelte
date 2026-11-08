@@ -17,7 +17,7 @@ let me = world.tooltip;
 
 let title = $state("");
 let blurb = $state("");
-let compatible = $state(false);
+let incompatible = $state(false);
 
 $effect(() => {
   if (world.islandEditTarget !== null) {
@@ -34,7 +34,7 @@ $effect(() => {
 
   title = datum.title;
   blurb = datum.blurb;
-  compatible = me.island?.isCompatible ?? true;
+  incompatible = me.island?.incompatible ?? false;
 });
 </script>
 
@@ -45,7 +45,7 @@ $effect(() => {
 >
   <h2>{title}</h2>
   <p>{@html blurb}</p>
-  {#if !compatible}
+  {#if incompatible}
     <h3>
       Can't convert: {
         world.fileManager.getInputFormatName(world.fileManager.file?.name ?? "")

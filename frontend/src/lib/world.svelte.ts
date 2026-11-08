@@ -265,8 +265,8 @@ export class World {
     const clusterCenter =
       ISLAND_CLUSTER_CENTERS[this.islandEditTarget.mediaType];
 
-    this.islandEditTarget.datum.pos.x = Math.round(worldX - clusterCenter.x);
-    this.islandEditTarget.datum.pos.y = Math.round(worldY - clusterCenter.y);
+    this.islandEditTarget.localPos.x = Math.round(worldX - clusterCenter.x);
+    this.islandEditTarget.localPos.y = Math.round(worldY - clusterCenter.y);
   }
 }
 
