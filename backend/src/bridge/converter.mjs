@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
 import {
   EVERYFORMAT, IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS,

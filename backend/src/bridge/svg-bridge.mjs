@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import imagetracer_v126 from "imagetracerjs";
 import {ConvertError, ErrorCode, to_convert_error} from "./errors.mjs";
 const MAX_SIZE = 8192;

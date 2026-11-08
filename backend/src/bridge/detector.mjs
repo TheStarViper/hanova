@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { ALIASES } from "./formats.mjs";
 
 const ascii = (bytes,start,end)=>String.fromCharCode(...bytes.subarray(start,end));
