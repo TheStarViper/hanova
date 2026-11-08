@@ -15,6 +15,8 @@ const COMPATIBLE_MEDIA_TYPES: Record<MediaType, MediaType[]> = {
   image: ["image"],
   audio: ["audio"],
   video: ["video", "audio"],
+  document: ["document"],
+  model: ["model"],
 };
 
 export function isFormatCompatible(
