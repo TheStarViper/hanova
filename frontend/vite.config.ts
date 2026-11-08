@@ -63,6 +63,13 @@ export default defineConfig(({ mode }) => ({
       plugins: mode === "production" ? undefined : [],
     }),
   ],
+  build: {
+    rollupOptions: {
+      external: [
+        'wasi_snapshot_preview1'
+      ]
+    }
+  },
   optimizeDeps: {
     exclude: [
       "@imagemagick/magick-wasm",
