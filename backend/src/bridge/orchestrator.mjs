@@ -4,6 +4,7 @@ import {
   IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS, DOCUMENT_FORMATS,
   MODEL_FORMAT_NAMES, DOC_INPUTS, DOC_OUTPUTS,
 } from "./formats.mjs";
+import { convert_audio_to_video } from "./mediabunny-bridge.mjs";
 
 function lazy(fn){ //dynamic library loading
   let promise;
@@ -50,6 +51,7 @@ function build({magickInit}={}){
   const ffmpeg = inBrowser ? {convert_audio: async (bytes,to,options)=>(await loadFfmpegBridge()).convert_audio(bytes,to,options)} : undefined;
   const media = {
     convert_media: async (bytes, to, options) => (await loadMediaBridge()).convert_media(bytes, to, options),
+    convert_audio_to_video: async (bytes,to,options)=>(await loadMediaBridge()).convert_audio_to_video(bytes,to,options),
   };
 
   const vector = inBrowser ?

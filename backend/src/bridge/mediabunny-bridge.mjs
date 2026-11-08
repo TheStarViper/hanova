@@ -182,6 +182,113 @@ export async function convert_media(inputdata, target, options = {}) {
   }
 }
 
+const AV_CODECS = {
+  mp4: { video: "avc", audio: "aac" },
+  mov: { video: "avc", audio: "aac" },
+  ts: { video: "avc", audio: "aac" },
+  mkv: { video: "avc", audio: "aac" },
+  webm: { video: "vp9", audio: "opus" },
+};
+
+const asQuality = (value,fallback)=>
+  value instanceof mediabunny.Quality ? value
+  : typeof value === 'number' ? new mediabunny.Quality({bitrate: value})
+  : new mediabunny.Quality(fallback);
+
+export async function convert_audio_to_video(inputdata, target, options = {}) {
+    const codecs = AV_CODECS[target];
+  const make = OUTPUT_FORMATS[target];
+  if (!codecs || !make) {
+    throw new ConvertError(ErrorCode.UnsupportedOutput, `Can't make a "${target}" video from audio`);
+  }
+  if (typeof OfflineAudioContext === "undefined" ||
+      (typeof OffscreenCanvas === "undefined" && typeof document === "undefined")) {
+    throw new ConvertError(ErrorCode.EncoderUnavailable, "Making a video from audio needs a browser");
+  }
+  if (options.signal?.aborted) throw cancelled();
+
+  const p = PRESETS[options.preset] ?? {};
+  const height = (options.video?.height ?? p.video?.height ?? 720) & ~1;
+  const width = (options.video?.width ?? Math.round((height * 16) / 9)) & ~1;
+  const fps = options.fps ?? 30;
+  const background = options.backgroundColor ?? "#000000";
+  const waveColor = options.waveColor ?? "#00ffcc";
+  const BARS = 100;
+
+  let output;
+  try {
+    await ensureEncoder(codecs.audio);
+
+    const audioBuffer = await new OfflineAudioContext(2, 1, 48000).decodeAudioData(inputdata.slice().buffer);
+    const samples = audioBuffer.getChannelData(0);
+    const frames = Math.max(1, Math.ceil(audioBuffer.duration * fps));
+
+    const perFrame = Math.max(1, Math.floor(audioBuffer.sampleRate / fps));
+    const loudness = new Float32Array(frames);
+    let loudest = 0;
+    for (let i = 0; i < frames; i++) {
+      const start = i * perFrame;
+      const end = Math.min(samples.length, start + perFrame);
+      let sum = 0;
+      for (let s = start; s < end; s++) sum += samples[s] * samples[s];
+      loudness[i] = end > start ? Math.sqrt(sum / (end - start)) : 0;
+      if (loudness[i] > loudest) loudest = loudness[i];
+    }
+    const gain = loudest > 0 ? 1 / loudest : 1;
+
+    const canvas = typeof OffscreenCanvas !== "undefined"
+      ? new OffscreenCanvas(width, height)
+      : Object.assign(document.createElement("canvas"), { width, height });
+    const ctx = canvas.getContext("2d");
+
+    const sink = new mediabunny.BufferTarget();
+    output = new mediabunny.Output({ format: make(), target: sink });
+
+    const videoSource = new mediabunny.CanvasSource(canvas, {
+      codec: codecs.video,
+      quality: asQuality(options.video?.bitrate ?? p.video?.bitrate, "medium"),
+    });
+    output.addVideoTrack(videoSource, { frameRate: fps });
+
+    const audioSource = new mediabunny.AudioBufferSource({
+      codec: codecs.audio,
+      quality: asQuality(options.audio?.bitrate ?? p.audio?.bitrate, "high"),
+    });
+    output.addAudioTrack(audioSource);
+
+    await output.start();
+
+    const audioDone = audioSource.add(audioBuffer).then(() => audioSource.close());
+
+    const barWidth = width / BARS;
+    for (let i = 0; i < frames; i++) {
+      if (options.signal?.aborted) throw cancelled();
+
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = waveColor;
+      for (let j = 0; j < BARS; j++) {
+        const level = Math.min(1, (loudness[i + j - BARS / 2] ?? 0) * gain)
+        const barHeight = Math.max(2, level * height * 0.9);
+        ctx.fillRect(j * barWidth + 1, (height - barHeight) / 2, Math.max(1, barWidth - 2), barHeight);
+      }
+
+      await videoSource.add(i / fps, 1 / fps);
+      options.onProgress?.(i / frames);
+    }
+    videoSource.close();
+    await audioDone;
+    await output.finalize();
+
+    return new Uint8Array(sink.buffer);
+
+  } catch (error) {
+    try { await output?.cancel?.(); } catch {}
+    if (options.signal?.aborted) throw cancelled(error);
+    throw to_convert_error(error, ErrorCode.NativeFailure);
+  }
+}
+
 export async function probe_media(inputdata) {
   try {
     const input = new mediabunny.input({
@@ -248,104 +355,6 @@ export async function thumbnail_at(
       : await new Promise((resolve) => canvas.toBlob(resolve, type, quality));
 
     return new Uint8Array(await blob.arrayBuffer());
-  } catch (error) {
-    throw to_convert_error(error, ErrorCode.NativeFailure);
-  }
-}
-
-export async function convert_audio_to_video(inputdata, target, options = {}) {
-  const width = options.video?.width || 1280;
-  const height = options.video?.height || 720;
-  const fps = 30;
-  const bgColor = options.backgroundColor || '#111111';
-  const waveColor = options.waveColor || '#00ffcc';
-
-  try {
-    const arrayBuffer = inputdata instanceof ArrayBuffer 
-      ? inputdata 
-      : inputdata.buffer.slice(inputdata.byteOffset, inputdata.byteOffset + inputdata.byteLength);
-
-    const audioCtx = new (globalThis.AudioContext || globalThis.webkitAudioContext)();
-    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-    const rawChannelData = audioBuffer.getChannelData(0);
-    const sampleRate = audioBuffer.sampleRate;
-    const duration = audioBuffer.duration;
-
-    const input = new mediabunny.Input({
-      source: new mediabunny.BufferSource(new Uint8Array(arrayBuffer)),
-      formats: mediabunny.ALL_FORMATS,
-    });
-    const audioTrack = await input.getPrimaryAudioTrack();
-
-    const canvas = new OffscreenCanvas(width, height);
-    const ctx = canvas.getContext('2d');
-
-    const videoSource = new mediabunny.CanvasSource(canvas, {
-      codec: 'avc',
-      bitrate: options.video?.bitrate ?? 2e6,
-    });
-
-    const make = OUTPUT_FORMATS[target] || (() => new mediabunny.Mp4OutputFormat());
-    const outputBufferTarget = new mediabunny.BufferTarget();
-    const output = new mediabunny.Output({
-      format: make(),
-      target: outputBufferTarget,
-    });
-
-    output.addVideoTrack(videoSource, { frameRate: fps });
-
-    if (audioTrack) {
-      const audioSink = new mediabunny.EncodedPacketSink(audioTrack);
-      const audioSource = new mediabunny.EncodedAudioPacketSource(audioTrack.codec);
-      output.addAudioTrack(audioSource);
-      
-      (async () => {
-        for await (const packet of audioSink.packets()) {
-          await audioSource.add(packet);
-        }
-        audioSource.close();
-      })();
-    }
-
-    await output.start();
-
-    const totalFrames = Math.floor(duration * fps);
-    const samplesPerPixel = Math.floor(sampleRate / fps);
-
-    for (let i = 0; i < totalFrames; i++) {
-      if (options.signal?.aborted) {
-        throw new ConvertError(ErrorCode.Cancelled, "Conversion was cancelled");
-      }
-
-      const currentTime = i / fps;
-      const centerSampleIndex = Math.floor(currentTime * sampleRate);
-
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.fillStyle = waveColor;
-      const sliceWidth = width / 100;
-      let x = 0;
-
-      for (let j = 0; j < 100; j++) {
-        const sampleIndex = centerSampleIndex + (j - 50) * (samplesPerPixel / 2);
-        const amplitude = Math.abs(rawChannelData[Math.floor(sampleIndex)] || 0);
-        
-        const barHeight = Math.min(height, amplitude * height * 1.5);
-        const y = (height - barHeight) / 2;
-
-        ctx.fillRect(x, y, sliceWidth - 2, barHeight);
-        x += sliceWidth;
-      }
-
-      await videoSource.add(currentTime, 1 / fps);
-      options.onProgress?.(i / totalFrames);
-    }
-
-    videoSource.close();
-    await output.finalize();
-    return new Uint8Array(output.target.buffer);
-
   } catch (error) {
     throw to_convert_error(error, ErrorCode.NativeFailure);
   }

@@ -1,3 +1,6 @@
 .vscode/
 node_modules
 backend/test/dist
+
+# kinda a music file so i dont wanna risk it
+backend/test/samples/test.mp3

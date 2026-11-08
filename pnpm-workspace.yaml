@@ -4,5 +4,6 @@ packages:
 
 allowBuilds:
   "@parcel/watcher": true
+  canvas: set this to true or false
   esbuild: true
   node-av: true
