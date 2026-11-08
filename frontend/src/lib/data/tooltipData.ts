@@ -271,6 +271,201 @@ export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
     url: "https://en.wikipedia.org/wiki/MPEG_transport_stream",
   },
 
+  // Documents
+  docx: {
+    title: "DOCX",
+    blurb:
+      "Document format used in Microsoft Word. Near-universal compatibility with word processing software. Also known as Office Open XML Document.",
+    url: "https://www.adobe.com/acrobat/resources/document-files/docx.html",
+  },
+  odt: {
+    title: "ODT",
+    blurb:
+      "Document format used in OpenOffice and LibreOffice. Great compatibility with word processing software, and meant to be an open-source vendor-agnostic alternative to DOCX. Also known as OpenDocument Format.",
+    url: "https://en.wikipedia.org/wiki/OpenDocument",
+  },
+  epub: {
+    title: "EPUB",
+    blurb:
+      "E-book format used by most e-readers (e.g. Amazon Kindle). Near-universal compatibility with e-reading software. Also known as Electronic Publication.",
+    url: "https://en.wikipedia.org/wiki/EPUB",
+  },
+  pptx: {
+    title: "PPTX",
+    blurb:
+      "Slideshow format used in Microsoft Powerpoint. Near-universal compatibility with slideshow software. Also known as Office Open XML Presentation.",
+    url: "https://www.adobe.com/acrobat/resources/document-files/pptx.html",
+  },
+  rtf: {
+    title: "RTF",
+    blurb:
+      "Document format used in WordPad. Great compatibility, but with word processing software. Also known as Rich Text Format.",
+    url: "https://en.wikipedia.org/wiki/Rich_Text_Format",
+  },
+  fb2: {
+    title: "FB2",
+    blurb:
+      "E-book format. Good compatibility with e-readers. Also known as FictionBook.",
+    url: "https://en.wikipedia.org/wiki/FictionBook",
+  },
+  html: {
+    title: "HTML",
+    blurb:
+      "Markup format used by web browsers. Universal compatibility with browsers. Hanova is (partially) written in it :D. Also known as Hypertext Markup Language.",
+    url: "https://en.wikipedia.org/wiki/HTML",
+  },
+  revealjs: {
+    title: "RevealJS",
+    blurb:
+      "Presentation format that renders to HTML. Can be displayed in all browsers, since it's just a webpage, but very little editing support.",
+    url: "https://revealjs.com",
+  },
+  slidy: {
+    title: "Slidy",
+    blurb:
+      "Presentation format that renders to HTML. Can be displayed in all browsers, since it's just a webpage, but very little editing support.",
+    url: "https://www.w3.org/Talks/Tools/Slidy2/Overview.html",
+  },
+  md: {
+    title: "MD",
+    blurb:
+      "Markup format that's easy to read and write. Extremely common and widely-used; used in READMEs, Obsidian, LLM chats, and more. Also known as Markdown.",
+    url: "https://en.wikipedia.org/wiki/Markdown",
+  },
+  gfm: {
+    title: "GFM",
+    blurb:
+      "Markup format that's a variant of Markdown. Basically just Markdown but with extra features like strikethrough. Also known as GitHub Flavored Markdown.",
+    url: "https://en.wikipedia.org/wiki/Markdown#GitHub_Flavored_Markdown",
+  },
+  commonmark: {
+    title: "CommonMark",
+    blurb:
+      "Markup format that's a variant of Markdown. Basically just a strict, standardized version of Markdown.",
+    url: "https://commonmark.org/",
+  },
+  rst: {
+    title: "RST",
+    blurb:
+      "Markup format used by Sphinx with more complex features than Markdown. Also known as reStructuredText.",
+    url: "https://en.wikipedia.org/wiki/ReStructuredText",
+  },
+  org: {
+    title: "Org",
+    blurb:
+      "Markup format used by Emacs. EXTREMELY feature-rich for note taking and organization, but fairly complex to learn. Also known as Org-mode.",
+    url: "https://en.wikipedia.org/wiki/Org-mode",
+  },
+  textile: {
+    title: "Textile",
+    blurb: "Markup language that was the precursor to Markdown.",
+    url: "https://textile-lang.com/",
+  },
+  wiki: {
+    title: "MediaWiki",
+    blurb: "Wiki markup language used by Wikipedia for writing wiki articles.",
+    url: "https://www.mediawiki.org/wiki/Help:Formatting",
+  },
+  dokuwiki: {
+    title: "DokuWiki",
+    blurb:
+      "Wiki markup language similar to MediaWiki, but simpler and easier to use.",
+    url: "https://en.wikipedia.org/wiki/DokuWiki",
+  },
+  jira: {
+    title: "Jira",
+    blurb:
+      "Wiki markup language formerly used by Jira before they (mostly) switched Markdown. ALso known as Confluence Wiki Markup.",
+    url:
+      "https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html",
+  },
+  muse: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  adoc: {
+    title: "Adoc",
+    blurb:
+      "Markup format that's slightly more powerful than Markdown while still being simple. Also known as AsciiDoc",
+    url: "https://en.wikipedia.org/wiki/AsciiDoc",
+  },
+  xwiki: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  zimwiki: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  tikiwiki: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  twiki: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  creole: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  t2t: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  dbk: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  jats: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  tei: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  opml: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  ipynb: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  csljson: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  ris: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  endnote: {
+    title: "",
+    blurb: "",
+    url: "",
+  },
+  txt: {
+    title: "Txt",
+    blurb: "Plain text format. It's just text lol.",
+    url: "https://en.wikipedia.org/wiki/Text_file",
+  },
+
   // Settings
   qualityPresetIdx: {
     title: "Conversion Quality",
