@@ -12,7 +12,8 @@
 
     "backend/build",
     "backend/libraries",
-    "backend/src/bridge"
+    "backend/src/bridge",
+    "backend/test"
   ],
   "plugins": [
     "npm:@dprint/typescript@0.96.1",
