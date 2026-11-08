@@ -14,7 +14,7 @@ export function detect_model_format(bytes){
   const head = ascii(bytes,0,Math.min(bytes.length,24));
   const view = new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
 
-  if (head.startsWith("gtTF")) {return "glb";}
+  if (head.startsWith("glTF")) {return "glb";}
   if (head.startsWith("Kaydara FBX Binary")) {return "fbx";}
   if (head.startsWith("BLENDER")) {return "blend";}
   if (/^ply\r?\n/.test(head)) {return "ply";}
@@ -119,5 +119,5 @@ export function detect_svg(bytes){
   if (!bytes||bytes.length<5) {return "unknown";}
   const start = skipBom(bytes);
   const head = latin1(bytes,start,Math.min(bytes.length,start+16384));
-  return /svg[\s>]/.test(head)?"svg":"unknown";
+  return /<svg[\s>]/.test(head)?"svg":"unknown";
 }

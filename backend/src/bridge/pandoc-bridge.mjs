@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
-import { DOC_FORMATS } from "./converter.mjs";
+import { DOC_FORMATS } from "./formats.mjs";
 
 let pandocPromise;
 const pandoc = () =>(pandocPromise ??= import("pandoc-wasm").catch((error)=>{ //loader

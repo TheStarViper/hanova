@@ -5,7 +5,7 @@ import { registerFlacEncoder } from "@mediabunny/flac-encoder";
 import { registerMp3Encoder } from "@mediabunny/mp3-encoder";
 import * as mediabunny from "mediabunny";
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
-import { MEDIA_INFO } from "./converter.mjs";
+import { MEDIA_INFO } from "./formats.mjs";
 
 mediabunny.Logging.level = mediabunny.LogLevel.Warnings;
 const ENCODERS = {

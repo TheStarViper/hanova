@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import { ConvertError, ErrorCode, to_convert_error } from "./errors.mjs";
-import {FFMPEG_AUDIO} from "./converter.mjs";
+import {FFMPEG_AUDIO} from "./formats.mjs";
 
 let ffmpegPromise;
 function load(){ //loader

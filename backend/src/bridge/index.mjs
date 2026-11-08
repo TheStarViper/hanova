@@ -6,7 +6,7 @@ export {
   THREE_MODEL_OUTPUTS, FFMPEG_AUDIO, MEDIA_INFO, ALIASES, DOMAIN
 } from "./formats.mjs";
 export { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detector.mjs";
-export { ConvertError, simplifyerror } from "./errors.mjs";
+export { ConvertError, simplifyerror,ErrorCode } from "./errors.mjs";
 
 export { createconverter } from "./converter.mjs";
 export { createConvert } from "./create-convert.mjs";

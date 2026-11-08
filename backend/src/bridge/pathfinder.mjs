@@ -1,5 +1,5 @@
 export function createSearchPath(table, N, EVERYFORMAT) {
-    function search_path(start, target) {
+    return function search_path(start, target) {
         if (start === target) return [];
 
         const distance = Array(N).fill(Infinity);
@@ -39,5 +39,5 @@ export function createSearchPath(table, N, EVERYFORMAT) {
         }
 
         return path;
-    }
+    };
 }
