@@ -9,19 +9,9 @@ import {
   THREE_MODEL_OUTPUTS, FFMPEG_AUDIO, MEDIA_INFO, ALIASES, DOMAIN
 } from "./formats.mjs";
 import { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detector.mjs";
-import { has_media_options, unwrap, use } from "./utils.js";
-import { createSearchPath } from "./pathfinder.js";
-import { createDetector } from "./detector-wrapper.js";
-
-export {
-  EVERYFORMAT, IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS,
-  DOCUMENT_FORMATS, MODEL_FORMAT_NAMES, MODEL_INPUTS, MODEL_OUTPUTS,
-  MODEL_FORMATS,DOC_INPUTS,DOC_OUTPUTS,FORMATS,DOC_FORMATS,
-  MEDIA_FORMATS,MEDIA_PRESETS,MEDIABUNNY_AUDIO,
-  THREE_MODEL_OUTPUTS, FFMPEG_AUDIO, MEDIA_INFO, ALIASES, DOMAIN
-} from "./formats.mjs";
-export { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detector.mjs";
-export { ConvertError, simplifyerror } from "./errors.mjs";
+import { has_media_options, unwrap, use } from "./utils.mjs";
+import { createSearchPath } from "./pathfinder.mjs";
+import { createDetector } from "./detector-wrapper.mjs";
 
 const INDEX = Object.fromEntries(EVERYFORMAT.map((f, i) => [f, i]));
 const N = EVERYFORMAT.length;

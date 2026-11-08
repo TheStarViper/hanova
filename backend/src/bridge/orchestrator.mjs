@@ -1,17 +1,10 @@
 // @ts-nocheck
-
-import { convert_model } from "./assimp-bridge.mjs";
+import { createconverter } from "./converter.mjs";
+import { createConvert } from "./create-convert.mjs";
 import {
-  AUDIO_FORMATS,
-  createConvert,
-  createconverter,
-  IMAGE_FORMATS,
-  VIDEO_FORMATS,
-  DOCUMENT_FORMATS,
-  DOC_INPUTS,
-  DOC_OUTPUTS,
-  MODEL_FORMAT_NAMES,
-} from "./converter.mjs";
+  IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS, DOCUMENT_FORMATS,
+  MODEL_FORMAT_NAMES, DOC_INPUTS, DOC_OUTPUTS,
+} from "./formats.mjs";
 
 function lazy(fn){ //dynamic library loading
   let promise;
@@ -118,20 +111,19 @@ export const probe_media = async (...args)=>(await loadMediaBridge()).probe_medi
 export const thumbnail_at = async (...args)=>(await loadMediaBridge()).thumbnail_at(...args);
 
 export {
-  ALIASES,
-  AUDIO_FORMATS,
-  ConvertError,
-  createconverter,
-  FORMATS,
-  IMAGE_FORMATS,
-  simplifyerror,
-  VIDEO_FORMATS,
+  ALIASES, 
+  FORMATS, 
+  IMAGE_FORMATS, 
+  VIDEO_FORMATS, 
+  AUDIO_FORMATS, 
   DOCUMENT_FORMATS,
-  DOC_FORMATS,
-  MEDIA_FORMATS,
-  MEDIA_INFO,
+  DOC_FORMATS, 
+  MODEL_FORMATS, 
+  MODEL_FORMAT_NAMES, 
+  MEDIA_FORMATS, 
+  MEDIA_INFO, 
   MEDIA_PRESETS,
-  MODEL_FORMATS,
-  MODEL_FORMAT_NAMES,
-} from "./converter.mjs";
-export { ErrorCode, to_convert_error } from "./errors.mjs";
+} from "./formats.mjs";
+export {createconverter} from "./converter.mjs";
+export {format_from_filename} from "./utils.mjs";
+export {ConvertError,simplifyerror,ErrorCode,to_convert_error} from "./errors.mjs";
