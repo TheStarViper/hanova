@@ -1,1 +1,0 @@
-export{t as default}from"./assimpjs-DH4vCoBR.js";

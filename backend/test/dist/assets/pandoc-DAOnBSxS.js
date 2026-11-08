@@ -1,1 +1,0 @@
-var e=`/@fs/C:/Users/andre/Documents/Hanova/node_modules/.pnpm/pandoc-wasm@1.1.0/node_modules/pandoc-wasm/src/pandoc.wasm`;export{e as default};
