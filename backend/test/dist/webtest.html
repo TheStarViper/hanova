@@ -1,0 +1,76 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Hanova converter test</title>
+<style>body{max-width:720px;margin:2rem auto;padding:0 1rem;font-family:sans-serif}nav button{cursor:pointer;background:0 0;border:1px solid #888;padding:.4rem 1rem}nav button.active{color:#fff;background:#222}section{margin-top:1rem;display:none}section.active{display:block}.row{flex-wrap:wrap;align-items:center;gap:.5rem;margin-bottom:.5rem;display:flex}img,video,audio{max-width:100%;margin-top:.5rem;display:none}pre{white-space:pre-wrap;background:#f4f4f4;max-height:280px;padding:.6rem;display:none;overflow:auto}p[id$=tatus]{white-space:pre-wrap}#docReport{white-space:pre-wrap;font-family:monospace;font-size:13px}</style>
+<script type="module" crossorigin src="/assets/webtest-DAiA0gVy.js"></script>
+<link rel="modulepreload" crossorigin href="/assets/preload-helper-7y9sWmk5.js">
+
+<body>
+  <h3>Hanova converter test</h3>
+  <nav>
+    <button data-tab="media" class="active">Video / audio</button>
+    <button data-tab="images">Images</button>
+    <button data-tab="docs">Documents</button>
+    <button data-tab="models">3D models</button>
+  </nav>
+
+  <section id="media" class="active">
+    <div class="row">
+      <input type="file" id="file" accept="video/*,audio/*">
+      <select id="target"></select>
+      <select id="preset"><option value="">no preset (remux if possible)</option></select>
+    </div>
+    <div class="row">
+      <button id="go">Convert</button>
+      <button id="stop">Cancel</button>
+      <label><input type="checkbox" id="forceFfmpeg"> force FFmpeg (audio)</label>
+      <button id="audioAll">Test all audio outputs</button>
+    </div>
+    <p id="status">Loading...</p>
+    <a id="download" style="display:none">Download result</a>
+    <video id="preview" controls></video>
+    <audio id="audioPreview" controls></audio>
+  </section>
+
+  <section id="images">
+    <div class="row">
+      <input type="file" id="imgFile" accept="image/*,.svg,.tga,.hdr,.psd,.exr,.qoi,.jxl,.avif,.ico,.tif,.tiff">
+      <select id="imgTarget"></select>
+      <label>quality <input type="range" id="imgQuality" min="1" max="100" value="80"> <span id="imgQ">80</span></label>
+    </div>
+    <div class="row"><button id="imgGo">Convert</button></div>
+    <p id="imgStatus">Loading...</p>
+    <a id="imgDownload" style="display:none">Download result</a>
+    <img id="imgPreview" alt="">
+  </section>
+
+  <section id="docs">
+    <div class="row">
+      <input type="file" id="docFile">
+      <label>from <select id="docFrom"><option value="">auto (from the file name)</option></select></label>
+      <label>to <select id="docTarget"></select></label>
+    </div>
+    <div class="row">
+      <button id="docGo">Convert</button>
+      <button id="docAll">Test all outputs</button>
+    </div>
+    <p id="docStatus">Loading...</p>
+    <a id="docDownload" style="display:none">Download result</a>
+    <pre id="docPreview"></pre>
+    <div id="docReport"></div>
+  </section>
+
+  <section id="models">
+    <div class="row">
+      <input type="file" id="mdlFile" multiple>
+      <label>to <select id="mdlTarget"></select></label>
+      <button id="mdlGo">Convert</button>
+    </div>
+    <p id="mdlHint">For OBJ, select the .obj together with its .mtl and texture files.</p>
+    <p id="mdlStatus">Loading...</p>
+    <a id="mdlDownload" style="display:none">Download result</a>
+    <pre id="mdlPreview"></pre>
+  </section>
+
+</body>
+<!-- ai file -->

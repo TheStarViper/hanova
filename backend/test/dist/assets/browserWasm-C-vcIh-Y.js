@@ -1,0 +1,1 @@
+import{m as e}from"./imagemagick-bridge-DpnL07v6.js";var t=`/assets/magick-pLLSPENt.wasm`;async function n(){let n=new URL(t,import.meta.url);await e(n)}export{n as initMagick};

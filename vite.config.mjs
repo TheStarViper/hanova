@@ -33,4 +33,7 @@ export default defineConfig({
       '@ffmpeg/core',
     ],
   },
+  build: {
+    rollupOptions: { input: resolve(here, 'backend/test/webtest.html') },
+  },
 });

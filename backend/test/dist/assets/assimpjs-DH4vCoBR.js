@@ -1,0 +1,1 @@
+var e=`/assets/assimpjs-DizCuFSz.wasm`;export{e as t};
