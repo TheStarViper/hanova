@@ -7,7 +7,11 @@ import { BoatManager, SAIL_DURATION } from "./components/Boat.svelte";
 import { IslandManager } from "./components/Island.svelte";
 import { TooltipManager } from "./components/Tooltip.svelte";
 import { TreasureManager } from "./components/Treasure.svelte";
-import { ISLAND_CLUSTER_CENTERS, ISLAND_DATA } from "./data/islandPlacements";
+import {
+  ISLAND_CLUSTER_CENTERS,
+  ISLAND_DATA,
+  type IslandDatum,
+} from "./data/islandPlacements";
 import { FileManager } from "./fileManager.svelte";
 import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
@@ -267,6 +271,31 @@ export class World {
 
     this.islandEditTarget.localPos.x = Math.round(worldX - clusterCenter.x);
     this.islandEditTarget.localPos.y = Math.round(worldY - clusterCenter.y);
+
+    // intentionally not awaited
+    this.copyIslandData();
+  }
+
+  exportIslandData(): typeof ISLAND_DATA {
+    const entries: [Format, IslandDatum][] = this.islands.map((
+      island,
+    ) => [island.name, island.exportToDatum()]);
+    return Object.fromEntries(entries);
+  }
+
+  async copyIslandData(): Promise<void> {
+    const data = this.exportIslandData();
+    const raw = JSON.stringify(data, null, 2);
+
+    // JSON style, with quoted keys and no trailing commas, looks kinda bad, so
+    // this processes the text to make it nicer.
+    const formatted = raw
+      // Remove double quotes around object keys
+      .replace(/"([a-zA-Z0-9_]+)":/g, "$1:")
+      // Add trailing commas before newlines on property lines
+      .replace(/([0-9"'])\n/g, "$1,\n");
+
+    await navigator.clipboard.writeText(formatted);
   }
 }
 

@@ -17,7 +17,6 @@ export const ISLAND_CLUSTER_CENTERS: Record<MediaType, Pos> = {
 };
 
 export const ISLAND_DATA: Partial<Record<Format, IslandDatum>> = {
-  // Image
   bmp: {
     x: 0,
     y: 500,
@@ -123,8 +122,6 @@ export const ISLAND_DATA: Partial<Record<Format, IslandDatum>> = {
     spawnOffsetX: -200,
     spawnOffsetY: 30,
   },
-
-  // Audio
   mp3: {
     x: 0,
     y: 0,
@@ -167,8 +164,6 @@ export const ISLAND_DATA: Partial<Record<Format, IslandDatum>> = {
     spawnOffsetX: 100,
     spawnOffsetY: 0,
   },
-
-  // Video
   mp4: {
     x: 0,
     y: 0,

@@ -14,6 +14,7 @@ export class IslandManager {
   datum: IslandDatum;
   pos: Pos;
   spawnOffset: Pos;
+  treasurePos: Pos;
 
   /** doesnt consider cluster offset */
   localPos: Pos;
@@ -33,6 +34,9 @@ export class IslandManager {
     this.spawnOffset = new Pos(
       this.datum.spawnOffsetX,
       this.datum.spawnOffsetY,
+    );
+    this.treasurePos = $derived(
+      Pos.add(this.pos, this.sprite.treasureOffset),
     );
     this.incompatible = $derived(
       !isFormatCompatible(world.fileManager.file?.name, this.name),
@@ -68,8 +72,14 @@ export class IslandManager {
     return ISLAND_SPRITES[this.datum.islandSpriteIndex];
   }
 
-  get treasurePos() {
-    return Pos.add(this.pos, this.sprite.treasureOffset);
+  exportToDatum(): IslandDatum {
+    return {
+      islandSpriteIndex: this.datum.islandSpriteIndex,
+      x: this.localPos.x,
+      y: this.localPos.y,
+      spawnOffsetX: this.spawnOffset.x,
+      spawnOffsetY: this.spawnOffset.y,
+    };
   }
 }
 
