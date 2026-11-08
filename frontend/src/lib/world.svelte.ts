@@ -4,14 +4,10 @@ import {
   INITIAL_BANNER_MESSAGE,
 } from "./components/Banner.svelte";
 import { BoatManager, SAIL_DURATION } from "./components/Boat.svelte";
-import Island, { IslandManager } from "./components/Island.svelte";
+import { IslandManager } from "./components/Island.svelte";
 import { TooltipManager } from "./components/Tooltip.svelte";
 import { TreasureManager } from "./components/Treasure.svelte";
-import {
-  ISLAND_CLUSTER_CENTERS,
-  ISLAND_DATA,
-  type IslandDatum,
-} from "./data/islandPlacements";
+import { ISLAND_CLUSTER_CENTERS, ISLAND_DATA } from "./data/islandPlacements";
 import { FileManager } from "./fileManager.svelte";
 import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
@@ -61,7 +57,7 @@ export class World {
 
     for (const format of Object.keys(ISLAND_DATA) as Format[]) {
       const datum = ISLAND_DATA[format];
-      if (datum === null) continue;
+      if (!datum) continue;
 
       const island = new IslandManager(format as Format, datum);
 

@@ -14,7 +14,7 @@ export const ISLAND_CLUSTER_CENTERS: Record<MediaType, Pos> = {
   video: new Pos(3500, -500),
 };
 
-export const ISLAND_DATA: Record<Format, IslandDatum | null> = {
+export const ISLAND_DATA: Partial<Record<Format, IslandDatum>> = {
   // Image
   bmp: {
     pos: new Pos(0, 500),
@@ -125,7 +125,6 @@ export const ISLAND_DATA: Record<Format, IslandDatum | null> = {
   },
 
   // Video
-
   mp4: {
     pos: new Pos(0, 0),
     islandSpriteIndex: 17,
@@ -151,9 +150,4 @@ export const ISLAND_DATA: Record<Format, IslandDatum | null> = {
     islandSpriteIndex: 18,
     spawnOffset: new Pos(-100, 100),
   },
-
-  // Unused
-  ai: null,
-  pdf: null,
-  qoi: null,
 };
