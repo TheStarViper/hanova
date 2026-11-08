@@ -19,7 +19,7 @@ buried **treasure**: your converted file!
 > [!TIP]
 > **<https://thestarviper.github.io/hanova/>**
 
-## Backend (C++)
+## Backend (C++ & Mjs)
 
 For the backend I(Andrew) have decided to use C++ as it is the language I'm the
 most familar with. I compiled the backend through emscripten to a wasm package
@@ -29,25 +29,26 @@ it would take an unreasonable amount of time to develop my own with the codecs
 and such so i opted for a prepackaged library. I have listed the libraries ive
 used down below, but before that, even though i used libraries for conversion
 there are still a ton of other things to do other than calling functions in the
-library that a file converter like file validation and safety functions.
+library that a file converter like file validation,safety functions,error handling,
+and glue code so that they can work seamlessly together.
 
 ### Libraries Used:
 
-- [stb_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
-- [libwebp](https://github.com/webmproject/libwebp) (webp)
-- [nanosvg](https://github.com/memononen/nanosvg) (svg)
-- [imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image
-  formats)
-- [mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
+- [STB_image](https://github.com/nothings/stb) (png,jpeg,bmp,tga,hdr)
+- [Libwebp](https://github.com/webmproject/libwebp) (webp)
+- [Imagetracerjs](https://github.com/jankovicsandras/imagetracerjs) (svg vectorizer & rasterizer)
+- [Imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image formats)
+- [Mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
+- [FFmpeg](https://github.com/ffmpeg/ffmpeg) (audio)
+- [Pandoc](https://github.com/jgm/pandoc) (documents)
+- [Assimpjs](https://github.com/kovacsv/assimpjs) (3d models imports)
+- [Threejs](https://github.com/mrdoob/three.js/) (3d models exports)
 
-### Custom Compilation
+### Mjs Bridge System
 
-A few of the libraries used dont have a precompiled binary for use as a c++
-library that can be compiled to wasm through emscripten. Because of this we had
-to compile the library from source via emscripten so we could use it for this
-purpose. This took a while of troubleshooting as there is limited documentation
-online about how to go about this and the libraries we had to compile in this
-form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
+Alot of the libraries that are commonly used for file conversions dont come as C++ packages and instead are pre-compiled wasm files. So we opted to use a Mjs bridge system to link together and use a bunch of different wasm libs at the same time with a dynamic loading function. stb_image,nanosvg,& stb_image are all libs that we can compile through emscripten. Imagemagick,ffmpeg, & pandoc come as pre-packaged wasm files that we converse with using MJS. Mediabunny however isnt wasm as wasm does not have support for hardware acceleration which is fine for smaller files like documents & images but is sluggish without hardware accel for video files.
+
+Since this file conversion program uses alot of different libraries combined, a notable portion of the backend codebase is glue-code used to make it so that they can work together. We grabbed the WASM versions of programs like imagemagick and pandoc to use and bridged them using MJS, while mediabunny is a TypeScript library so that it can take advantage of hardware acceleration. However, since we had to balance a wide variety of ecosystems, they all had different error formats and spit out different types of errors, so to make things easier we made a unified error system that decoded all of the errors from the various libraries and made human-readable and simplified errors.
 
 ### Supported File Formats
 
@@ -55,73 +56,93 @@ form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
 <summary><h3>Images</h3></summary>
 
 - [x] png
-- [x] jpeg
+- [x] jpeg / jpg / jpe
 - [x] bmp
-- [x] tga
+- [x] tga / targa / icb / vda / vst
 - [x] hdr
 - [x] ico
 - [x] gif
 - [x] exr
 - [x] webp
 - [x] avif
-- [x] svg
-- [x] eps
+- [x] eps / epsf / epsi
 - [x] ai (adobe illustrator not artificial intellegence)
 - [x] qoi
-- [x] tiff
+- [x] tiff / tif
 - [x] jxl
 - [x] psd
-
+- [x] svg (We have a vectorizer that turns bitmaps to vectorized svgs and a rasterizer for vectors to bitmaps) </br>
+<img src="before.jpg" width="300">
+<img src="after.svg" width="300"></br>
+### left before, right after
 </details>
+
 
 <details>
 <summary><h3>Audio</h3></summary>
 
 - [x] mp3
-- [x] wav
+- [x] wav / wave
 - [x] flac
-- [x] ogg
+- [x] ogg / oga
 - [x] aac
 - [x] m4a
-- [ ] opus
-- [ ] wma
-- [ ] aiff
+- [x] wma
+- [x] aiff
+- [x] ac3
+- [x] mp2
+- [x] au
+- [x] caf
+- [x] opus
+- [x] weba
+- [x] mka
+- [x] m4r
+- [x] alac
+- [x] tta
 - [ ] alac
 - [ ] amr
-- [ ] ac3
 
 </details>
 
 <details>
 <summary><h3>Docs</h3></summary>
 
-- [ ] pdf
-- [ ] txt
-- [ ] md
-- [ ] rtf
-- [ ] doc
-- [ ] docx
-- [ ] html
-- [ ] epub
-- [ ] pptx
-- [ ] csv
-- [ ] odt
-- [ ] xls
+- [x] pdf
+- [x] txt / text
+- [x] md / markdown / mkd / mdown / markdn
+- [x] rtf
+- [x] docx
+- [x] html / htm
+- [x] epub / epub2 / epub3
+- [x] pptx
+- [x] fb2
+- [x] gfm
+- [x] tex / latex
+- [x] ms
+- [x] ctx
+- [x] dbk / docbook
+- [x] opml
+- [x] odt
+- [x] xls
+- [x] adoc / asciidoc / asc
 
 </details>
 
 <details>
 <summary><h3>Video</h3></summary>
 
-- [x] mp4
-- [x] mkv
+- [x] mp4 / m4v
+- [x] mkv / matroksa
 - [x] webm
 - [x] mov
 - [x] m4s
 - [x] ts (MPEG Transport stem)
 - [x] m3u8 (HLS)
+
 </details>
-3D Files:
+
+<details>
+<summary><h3>3D Files</h3></summary>
 
 - [ ] obj
 - [ ] fbx
@@ -129,6 +150,8 @@ form were Imagemagick, etc etc when we add pandoc and ffmpeg or smth
 - [ ] step
 - [ ] glb
 - [ ] blend
+
+</details>
 
 
 ## Frontend (Svelte)
