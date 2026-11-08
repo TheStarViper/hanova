@@ -1,1 +1,0 @@
-var e=`/assets/ffmpeg-core-CgUfceKH.wasm`;export{e as t};
