@@ -96,6 +96,16 @@ export class Viewport {
         case "s":
           world.islandEditTarget?.cycleSprite(-1);
           break;
+        // space
+        case " ":
+          world.islandEditTopic = world.islandEditTopic === "pos"
+            ? "spawn"
+            : "pos";
+          world.updateEditTarget();
+          break;
+        case "c":
+          world.islandEditTarget = null;
+          break;
       }
     });
 

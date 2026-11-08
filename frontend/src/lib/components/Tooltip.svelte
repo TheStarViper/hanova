@@ -24,8 +24,9 @@ $effect(() => {
     const target = world.islandEditTarget;
     title = `Editing ${target.name}`;
     blurb = `
-    X: ${target.pos.x} Y: ${target.pos.y} <br>
-    Sprite: ${target.islandSpriteIndex}
+    X: ${target.pos.x} Y: ${target.pos.y}<br>
+    Sprite: ${target.islandSpriteIndex}<br>
+    Topic: ${world.islandEditTopic}
     `;
 
     return;

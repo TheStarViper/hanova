@@ -53,6 +53,8 @@ export class World {
   skipMenu = $state(fromLocalStorage("skipMenu"));
   islandEditMode = $state(fromLocalStorage("islandEditMode"));
   islandEditTarget: IslandManager | null = $state(null);
+  /** I'm running out of names lol */
+  islandEditTopic: "pos" | "spawn" = $state("pos");
 
   constructor() {
     this.islands = [];
@@ -269,8 +271,17 @@ export class World {
     const clusterCenter =
       ISLAND_CLUSTER_CENTERS[this.islandEditTarget.mediaType];
 
-    this.islandEditTarget.localPos.x = Math.round(worldX - clusterCenter.x);
-    this.islandEditTarget.localPos.y = Math.round(worldY - clusterCenter.y);
+    if (this.islandEditTopic === "pos") {
+      this.islandEditTarget.localPos.x = Math.round(worldX - clusterCenter.x);
+      this.islandEditTarget.localPos.y = Math.round(worldY - clusterCenter.y);
+    } else if (this.islandEditTopic === "spawn") {
+      this.islandEditTarget.spawnOffset.x = Math.round(
+        worldX - clusterCenter.x - this.islandEditTarget.pos.x,
+      );
+      this.islandEditTarget.spawnOffset.y = Math.round(
+        worldY - clusterCenter.y - this.islandEditTarget.pos.y,
+      );
+    }
 
     // intentionally not awaited
     this.copyIslandData();
