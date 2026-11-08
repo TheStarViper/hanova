@@ -1,4 +1,5 @@
 import { ease, Pos } from "./utils.svelte";
+import { world } from "./world.svelte";
 
 const DRAG_SENSITIVITY = 1;
 const SCROLL_SENSITIVITY = 1.0015;
@@ -14,7 +15,7 @@ export class Viewport {
   zoom: number = $state(1);
 
   canDrag = $state(false);
-  userIsDragging = $state(false);
+  mouseDown = $state(false);
 
   mouseX = $state(0);
   mouseY = $state(0);
@@ -53,17 +54,17 @@ export class Viewport {
     window.addEventListener("pointerdown", (event) => {
       if (!this.canDrag) return;
 
-      this.userIsDragging = true;
+      this.mouseDown = true;
       this.#dragStartX = event.clientX;
       this.#dragStartY = event.clientY;
     });
-    window.addEventListener("pointerup", () => (this.userIsDragging = false));
+    window.addEventListener("pointerup", () => (this.mouseDown = false));
     window.addEventListener(
       "pointercancel",
-      () => (this.userIsDragging = false),
+      () => (this.mouseDown = false),
     );
     window.addEventListener("pointermove", (event) => {
-      if (!this.userIsDragging) return;
+      if (!this.mouseDown) return;
 
       const dragDeltaX = event.clientX - this.#dragStartX;
       const dragDeltaY = event.clientY - this.#dragStartY;
@@ -83,11 +84,36 @@ export class Viewport {
       if (newZoom > MIN_ZOOM && newZoom < MAX_ZOOM) {
         this.zoom = newZoom;
       }
+
+      world.updateEditTarget();
+    });
+
+    window.addEventListener("keypress", (event) => {
+      switch (event.key) {
+        case "w":
+          world.islandEditTarget?.cycleSprite(1);
+          break;
+        case "s":
+          world.islandEditTarget?.cycleSprite(-1);
+          break;
+        // space
+        case " ":
+          world.islandEditTopic = world.islandEditTopic === "pos"
+            ? "spawn"
+            : "pos";
+          world.updateEditTarget();
+          break;
+        case "c":
+          world.islandEditTarget = null;
+          break;
+      }
     });
 
     document.addEventListener("mousemove", (event) => {
       this.mouseX = event.clientX;
       this.mouseY = event.clientY;
+
+      world.updateEditTarget();
     });
   }
 

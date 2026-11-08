@@ -1,6 +1,7 @@
 {
   "extends": "$app/tsconfig",
   "compilerOptions": {
+    "checkJs": false,
     "rewriteRelativeImportExtensions": true,
     "sourceMap": true,
     "strict": true,

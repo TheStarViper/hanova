@@ -14,7 +14,7 @@ function togglePage(): void {
 
 $effect(() => {
   document.body.style.cursor = world.viewport.canDrag && page === "map"
-    ? world.viewport.userIsDragging
+    ? world.viewport.mouseDown
       ? "grabbing"
       : "grab"
     : "unset";

@@ -7,7 +7,11 @@ import { BoatManager, SAIL_DURATION } from "./components/Boat.svelte";
 import { IslandManager } from "./components/Island.svelte";
 import { TooltipManager } from "./components/Tooltip.svelte";
 import { TreasureManager } from "./components/Treasure.svelte";
-import { ISLAND_DATA } from "./data/islandPlacements";
+import {
+  ISLAND_CLUSTER_CENTERS,
+  ISLAND_DATA,
+  type IslandDatum,
+} from "./data/islandPlacements";
 import { FileManager } from "./fileManager.svelte";
 import { Pos } from "./utils.svelte";
 import { Viewport } from "./viewport.svelte";
@@ -30,9 +34,11 @@ export class World {
   viewport = new Viewport();
   boat = new BoatManager();
   banner = new BannerManager();
-  islands = ISLAND_DATA.map((datum) => new IslandManager(datum));
   treasure = new TreasureManager();
   tooltip = new TooltipManager();
+
+  islands: IslandManager[];
+  formatToIsland: Record<Format, IslandManager>;
 
   curves: CubicBezier[] = $state([]);
   titleCornered: boolean = $state(false);
@@ -46,17 +52,25 @@ export class World {
   devOverlay = $state(fromLocalStorage("devOverlay"));
   skipMenu = $state(fromLocalStorage("skipMenu"));
   islandEditMode = $state(fromLocalStorage("islandEditMode"));
+  islandEditTarget: IslandManager | null = $state(null);
+  /** I'm running out of names lol */
+  islandEditTopic: "pos" | "spawn" = $state("pos");
 
   constructor() {
-  }
+    this.islands = [];
+    // @ts-expect-error
+    this.formatToIsland = {};
 
-  formatToIsland = this.islands.reduce(
-    (acc, island) => {
-      acc[island.name] = island;
-      return acc;
-    },
-    {} as Record<Format, IslandManager>,
-  );
+    for (const format of Object.keys(ISLAND_DATA) as Format[]) {
+      const datum = ISLAND_DATA[format];
+      if (!datum) continue;
+
+      const island = new IslandManager(format as Format, datum);
+
+      this.islands.push(island);
+      this.formatToIsland[format] = island;
+    }
+  }
 
   init() {
     this.viewport.init();
@@ -195,7 +209,7 @@ export class World {
     setTimeout(() => this.reset(), 2000);
 
     this.viewport.canDrag = false;
-    this.viewport.userIsDragging = false;
+    this.viewport.mouseDown = false;
   }
 
   islandClickHandler(targetIsland: IslandManager) {
@@ -238,6 +252,62 @@ export class World {
       duration,
       () => this.boatArriveHandler(),
     );
+  }
+
+  #clipboardDebounceID: ReturnType<typeof setTimeout> | undefined;
+  updateEditTarget() {
+    if (this.islandEditTarget === null) return;
+
+    const mouseX = this.viewport.mouseX - this.viewport.min.x;
+    const mouseY = this.viewport.mouseY - this.viewport.min.y;
+
+    const worldX = (mouseX - this.viewport.center.x * (1 - this.viewport.zoom))
+        / this.viewport.zoom
+      - this.viewport.offset.x;
+
+    const worldY = (mouseY - this.viewport.center.y * (1 - this.viewport.zoom))
+        / this.viewport.zoom
+      - this.viewport.offset.y;
+
+    const clusterCenter =
+      ISLAND_CLUSTER_CENTERS[this.islandEditTarget.mediaType];
+
+    if (this.islandEditTopic === "pos") {
+      this.islandEditTarget.localPos.x = Math.round(worldX - clusterCenter.x);
+      this.islandEditTarget.localPos.y = Math.round(worldY - clusterCenter.y);
+    } else if (this.islandEditTopic === "spawn") {
+      this.islandEditTarget.spawnOffset.x = Math.round(
+        worldX - clusterCenter.x - this.islandEditTarget.pos.x,
+      );
+      this.islandEditTarget.spawnOffset.y = Math.round(
+        worldY - clusterCenter.y - this.islandEditTarget.pos.y,
+      );
+    }
+
+    clearTimeout(this.#clipboardDebounceID);
+    this.#clipboardDebounceID = setTimeout(() => this.copyIslandData(), 500);
+  }
+
+  exportIslandData(): typeof ISLAND_DATA {
+    const entries: [Format, IslandDatum][] = this.islands.map((
+      island,
+    ) => [island.name, island.exportToDatum()]);
+    return Object.fromEntries(entries);
+  }
+
+  async copyIslandData(): Promise<void> {
+    const data = this.exportIslandData();
+    const raw = JSON.stringify(data, null, 2);
+
+    // JSON style, with quoted keys and no trailing commas, looks kinda bad, so
+    // this processes the text to make it nicer.
+    const formatted = raw
+      // Remove double quotes around object keys
+      .replace(/"([a-zA-Z0-9_]+)":/g, "$1:")
+      // Add trailing commas before newlines on property lines
+      .replace(/([0-9"'])\n/g, "$1,\n");
+
+    await navigator.clipboard.writeText(formatted);
   }
 }
 

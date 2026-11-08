@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createconverter } from "./converter.mjs";
 import { createConvert } from "./create-convert.mjs";
 import {

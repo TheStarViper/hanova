@@ -160,6 +160,85 @@ export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
     url:
       "https://en.wikipedia.org/wiki/MP4_file_format#Filename_extensions:~:text=Audio%2Donly%20MPEG%2D4%20files%20generally%20have%20a%20%2Em4a%20%28MPEG%2D4%20Audio%29%20extension%2E",
   },
+  opus: {
+    title: "Opus",
+    blurb:
+      "The best audio format. The best quality and general-purpose compression of any extant audio codec, extremely fast encoding and decoding, and good compatibility.",
+    url: "https://en.wikipedia.org/wiki/Opus_(audio_format)",
+  },
+  // Ffmpeg audio
+  aiff: {
+    title: "AIFF",
+    blurb:
+      "Uncompressed audio format developed by Apple. Also known as Audio Interchange File Format.",
+    url: "https://en.wikipedia.org/wiki/Audio_Interchange_File_Format",
+  },
+  au: {
+    title: "Au",
+    blurb:
+      "Lossy audio format developed by Sun Microsystems. Used in legacy Unix system audio. Also known as Sun Audio.",
+    url: "https://en.wikipedia.org/wiki/Au_file_format",
+  },
+  caf: {
+    title: "CAF",
+    blurb:
+      "Container audio format developed by Apple. Also known as Core Audio Format.",
+    url: "https://en.wikipedia.org/wiki/Core_Audio_Format",
+  },
+  ac3: {
+    title: "AC3",
+    blurb:
+      "Lossy audio format developed by Dolby, with many channels and surround sound. Used in DVDs and Blu-ray. Also known as Audio Codec 3..",
+    url: "https://en.wikipedia.org/wiki/Dolby_Digital#Dolby_AC-3",
+  },
+  mp2: {
+    title: "MP2",
+    blurb:
+      "Lossy audio format which is the predecessor of MP3. Commonly used in radio broadcasting. Also known as MPEG-1 Audio Layer II.",
+    url: "https://en.wikipedia.org/wiki/MPEG-1_Audio_Layer_II",
+  },
+  wma: {
+    title: "WMA",
+    blurb:
+      "Lossy audio format developed by Microsoft to compete with MP3. Also known as Windows Media Audio.",
+    url: "https://en.wikipedia.org/wiki/Windows_Media_Audio",
+  },
+  weba: {
+    title: "WebA",
+    blurb:
+      "Container audio format. Basically a WebM file but without the video. Also known as WebM Audio.",
+    url: "https://en.wikipedia.org/wiki/WebM",
+  },
+  mka: {
+    title: "MKA",
+    blurb:
+      "Container audio format. Basically an MKV file but without the video. Also known as Matroska Audio.",
+    url: "https://en.wikipedia.org/wiki/Matroska",
+  },
+  m4r: {
+    title: "M4R",
+    blurb:
+      "Lossy audio format using AAC codec. Used for ringtones on IOS. Also known as MPEG-4 Ringtone",
+    url:
+      "https://en.wikipedia.org/wiki/MP4_file_format#:~:text=The%20Apple%20iPhone%20uses%20MPEG%2D4%20audio%20for%20its%20ringtones%20but%20uses%20the%20%2Em4r%20extension%20rather%20than%20the%20%2Em4a%20extension",
+  },
+  alac: {
+    title: "ALAC",
+    blurb:
+      "Lossless audio format developed by Apple. Also known as Apple Lossless Audio Codec.",
+    url: "https://en.wikipedia.org/wiki/Apple_Lossless_Audio_Codec",
+  },
+  tta: {
+    title: "TTA",
+    blurb: "Lossless audio format. Also known as The True Audio.",
+    url: "https://tta.sourceforge.net/en/true-audio-codec-tta/",
+  },
+  amr: {
+    title: "AMR",
+    blurb:
+      "Lossy audio format designed specifically for speech. Also known as Adaptive Multi-Rate Audio Codec.",
+    url: "https://en.wikipedia.org/wiki/Adaptive_Multi-Rate_audio_codec",
+  },
 
   // Video
   mp4: {

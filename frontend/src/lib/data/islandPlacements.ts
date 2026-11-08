@@ -3,10 +3,11 @@ import { Pos } from "#lib/utils.svelte.js";
 import type { IslandSpriteIndex } from "./islandSprites";
 
 export interface IslandDatum {
-  name: Format;
-  pos: Pos;
+  x: number;
+  y: number;
   islandSpriteIndex: IslandSpriteIndex;
-  spawnOffset: Pos;
+  spawnOffsetX: number;
+  spawnOffsetY: number;
 }
 
 export const ISLAND_CLUSTER_CENTERS: Record<MediaType, Pos> = {
@@ -17,166 +18,187 @@ export const ISLAND_CLUSTER_CENTERS: Record<MediaType, Pos> = {
   model: new Pos(-3000, 3000),
 };
 
-export const ISLAND_DATA: IslandDatum[] = [
-  // Image
-  {
-    name: "bmp",
-    pos: new Pos(0, 500),
+export const ISLAND_DATA: Partial<Record<Format, IslandDatum>> = {
+  bmp: {
     islandSpriteIndex: 18,
-    spawnOffset: new Pos(0, -160),
+    x: 0,
+    y: 500,
+    spawnOffsetX: 0,
+    spawnOffsetY: -160,
   },
-  {
-    name: "gif",
-    pos: new Pos(0, 800),
+  gif: {
     islandSpriteIndex: 6,
-    spawnOffset: new Pos(50, 100),
+    x: 0,
+    y: 800,
+    spawnOffsetX: 50,
+    spawnOffsetY: 100,
   },
-  {
-    name: "jpg",
-    pos: new Pos(400, 550),
+  jpg: {
     islandSpriteIndex: 16,
-    spawnOffset: new Pos(200, 20),
+    x: 400,
+    y: 550,
+    spawnOffsetX: 200,
+    spawnOffsetY: 20,
   },
-  {
-    name: "jxl",
-    pos: new Pos(600, 880),
+  jxl: {
     islandSpriteIndex: 8,
-    spawnOffset: new Pos(-100, 100),
+    x: 600,
+    y: 880,
+    spawnOffsetX: -100,
+    spawnOffsetY: 100,
   },
-  {
-    name: "png",
-    pos: new Pos(200, 100),
+  png: {
     islandSpriteIndex: 17,
-    spawnOffset: new Pos(250, -100),
+    x: 200,
+    y: 100,
+    spawnOffsetX: 250,
+    spawnOffsetY: -100,
   },
-  {
-    name: "webp",
-    pos: new Pos(850, 240),
+  webp: {
     islandSpriteIndex: 15,
-    spawnOffset: new Pos(160, -120),
+    x: 849,
+    y: 240,
+    spawnOffsetX: 160,
+    spawnOffsetY: -120,
   },
-  {
-    name: "avif",
-    pos: new Pos(1300, -200),
+  avif: {
     islandSpriteIndex: 14,
-    spawnOffset: new Pos(-130, 100),
+    x: 1300,
+    y: -200,
+    spawnOffsetX: -130,
+    spawnOffsetY: 100,
   },
-  {
-    name: "tiff",
-    pos: new Pos(900, -150),
+  tiff: {
     islandSpriteIndex: 19,
-    spawnOffset: new Pos(90, 170),
+    x: 900,
+    y: -150,
+    spawnOffsetX: 90,
+    spawnOffsetY: 170,
   },
-  {
-    name: "eps",
-    pos: new Pos(1500, 150),
+  eps: {
     islandSpriteIndex: 11,
-    spawnOffset: new Pos(-40, 200),
+    x: 1500,
+    y: 150,
+    spawnOffsetX: -40,
+    spawnOffsetY: 200,
   },
-  {
-    name: "exr",
-    pos: new Pos(1050, -500),
+  exr: {
     islandSpriteIndex: 15,
-    spawnOffset: new Pos(-200, 0),
+    x: 1050,
+    y: -500,
+    spawnOffsetX: -200,
+    spawnOffsetY: 0,
   },
-  {
-    name: "tga",
-    pos: new Pos(1370, 570),
+  tga: {
     islandSpriteIndex: 18,
-    spawnOffset: new Pos(0, -150),
+    x: 1370,
+    y: 570,
+    spawnOffsetX: 0,
+    spawnOffsetY: -150,
   },
-  {
-    name: "hdr",
-    pos: new Pos(1650, 510),
+  hdr: {
     islandSpriteIndex: 14,
-    spawnOffset: new Pos(-170, -80),
+    x: 1650,
+    y: 510,
+    spawnOffsetX: -170,
+    spawnOffsetY: -80,
   },
-  {
-    name: "svg",
-    pos: new Pos(300, -250),
+  svg: {
     islandSpriteIndex: 8,
-    spawnOffset: new Pos(100, 100),
+    x: 300,
+    y: -250,
+    spawnOffsetX: 100,
+    spawnOffsetY: 100,
   },
-  {
-    name: "ico",
-    pos: new Pos(550, -350),
+  ico: {
     islandSpriteIndex: 18,
-    spawnOffset: new Pos(150, 0),
+    x: 550,
+    y: -350,
+    spawnOffsetX: 150,
+    spawnOffsetY: 0,
   },
-  {
-    name: "psd",
-    pos: new Pos(1000, 1000),
+  psd: {
     islandSpriteIndex: 9,
-    spawnOffset: new Pos(-200, 30),
+    x: 1000,
+    y: 1000,
+    spawnOffsetX: -200,
+    spawnOffsetY: 30,
   },
-
-  // Audio
-  {
-    name: "mp3",
-    pos: new Pos(0, 0),
+  mp3: {
     islandSpriteIndex: 16,
-    spawnOffset: new Pos(-200, 30),
+    x: 0,
+    y: 0,
+    spawnOffsetX: -200,
+    spawnOffsetY: 30,
   },
-  {
-    name: "wav",
-    pos: new Pos(-500, 0),
+  wav: {
     islandSpriteIndex: 10,
-    spawnOffset: new Pos(0, 240),
+    x: -500,
+    y: 0,
+    spawnOffsetX: 0,
+    spawnOffsetY: 240,
   },
-  {
-    name: "ogg",
-    pos: new Pos(-200, -400),
+  ogg: {
     islandSpriteIndex: 15,
-    spawnOffset: new Pos(-80, 90),
+    x: -200,
+    y: -400,
+    spawnOffsetX: -80,
+    spawnOffsetY: 90,
   },
-  {
-    name: "flac",
-    pos: new Pos(500, -400),
+  flac: {
     islandSpriteIndex: 10,
-    spawnOffset: new Pos(-180, -50),
+    x: 500,
+    y: -400,
+    spawnOffsetX: -180,
+    spawnOffsetY: -50,
   },
-  {
-    name: "aac",
-    pos: new Pos(-700, -300),
+  aac: {
     islandSpriteIndex: 18,
-    spawnOffset: new Pos(0, -150),
+    x: -700,
+    y: -300,
+    spawnOffsetX: 0,
+    spawnOffsetY: -150,
   },
-  {
-    name: "m4a",
-    pos: new Pos(-800, -480),
+  m4a: {
     islandSpriteIndex: 6,
-    spawnOffset: new Pos(100, 0),
+    x: -800,
+    y: -480,
+    spawnOffsetX: 100,
+    spawnOffsetY: 0,
   },
-
-  // Video
-  {
-    name: "mp4",
-    pos: new Pos(0, 0),
+  mp4: {
     islandSpriteIndex: 17,
-    spawnOffset: new Pos(-200, 30),
+    x: 0,
+    y: 0,
+    spawnOffsetX: -200,
+    spawnOffsetY: 30,
   },
-  {
-    name: "mov",
-    pos: new Pos(-430, 500),
+  mov: {
     islandSpriteIndex: 14,
-    spawnOffset: new Pos(-60, -180),
+    x: -430,
+    y: 500,
+    spawnOffsetX: -60,
+    spawnOffsetY: -180,
   },
-  {
-    name: "webm",
-    pos: new Pos(100, 600),
+  webm: {
     islandSpriteIndex: 15,
-    spawnOffset: new Pos(-40, -140),
+    x: 100,
+    y: 600,
+    spawnOffsetX: -40,
+    spawnOffsetY: -140,
   },
-  {
-    name: "mkv",
-    pos: new Pos(-500, -200),
+  mkv: {
     islandSpriteIndex: 19,
-    spawnOffset: new Pos(130, 140),
+    x: -500,
+    y: -200,
+    spawnOffsetX: 130,
+    spawnOffsetY: 140,
   },
-  {
-    name: "ts",
-    pos: new Pos(500, 300),
+  ts: {
     islandSpriteIndex: 18,
-    spawnOffset: new Pos(-100, 100),
+    x: 500,
+    y: 300,
+    spawnOffsetX: -100,
+    spawnOffsetY: 100,
   },
-];
+};

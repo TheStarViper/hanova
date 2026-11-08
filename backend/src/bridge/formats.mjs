@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 export const MODEL_FORMATS = /** @type {const} */ ({
   blend: {read: true, mime:"application/octet-stream"},
   glb: {read:true, write: "glb2", mime: "model/gltf-binary"},
