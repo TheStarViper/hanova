@@ -254,6 +254,7 @@ export class World {
     );
   }
 
+  #clipboardDebounceID: ReturnType<typeof setTimeout> | undefined;
   updateEditTarget() {
     if (this.islandEditTarget === null) return;
 
@@ -283,8 +284,8 @@ export class World {
       );
     }
 
-    // intentionally not awaited
-    this.copyIslandData();
+    clearTimeout(this.#clipboardDebounceID);
+    this.#clipboardDebounceID = setTimeout(() => this.copyIslandData(), 500);
   }
 
   exportIslandData(): typeof ISLAND_DATA {
