@@ -252,3 +252,64 @@ export async function thumbnail_at(
     throw to_convert_error(error, ErrorCode.NativeFailure);
   }
 }
+
+async function createMediabunnyWaveformVideo(audiobytes,outputBufferTarget){
+  const input = new mediabunny.Input ({
+    source: new mediabunny.BufferSource(audiobytes),
+    formats: mediabunny.ALL_FORMATS,
+  });
+
+  const duration = await input.computeDuration();
+  const audioTrack = await input.getPrimaryAudioTrack();
+
+  const width = 1280; //FIX make so you cna change
+  const height = 720; //FIX make so you can change
+  const fps = 30; //FIX make so you can change
+  const canvas = new mediabunny.OffscreenCanvas(width,height);
+  const ctx = canvas.getContext('2d');
+
+  const videoSource = new mediabunny.CanvasSource(
+    canvas,
+    {codec: "avc", //H.264
+      bitrate: 2e6,
+    });
+  
+  const output = new mediabunny.Output({
+    format: new mediabunny.Mp4OutputFormat(),
+    target: outputBufferTarget,
+  });
+
+  output.addVideoTrack(videoSource,{frameRate:fps});
+
+  if (audioTrack){
+    const audioSink = new mediabunny.EncodedPacketSink(audioTrack);
+    const audioSource = new mediabunny.EncodedAudioPacketSource(audioTrack.codec);
+    output.addAudioTrack(audioSource);
+
+    (async () => {
+      for await (const packet of audioSink.packets()){
+        await audioSource.add(packet);
+      }
+      audioSource.close();
+    })();
+  }
+
+  await output.start();
+
+  const totalFrames = Math.floor(duration*fps);
+  for (let i = 0;i<totalFrames;i++){
+    const currentTime = i/fps;
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0,0,width,height);
+
+    ctx.fillStyle = '#00ffcc';
+    ctx.fillRect(width / 2 - 50, height / 2 - 10, 100, 20); // Placeholder bar
+
+    const frameDuration = 1/fps;
+    await videoSource.add(currentTime,frameDuration);
+  }
+
+  videoSource.close();
+  await output.finalize();
+  return output.target.buffer;
+}
