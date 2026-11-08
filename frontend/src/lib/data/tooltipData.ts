@@ -358,31 +358,31 @@ export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
   },
   textile: {
     title: "Textile",
-    blurb: "Markup language that was the precursor to Markdown.",
+    blurb: "Markup format that was a precursor to Markdown.",
     url: "https://textile-lang.com/",
   },
   wiki: {
     title: "MediaWiki",
-    blurb: "Wiki markup language used by Wikipedia for writing wiki articles.",
+    blurb: "Wiki markup format used by Wikipedia for writing wiki articles.",
     url: "https://www.mediawiki.org/wiki/Help:Formatting",
   },
   dokuwiki: {
     title: "DokuWiki",
     blurb:
-      "Wiki markup language similar to MediaWiki, but simpler and easier to use.",
+      "Wiki markup format similar to MediaWiki, but simpler and easier to use.",
     url: "https://en.wikipedia.org/wiki/DokuWiki",
   },
   jira: {
     title: "Jira",
     blurb:
-      "Wiki markup language formerly used by Jira before they (mostly) switched Markdown. ALso known as Confluence Wiki Markup.",
+      "Wiki markup format formerly used by Jira before they (mostly) switched Markdown. ALso known as Confluence Wiki Markup.",
     url:
       "https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html",
   },
   muse: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "Muse",
+    blurb: "Markup format used by Emacs Muse.",
+    url: "https://www.gnu.org/software/emacs-muse/",
   },
   adoc: {
     title: "Adoc",
@@ -391,77 +391,87 @@ export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
     url: "https://en.wikipedia.org/wiki/AsciiDoc",
   },
   xwiki: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "XWiki",
+    blurb: "Wiki markup format used by the XWiki enterprise wiki software.",
+    url: "https://en.wikipedia.org/wiki/XWiki",
   },
   zimwiki: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "Zim",
+    blurb:
+      "Wiki markup format used by the Zim personal knowledge base software.",
+    url: "https://en.wikipedia.org/wiki/Zim_(software)",
   },
   tikiwiki: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "TikiWiki",
+    blurb: "Wiki markup format used by the Tiki Wiki CMS Groupware software.",
+    url: "https://en.wikipedia.org/wiki/Tiki_Wiki_CMS_Groupware",
   },
   twiki: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "TWiki",
+    blurb: "Wiki markup format used by the Twiki wiki software.",
+    url: "https://en.wikipedia.org/wiki/TWiki",
   },
   creole: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "Creole",
+    blurb:
+      "Wiki markup format created by combining the syntax of various other wiki markup formats.",
+    url: "https://en.wikipedia.org/wiki/Creole_(markup)",
   },
   t2t: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "T2T",
+    blurb:
+      "Markup format that was a precursor to Markdown. Also known as txt2tags.",
+    url: "https://en.wikipedia.org/wiki/Txt2tags",
   },
   dbk: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "DBK",
+    blurb:
+      "Markup format used for technical documentation. Also known as DocBook.",
+    url: "https://en.wikipedia.org/wiki/DocBook",
   },
   jats: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "JATS",
+    blurb:
+      "Markup format used for scientific literature. Also known as Journal Article Tag Suite.",
+    url: "https://en.wikipedia.org/wiki/Journal_Article_Tag_Suite",
   },
   tei: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "TEI",
+    blurb:
+      "Markup format used in academia to encode semantics and grammar. Also known as Text Encoding Intiative.",
+    url: "https://en.wikipedia.org/wiki/Text_Encoding_Initiative",
   },
   opml: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "OPML",
+    blurb:
+      "Outline format used for mind maps and RSS feed lists. ALso known as Outline Processor Markup Language.",
+    url: "https://en.wikipedia.org/wiki/OPML",
   },
   ipynb: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "IPYNB",
+    blurb:
+      "Notebook format that can contain Python and Markdown cells. Also known as Jupyter Notebook.",
+    url: "https://en.wikipedia.org/wiki/Project_Jupyter#Jupyter_Notebook",
   },
   csljson: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "CSL-JSON",
+    blurb:
+      "Citation format used for bibliographies. Also knwon as Citation Style Language JSON.",
+    url: "https://citationstyles.org/",
   },
   ris: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "RIS",
+    blurb:
+      "Citation format used for bibliographies. Developed by Research Information Systems.",
+    url: "https://en.wikipedia.org/wiki/RIS_(file_format)",
   },
   endnote: {
-    title: "",
-    blurb: "",
-    url: "",
+    title: "EndNote",
+    blurb: "Citation format used for bibliographies.",
+    url: "https://en.wikipedia.org/wiki/EndNote",
   },
   txt: {
-    title: "Txt",
+    title: "TXT",
     blurb: "Plain text format. It's just text lol.",
     url: "https://en.wikipedia.org/wiki/Text_file",
   },
