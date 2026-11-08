@@ -4,7 +4,11 @@ import {
   ISLAND_CLUSTER_CENTERS,
   type IslandDatum,
 } from "#lib/data/islandPlacements.js";
-import { ISLAND_SPRITES } from "#lib/data/islandSprites.js";
+import {
+  ISLAND_SPRITES,
+  type IslandSprite,
+  type IslandSpriteIndex,
+} from "#lib/data/islandSprites.js";
 import { isFormatCompatible } from "#lib/fileManager.svelte.js";
 import { Pos } from "#lib/utils.svelte.js";
 import { world } from "#lib/world.svelte.js";
@@ -15,6 +19,9 @@ export class IslandManager {
   pos: Pos;
   spawnOffset: Pos;
   treasurePos: Pos;
+
+  #islandSpriteIndex: IslandSpriteIndex;
+  sprite: IslandSprite;
 
   /** doesnt consider cluster offset */
   localPos: Pos;
@@ -28,12 +35,17 @@ export class IslandManager {
     this.name = name;
     this.datum = datum;
     this.localPos = new Pos(this.datum.x, this.datum.y);
+    this.#islandSpriteIndex = this.datum.islandSpriteIndex;
+
     this.pos = $derived(
       Pos.add(this.localPos, ISLAND_CLUSTER_CENTERS[this.mediaType]),
     );
     this.spawnOffset = new Pos(
       this.datum.spawnOffsetX,
       this.datum.spawnOffsetY,
+    );
+    this.sprite = $derived(
+      ISLAND_SPRITES[this.#islandSpriteIndex],
     );
     this.treasurePos = $derived(
       Pos.add(this.pos, this.sprite.treasureOffset),
@@ -68,13 +80,9 @@ export class IslandManager {
     return FORMAT_TO_MEDIATYPE[this.name];
   }
 
-  get sprite() {
-    return ISLAND_SPRITES[this.datum.islandSpriteIndex];
-  }
-
   exportToDatum(): IslandDatum {
     return {
-      islandSpriteIndex: this.datum.islandSpriteIndex,
+      islandSpriteIndex: this.#islandSpriteIndex,
       x: this.localPos.x,
       y: this.localPos.y,
       spawnOffsetX: this.spawnOffset.x,
