@@ -2,57 +2,104 @@
 import { type Format, FORMAT_TO_MEDIATYPE } from "#lib/backend.js";
 import {
   ISLAND_CLUSTER_CENTERS,
-  ISLAND_DATA,
   type IslandDatum,
 } from "#lib/data/islandPlacements.js";
-import { ISLAND_SPRITES } from "#lib/data/islandSprites.js";
+import {
+  ISLAND_SPRITES,
+  type IslandSprite,
+  type IslandSpriteIndex,
+} from "#lib/data/islandSprites.js";
 import { isFormatCompatible } from "#lib/fileManager.svelte.js";
 import { Pos } from "#lib/utils.svelte.js";
 import { world } from "#lib/world.svelte.js";
 
 export class IslandManager {
+  name: Format;
   datum: IslandDatum;
   pos: Pos;
+  spawnOffset: Pos;
+  treasurePos: Pos;
 
-  isCompatible = $derived(
-    isFormatCompatible(world.fileManager.file?.name, this.name),
-  );
+  islandSpriteIndex: IslandSpriteIndex;
+  sprite: IslandSprite;
+
+  /** doesnt consider cluster offset */
+  localPos: Pos;
+  /** compatibility with the file manager's file */
+  incompatible: boolean;
 
   constructor(
+    name: Format,
     datum: IslandDatum,
   ) {
+    this.name = name;
     this.datum = datum;
+    this.localPos = new Pos(this.datum.x, this.datum.y);
+    this.islandSpriteIndex = $state(this.datum.islandSpriteIndex);
+
     this.pos = $derived(
-      Pos.add(this.datum.pos, ISLAND_CLUSTER_CENTERS[this.mediaType]),
+      Pos.add(this.localPos, ISLAND_CLUSTER_CENTERS[this.mediaType]),
     );
-  }
-
-  callBoat() {
-    world.islandClickHandler(this);
-  }
-
-  get name() {
-    return this.datum.name;
-  }
-
-  get mediaType() {
-    return FORMAT_TO_MEDIATYPE[this.datum.name];
-  }
-
-  get sprite() {
-    return ISLAND_SPRITES[this.datum.islandSpriteIndex];
-  }
-
-  get spawnOffset() {
-    return this.datum.spawnOffset;
-  }
-
-  get treasurePos() {
-    return Pos.add(this.pos, this.sprite.treasureOffset);
+    this.spawnOffset = new Pos(
+      this.datum.spawnOffsetX,
+      this.datum.spawnOffsetY,
+    );
+    this.sprite = $derived(
+      ISLAND_SPRITES[this.islandSpriteIndex],
+    );
+    this.treasurePos = $derived(
+      Pos.add(this.pos, this.sprite.treasureOffset),
+    );
+    this.incompatible = $derived(
+      !isFormatCompatible(world.fileManager.file?.name, this.name),
+    );
   }
 
   isInside(point: Pos): boolean {
     return this.sprite.bound.isInside(Pos.sub(point, this.pos));
+  }
+
+  handleClick() {
+    if (this.incompatible) return;
+
+    if (world.islandEditMode) {
+      world.islandEditTarget = world.islandEditTarget === this ? null : this;
+      return;
+    }
+
+    setTimeout(() => {
+      // if the user is still holding the mouse down after 100ms, they're
+      // probably trying to drag, not click
+      if (world.viewport.mouseDown) return;
+
+      world.islandClickHandler(this);
+    }, 100);
+  }
+
+  get mediaType() {
+    return FORMAT_TO_MEDIATYPE[this.name];
+  }
+
+  cycleSprite(delta: number) {
+    const keys = Object.keys(ISLAND_SPRITES).map(Number) as IslandSpriteIndex[];
+
+    const currentIdx = keys.indexOf(this.islandSpriteIndex);
+    let nextIdx = (currentIdx + delta) % keys.length;
+    if (nextIdx < 0) nextIdx += keys.length;
+
+    this.islandSpriteIndex = keys[nextIdx];
+
+    world.updateEditTarget();
+  }
+
+  exportToDatum(): IslandDatum {
+    return {
+      islandSpriteIndex: this.islandSpriteIndex,
+      x: this.localPos.x,
+      y: this.localPos.y,
+      spawnOffsetX: this.spawnOffset.x,
+      spawnOffsetY: this.spawnOffset.y,
+    };
   }
 }
 
@@ -86,6 +133,7 @@ interface Props {
 
 let { me }: Props = $props();
 
+const EDIT_TARGET_COLOR = "black";
 const BORDER_COLOR_MAPPING: Record<MediaType, string> = {
   image: "#ffc067",
   audio: "#82ff66",
@@ -99,11 +147,13 @@ let allowHover = $derived(world.banner.hide);
 let hovered: boolean = $state(false);
 let shadowOpacity = $derived(hovered && allowHover ? 1 : 0.7);
 let borderColor = $derived(
-  hovered && allowHover
+  world.islandEditTarget === me
+    ? EDIT_TARGET_COLOR
+    : hovered && allowHover
     ? BORDER_COLOR_MAPPING[me.mediaType]
     : undefined,
 );
-let cursor = $derived(me.isCompatible ? undefined : "not-allowed");
+let cursor = $derived(me.incompatible ? "not-allowed" : undefined);
 
 let processedSvg: string = $derived.by(() => {
   let svg = me.sprite.svg;
@@ -131,13 +181,7 @@ $effect(() => {
   borderWidth={2}
   handlers={{
     click: allowHover
-      ? me.isCompatible
-        ? () => {
-          setTimeout(() => {
-            if (!world.viewport.userIsDragging) me.callBoat();
-          }, 100);
-        }
-        : () => {}
+      ? () => me.handleClick()
       : undefined,
     hover: () => (hovered = true),
     unhover: () => (hovered = false),

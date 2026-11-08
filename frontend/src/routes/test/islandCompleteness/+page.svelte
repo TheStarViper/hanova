@@ -35,7 +35,7 @@ const makeRow = (index: number): (Cell | undefined)[] =>
     const format = formats[index];
     if (format === undefined) return undefined;
 
-    const hasIsland = ISLAND_DATA.some((i) => i.name === format);
+    const hasIsland = ISLAND_DATA[format] !== null;
 
     totalCounts[mediaType]++;
     if (hasIsland) hasIslandCounts[mediaType]++;

@@ -17,27 +17,39 @@ let me = world.tooltip;
 
 let title = $state("");
 let blurb = $state("");
-let compatible = $state(false);
+let incompatible = $state(false);
 
 $effect(() => {
+  if (world.islandEditTarget !== null) {
+    const target = world.islandEditTarget;
+    title = `Editing ${target.name}`;
+    blurb = `
+    X: ${target.pos.x} Y: ${target.pos.y}<br>
+    Sprite: ${target.islandSpriteIndex}<br>
+    Topic: ${world.islandEditTopic}
+    `;
+
+    return;
+  }
+
   if (me.target === null) return;
 
   const datum = TOOLTIP_DATA[me.target];
 
   title = datum.title;
   blurb = datum.blurb;
-  compatible = me.island?.isCompatible ?? true;
+  incompatible = me.island?.incompatible ?? false;
 });
 </script>
 
 <div
-  class={me.target === null ? "" : "show"}
+  class={me.target === null && world.islandEditTarget === null ? "" : "show"}
   style:top="{world.viewport.mouseY}px"
   style:left="{world.viewport.mouseX}px"
 >
   <h2>{title}</h2>
   <p>{@html blurb}</p>
-  {#if !compatible}
+  {#if incompatible}
     <h3>
       Can't convert: {
         world.fileManager.getInputFormatName(world.fileManager.file?.name ?? "")
