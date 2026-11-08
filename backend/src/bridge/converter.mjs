@@ -9,6 +9,9 @@ import {
   THREE_MODEL_OUTPUTS, FFMPEG_AUDIO, MEDIA_INFO, ALIASES, DOMAIN
 } from "./formats.mjs";
 import { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detector.mjs";
+import { has_media_options, unwrap, use } from "./utils.js";
+import { createSearchPath } from "./pathfinder.js";
+import { createDetector } from "./detector-wrapper.js";
 
 export {
   EVERYFORMAT, IMAGE_FORMATS, VIDEO_FORMATS, AUDIO_FORMATS,
@@ -134,6 +137,7 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     }
   }
 
+  //assimp js
   if (models){
     const model_step = (from,to) => (bytes,_q,options)=>
       models.convert_model(bytes,to,{...options,from}); //FIX make actual function first
@@ -144,22 +148,15 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     }
   }
 
+  //threejs
   if (three){
     for (const to of THREE_MODEL_OUTPUTS){
       register("glb",to,(bytes,_q,options)=>three.export_model(bytes,to,options),2);
     }
   }
   
-  async function detect(bytes) {
-    let format = "unknown";
-    if (media) {format = detect_media_format(bytes);}
-    if (format ==="unknown"&&docs){format = detect_document_format(bytes);}
-    if (format ==="unknown") {format = detect_svg(bytes);}
-    if (format ==="unknown") {format = detect_model_format(bytes);}
-    if (format ==="unknown"&&core){format = (await use(core)).validate_file_format(bytes);}
-    if (format ==="unknown"&&magick){format = await magick.detect_format(bytes);}
-    return ALIASES[format] ?? format;
-  }
+  const search_path = createSearchPath(table,N,EVERYFORMAT);
+  const detect = createDetector({media,docs,core,magick});
 
   async function convert_universal(
     target_format,
@@ -287,57 +284,7 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     convert_audio,
     convert_document,
     convert_model,
+    search_path,
     capabilities,
-  };
-}
-
-
-export function createConvert(
-  { image, imageFormats = [], 
-    media, mediaFormats = [],
-    doc,docFormats =  [],
-    model,modelFormats=[],
-    maxBytes } = {},
-) {
-  return async function convert(bytes, target, options = {}) {
-    try {
-      if (!(bytes instanceof Uint8Array)) {
-        throw new ConvertError(
-          ErrorCode.UnsupportedInput,
-          "Expected file as Uint8Array",
-        );
-      }
-      if (bytes.length === 0) {
-        throw new ConvertError(ErrorCode.CorruptInput, "file is empty");
-      }
-      const limit = options.maxBytes ?? maxBytes;
-      if (limit && bytes.length > limit) {
-        throw new ConvertError(
-          ErrorCode.TooLarge,
-          `File is ${bytes.length} bytes, limit is ${limit}`,
-        );
-      }
-
-      target = ALIASES[target] ?? target;
-      if (media && mediaFormats.includes(target)) {
-        return await media(bytes, target, options);
-      }
-      if (image && imageFormats.includes(target)) {
-        return await image(target, bytes, options.quality ?? 80);
-      }
-      if (doc && docFormats.includes(target)){
-        return await doc(bytes,target,options);
-      }
-      if (model&& modelFormats.includes(target)){
-        return await model(bytes,target,options);
-      }
-
-      throw new ConvertError(
-        ErrorCode.UnsupportedOutput,
-        `Unsupported output format: "${target}"`,
-      );
-    } catch (error) {
-      throw to_convert_error(error, ErrorCode.NativeFailure);
-    }
   };
 }
