@@ -23,6 +23,7 @@ buried **treasure**: your converted file!
   additional features other than the basics
 
 - converting video to audio
+- converting audio to video waveform (in progress)
 - rasterizing images
 - vectorizing images
 - compressing video/audio/images
@@ -153,12 +154,13 @@ Since this file conversion program uses alot of different libraries combined, a 
 <details>
 <summary><h3>3D Files</h3></summary>
 
-- [ ] obj
-- [ ] fbx
-- [ ] stl
+- [x] obj
+- [x] fbx
+- [x] stl
 - [ ] step
-- [ ] glb
-- [ ] blend
+- [x] glb
+- [x] gltf
+- [x] blend
 
 </details>
 
