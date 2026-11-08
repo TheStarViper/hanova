@@ -48,7 +48,7 @@ export default defineConfig(({ mode }) => ({
       preprocess: [vitePreprocess()],
     }),
     svg({
-       /**
+      /**
        * so basically:
        *
        * - if being built for production, the svgo plugins are undefined so

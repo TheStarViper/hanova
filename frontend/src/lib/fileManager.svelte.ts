@@ -40,7 +40,7 @@ export function isFormatCompatible(
 }
 
 export class FileManager {
-  file: File | undefined;
+  file: File | undefined = $state(undefined);
 
   outFormat: Format | undefined;
 
