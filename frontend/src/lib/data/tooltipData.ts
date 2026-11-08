@@ -423,6 +423,57 @@ export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
       "Markup format that was a precursor to Markdown. Also known as txt2tags.",
     url: "https://en.wikipedia.org/wiki/Txt2tags",
   },
+  tex: {
+    title: "LaTeX",
+    blurb:
+      "Markup format used for typesetting documents based on TeX. Very widely-used in academia.",
+    url: "https://en.wikipedia.org/wiki/TeX",
+  },
+  beamer: {
+    title: "Beamer",
+    blurb: "Presentation format based on LaTeX.",
+    url: "https://en.wikipedia.org/wiki/Beamer_(LaTeX)",
+  },
+  typ: {
+    title: "Typst",
+    blurb: "Markup format meant as an easier-to-use alternative to LaTeX.",
+    url: "https://en.wikipedia.org/wiki/Typst",
+  },
+  texi: {
+    title: "TEXI",
+    blurb:
+      "Markup format used for typesetting documents. Used by GNU. Also known as Texinfo.",
+    url: "https://en.wikipedia.org/wiki/Texinfo",
+  },
+  man: {
+    title: "MAN",
+    blurb: "Markup format used for Unix manual pages. Also known as Roff.",
+    url: "https://en.wikipedia.org/wiki/Roff_(software)",
+  },
+  ms: {
+    title: "MS",
+    blurb: "Markup format used for typesetting documents using Roff tools.",
+    url: "https://www.gnu.org/software/groff/manual/groff.html.node/ms.html",
+  },
+  haddock: {
+    title: "Haddock",
+    blurb:
+      "Markup format used for generating documentation from Haskell comments.",
+    url: "https://en.wikipedia.org/wiki/Haddock_(software)",
+  },
+  ctx: {
+    title: "CTX",
+    blurb:
+      "Markup format used for typesetting documents. Alternative to LaTeX; also based on TeX. Also known as ConTeXt",
+    url: "https://en.wikipedia.org/wiki/ConTeXt",
+  },
+  icml: {
+    title: "ICML",
+    blurb:
+      "Markup format used for typesetting documents with Adobe InCopy. Also known as InCopy Markup Language.",
+    url:
+      "https://helpx.adobe.com/incopy/desktop/work-with-indesign/managed-files/stand-alone-documents.html",
+  },
   dbk: {
     title: "DBK",
     blurb:
