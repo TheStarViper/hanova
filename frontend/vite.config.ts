@@ -26,7 +26,6 @@ export default defineConfig(({ mode }) => ({
     pandocWasmAsUrl(),
     sveltekit({
       compilerOptions: {
-        // Force runes mode for the project, except for libraries. Can be removed in svelte 6.
         runes: ({ filename }) =>
           filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
       },
@@ -48,27 +47,20 @@ export default defineConfig(({ mode }) => ({
       preprocess: [vitePreprocess()],
     }),
     svg({
-      multipass: true,
-      /**
-       * so basically:
-       *
-       * - if being built for production, the svgo plugins are undefined so
-       * that they don't override the default ones and it optimizes as normal
-       * - if not being built for production (i.e. the live server), the svgo
-       * plugins are empty and it doesn't do any processing.
-       *
-       * This is because the svgo optimization takes like 6 seconds so it was
-       * really really slowing down the dev server whichw as irritating me
-       */
       plugins: mode === "production" ? undefined : [],
     }),
   ],
   build: {
     rollupOptions: {
       external: [
-        'wasi_snapshot_preview1'
-      ]
-    }
+        "wasi_snapshot_preview1",
+      ],
+    },
+  },
+  ssr: {
+    external: [
+      "wasi_snapshot_preview1",
+    ],
   },
   optimizeDeps: {
     exclude: [
