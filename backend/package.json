@@ -2,6 +2,11 @@
   "name": "hanova-backend",
   "private": true,
   "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "view preview"
+  },
   "dependencies": {
     "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
