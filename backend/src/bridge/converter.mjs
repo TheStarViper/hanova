@@ -6,7 +6,6 @@ import {
   MEDIA_FORMATS,MEDIA_PRESETS,MEDIABUNNY_AUDIO,
   THREE_MODEL_OUTPUTS, FFMPEG_AUDIO, MEDIA_INFO, ALIASES, DOMAIN
 } from "./formats.mjs";
-import { detect_model_format, detect_media_format, detect_document_format, detect_svg } from "./detector.mjs";
 import { has_media_options, unwrap, use } from "./utils.mjs";
 import { createSearchPath } from "./pathfinder.mjs";
 import { createDetector } from "./detector-wrapper.mjs";

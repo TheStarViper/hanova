@@ -119,3 +119,32 @@ export function detect_svg(bytes){
   const head = latin1(bytes,start,Math.min(bytes.length,start+16384));
   return /<svg[\s>]/.test(head)?"svg":"unknown";
 }
+
+export function detect_markdown(bytes) {
+  if (!bytes || bytes.length < 8) return "unknown";
+
+  const start = skipBom(bytes);
+  const sample = bytes.subarray(start, Math.min(bytes.length, start + 8192));
+  if (sample.includes(0)) return "unknown";
+
+  const text = new TextDecoder().decode(sample);
+  if ((text.match(/\uFFFD/g) ?? []).length > text.length * 0.02) return "unknown";
+
+  const head = text.trimStart();
+  if (head.startsWith("{") || head.startsWith("#!")) return "unknown";
+
+  const signals = [
+    /^#{1,6}[ \t]+\S/m,
+    /^(```|~~~)/m,
+    /!?\[[^\]\n]+\]\([^)\s][^)]*\)/,
+    /(\*\*|__)\S(?:[^\n]*?\S)?\1/,
+    /^[ \t]{0,3}(?:[-*+]|\d{1,3}[.)])[ \t]+\S[^\n]*\r?\n[ \t]{0,3}(?:[-*+]|\d{1,3}[.)])[ \t]+\S/m,
+    /^>[ \t]?\S/m,
+    /^\|.+\|[ \t]*\r?\n\|?[ \t]*:?-{3,}:?[ \t]*\|/m,
+    /`[^`\n]+`/,
+    /^[^\n]+\r?\n(?:=+|-+)[ \t]*$/m,
+    /^---\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/,
+  ];
+  const hits = signals.filter((re) => re.test(signals.indexOf(re) === 9 ? head : text)).length;
+  return hits >= 2 ? "md" : "unknown";
+}
