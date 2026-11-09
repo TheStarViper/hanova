@@ -10,10 +10,6 @@ islands do. Drag-and-drop your file into the water, and sail it to the island
 corresponding to your desired file format. Dig at the red X, and you'll unearth
 buried **treasure**: your converted file!
 
-> [!NOTE]
-> Hanova is still under heavy development. It is in a functional state now, but
-> it isn't feature-complete, and there may be bugs. A lot of bugs.
-
 ## Demo
 
 > [!TIP]
