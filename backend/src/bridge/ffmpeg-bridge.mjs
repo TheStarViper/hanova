@@ -95,3 +95,71 @@ export function convert_audio(bytes,target,options={}){
         }
     });
 }
+
+export function generate_spectrogram(bytes,options = {}){
+    if (options.signal?.aborted){
+        throw new ConvertError(ErrorCode.Cancelled, "Generation was cancelled");
+    }
+
+    return exclusive(async ()=>{
+        const outName = "hanova_spectrogram.png";
+        const log =[];
+        let ffmpeg;
+        let dead = false;
+        let cancelled = false;
+
+        const kill = () => {
+            dead = true;
+            try { ffmpeg?.terminate(); } catch {}
+        };
+        
+        const onCancel = () => {cancelled = true; kill();};
+        const onLog = ({message}) => {log.push(message); if(log.length > 12){log.shift();}};
+        const onProgress = ({progress})=>options.onProgress?.(Math.max(0,Math.min(1,progress)));
+        try{
+            ffmpeg = await load();
+            ffmpeg.on("log",onLog);
+            ffmpeg.on("progress",onProgress);
+            options.signal?.addEventListener("abort",onCancel,{once:true});
+
+            await ffmpeg.writeFile("input",bytes.slice());
+            const width = options.width ?? 1024;
+            const height = options.height ?? 512;
+            const mode = options.mode ?? "combined"; //combined or seperate
+            const color = options.color ?? "magma"; // intensity rainbow fire etc.
+
+            const filter = `showspectrumpic=s=${width}x${height}:mode=${mode}:color=${color}`;
+            const args =  ["-i","input","-lavfi",filter,"-y",outName];
+
+            const code = await ffmpeg.exec(args);
+            if (code !== 0) {
+                kill();
+                const detail = log.filter((l) => l.trim()).slice(-4).join(" | ") || "no details";
+                throw new ConvertError(ErrorCode.NativeFailure, `ffmpeg (${args.join(" ")}): ${detail}`);
+            }
+
+            const data = await ffmpeg.readFile(outName);
+            if (!data||data.length===0){
+                throw new ConvertError(ErrorCode.NativeFailure, "ffmpeg made empty spectrogram file");
+            }
+
+            return data.slice();
+        } catch (error){
+            const msg = String(error?.message??error);
+            if (!dead && (error?.name === "RuntimeError" || /abort|out of bounds|unreachable|memory/i.test(msg))) { kill(); }
+
+            if (cancelled || options.signal?.aborted) {
+                throw new ConvertError(ErrorCode.Cancelled, "Generation was cancelled", { cause: error });
+            }
+            throw to_convert_error(error, ErrorCode.NativeFailure);
+        } finally{
+            options.signal?.removeEventListener("abort", onCancel);
+            if (ffmpeg && !dead) {
+                ffmpeg.off("log", onLog);
+                ffmpeg.off("progress", onProgress);
+                await ffmpeg.deleteFile("input").catch(() => {});
+                await ffmpeg.deleteFile(outName).catch(() => {});
+            }
+        }
+    });
+}

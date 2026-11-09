@@ -121,6 +121,14 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
         if (a!==b&&!has(a,b)) {register(a,b,ffmpeg_step(b),FFMPEG_COST);}
       }
     }
+    if (ffmpeg.generate_spectrogram) {
+      const audioInputFormats = [...VIDEO_FORMATS, ...AUDIO_FORMATS];
+      for (const a of audioInputFormats) {
+        if (!has(a, "png")) {
+          register(a, "png", (bytes, _q, options) => ffmpeg.generate_spectrogram(bytes, options), FFMPEG_COST);
+        }
+      }
+    }
   }
 
   //pandoc

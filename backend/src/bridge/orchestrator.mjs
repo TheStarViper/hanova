@@ -48,7 +48,10 @@ function build({magickInit}={}){
     },
   };
 
-  const ffmpeg = inBrowser ? {convert_audio: async (bytes,to,options)=>(await loadFfmpegBridge()).convert_audio(bytes,to,options)} : undefined;
+  const ffmpeg = inBrowser ? {
+    convert_audio: async (bytes, to, options) => (await loadFfmpegBridge()).convert_audio(bytes, to, options),
+    generate_spectrogram: async (bytes, options) => (await loadFfmpegBridge()).generate_spectrogram(bytes, options),
+  } : undefined;
   const media = {
     convert_media: async (bytes, to, options) => (await loadMediaBridge()).convert_media(bytes, to, options),
     ...(inBrowser && {

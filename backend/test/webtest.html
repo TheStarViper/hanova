@@ -16,7 +16,7 @@
 <body>
   <h3>Hanova converter test</h3>
   <nav>
-    <button data-tab="media" class="active">Video / audio</button>
+    <button data-tab="media" class="active">Video / audio / spectrogram</button>
     <button data-tab="images">Images</button>
     <button data-tab="docs">Documents</button>
     <button data-tab="models">3D models</button>
@@ -42,6 +42,7 @@
     <a id="download" style="display:none">Download result</a>
     <video id="preview" controls></video>
     <audio id="audioPreview" controls></audio>
+    <img id="imagePreview" alt="Spectrogram preview">
   </section>
 
   <section id="images">
@@ -92,7 +93,6 @@
     const docSay = (msg) => { $('docStatus').textContent = msg; };
     const mdlSay = (msg) => { $('mdlStatus').textContent = msg; };
 
-    // walks down to the original error and shows the file and line it came from
     const describe = (err) => {
       let root = err;
       while (root.cause) root = root.cause;
@@ -102,7 +102,6 @@
         + (where ? '\n' + where : '');
     };
 
-    // tabs
     document.querySelectorAll('nav button').forEach((b) => {
       b.onclick = () => {
         document.querySelectorAll('nav button, section').forEach((el) => el.classList.remove('active'));
@@ -117,6 +116,7 @@
     let hanova;
     let audioCapabilities = [];
     let videoCapabilities = [];
+    let imageOutputs = [];
 
     try {
       const mod = await import('../src/bridge/orchestrator.mjs');
@@ -133,8 +133,12 @@
       const caps = hanova.capabilities();
       audioCapabilities = caps.audio.outputs;
       videoCapabilities = caps.video.outputs;
+      imageOutputs = caps.image.outputs;
 
-      for (const f of [...videoCapabilities, ...audioCapabilities]) $('target').add(new Option(f, f));
+      // Populate target options (video outputs, audio outputs, plus 'png' for spectrograms)
+      const allowedTargets = Array.from(new Set([...videoCapabilities, ...audioCapabilities, 'png']));
+      for (const f of allowedTargets) $('target').add(new Option(f, f));
+
       for (const p of hanova.MEDIA_PRESETS) $('preset').add(new Option(p, p));
       for (const f of caps.image.outputs) $('imgTarget').add(new Option(f, f));
       for (const f of caps.document.inputs) $('docFrom').add(new Option(f, f));
@@ -156,7 +160,7 @@
       console.error(err);
     }
 
-    // ---------- media ----------
+    // ---------- media & spectrogram ----------
     const PLAYABLE = ['mp4', 'webm', 'mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'];
     let ctrl = null;
     $('stop').onclick = () => ctrl?.abort();
@@ -176,11 +180,12 @@
       const file = $('file').files[0];
       if (!file) { say('Pick a file first.'); return; }
       const target = $('target').value;
-      const info = hanova.MEDIA_INFO[target];
+      const info = hanova.MEDIA_INFO[target] || { mime: 'image/png', ext: 'png' };
 
       $('download').style.display = 'none';
       $('preview').style.display = 'none';
       $('audioPreview').style.display = 'none';
+      $('imagePreview').style.display = 'none';
       ctrl = new AbortController();
 
       try {
@@ -203,12 +208,18 @@
           }),
         });
 
-        const url = URL.createObjectURL(new Blob([out], { type: info.mime }));
+        const mimeType = target === 'png' ? 'image/png' : info.mime;
+        const url = URL.createObjectURL(new Blob([out], { type: mimeType }));
         say(`Done in ${((performance.now() - t0) / 1000).toFixed(1)}s: ${fmtMB(inSize)} MB -> ${fmtMB(out.length)} MB`);
+        
         $('download').href = url;
-        $('download').download = `converted.${info.ext}`;
+        $('download').download = `converted.${target === 'png' ? 'png' : info.ext}`;
         $('download').style.display = 'inline';
-        if (PLAYABLE.includes(target)) {
+
+        if (target === 'png') {
+          $('imagePreview').src = url;
+          $('imagePreview').style.display = 'block';
+        } else if (PLAYABLE.includes(target)) {
           const el = info.video ? $('preview') : $('audioPreview');
           el.src = url;
           el.style.display = 'block';
@@ -218,7 +229,6 @@
       }
     };
 
-    // a one second tone, used to test every audio output without needing a file
     function makeWav(seconds = 1, rate = 22050) {
       const n = seconds * rate, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
       const w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
@@ -388,4 +398,5 @@
     };
   </script>
 </body>
+
 <!-- ai file -->

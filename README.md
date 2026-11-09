@@ -23,7 +23,7 @@ buried **treasure**: your converted file!
   additional features other than the basics
 
 - converting video to audio
-- converting audio to video waveform (in progress)
+- converting audio to video visualizer
 - rasterizing images
 - vectorizing images
 - compressing video/audio/images
@@ -59,6 +59,11 @@ and glue code so that they can work seamlessly together.
 Alot of the libraries that are commonly used for file conversions dont come as C++ packages and instead are pre-compiled wasm files. So we opted to use a Mjs bridge system to link together and use a bunch of different wasm libs at the same time with a dynamic loading function. stb_image,nanosvg,& stb_image are all libs that we can compile through emscripten. Imagemagick,ffmpeg, & pandoc come as pre-packaged wasm files that we converse with using MJS. Mediabunny however isnt wasm as wasm does not have support for hardware acceleration which is fine for smaller files like documents & images but is sluggish without hardware accel for video files.
 
 Since this file conversion program uses alot of different libraries combined, a notable portion of the backend codebase is glue-code used to make it so that they can work together. We grabbed the WASM versions of programs like imagemagick and pandoc to use and bridged them using MJS, while mediabunny is a TypeScript library so that it can take advantage of hardware acceleration. However, since we had to balance a wide variety of ecosystems, they all had different error formats and spit out different types of errors, so to make things easier we made a unified error system that decoded all of the errors from the various libraries and made human-readable and simplified errors.
+
+## Future Ideas
+
+- more audio visualizer customization like smoothing,bar count,visualizer type
+
 
 ### Supported File Formats
 
