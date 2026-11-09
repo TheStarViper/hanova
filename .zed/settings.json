@@ -20,6 +20,9 @@
       "language_servers": ["dprint", "svelte-language-server", "hackatime"],
       "formatter": "language_server"
     },
+    "Markdown": {
+      "soft_wrap": "bounded",
+    }
   },
 
   "soft_wrap": "none"
