@@ -28,6 +28,10 @@
       <select id="target"></select>
       <select id="preset"><option value="">no preset (remux if possible)</option></select>
     </div>
+    <div class="row" id="audioToVideoOpts" style="display:none">
+      <label>Background color <input type="color" id="bgColor" value="#000000"></label>
+      <label>Wave color <input type="color" id="waveColor" value="#00ffcc"></label>
+    </div>
     <div class="row">
       <button id="go">Convert</button>
       <button id="stop">Cancel</button>
@@ -110,13 +114,14 @@
     window.addEventListener('error', (e) => say('Error: ' + e.message));
     window.addEventListener('unhandledrejection', (e) => say('Error: ' + (e.reason?.message ?? e.reason)));
 
-    // one setup, then everything goes through hanova.convert. nothing heavy loads until it is needed
     let hanova;
+    let audioCapabilities = [];
+    let videoCapabilities = [];
+
     try {
       const mod = await import('../src/bridge/orchestrator.mjs');
       hanova = {
         ...(await mod.universalFactory({
-          // imagemagick only loads the first time an image conversion needs it
           magickInit: () => import('../src/bridge/browserWasm.mjs').then((m) => m.initMagick()),
         })),
         MEDIA_INFO: mod.MEDIA_INFO,
@@ -126,8 +131,10 @@
         format_from_filename: mod.format_from_filename,
       };
       const caps = hanova.capabilities();
+      audioCapabilities = caps.audio.outputs;
+      videoCapabilities = caps.video.outputs;
 
-      for (const f of [...caps.video.outputs, ...caps.audio.outputs]) $('target').add(new Option(f, f));
+      for (const f of [...videoCapabilities, ...audioCapabilities]) $('target').add(new Option(f, f));
       for (const p of hanova.MEDIA_PRESETS) $('preset').add(new Option(p, p));
       for (const f of caps.image.outputs) $('imgTarget').add(new Option(f, f));
       for (const f of caps.document.inputs) $('docFrom').add(new Option(f, f));
@@ -154,6 +161,17 @@
     let ctrl = null;
     $('stop').onclick = () => ctrl?.abort();
 
+    function updateAudioToVideoVisibility() {
+      const file = $('file').files[0];
+      const target = $('target').value;
+      const isAudioInput = file && file.type.startsWith('audio/');
+      const isVideoOutput = videoCapabilities.includes(target);
+      $('audioToVideoOpts').style.display = (isAudioInput && isVideoOutput) ? 'flex' : 'none';
+    }
+
+    $('file').onchange = updateAudioToVideoVisibility;
+    $('target').onchange = updateAudioToVideoVisibility;
+
     $('go').onclick = async () => {
       const file = $('file').files[0];
       if (!file) { say('Pick a file first.'); return; }
@@ -167,15 +185,24 @@
 
       try {
         const bytes = new Uint8Array(await file.arrayBuffer());
-        const inSize = bytes.length;   // read it now, the buffer can be emptied by a worker
+        const inSize = bytes.length;
         const t0 = performance.now();
         say('Converting... 0%');
+
+        const isAudioInput = file.type.startsWith('audio/');
+        const isVideoOutput = videoCapabilities.includes(target);
+
         const out = await hanova.convert(bytes, target, {
           preset: $('preset').value || undefined,
           engine: $('forceFfmpeg').checked ? 'ffmpeg' : undefined,
           signal: ctrl.signal,
           onProgress: (p) => say(`Converting... ${Math.round(p * 100)}%`),
+          ...(isAudioInput && isVideoOutput && {
+            backgroundColor: $('bgColor').value,
+            waveColor: $('waveColor').value,
+          }),
         });
+
         const url = URL.createObjectURL(new Blob([out], { type: info.mime }));
         say(`Done in ${((performance.now() - t0) / 1000).toFixed(1)}s: ${fmtMB(inSize)} MB -> ${fmtMB(out.length)} MB`);
         $('download').href = url;
@@ -297,7 +324,6 @@
       }
     };
 
-    // converts one small markdown sample into every output format
     const SAMPLE = `# Hello\n\nA *short* sample with **bold**, a [link](https://example.com), and a list:\n\n- one\n- two\n\n| a | b |\n|---|---|\n| 1 | 2 |\n`;
 
     $('docAll').onclick = async () => {
@@ -332,7 +358,6 @@
       $('mdlPreview').style.display = 'none';
 
       try {
-        // the first file with a 3D extension is the model, the rest (mtl, textures) travel with it
         const inputs = hanova.capabilities().model.inputs;
         const main = files.find((f) => inputs.includes(hanova.format_from_filename(f.name))) ?? files[0];
         const extras = {};
