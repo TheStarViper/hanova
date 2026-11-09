@@ -271,6 +271,359 @@ export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
     url: "https://en.wikipedia.org/wiki/MPEG_transport_stream",
   },
 
+  // Documents
+  docx: {
+    title: "DOCX",
+    blurb:
+      "Document format used in Microsoft Word. Near-universal compatibility with word processing software. Also known as Office Open XML Document.",
+    url: "https://www.adobe.com/acrobat/resources/document-files/docx.html",
+  },
+  odt: {
+    title: "ODT",
+    blurb:
+      "Document format used in OpenOffice and LibreOffice. Great compatibility with word processing software, and meant to be an open-source vendor-agnostic alternative to DOCX. Also known as OpenDocument Format.",
+    url: "https://en.wikipedia.org/wiki/OpenDocument",
+  },
+  epub: {
+    title: "EPUB",
+    blurb:
+      "E-book format used by most e-readers (e.g. Amazon Kindle). Near-universal compatibility with e-reading software. Also known as Electronic Publication.",
+    url: "https://en.wikipedia.org/wiki/EPUB",
+  },
+  pptx: {
+    title: "PPTX",
+    blurb:
+      "Slideshow format used in Microsoft Powerpoint. Near-universal compatibility with slideshow software. Also known as Office Open XML Presentation.",
+    url: "https://www.adobe.com/acrobat/resources/document-files/pptx.html",
+  },
+  rtf: {
+    title: "RTF",
+    blurb:
+      "Document format used in WordPad. Great compatibility, but with word processing software. Also known as Rich Text Format.",
+    url: "https://en.wikipedia.org/wiki/Rich_Text_Format",
+  },
+  fb2: {
+    title: "FB2",
+    blurb:
+      "E-book format. Good compatibility with e-readers. Also known as FictionBook.",
+    url: "https://en.wikipedia.org/wiki/FictionBook",
+  },
+  html: {
+    title: "HTML",
+    blurb:
+      "Markup format used by web browsers. Universal compatibility with browsers. Hanova is (partially) written in it :D. Also known as Hypertext Markup Language.",
+    url: "https://en.wikipedia.org/wiki/HTML",
+  },
+  revealjs: {
+    title: "RevealJS",
+    blurb:
+      "Presentation format that renders to HTML. Can be displayed in all browsers, since it's just a webpage, but very little editing support.",
+    url: "https://revealjs.com",
+  },
+  slidy: {
+    title: "Slidy",
+    blurb:
+      "Presentation format that renders to HTML. Can be displayed in all browsers, since it's just a webpage, but very little editing support.",
+    url: "https://www.w3.org/Talks/Tools/Slidy2/Overview.html",
+  },
+  md: {
+    title: "MD",
+    blurb:
+      "Markup format that's easy to read and write. Extremely common and widely-used; used in READMEs, Obsidian, LLM chats, and more. Also known as Markdown.",
+    url: "https://en.wikipedia.org/wiki/Markdown",
+  },
+  gfm: {
+    title: "GFM",
+    blurb:
+      "Markup format that's a variant of Markdown. Basically just Markdown but with extra features like strikethrough. Also known as GitHub Flavored Markdown.",
+    url: "https://en.wikipedia.org/wiki/Markdown#GitHub_Flavored_Markdown",
+  },
+  commonmark: {
+    title: "CommonMark",
+    blurb:
+      "Markup format that's a variant of Markdown. Basically just a strict, standardized version of Markdown.",
+    url: "https://commonmark.org/",
+  },
+  rst: {
+    title: "RST",
+    blurb:
+      "Markup format used by Sphinx with more complex features than Markdown. Also known as reStructuredText.",
+    url: "https://en.wikipedia.org/wiki/ReStructuredText",
+  },
+  org: {
+    title: "Org",
+    blurb:
+      "Markup format used by Emacs. EXTREMELY feature-rich for note taking and organization, but fairly complex to learn. Also known as Org-mode.",
+    url: "https://en.wikipedia.org/wiki/Org-mode",
+  },
+  textile: {
+    title: "Textile",
+    blurb: "Markup format that was a precursor to Markdown.",
+    url: "https://textile-lang.com/",
+  },
+  wiki: {
+    title: "MediaWiki",
+    blurb: "Wiki markup format used by Wikipedia for writing wiki articles.",
+    url: "https://www.mediawiki.org/wiki/Help:Formatting",
+  },
+  dokuwiki: {
+    title: "DokuWiki",
+    blurb:
+      "Wiki markup format similar to MediaWiki, but simpler and easier to use.",
+    url: "https://en.wikipedia.org/wiki/DokuWiki",
+  },
+  jira: {
+    title: "Jira",
+    blurb:
+      "Wiki markup format formerly used by Jira before they (mostly) switched Markdown. ALso known as Confluence Wiki Markup.",
+    url:
+      "https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html",
+  },
+  muse: {
+    title: "Muse",
+    blurb: "Markup format used by Emacs Muse.",
+    url: "https://www.gnu.org/software/emacs-muse/",
+  },
+  adoc: {
+    title: "Adoc",
+    blurb:
+      "Markup format that's slightly more powerful than Markdown while still being simple. Also known as AsciiDoc",
+    url: "https://en.wikipedia.org/wiki/AsciiDoc",
+  },
+  xwiki: {
+    title: "XWiki",
+    blurb: "Wiki markup format used by the XWiki enterprise wiki software.",
+    url: "https://en.wikipedia.org/wiki/XWiki",
+  },
+  zimwiki: {
+    title: "Zim",
+    blurb:
+      "Wiki markup format used by the Zim personal knowledge base software.",
+    url: "https://en.wikipedia.org/wiki/Zim_(software)",
+  },
+  tikiwiki: {
+    title: "TikiWiki",
+    blurb: "Wiki markup format used by the Tiki Wiki CMS Groupware software.",
+    url: "https://en.wikipedia.org/wiki/Tiki_Wiki_CMS_Groupware",
+  },
+  twiki: {
+    title: "TWiki",
+    blurb: "Wiki markup format used by the Twiki wiki software.",
+    url: "https://en.wikipedia.org/wiki/TWiki",
+  },
+  creole: {
+    title: "Creole",
+    blurb:
+      "Wiki markup format created by combining the syntax of various other wiki markup formats.",
+    url: "https://en.wikipedia.org/wiki/Creole_(markup)",
+  },
+  t2t: {
+    title: "T2T",
+    blurb:
+      "Markup format that was a precursor to Markdown. Also known as txt2tags.",
+    url: "https://en.wikipedia.org/wiki/Txt2tags",
+  },
+  tex: {
+    title: "LaTeX",
+    blurb:
+      "Markup format used for typesetting documents based on TeX. Very widely-used in academia.",
+    url: "https://en.wikipedia.org/wiki/TeX",
+  },
+  beamer: {
+    title: "Beamer",
+    blurb: "Presentation format based on LaTeX.",
+    url: "https://en.wikipedia.org/wiki/Beamer_(LaTeX)",
+  },
+  typ: {
+    title: "Typst",
+    blurb: "Markup format meant as an easier-to-use alternative to LaTeX.",
+    url: "https://en.wikipedia.org/wiki/Typst",
+  },
+  texi: {
+    title: "TEXI",
+    blurb:
+      "Markup format used for typesetting documents. Used by GNU. Also known as Texinfo.",
+    url: "https://en.wikipedia.org/wiki/Texinfo",
+  },
+  man: {
+    title: "MAN",
+    blurb: "Markup format used for Unix manual pages. Also known as Roff.",
+    url: "https://en.wikipedia.org/wiki/Roff_(software)",
+  },
+  ms: {
+    title: "MS",
+    blurb: "Markup format used for typesetting documents using Roff tools.",
+    url: "https://www.gnu.org/software/groff/manual/groff.html.node/ms.html",
+  },
+  haddock: {
+    title: "Haddock",
+    blurb:
+      "Markup format used for generating documentation from Haskell comments.",
+    url: "https://en.wikipedia.org/wiki/Haddock_(software)",
+  },
+  ctx: {
+    title: "CTX",
+    blurb:
+      "Markup format used for typesetting documents. Alternative to LaTeX; also based on TeX. Also known as ConTeXt",
+    url: "https://en.wikipedia.org/wiki/ConTeXt",
+  },
+  icml: {
+    title: "ICML",
+    blurb:
+      "Markup format used for typesetting documents with Adobe InCopy. Also known as InCopy Markup Language.",
+    url:
+      "https://helpx.adobe.com/incopy/desktop/work-with-indesign/managed-files/stand-alone-documents.html",
+  },
+  dbk: {
+    title: "DBK",
+    blurb:
+      "Markup format used for technical documentation. Also known as DocBook.",
+    url: "https://en.wikipedia.org/wiki/DocBook",
+  },
+  jats: {
+    title: "JATS",
+    blurb:
+      "Markup format used for scientific literature. Also known as Journal Article Tag Suite.",
+    url: "https://en.wikipedia.org/wiki/Journal_Article_Tag_Suite",
+  },
+  tei: {
+    title: "TEI",
+    blurb:
+      "Markup format used in academia to encode semantics and grammar. Also known as Text Encoding Intiative.",
+    url: "https://en.wikipedia.org/wiki/Text_Encoding_Initiative",
+  },
+  opml: {
+    title: "OPML",
+    blurb:
+      "Outline format used for mind maps and RSS feed lists. ALso known as Outline Processor Markup Language.",
+    url: "https://en.wikipedia.org/wiki/OPML",
+  },
+  ipynb: {
+    title: "IPYNB",
+    blurb:
+      "Notebook format that can contain Python and Markdown cells. Also known as Jupyter Notebook.",
+    url: "https://en.wikipedia.org/wiki/Project_Jupyter#Jupyter_Notebook",
+  },
+  csljson: {
+    title: "CSL-JSON",
+    blurb:
+      "Citation format used for bibliographies. Also knwon as Citation Style Language JSON.",
+    url: "https://citationstyles.org/",
+  },
+  ris: {
+    title: "RIS",
+    blurb:
+      "Citation format used for bibliographies. Developed by Research Information Systems.",
+    url: "https://en.wikipedia.org/wiki/RIS_(file_format)",
+  },
+  endnote: {
+    title: "EndNote",
+    blurb: "Citation format used for bibliographies.",
+    url: "https://en.wikipedia.org/wiki/EndNote",
+  },
+  txt: {
+    title: "TXT",
+    blurb: "Plain text format. It's just text lol.",
+    url: "https://en.wikipedia.org/wiki/Text_file",
+  },
+
+  // 3d models
+  blend: {
+    title: "BLEND",
+    blurb:
+      "3D format used by Blender. Can store multiple scenes, objects, materials, textures, sounds, images, etc.",
+    url: "https://en.wikipedia.org/wiki/Blender_(software)#File_format",
+  },
+  glb: {
+    title: "glB",
+    blurb:
+      "3D format used to store scenes and objects. The compressed version of glTF.",
+    url: "https://en.wikipedia.org/wiki/GlTF",
+  },
+  gltf: {
+    title: "glTF",
+    blurb:
+      "3D format used to store scenes and objects. Also known as Graphics Library Transmission Format",
+    url: "https://en.wikipedia.org/wiki/GlTF",
+  },
+  obj: {
+    title: "OBJ",
+    blurb:
+      "3D format used for storing 3D geometry. Also known as Wavefront OBJ.",
+    url: "https://en.wikipedia.org/wiki/Wavefront_.obj_file",
+  },
+  fbx: {
+    title: "FBX",
+    blurb: "3D format used for storing scenes. Also known as Filmbox.",
+    url: "https://en.wikipedia.org/wiki/FBX",
+  },
+  dae: {
+    title: "DAE",
+    blurb: "3D format used to store assets. Also known as COLLADA.",
+    url: "https://en.wikipedia.org/wiki/COLLADA",
+  },
+  stl: {
+    title: "STL",
+    blurb: "3D format used for storing 3D meshes. ",
+    url: "https://en.wikipedia.org/wiki/STL_(file_format)",
+  },
+  ply: {
+    title: "PLY",
+    blurb:
+      "3D format used to store data from 3D scanners. Also known as Polygon File Format.",
+    url: "https://en.wikipedia.org/wiki/PLY_(file_format)",
+  },
+  "3ds": {
+    title: "3DS",
+    blurb: "3D format used to store assets. Used by Audodesk 3ds Max.",
+    url: "https://en.wikipedia.org/wiki/.3ds",
+  },
+  "3mf": {
+    title: "3MF",
+    blurb:
+      "3D format used for printing 3D models. Also known as 3D Manufacturing Format.",
+    url: "https://en.wikipedia.org/wiki/3D_Manufacturing_Format",
+  },
+  off: {
+    title: "OFF",
+    blurb:
+      "3D format used to store geometry. Also known as Object File Format.",
+    url: "https://en.wikipedia.org/wiki/OFF_(file_format)",
+  },
+  x: {
+    title: "X",
+    blurb: "3D format used by DirectX.",
+    url: "https://en.wikipedia.org/wiki/DirectX",
+  },
+  ase: {
+    title: "ASE",
+    blurb:
+      "3D format used to store meshes. Also known as ASCII Scene Explorer.",
+    url: "https://beyondunrealwiki.github.io/pages/ase-file-format.html",
+  },
+  lwo: {
+    title: "LWO",
+    blurb: "3D format used by LightWave 3D.",
+    url: "https://en.wikipedia.org/wiki/LightWave_3D",
+  },
+  dxf: {
+    title: "DXF",
+    blurb:
+      "3D format used for CAD, developed by Autodesk. Also known as Drawing Exchange Format.",
+    url: "https://en.wikipedia.org/wiki/AutoCAD_DXF",
+  },
+  ac: {
+    title: "AC",
+    blurb: "3D format used by AC3D.",
+    url: "https://en.wikipedia.org/wiki/AC3D",
+  },
+  ms3d: {
+    title: "MS3D",
+    blurb:
+      "3D format used for modeling in Half-Life, Counter-Strike, and The Sims.",
+    url: "http://milkshape3d.com/ms3d/",
+  },
+
   // Settings
   qualityPresetIdx: {
     title: "Conversion Quality",
