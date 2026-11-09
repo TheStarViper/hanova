@@ -272,8 +272,9 @@ export async function convert_audio_to_video(inputdata, target, options = {}) {
     await output.start();
     const audioDone = audioSource.add(audioBuffer).then(()=>audioSource.close());
     const barWidth = width / BARS;
-    const currentHeights = new Float32Array(BARS).fill(0);
+    const currentHeights = new Float32Array(BARS).fill(2);
     const smoothing = 0.35;
+    const centerY = height/2;
 
     for (let i = 0; i < frames; i++) {
       if (options.signal?.aborted) throw cancelled();
@@ -284,15 +285,15 @@ export async function convert_audio_to_video(inputdata, target, options = {}) {
 
       for (let j = 0; j < BARS; j++) {
         const level = Math.min(1, (frameBands[i]?.[j] ?? 0) * gain);
-        const targetHeight = Math.max(4, level * height * 0.75);
+        const targetHalfHeight = Math.max(2, level * height * 0.35);
         
-        currentHeights[j] += (targetHeight - currentHeights[j]) * smoothing;
+        currentHeights[j] += (targetHalfHeight - currentHeights[j]) * smoothing;
         
         ctx.fillRect(
           j * barWidth + 2,
-          height - currentHeights[j] - 20,
+          centerY - currentHeights[j],
           Math.max(1, barWidth - 4),
-          currentHeights[j]
+          currentHeights[j]*2
         );
       }
 
