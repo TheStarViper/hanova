@@ -297,17 +297,8 @@ export class World {
 
   async copyIslandData(): Promise<void> {
     const data = this.exportIslandData();
-    const raw = JSON.stringify(data, null, 2);
-
-    // JSON style, with quoted keys and no trailing commas, looks kinda bad, so
-    // this processes the text to make it nicer.
-    const formatted = raw
-      // Remove double quotes around object keys
-      .replace(/"([a-zA-Z0-9_]+)":/g, "$1:")
-      // Add trailing commas before newlines on property lines
-      .replace(/([0-9"'])\n/g, "$1,\n");
-
-    await navigator.clipboard.writeText(formatted);
+    const json = JSON.stringify(data, null, 2);
+    await navigator.clipboard.writeText(json);
   }
 }
 

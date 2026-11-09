@@ -1,0 +1,723 @@
+{
+  "bmp": {
+    "islandSpriteIndex": 18,
+    "x": 0,
+    "y": 500,
+    "spawnOffsetX": 0,
+    "spawnOffsetY": -160
+  },
+  "gif": {
+    "islandSpriteIndex": 6,
+    "x": 3,
+    "y": 797,
+    "spawnOffsetX": 50,
+    "spawnOffsetY": 100
+  },
+  "jpg": {
+    "islandSpriteIndex": 16,
+    "x": 400,
+    "y": 550,
+    "spawnOffsetX": 200,
+    "spawnOffsetY": 20
+  },
+  "jxl": {
+    "islandSpriteIndex": 8,
+    "x": 780,
+    "y": 715,
+    "spawnOffsetX": -100,
+    "spawnOffsetY": 100
+  },
+  "png": {
+    "islandSpriteIndex": 17,
+    "x": 200,
+    "y": 100,
+    "spawnOffsetX": 250,
+    "spawnOffsetY": -100
+  },
+  "webp": {
+    "islandSpriteIndex": 15,
+    "x": 849,
+    "y": 240,
+    "spawnOffsetX": 160,
+    "spawnOffsetY": -120
+  },
+  "avif": {
+    "islandSpriteIndex": 14,
+    "x": 1300,
+    "y": -200,
+    "spawnOffsetX": -130,
+    "spawnOffsetY": 100
+  },
+  "tiff": {
+    "islandSpriteIndex": 19,
+    "x": 900,
+    "y": -150,
+    "spawnOffsetX": 90,
+    "spawnOffsetY": 170
+  },
+  "eps": {
+    "islandSpriteIndex": 11,
+    "x": 316,
+    "y": -776,
+    "spawnOffsetX": -40,
+    "spawnOffsetY": 200
+  },
+  "exr": {
+    "islandSpriteIndex": 15,
+    "x": 1050,
+    "y": -500,
+    "spawnOffsetX": -200,
+    "spawnOffsetY": 0
+  },
+  "tga": {
+    "islandSpriteIndex": 18,
+    "x": 1351,
+    "y": 414,
+    "spawnOffsetX": 0,
+    "spawnOffsetY": -150
+  },
+  "hdr": {
+    "islandSpriteIndex": 14,
+    "x": 1672,
+    "y": 374,
+    "spawnOffsetX": -170,
+    "spawnOffsetY": -80
+  },
+  "svg": {
+    "islandSpriteIndex": 9,
+    "x": -19,
+    "y": -829,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 100
+  },
+  "ico": {
+    "islandSpriteIndex": 18,
+    "x": 550,
+    "y": -350,
+    "spawnOffsetX": 150,
+    "spawnOffsetY": 0
+  },
+  "psd": {
+    "islandSpriteIndex": 9,
+    "x": 1527,
+    "y": 85,
+    "spawnOffsetX": -200,
+    "spawnOffsetY": 30
+  },
+  "mp3": {
+    "islandSpriteIndex": 16,
+    "x": -773,
+    "y": -190,
+    "spawnOffsetX": -200,
+    "spawnOffsetY": 30
+  },
+  "wav": {
+    "islandSpriteIndex": 9,
+    "x": 862,
+    "y": -350,
+    "spawnOffsetX": 0,
+    "spawnOffsetY": 240
+  },
+  "ogg": {
+    "islandSpriteIndex": 15,
+    "x": -1128,
+    "y": 31,
+    "spawnOffsetX": -80,
+    "spawnOffsetY": 90
+  },
+  "flac": {
+    "islandSpriteIndex": 10,
+    "x": 709,
+    "y": 42,
+    "spawnOffsetX": -180,
+    "spawnOffsetY": -50
+  },
+  "aac": {
+    "islandSpriteIndex": 18,
+    "x": -749,
+    "y": 252,
+    "spawnOffsetX": 0,
+    "spawnOffsetY": -150
+  },
+  "m4a": {
+    "islandSpriteIndex": 6,
+    "x": -1080,
+    "y": 392,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "mp4": {
+    "islandSpriteIndex": 17,
+    "x": 0,
+    "y": 0,
+    "spawnOffsetX": -200,
+    "spawnOffsetY": 30
+  },
+  "mov": {
+    "islandSpriteIndex": 14,
+    "x": -430,
+    "y": 500,
+    "spawnOffsetX": -60,
+    "spawnOffsetY": -180
+  },
+  "webm": {
+    "islandSpriteIndex": 15,
+    "x": 100,
+    "y": 600,
+    "spawnOffsetX": -40,
+    "spawnOffsetY": -140
+  },
+  "mkv": {
+    "islandSpriteIndex": 19,
+    "x": -500,
+    "y": -200,
+    "spawnOffsetX": 130,
+    "spawnOffsetY": 140
+  },
+  "ts": {
+    "islandSpriteIndex": 18,
+    "x": 500,
+    "y": 300,
+    "spawnOffsetX": -100,
+    "spawnOffsetY": 100
+  },
+  "qoi": {
+    "islandSpriteIndex": 8,
+    "x": 1815,
+    "y": 115,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "pdf": {
+    "islandSpriteIndex": 9,
+    "x": 1762,
+    "y": -262,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ai": {
+    "islandSpriteIndex": 8,
+    "x": 81,
+    "y": -573,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "opus": {
+    "islandSpriteIndex": 17,
+    "x": -34,
+    "y": 25,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "aiff": {
+    "islandSpriteIndex": 12,
+    "x": 665,
+    "y": -635,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "au": {
+    "islandSpriteIndex": 11,
+    "x": -358,
+    "y": -391,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "caf": {
+    "islandSpriteIndex": 16,
+    "x": -319,
+    "y": -1013,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ac3": {
+    "islandSpriteIndex": 15,
+    "x": -400,
+    "y": 347,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "mp2": {
+    "islandSpriteIndex": 8,
+    "x": -433,
+    "y": 49,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "wma": {
+    "islandSpriteIndex": 19,
+    "x": 211,
+    "y": 448,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "weba": {
+    "islandSpriteIndex": 18,
+    "x": 29,
+    "y": -1182,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "mka": {
+    "islandSpriteIndex": 18,
+    "x": 171,
+    "y": -920,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "m4r": {
+    "islandSpriteIndex": 12,
+    "x": -40,
+    "y": 623,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "alac": {
+    "islandSpriteIndex": 10,
+    "x": 425,
+    "y": -376,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "tta": {
+    "islandSpriteIndex": 9,
+    "x": 1071,
+    "y": -82,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "amr": {
+    "islandSpriteIndex": 8,
+    "x": -662,
+    "y": 496,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "docx": {
+    "islandSpriteIndex": 9,
+    "x": -987,
+    "y": -1032,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "odt": {
+    "islandSpriteIndex": 10,
+    "x": -1442,
+    "y": -952,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "epub": {
+    "islandSpriteIndex": 17,
+    "x": 76,
+    "y": -1559,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "pptx": {
+    "islandSpriteIndex": 6,
+    "x": -93,
+    "y": -1266,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "rtf": {
+    "islandSpriteIndex": 6,
+    "x": 1044,
+    "y": -124,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "fb2": {
+    "islandSpriteIndex": 11,
+    "x": -46,
+    "y": -2125,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "html": {
+    "islandSpriteIndex": 15,
+    "x": 302,
+    "y": -1899,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "revealjs": {
+    "islandSpriteIndex": 18,
+    "x": -407,
+    "y": -1907,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "slidy": {
+    "islandSpriteIndex": 8,
+    "x": -384,
+    "y": -1553,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "md": {
+    "islandSpriteIndex": 14,
+    "x": 0,
+    "y": 87,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "gfm": {
+    "islandSpriteIndex": 12,
+    "x": 324,
+    "y": 243,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "commonmark": {
+    "islandSpriteIndex": 14,
+    "x": 283,
+    "y": -124,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "rst": {
+    "islandSpriteIndex": 14,
+    "x": 894,
+    "y": -802,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "org": {
+    "islandSpriteIndex": 15,
+    "x": -248,
+    "y": -203,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "textile": {
+    "islandSpriteIndex": 16,
+    "x": 1199,
+    "y": -416,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "wiki": {
+    "islandSpriteIndex": 15,
+    "x": -955,
+    "y": 273,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "dokuwiki": {
+    "islandSpriteIndex": 10,
+    "x": -1362,
+    "y": 432,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "jira": {
+    "islandSpriteIndex": 12,
+    "x": -609,
+    "y": 588,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "muse": {
+    "islandSpriteIndex": 14,
+    "x": 468,
+    "y": -758,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "adoc": {
+    "islandSpriteIndex": 6,
+    "x": 496,
+    "y": -483,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "xwiki": {
+    "islandSpriteIndex": 8,
+    "x": -1641,
+    "y": 151,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "zimwiki": {
+    "islandSpriteIndex": 19,
+    "x": -1119,
+    "y": 937,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "tikiwiki": {
+    "islandSpriteIndex": 15,
+    "x": -1353,
+    "y": 70,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "twiki": {
+    "islandSpriteIndex": 18,
+    "x": -1000,
+    "y": 605,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "creole": {
+    "islandSpriteIndex": 18,
+    "x": -972,
+    "y": -38,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "t2t": {
+    "islandSpriteIndex": 18,
+    "x": 787,
+    "y": -499,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "tex": {
+    "islandSpriteIndex": 17,
+    "x": -1383,
+    "y": -1362,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "beamer": {
+    "islandSpriteIndex": 19,
+    "x": -710,
+    "y": -1638,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "typ": {
+    "islandSpriteIndex": 9,
+    "x": -2192,
+    "y": -886,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "texi": {
+    "islandSpriteIndex": 9,
+    "x": -2322,
+    "y": -489,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "man": {
+    "islandSpriteIndex": 15,
+    "x": -1880,
+    "y": -1228,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ms": {
+    "islandSpriteIndex": 6,
+    "x": -194,
+    "y": -1823,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "haddock": {
+    "islandSpriteIndex": 10,
+    "x": -1818,
+    "y": -656,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ctx": {
+    "islandSpriteIndex": 11,
+    "x": -1128,
+    "y": -639,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "icml": {
+    "islandSpriteIndex": 16,
+    "x": -2064,
+    "y": -131,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "dbk": {
+    "islandSpriteIndex": 10,
+    "x": -164,
+    "y": -625,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "jats": {
+    "islandSpriteIndex": 10,
+    "x": -2230,
+    "y": -1608,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "tei": {
+    "islandSpriteIndex": 17,
+    "x": -2675,
+    "y": 351,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "opml": {
+    "islandSpriteIndex": 17,
+    "x": -1627,
+    "y": -1858,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ipynb": {
+    "islandSpriteIndex": 16,
+    "x": -2789,
+    "y": -820,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "csljson": {
+    "islandSpriteIndex": 11,
+    "x": -2354,
+    "y": 722,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ris": {
+    "islandSpriteIndex": 14,
+    "x": -2121,
+    "y": 341,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "endnote": {
+    "islandSpriteIndex": 14,
+    "x": -2857,
+    "y": -31,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "txt": {
+    "islandSpriteIndex": 19,
+    "x": 1011,
+    "y": 171,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "blend": {
+    "islandSpriteIndex": 16,
+    "x": 96,
+    "y": -124,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "glb": {
+    "islandSpriteIndex": 14,
+    "x": 112,
+    "y": -1004,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "gltf": {
+    "islandSpriteIndex": 18,
+    "x": 634,
+    "y": -873,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "obj": {
+    "islandSpriteIndex": 12,
+    "x": 392,
+    "y": -790,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "fbx": {
+    "islandSpriteIndex": 10,
+    "x": 103,
+    "y": -597,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "dae": {
+    "islandSpriteIndex": 15,
+    "x": 1037,
+    "y": -817,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "stl": {
+    "islandSpriteIndex": 9,
+    "x": 458,
+    "y": -1292,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ply": {
+    "islandSpriteIndex": 9,
+    "x": 539,
+    "y": 702,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "3ds": {
+    "islandSpriteIndex": 14,
+    "x": -556,
+    "y": -1060,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "3mf": {
+    "islandSpriteIndex": 12,
+    "x": 263,
+    "y": 423,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "off": {
+    "islandSpriteIndex": 8,
+    "x": 535,
+    "y": -1051,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "x": {
+    "islandSpriteIndex": 9,
+    "x": -690,
+    "y": -569,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ase": {
+    "islandSpriteIndex": 14,
+    "x": 577,
+    "y": -532,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "lwo": {
+    "islandSpriteIndex": 15,
+    "x": -393,
+    "y": -730,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "dxf": {
+    "islandSpriteIndex": 19,
+    "x": 938,
+    "y": 538,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ac": {
+    "islandSpriteIndex": 15,
+    "x": -352,
+    "y": -291,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  },
+  "ms3d": {
+    "islandSpriteIndex": 12,
+    "x": 582,
+    "y": 300,
+    "spawnOffsetX": 100,
+    "spawnOffsetY": 0
+  }
+}
