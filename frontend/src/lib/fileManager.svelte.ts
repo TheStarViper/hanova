@@ -13,7 +13,7 @@ const ELLIPSIS = "...";
 
 const COMPATIBLE_MEDIA_TYPES: Record<MediaType, MediaType[]> = {
   image: ["image"],
-  audio: ["audio"],
+  audio: ["audio", "video"],
   video: ["video", "audio"],
   document: ["document"],
   model: ["model"],
