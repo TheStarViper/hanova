@@ -23,7 +23,8 @@ buried **treasure**: your converted file!
   additional features other than the basics
 
 - converting video to audio
-- converting audio to video visualizer
+- converting audio into an image spectrogram
+- converting audio to a video visualizer
 - rasterizing images
 - vectorizing images
 - compressing video/audio/images
@@ -48,8 +49,8 @@ and glue code so that they can work seamlessly together.
 - [Libwebp](https://github.com/webmproject/libwebp) (webp)
 - [Imagetracerjs](https://github.com/jankovicsandras/imagetracerjs) (svg vectorizer & rasterizer)
 - [Imagemagick](https://github.com/ImageMagick/ImageMagick) (all other image formats)
-- [Mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video)
-- [FFmpeg](https://github.com/ffmpeg/ffmpeg) (audio)
+- [Mediabunny](https://github.com/Vanilagy/mediabunny) (audio and video encoding)
+- [FFmpeg](https://github.com/ffmpeg/ffmpeg) (audio & spectrogram generation)
 - [Pandoc](https://github.com/jgm/pandoc) (documents)
 - [Assimpjs](https://github.com/kovacsv/assimpjs) (3d models imports)
 - [Threejs](https://github.com/mrdoob/three.js/) (3d models exports)
@@ -63,7 +64,6 @@ Since this file conversion program uses alot of different libraries combined, a 
 ## Future Ideas
 
 - more audio visualizer customization like smoothing,bar count,visualizer type
-
 
 ### Supported File Formats
 
