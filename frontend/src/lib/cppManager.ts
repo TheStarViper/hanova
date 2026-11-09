@@ -4,7 +4,7 @@ export class CppManager {
   #worker: Worker | null = null;
   response: WorkerResponse | null = null;
 
-  hook: ((response: WorkerResponse) => void) | null = null;
+  hooks: ((response: WorkerResponse) => void)[] = [];
 
   constructor() {}
 
@@ -17,7 +17,9 @@ export class CppManager {
     this.#worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
       this.response = event.data;
 
-      this.hook?.(this.response);
+      for (const hook of this.hooks) {
+        hook(this.response);
+      }
     };
   }
 

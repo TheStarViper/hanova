@@ -90,8 +90,9 @@ export class World {
       this.titleCornered = false;
     }
 
-    this.cppManager.hook = (response: WorkerResponse) =>
-      this.conversionHandler(response);
+    this.cppManager.hooks.push(
+      (response: WorkerResponse) => this.conversionHandler(response),
+    );
 
     preloadSounds();
   }
@@ -190,11 +191,16 @@ export class World {
   boatArriveHandler() {
     const res = this.fileManager.downloadFile();
 
+    if (this.cppManager.hooks.length > 1) this.cppManager.hooks.pop();
+
     switch (res) {
       case undefined:
-        this.banner.text =
-          "error: the boat arrived before the conversion finished :(";
-        break;
+        // if the conversion isn't finished yet, subscribe to when it finishes
+        this.cppManager.hooks.push(
+          () => world.boatArriveHandler(),
+        );
+        this.banner.text = "Waiting for conversion to finish...";
+        return;
       case true:
         playSound("shovel1.wav");
 
