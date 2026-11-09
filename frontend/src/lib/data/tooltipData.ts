@@ -527,6 +527,103 @@ export const TOOLTIP_DATA: Record<TooltipKey, TooltipDatum> = {
     url: "https://en.wikipedia.org/wiki/Text_file",
   },
 
+  // 3d models
+  blend: {
+    title: "BLEND",
+    blurb:
+      "3D format used by Blender. Can store multiple scenes, objects, materials, textures, sounds, images, etc.",
+    url: "https://en.wikipedia.org/wiki/Blender_(software)#File_format",
+  },
+  glb: {
+    title: "glB",
+    blurb:
+      "3D format used to store scenes and objects. The compressed version of glTF.",
+    url: "https://en.wikipedia.org/wiki/GlTF",
+  },
+  gltf: {
+    title: "glTF",
+    blurb:
+      "3D format used to store scenes and objects. Also known as Graphics Library Transmission Format",
+    url: "https://en.wikipedia.org/wiki/GlTF",
+  },
+  obj: {
+    title: "OBJ",
+    blurb:
+      "3D format used for storing 3D geometry. Also known as Wavefront OBJ.",
+    url: "https://en.wikipedia.org/wiki/Wavefront_.obj_file",
+  },
+  fbx: {
+    title: "FBX",
+    blurb: "3D format used for storing scenes. Also known as Filmbox.",
+    url: "https://en.wikipedia.org/wiki/FBX",
+  },
+  dae: {
+    title: "DAE",
+    blurb: "3D format used to store assets. Also known as COLLADA.",
+    url: "https://en.wikipedia.org/wiki/COLLADA",
+  },
+  stl: {
+    title: "STL",
+    blurb: "3D format used for storing 3D meshes. ",
+    url: "https://en.wikipedia.org/wiki/STL_(file_format)",
+  },
+  ply: {
+    title: "PLY",
+    blurb:
+      "3D format used to store data from 3D scanners. Also known as Polygon File Format.",
+    url: "https://en.wikipedia.org/wiki/PLY_(file_format)",
+  },
+  "3ds": {
+    title: "3DS",
+    blurb: "3D format used to store assets. Used by Audodesk 3ds Max.",
+    url: "https://en.wikipedia.org/wiki/.3ds",
+  },
+  "3mf": {
+    title: "3MF",
+    blurb:
+      "3D format used for printing 3D models. Also known as 3D Manufacturing Format.",
+    url: "https://en.wikipedia.org/wiki/3D_Manufacturing_Format",
+  },
+  off: {
+    title: "OFF",
+    blurb:
+      "3D format used to store geometry. Also known as Object File Format.",
+    url: "https://en.wikipedia.org/wiki/OFF_(file_format)",
+  },
+  x: {
+    title: "X",
+    blurb: "3D format used by DirectX.",
+    url: "https://en.wikipedia.org/wiki/DirectX",
+  },
+  ase: {
+    title: "ASE",
+    blurb:
+      "3D format used to store meshes. Also known as ASCII Scene Explorer.",
+    url: "https://beyondunrealwiki.github.io/pages/ase-file-format.html",
+  },
+  lwo: {
+    title: "LWO",
+    blurb: "3D format used by LightWave 3D.",
+    url: "https://en.wikipedia.org/wiki/LightWave_3D",
+  },
+  dxf: {
+    title: "DXF",
+    blurb:
+      "3D format used for CAD, developed by Autodesk. Also known as Drawing Exchange Format.",
+    url: "https://en.wikipedia.org/wiki/AutoCAD_DXF",
+  },
+  ac: {
+    title: "AC",
+    blurb: "3D format used by AC3D.",
+    url: "https://en.wikipedia.org/wiki/AC3D",
+  },
+  ms3d: {
+    title: "MS3D",
+    blurb:
+      "3D format used for modeling in Half-Life, Counter-Strike, and The Sims.",
+    url: "http://milkshape3d.com/ms3d/",
+  },
+
   // Settings
   qualityPresetIdx: {
     title: "Conversion Quality",
