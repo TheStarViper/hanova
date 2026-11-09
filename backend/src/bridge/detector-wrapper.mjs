@@ -11,7 +11,7 @@ export function createDetector({media,docs,core,magick}){
         if (format ==="unknown") {format = detect_model_format(bytes);}
         if (format ==="unknown"&&core) {format = (await use(core)).validate_file_format(bytes);}
         if (format ==="unknown"&&magick) {format = await magick.detect_format(bytes);}
-        if (format === "unknown" && docs) {format = detect_markdown(bytes);}
+        //if (format === "unknown" && docs) {format = detect_markdown(bytes);}
         return ALIASES[format]??format;
     };
 }
