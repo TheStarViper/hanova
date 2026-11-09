@@ -51,7 +51,10 @@ function build({magickInit}={}){
   const ffmpeg = inBrowser ? {convert_audio: async (bytes,to,options)=>(await loadFfmpegBridge()).convert_audio(bytes,to,options)} : undefined;
   const media = {
     convert_media: async (bytes, to, options) => (await loadMediaBridge()).convert_media(bytes, to, options),
-    convert_audio_to_video: async (bytes,to,options)=>(await loadMediaBridge()).convert_audio_to_video(bytes,to,options),
+    ...(inBrowser && {
+      convert_audio_to_video: async (bytes,to,options) =>
+      (await loadMediaBridge()).convert_audio_to_video(bytes,to,options),
+    }),
   };
 
   const vector = inBrowser ?

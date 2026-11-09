@@ -123,7 +123,7 @@ for (const f of FFMPEG_ONLY_AUDIO){
 }
 
 export const MEDIA_FORMATS = Object.keys(MEDIA_INFO);
-export const MEDIA_PRESETS = ["potato", "small", "balanced", "high", "max"];
+export const MEDIA_PRESETS = ["potato", "low", "balanced", "high","very high", "max"];
 
 // read/write = pandoc's name for it
 // binary: zip containers passed as files. 

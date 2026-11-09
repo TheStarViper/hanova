@@ -101,10 +101,12 @@ export function createconverter({ core, webp, magick, media, docs, ffmpeg,vector
     link(VIDEO_FORMATS, VIDEO_FORMATS);
     link(VIDEO_FORMATS, MEDIABUNNY_AUDIO);
     link(MEDIABUNNY_AUDIO, MEDIABUNNY_AUDIO);
+  }
 
+  if (media.convert_audio_to_video){
     for (const a of MEDIABUNNY_AUDIO){
       for (const b of VIDEO_FORMATS){
-        register(a,b,(bytes,q,options)=> media.convert_audio_to_video(bytes,b,options),2);
+        if (!has(a, b)) register(a, b, (bytes, _q, options) => media.convert_audio_to_video(bytes, b, options), 3);
       }
     }
   }

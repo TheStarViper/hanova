@@ -47,13 +47,13 @@ const OUTPUT_FORMATS = {
 };
 
 /** @typedef {keyof PRESETS} QualityPreset */
-const PRESETS /** @type {const} */ = ({
+export const PRESETS /** @type {const} */ = ({
   potato: {video: { height: 360, bitrate: mediabunny.QUALITY_VERY_LOW },audio: { bitrate: mediabunny.QUALITY_VERY_LOW },},
   low: {video: { height: 480, bitrate: mediabunny.QUALITY_LOW },audio: { bitrate: mediabunny.QUALITY_LOW },},
   balanced: {video: { height: 720, bitrate: mediabunny.QUALITY_MEDIUM },audio: { bitrate: mediabunny.QUALITY_MEDIUM },},
   high: {video: { height: 1080, bitrate: mediabunny.QUALITY_HIGH },audio: { bitrate: mediabunny.QUALITY_HIGH },},
   "very high": {video: { height: 1080, bitrate: mediabunny.QUALITY_VERY_HIGH },audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },},
-  lossless: {video: { height: 3840, bitrate: mediabunny.QUALITY_VERY_HIGH },audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },},
+  max: {video: { height: 3840, bitrate: mediabunny.QUALITY_VERY_HIGH },audio: { bitrate: mediabunny.QUALITY_VERY_HIGH },},
 });
 
 /** @type {QualityPreset[]} */
