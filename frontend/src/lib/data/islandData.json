@@ -10,22 +10,22 @@
     "islandSpriteIndex": 6,
     "x": 3,
     "y": 797,
-    "spawnOffsetX": 50,
-    "spawnOffsetY": 100
+    "spawnOffsetX": 66,
+    "spawnOffsetY": -132
   },
   "jpg": {
     "islandSpriteIndex": 16,
     "x": 400,
     "y": 550,
-    "spawnOffsetX": 200,
-    "spawnOffsetY": 20
+    "spawnOffsetX": 199,
+    "spawnOffsetY": 36
   },
   "jxl": {
     "islandSpriteIndex": 8,
     "x": 780,
     "y": 715,
-    "spawnOffsetX": -100,
-    "spawnOffsetY": 100
+    "spawnOffsetX": -44,
+    "spawnOffsetY": -160
   },
   "png": {
     "islandSpriteIndex": 17,
@@ -59,8 +59,8 @@
     "islandSpriteIndex": 11,
     "x": 316,
     "y": -776,
-    "spawnOffsetX": -40,
-    "spawnOffsetY": 200
+    "spawnOffsetX": -143,
+    "spawnOffsetY": -159
   },
   "exr": {
     "islandSpriteIndex": 15,
@@ -87,8 +87,8 @@
     "islandSpriteIndex": 9,
     "x": -19,
     "y": -829,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 100
+    "spawnOffsetX": 183,
+    "spawnOffsetY": -83
   },
   "ico": {
     "islandSpriteIndex": 18,
@@ -115,22 +115,22 @@
     "islandSpriteIndex": 9,
     "x": 862,
     "y": -350,
-    "spawnOffsetX": 0,
-    "spawnOffsetY": 240
+    "spawnOffsetX": -8,
+    "spawnOffsetY": 161
   },
   "ogg": {
     "islandSpriteIndex": 15,
     "x": -1128,
     "y": 31,
-    "spawnOffsetX": -80,
-    "spawnOffsetY": 90
+    "spawnOffsetX": 9,
+    "spawnOffsetY": 166
   },
   "flac": {
     "islandSpriteIndex": 10,
     "x": 709,
     "y": 42,
-    "spawnOffsetX": -180,
-    "spawnOffsetY": -50
+    "spawnOffsetX": 33,
+    "spawnOffsetY": -256
   },
   "aac": {
     "islandSpriteIndex": 18,
@@ -143,8 +143,8 @@
     "islandSpriteIndex": 6,
     "x": -1080,
     "y": 392,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 99,
+    "spawnOffsetY": -22
   },
   "mp4": {
     "islandSpriteIndex": 17,
@@ -185,539 +185,539 @@
     "islandSpriteIndex": 8,
     "x": 1815,
     "y": 115,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 131,
+    "spawnOffsetY": -53
   },
   "pdf": {
     "islandSpriteIndex": 9,
     "x": 1762,
     "y": -262,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 211,
+    "spawnOffsetY": -50
   },
   "ai": {
     "islandSpriteIndex": 8,
     "x": 81,
     "y": -573,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 0,
+    "spawnOffsetY": -126
   },
   "opus": {
     "islandSpriteIndex": 17,
     "x": -34,
     "y": 25,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 287,
+    "spawnOffsetY": 42
   },
   "aiff": {
     "islandSpriteIndex": 12,
     "x": 665,
     "y": -635,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -7,
+    "spawnOffsetY": 194
   },
   "au": {
     "islandSpriteIndex": 11,
     "x": -358,
     "y": -391,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 176,
+    "spawnOffsetY": 42
   },
   "caf": {
     "islandSpriteIndex": 16,
     "x": -319,
     "y": -1013,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 172,
+    "spawnOffsetY": 192
   },
   "ac3": {
     "islandSpriteIndex": 15,
     "x": -400,
     "y": 347,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 89,
+    "spawnOffsetY": 176
   },
   "mp2": {
     "islandSpriteIndex": 8,
     "x": -433,
     "y": 49,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 11,
+    "spawnOffsetY": -128
   },
   "wma": {
     "islandSpriteIndex": 19,
     "x": 211,
     "y": 448,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -201,
+    "spawnOffsetY": -22
   },
   "weba": {
     "islandSpriteIndex": 18,
     "x": 29,
     "y": -1182,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 16,
+    "spawnOffsetY": -149
   },
   "mka": {
     "islandSpriteIndex": 18,
     "x": 171,
     "y": -920,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -146,
+    "spawnOffsetY": -91
   },
   "m4r": {
     "islandSpriteIndex": 12,
     "x": -40,
     "y": 623,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 16,
+    "spawnOffsetY": -164
   },
   "alac": {
     "islandSpriteIndex": 10,
     "x": 425,
     "y": -376,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 222,
+    "spawnOffsetY": -24
   },
   "tta": {
     "islandSpriteIndex": 9,
     "x": 1071,
     "y": -82,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -163,
+    "spawnOffsetY": -122
   },
   "amr": {
     "islandSpriteIndex": 8,
     "x": -662,
     "y": 496,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 60,
+    "spawnOffsetY": -120
   },
   "docx": {
     "islandSpriteIndex": 9,
     "x": -987,
     "y": -1032,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 122,
+    "spawnOffsetY": 129
   },
   "odt": {
     "islandSpriteIndex": 10,
     "x": -1442,
     "y": -952,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -1,
+    "spawnOffsetY": 252
   },
   "epub": {
     "islandSpriteIndex": 17,
     "x": 76,
     "y": -1559,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 293,
+    "spawnOffsetY": 69
   },
   "pptx": {
     "islandSpriteIndex": 6,
     "x": -93,
     "y": -1266,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 112,
+    "spawnOffsetY": -45
   },
   "rtf": {
     "islandSpriteIndex": 6,
     "x": 1044,
     "y": -124,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 41,
+    "spawnOffsetY": -118
   },
   "fb2": {
     "islandSpriteIndex": 11,
     "x": -46,
     "y": -2125,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 180,
+    "spawnOffsetY": 61
   },
   "html": {
     "islandSpriteIndex": 15,
     "x": 302,
     "y": -1899,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 73,
+    "spawnOffsetY": 139
   },
   "revealjs": {
     "islandSpriteIndex": 18,
     "x": -407,
     "y": -1907,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 17,
+    "spawnOffsetY": -168
   },
   "slidy": {
     "islandSpriteIndex": 8,
     "x": -384,
     "y": -1553,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -100,
+    "spawnOffsetY": -112
   },
   "md": {
     "islandSpriteIndex": 14,
     "x": 0,
     "y": 87,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 226,
+    "spawnOffsetY": -8
   },
   "gfm": {
     "islandSpriteIndex": 12,
     "x": 324,
     "y": 243,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -79,
+    "spawnOffsetY": -166
   },
   "commonmark": {
     "islandSpriteIndex": 14,
     "x": 283,
     "y": -124,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -47,
+    "spawnOffsetY": 207
   },
   "rst": {
     "islandSpriteIndex": 14,
     "x": 894,
     "y": -802,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 81,
+    "spawnOffsetY": -198
   },
   "org": {
     "islandSpriteIndex": 15,
     "x": -248,
     "y": -203,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 215,
+    "spawnOffsetY": -53
   },
   "textile": {
     "islandSpriteIndex": 16,
     "x": 1199,
     "y": -416,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 200,
+    "spawnOffsetY": -215
   },
   "wiki": {
     "islandSpriteIndex": 15,
     "x": -955,
     "y": 273,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -207,
+    "spawnOffsetY": -54
   },
   "dokuwiki": {
     "islandSpriteIndex": 10,
     "x": -1362,
     "y": 432,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -144,
+    "spawnOffsetY": -210
   },
   "jira": {
     "islandSpriteIndex": 12,
     "x": -609,
     "y": 588,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -162,
+    "spawnOffsetY": -121
   },
   "muse": {
     "islandSpriteIndex": 14,
     "x": 468,
     "y": -758,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 107,
+    "spawnOffsetY": -199
   },
   "adoc": {
     "islandSpriteIndex": 6,
-    "x": 496,
-    "y": -483,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "x": 512,
+    "y": -507,
+    "spawnOffsetX": -117,
+    "spawnOffsetY": 29
   },
   "xwiki": {
     "islandSpriteIndex": 8,
     "x": -1641,
     "y": 151,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 45,
+    "spawnOffsetY": 131
   },
   "zimwiki": {
     "islandSpriteIndex": 19,
     "x": -1119,
     "y": 937,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 131,
+    "spawnOffsetY": -147
   },
   "tikiwiki": {
     "islandSpriteIndex": 15,
     "x": -1353,
     "y": 70,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -149,
+    "spawnOffsetY": 127
   },
   "twiki": {
     "islandSpriteIndex": 18,
     "x": -1000,
     "y": 605,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 8,
+    "spawnOffsetY": -166
   },
   "creole": {
     "islandSpriteIndex": 18,
     "x": -972,
     "y": -38,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -112,
+    "spawnOffsetY": 115
   },
   "t2t": {
     "islandSpriteIndex": 18,
     "x": 787,
     "y": -499,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 65,
+    "spawnOffsetY": 138
   },
   "tex": {
     "islandSpriteIndex": 17,
     "x": -1383,
     "y": -1362,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 309,
+    "spawnOffsetY": 28
   },
   "beamer": {
     "islandSpriteIndex": 19,
     "x": -710,
     "y": -1638,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 181,
+    "spawnOffsetY": -34
   },
   "typ": {
     "islandSpriteIndex": 9,
     "x": -2192,
     "y": -886,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 215,
+    "spawnOffsetY": -43
   },
   "texi": {
     "islandSpriteIndex": 9,
     "x": -2322,
     "y": -489,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -176,
+    "spawnOffsetY": -139
   },
   "man": {
     "islandSpriteIndex": 15,
     "x": -1880,
     "y": -1228,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 81,
+    "spawnOffsetY": 146
   },
   "ms": {
     "islandSpriteIndex": 6,
     "x": -194,
     "y": -1823,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 136,
+    "spawnOffsetY": -9
   },
   "haddock": {
     "islandSpriteIndex": 10,
     "x": -1818,
     "y": -656,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 39,
+    "spawnOffsetY": -247
   },
   "ctx": {
     "islandSpriteIndex": 11,
     "x": -1128,
     "y": -639,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 181,
+    "spawnOffsetY": 69
   },
   "icml": {
     "islandSpriteIndex": 16,
     "x": -2064,
     "y": -131,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -254,
+    "spawnOffsetY": -25
   },
   "dbk": {
     "islandSpriteIndex": 10,
     "x": -164,
     "y": -625,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 109,
+    "spawnOffsetY": 214
   },
   "jats": {
     "islandSpriteIndex": 10,
     "x": -2230,
     "y": -1608,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 57,
+    "spawnOffsetY": -244
   },
   "tei": {
     "islandSpriteIndex": 17,
     "x": -2675,
     "y": 351,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 306,
+    "spawnOffsetY": -2
   },
   "opml": {
     "islandSpriteIndex": 17,
     "x": -1627,
     "y": -1858,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 291,
+    "spawnOffsetY": 28
   },
   "ipynb": {
     "islandSpriteIndex": 16,
     "x": -2789,
     "y": -820,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 207,
+    "spawnOffsetY": 181
   },
   "csljson": {
     "islandSpriteIndex": 11,
     "x": -2354,
     "y": 722,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 2,
+    "spawnOffsetY": -232
   },
   "ris": {
     "islandSpriteIndex": 14,
     "x": -2121,
     "y": 341,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -207,
+    "spawnOffsetY": 6
   },
   "endnote": {
     "islandSpriteIndex": 14,
     "x": -2857,
     "y": -31,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 184,
+    "spawnOffsetY": 33
   },
   "txt": {
     "islandSpriteIndex": 19,
     "x": 1011,
     "y": 171,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -187,
+    "spawnOffsetY": 28
   },
   "blend": {
     "islandSpriteIndex": 16,
     "x": 96,
     "y": -124,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 147,
+    "spawnOffsetY": -232
   },
   "glb": {
     "islandSpriteIndex": 14,
     "x": 112,
     "y": -1004,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 110,
+    "spawnOffsetY": 180
   },
   "gltf": {
     "islandSpriteIndex": 18,
     "x": 634,
     "y": -873,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -46,
+    "spawnOffsetY": 132
   },
   "obj": {
     "islandSpriteIndex": 12,
     "x": 392,
     "y": -790,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -164,
+    "spawnOffsetY": -40
   },
   "fbx": {
     "islandSpriteIndex": 10,
     "x": 103,
     "y": -597,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 107,
+    "spawnOffsetY": -222
   },
   "dae": {
     "islandSpriteIndex": 15,
     "x": 1037,
     "y": -817,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -211,
+    "spawnOffsetY": -41
   },
   "stl": {
     "islandSpriteIndex": 9,
     "x": 458,
     "y": -1292,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -61,
+    "spawnOffsetY": 152
   },
   "ply": {
     "islandSpriteIndex": 9,
     "x": 539,
     "y": 702,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 10,
+    "spawnOffsetY": -181
   },
   "3ds": {
     "islandSpriteIndex": 14,
     "x": -556,
     "y": -1060,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 173,
+    "spawnOffsetY": 119
   },
   "3mf": {
-    "islandSpriteIndex": 12,
-    "x": 263,
-    "y": 423,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "islandSpriteIndex": 15,
+    "x": 273,
+    "y": 451,
+    "spawnOffsetX": 20,
+    "spawnOffsetY": 199
   },
   "off": {
     "islandSpriteIndex": 8,
     "x": 535,
     "y": -1051,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -135,
+    "spawnOffsetY": -68
   },
   "x": {
     "islandSpriteIndex": 9,
     "x": -690,
     "y": -569,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": 207,
+    "spawnOffsetY": 21
   },
   "ase": {
     "islandSpriteIndex": 14,
     "x": 577,
     "y": -532,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -4,
+    "spawnOffsetY": -209
   },
   "lwo": {
-    "islandSpriteIndex": 15,
-    "x": -393,
-    "y": -730,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "islandSpriteIndex": 18,
+    "x": -377,
+    "y": -747,
+    "spawnOffsetX": -13,
+    "spawnOffsetY": 140
   },
   "dxf": {
     "islandSpriteIndex": 19,
     "x": 938,
     "y": 538,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -171,
+    "spawnOffsetY": 44
   },
   "ac": {
     "islandSpriteIndex": 15,
     "x": -352,
     "y": -291,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -39,
+    "spawnOffsetY": -189
   },
   "ms3d": {
     "islandSpriteIndex": 12,
     "x": 582,
     "y": 300,
-    "spawnOffsetX": 100,
-    "spawnOffsetY": 0
+    "spawnOffsetX": -91,
+    "spawnOffsetY": 157
   }
 }
