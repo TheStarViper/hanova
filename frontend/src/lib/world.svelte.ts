@@ -277,10 +277,10 @@ export class World {
       this.islandEditTarget.localPos.y = Math.round(worldY - clusterCenter.y);
     } else if (this.islandEditTopic === "spawn") {
       this.islandEditTarget.spawnOffset.x = Math.round(
-        worldX - clusterCenter.x - this.islandEditTarget.pos.x,
+        worldX - this.islandEditTarget.pos.x,
       );
       this.islandEditTarget.spawnOffset.y = Math.round(
-        worldY - clusterCenter.y - this.islandEditTarget.pos.y,
+        worldY - this.islandEditTarget.pos.y,
       );
     }
 
