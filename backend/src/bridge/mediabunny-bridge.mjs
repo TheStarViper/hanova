@@ -210,10 +210,10 @@ export async function convert_audio_to_video(inputdata, target, options = {}) {
   const p = PRESETS[options.preset] ?? {};
   const height = (options.video?.height ?? p.video?.height ?? 720) & ~1;
   const width = (options.video?.width ?? Math.round((height * 16) / 9)) & ~1;
-  const fps = options.fps ?? 30;
+  const fps = options.fps ?? 60;
   const background = options.backgroundColor ?? "#000000";
   const waveColor = options.waveColor ?? "#00ffcc";
-  const BARS = 32;
+  const BARS = 64;
 
   let output;
   try {
@@ -273,7 +273,31 @@ export async function convert_audio_to_video(inputdata, target, options = {}) {
     const audioDone = audioSource.add(audioBuffer).then(()=>audioSource.close());
     const barWidth = width/BARS;
 
-    for()
+    for(let i = 0;i<frames;i++){
+      if (options.signal?.aborted) {throw cancelled();}
+
+      ctx.fillStyle = background;
+      ctx.fillRect(0,0,width,height);
+      ctx.fillStyle = waveColor;
+
+      for (let j =0;j<BARS;j++){
+        const level = Math.min(1, (frameBands[i]?.[j] ?? 0) * gain);
+        const barHeight = Math.max(4, level * height * 0.75);
+        
+        ctx.fillRect(
+          j * barWidth + 2,
+          height - barHeight - 20,
+          Math.max(1, barWidth - 4),
+          barHeight
+        );
+      }
+      await videoSource.add(i / fps, 1 / fps);
+      options.onProgress?.(i / frames);
+    }
+    videoSource.close();
+    await audioDone;
+    await output.finalize();
+    return new Uint8Array(sink.buffer);
   } catch (error) {
     try { await output?.cancel?.(); } catch {}
     if (options.signal?.aborted) throw cancelled(error);
