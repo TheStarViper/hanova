@@ -1,6 +1,6 @@
-import type { Format, MediaType } from "#lib/backend.js";
+import { type Format, FORMATS, type MediaType } from "#lib/backend.js";
 import { Pos } from "#lib/utils.svelte.js";
-import type { IslandSpriteIndex } from "./islandSprites";
+import { ISLAND_SPRITES, type IslandSpriteIndex } from "./islandSprites";
 
 export interface IslandDatum {
   x: number;
@@ -14,8 +14,8 @@ export const ISLAND_CLUSTER_CENTERS: Record<MediaType, Pos> = {
   image: new Pos(0, 0),
   audio: new Pos(2000, -1500),
   video: new Pos(3500, -500),
-  document: new Pos(-3000, -3000),
-  model: new Pos(-3000, 3000),
+  document: new Pos(-2000, -2000),
+  model: new Pos(-2000, 2000),
 };
 
 export const ISLAND_DATA: Partial<Record<Format, IslandDatum>> = {
@@ -200,5 +200,98 @@ export const ISLAND_DATA: Partial<Record<Format, IslandDatum>> = {
     y: 300,
     spawnOffsetX: -100,
     spawnOffsetY: 100,
-  },
+	},
+	qoi: {islandSpriteIndex: 17,x: 509, y: 180,spawnOffsetX: 100,spawnOffsetY: 0},
+	pdf: {islandSpriteIndex: 8,x: 417, y: 595,spawnOffsetX: 100,spawnOffsetY: 0},
+	ai: {islandSpriteIndex: 15,x: -269, y: -893,spawnOffsetX: 100,spawnOffsetY: 0},
+	opus: {islandSpriteIndex: 16,x: 71, y: -153,spawnOffsetX: 100,spawnOffsetY: 0},
+	aiff: {islandSpriteIndex: 12,x: 684, y: 179,spawnOffsetX: 100,spawnOffsetY: 0},
+	au: {islandSpriteIndex: 11,x: -289, y: 454,spawnOffsetX: 100,spawnOffsetY: 0},
+	caf: {islandSpriteIndex: 16,x: 83, y: 827,spawnOffsetX: 100,spawnOffsetY: 0},
+	ac3: {islandSpriteIndex: 15,x: 552, y: 187,spawnOffsetX: 100,spawnOffsetY: 0},
+	mp2: {islandSpriteIndex: 11,x: 6, y: 620,spawnOffsetX: 100,spawnOffsetY: 0},
+	wma: {islandSpriteIndex: 19,x: -771, y: 807,spawnOffsetX: 100,spawnOffsetY: 0},
+	weba: {islandSpriteIndex: 18,x: -628, y: -249,spawnOffsetX: 100,spawnOffsetY: 0},
+	mka: {islandSpriteIndex: 18,x: 756, y: 350,spawnOffsetX: 100,spawnOffsetY: 0},
+	m4r: {islandSpriteIndex: 12,x: 434, y: 761,spawnOffsetX: 100,spawnOffsetY: 0},
+	alac: {islandSpriteIndex: 10,x: 260, y: -944,spawnOffsetX: 100,spawnOffsetY: 0},
+	tta: {islandSpriteIndex: 10,x: -424, y: -26,spawnOffsetX: 100,spawnOffsetY: 0},
+	amr: {islandSpriteIndex: 8,x: -986, y: -121,spawnOffsetX: 100,spawnOffsetY: 0},
+	docx: {islandSpriteIndex: 9,x: -634, y: 359,spawnOffsetX: 100,spawnOffsetY: 0},
+	odt: {islandSpriteIndex: 10,x: 577, y: 417,spawnOffsetX: 100,spawnOffsetY: 0},
+	epub: {islandSpriteIndex: 17,x: 44, y: -61,spawnOffsetX: 100,spawnOffsetY: 0},
+	pptx: {islandSpriteIndex: 6,x: 153, y: 892,spawnOffsetX: 100,spawnOffsetY: 0},
+	rtf: {islandSpriteIndex: 6,x: -637, y: -825,spawnOffsetX: 100,spawnOffsetY: 0},
+	fb2: {islandSpriteIndex: 11,x: 330, y: -647,spawnOffsetX: 100,spawnOffsetY: 0},
+	html: {islandSpriteIndex: 15,x: 118, y: -176,spawnOffsetX: 100,spawnOffsetY: 0},
+	revealjs: {islandSpriteIndex: 18,x: 951, y: 260,spawnOffsetX: 100,spawnOffsetY: 0},
+	slidy: {islandSpriteIndex: 8,x: 515, y: 651,spawnOffsetX: 100,spawnOffsetY: 0},
+	md: {islandSpriteIndex: 14,x: -562, y: 490,spawnOffsetX: 100,spawnOffsetY: 0},
+	gfm: {islandSpriteIndex: 12,x: -936, y: 566,spawnOffsetX: 100,spawnOffsetY: 0},
+	commonmark: {islandSpriteIndex: 14,x: 793, y: 622,spawnOffsetX: 100,spawnOffsetY: 0},
+	rst: {islandSpriteIndex: 14,x: 389, y: -598,spawnOffsetX: 100,spawnOffsetY: 0},
+	org: {islandSpriteIndex: 15,x: -910, y: 106,spawnOffsetX: 100,spawnOffsetY: 0},
+	textile: {islandSpriteIndex: 16,x: -572, y: -133,spawnOffsetX: 100,spawnOffsetY: 0},
+	wiki: {islandSpriteIndex: 15,x: 560, y: -357,spawnOffsetX: 100,spawnOffsetY: 0},
+	dokuwiki: {islandSpriteIndex: 10,x: 883, y: -870,spawnOffsetX: 100,spawnOffsetY: 0},
+	jira: {islandSpriteIndex: 12,x: 465, y: 672,spawnOffsetX: 100,spawnOffsetY: 0},
+	muse: {islandSpriteIndex: 14,x: -626, y: 126,spawnOffsetX: 100,spawnOffsetY: 0},
+	adoc: {islandSpriteIndex: 6,x: 842, y: 612,spawnOffsetX: 100,spawnOffsetY: 0},
+	xwiki: {islandSpriteIndex: 8,x: -421, y: -48,spawnOffsetX: 100,spawnOffsetY: 0},
+	zimwiki: {islandSpriteIndex: 19,x: -296, y: 275,spawnOffsetX: 100,spawnOffsetY: 0},
+	tikiwiki: {islandSpriteIndex: 15,x: -480, y: 178,spawnOffsetX: 100,spawnOffsetY: 0},
+	twiki: {islandSpriteIndex: 18,x: -348, y: 181,spawnOffsetX: 100,spawnOffsetY: 0},
+	creole: {islandSpriteIndex: 18,x: -219, y: 895,spawnOffsetX: 100,spawnOffsetY: 0},
+	t2t: {islandSpriteIndex: 18,x: -908, y: 668,spawnOffsetX: 100,spawnOffsetY: 0},
+	tex: {islandSpriteIndex: 17,x: -741, y: -885,spawnOffsetX: 100,spawnOffsetY: 0},
+	beamer: {islandSpriteIndex: 19,x: 674, y: 525,spawnOffsetX: 100,spawnOffsetY: 0},
+	typ: {islandSpriteIndex: 9,x: -967, y: -123,spawnOffsetX: 100,spawnOffsetY: 0},
+	texi: {islandSpriteIndex: 9,x: -713, y: -383,spawnOffsetX: 100,spawnOffsetY: 0},
+	man: {islandSpriteIndex: 15,x: 532, y: -913,spawnOffsetX: 100,spawnOffsetY: 0},
+	ms: {islandSpriteIndex: 6,x: -441, y: 599,spawnOffsetX: 100,spawnOffsetY: 0},
+	haddock: {islandSpriteIndex: 10,x: 973, y: -169,spawnOffsetX: 100,spawnOffsetY: 0},
+	ctx: {islandSpriteIndex: 11,x: -420, y: 649,spawnOffsetX: 100,spawnOffsetY: 0},
+	icml: {islandSpriteIndex: 16,x: -179, y: -208,spawnOffsetX: 100,spawnOffsetY: 0},
+	dbk: {islandSpriteIndex: 10,x: -654, y: 212,spawnOffsetX: 100,spawnOffsetY: 0},
+	jats: {islandSpriteIndex: 10,x: 747, y: -130,spawnOffsetX: 100,spawnOffsetY: 0},
+	tei: {islandSpriteIndex: 17,x: 867, y: -68,spawnOffsetX: 100,spawnOffsetY: 0},
+	opml: {islandSpriteIndex: 17,x: 248, y: -454,spawnOffsetX: 100,spawnOffsetY: 0},
+	ipynb: {islandSpriteIndex: 16,x: -94, y: 48,spawnOffsetX: 100,spawnOffsetY: 0},
+	csljson: {islandSpriteIndex: 11,x: -885, y: 287,spawnOffsetX: 100,spawnOffsetY: 0},
+	ris: {islandSpriteIndex: 14,x: 813, y: 449,spawnOffsetX: 100,spawnOffsetY: 0},
+	endnote: {islandSpriteIndex: 14,x: 862, y: 14,spawnOffsetX: 100,spawnOffsetY: 0},
+	txt: {islandSpriteIndex: 19,x: -586, y: 490,spawnOffsetX: 100,spawnOffsetY: 0},
+	blend: {islandSpriteIndex: 6,x: -77, y: -941,spawnOffsetX: 100,spawnOffsetY: 0},
+	glb: {islandSpriteIndex: 15,x: -642, y: -492,spawnOffsetX: 100,spawnOffsetY: 0},
+	gltf: {islandSpriteIndex: 18,x: -680, y: -633,spawnOffsetX: 100,spawnOffsetY: 0},
+	obj: {islandSpriteIndex: 12,x: -883, y: -608,spawnOffsetX: 100,spawnOffsetY: 0},
+	fbx: {islandSpriteIndex: 8,x: -723, y: 106,spawnOffsetX: 100,spawnOffsetY: 0},
+	dae: {islandSpriteIndex: 15,x: -734, y: 460,spawnOffsetX: 100,spawnOffsetY: 0},
+	stl: {islandSpriteIndex: 6,x: 386, y: -959,spawnOffsetX: 100,spawnOffsetY: 0},
+	ply: {islandSpriteIndex: 8,x: -561, y: 23,spawnOffsetX: 100,spawnOffsetY: 0},
+	"3ds": {islandSpriteIndex: 14,x: -998, y: 175,spawnOffsetX: 100,spawnOffsetY: 0},
+	"3mf": {islandSpriteIndex: 11,x: -346, y: -140,spawnOffsetX: 100,spawnOffsetY: 0},
+	off: {islandSpriteIndex: 8,x: 430, y: -639,spawnOffsetX: 100,spawnOffsetY: 0},
+	x: {islandSpriteIndex: 10,x: 803, y: -92,spawnOffsetX: 100,spawnOffsetY: 0},
+	ase: {islandSpriteIndex: 14,x: -532, y: 888,spawnOffsetX: 100,spawnOffsetY: 0},
+	lwo: {islandSpriteIndex: 15,x: -754, y: -221,spawnOffsetX: 100,spawnOffsetY: 0},
+	dxf: {islandSpriteIndex: 19,x: 990, y: -446,spawnOffsetX: 100,spawnOffsetY: 0},
+	ac: {islandSpriteIndex: 15,x: 10, y: 517,spawnOffsetX: 100,spawnOffsetY: 0},
+	ms3d: {islandSpriteIndex: 12,x: -777, y: 472,spawnOffsetX: 100,spawnOffsetY: 0},
 };
+
+// function randomlyInitUnusedIslands() {
+//   const spriteKeys = Object.keys(ISLAND_SPRITES);
+//   const randomSprite = () =>
+//     spriteKeys[Math.floor(Math.random() * spriteKeys.length)];
+
+//   const randomPos = () => Math.round((Math.random() * 2000) - 1000);
+
+//   return FORMATS
+//     .filter((f) => !(f in ISLAND_DATA))
+//     .map((f) =>
+//       `${f}: {islandSpriteIndex: ${randomSprite()},x: ${randomPos()}, y: ${randomPos()},spawnOffsetX: 100,spawnOffsetY: 0},`
+//     )
+//     .join("\n");
+// }
+// console.log(randomlyInitUnusedIslands());
