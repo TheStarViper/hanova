@@ -174,10 +174,16 @@ aesthetic: a sleek modern webpage with a small box to drop files into and a
 dropdown to select the target format. Well that's boring! It would be much more
 fun if the whole website was styled as an antique nautical map.
 
-The current design of the frontend is ~~stolen from~~ inspired by
-[Perilous Shores](https://watabou.itch.io/perilous-shores) by Watabou, and I
-made most of Hanova's assets by extracting them from Perilous Shores exports. We
-might change the art direction or use custom assets in the future.
+### Islands
+
+![Very zoomed-out Hanova map, with many islands visible](./frontend/src/lib/assets/map_screenshot.png)
+
+Because Hanova supports 103 formats, it also has 103 islands.
+
+The islands are manually arranged into a somewhat logical layout. I grouped islands of the same media type (image, audio, video, document, or 3d) into clusters, and separated the clusters by large gaps. Within each cluster, I tried to group the islands by what kind of format they are (e.g. I grouped the lossy audio formats together, and the lossless audio formats together).
+
+The island assets (and also the compass, banner, and just overall aesthetic direction) are ~~stolen from~~ inspired by
+[Perilous Shores](https://watabou.itch.io/perilous-shores) by Watabou.
 
 ### Pathfinding
 
