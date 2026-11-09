@@ -15,10 +15,12 @@ function needDom(){
     }
 }
 
-const canvasToPng = async (canvas) =>{
-    const blob = await new Promise((resolve,reject)=>
-        canvas.toBlob((b)=>(b?resolve(b):reject(new Error("canvas.toBlob failed"))), "image/png"));
-    return new Uint8Array(await blob.arrayBuffer());
+const canvasToPng = async (canvas) => {
+  const blob = canvas.convertToBlob
+    ? await canvas.convertToBlob({ type: "image/png" })
+    : await new Promise((resolve, reject) =>
+        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("canvas.toBlob failed"))), "image/png"));
+  return new Uint8Array(await blob.arrayBuffer());
 };
 
 export async function render_svg(bytes,options = {}){
@@ -65,32 +67,32 @@ export async function render_svg(bytes,options = {}){
         throw to_convert_error(error,ErrorCode.NativeFailure);
     }
 }
+const makeCanvas = (w, h) =>
+    typeof OffscreenCanvas !== "undefined"
+        ? new OffscreenCanvas(w, h)
+        : Object.assign(document.createElement("canvas"), { width: w, height: h });
 
-export async function trace_svg(bytes,options={}){
+export async function trace_svg(bytes, options = {}) {
     try {
-        needDom;
-        const [ImageTracer,bitmap] = await Promise.all([
-            tracer(),
-            createImageBitmap(new Blob([bytes],{type: "image/png"})),
+        const [ImageTracer, bitmap] = await Promise.all([
+        tracer(),
+        createImageBitmap(new Blob([bytes], { type: "image/png" })),
         ]);
 
         const max = options.traceMaxSide ?? 1024;
-        const k = Math.min(1,max/Math.max(bitmap.width,bitmap.height));
-        const w = Math.max(1,Math.round(bitmap.width*k));
-        const h = Math.max(1,Math.round(bitmap.height*k));
+        const k = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+        const w = Math.max(1, Math.round(bitmap.width * k));
+        const h = Math.max(1, Math.round(bitmap.height * k));
 
-        const canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-
-        const ctx = canvas.getContext("2d",{willReadFrequently: true});
-        ctx.drawImage(bitmap,0,0,w,h);
+        const canvas = makeCanvas(w, h);
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        ctx.drawImage(bitmap, 0, 0, w, h);
         bitmap.close?.();
 
-        const config = typeof options.svg ==="string"?options.svg : {viewbox: true,...options.svg};
-        const svg = ImageTracer.imagedataToSVG(ctx.getImageData(0,0,w,h),config);
+        const config = typeof options.svg === "string" ? options.svg : { viewbox: true, ...options.svg };
+        const svg = ImageTracer.imagedataToSVG(ctx.getImageData(0, 0, w, h), config);
         return new TextEncoder().encode(svg);
-    } catch (error){
-        throw to_convert_error(error,ErrorCode.NativeFailure);
+    } catch (error) {
+        throw to_convert_error(error, ErrorCode.NativeFailure);
     }
 }

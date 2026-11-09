@@ -23,7 +23,9 @@ const loadDocBridge = lazy(() => import("./pandoc-bridge.mjs"));
 const loadFfmpegBridge = lazy(()=>import("./ffmpeg-bridge.mjs"));
 const loadAssimpBridge = lazy(()=> import("./assimp-bridge.mjs"));
 const loadThreeBridge = lazy(()=>import("./three-bridge.mjs"));
-const inBrowser = typeof document !=="undefined";
+const inBrowser =
+  typeof document !== "undefined" ||
+  (typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope);
 
 const MAGICK_NAMES = ["png","gif", "avif", "tiff", "ico", "jxl", "qoi", "psd", "exr", "bmp", "webp", "pdf", "eps", "ai"];
 const MAGICK_OUTPUT_ONLY = ["ico", "pdf", "eps", "ai"];

@@ -195,15 +195,18 @@ const asQuality = (value,fallback)=>
   : typeof value === 'number' ? new mediabunny.Quality({bitrate: value})
   : new mediabunny.Quality(fallback);
 
+const cancelled = (cause) =>
+  new ConvertError(ErrorCode.Cancelled, "Conversion was cancelled", cause ? { cause } : undefined);
+
 export async function convert_audio_to_video(inputdata, target, options = {}) {
   const codecs = AV_CODECS[target];
   const make = OUTPUT_FORMATS[target];
   if (!codecs || !make) {
     throw new ConvertError(ErrorCode.UnsupportedOutput, `Can't make a "${target}" video from audio`);
   }
-  if (typeof OfflineAudioContext === "undefined" ||
+  if (typeof AudioDecoder === "undefined" ||
       (typeof OffscreenCanvas === "undefined" && typeof document === "undefined")) {
-    throw new ConvertError(ErrorCode.EncoderUnavailable, "Making a video from audio needs a browser");
+    throw new ConvertError(ErrorCode.EncoderUnavailable, "This environment lacks WebCodecs / canvas support");
   }
   if (options.signal?.aborted) throw cancelled();
 
@@ -219,62 +222,95 @@ export async function convert_audio_to_video(inputdata, target, options = {}) {
   try {
     await ensureEncoder(codecs.audio);
 
-    const audioBuffer = await new OfflineAudioContext(2, 1, 48000).decodeAudioData(inputdata.slice().buffer);
-    const samples = audioBuffer.getChannelData(0);
-    const frames = Math.max(1, Math.ceil(audioBuffer.duration * fps));
-
-    const perFrame = Math.max(1, Math.floor(audioBuffer.sampleRate / fps));
-    const frameBands = Array.from({length: frames},()=>new Float32Array(BARS));
-    let highestPeak = 0;
-
-    for (let i = 0;i<frames;i++){
-      const start = i*perFrame;
-      const end = Math.min(samples.length,start+perFrame);
-      const windowSize = end-start;
-
-      if (windowSize>0){
-        const subChunkSize = Math.max(1,Math.floor(windowSize/BARS));
-        for (let j = 0; j<BARS;j++){
-          const subStart = start + j*subChunkSize;
-          const subEnd = Math.min(end,subStart+subChunkSize);
-          
-          let sum = 0;
-          for (let s = subStart;s<subEnd;s++){
-            sum+=samples[s]*samples[s];
-          }
-          const rms = Math.sqrt(sum/(subEnd-subStart));
-          frameBands[i][j]=rms;
-          if (rms>highestPeak) {highestPeak=rms;}
-        }
-      }
+    const input = new mediabunny.Input({
+      source: new mediabunny.BufferSource(inputdata),
+      formats: mediabunny.ALL_FORMATS,
+    });
+    const audioTrack = await input.getPrimaryAudioTrack();
+    if (!audioTrack) {
+      throw new ConvertError(ErrorCode.NothingToConvert, "File has no audio track");
+    }
+    if (!(await audioTrack.canDecode())) {
+      throw new ConvertError(ErrorCode.EncoderUnavailable, `Can't decode ${audioTrack.codec} audio here`);
     }
 
-    const gain =highestPeak>0?1/highestPeak:1;
+    const sampleRate = audioTrack.sampleRate;
+    const duration = await audioTrack.computeDuration();
+    const frames = Math.max(1, Math.ceil(duration * fps));
+    const sink = new mediabunny.AudioSampleSink(audioTrack);
+
+    const samples = new Float32Array(Math.ceil(duration * sampleRate) + sampleRate);
+    let written = 0;
+    for await (const sample of sink.samples()) {
+      if (options.signal?.aborted) { sample.close(); throw cancelled(); }
+      const n = sample.numberOfFrames;
+      const chunk = new Float32Array(sample.allocationSize({ planeIndex: 0, format: "f32-planar" }) / 4);
+      sample.copyTo(chunk, { planeIndex: 0, format: "f32-planar" });
+      sample.close();
+      const offset = Math.max(0, Math.round(sample.timestamp * sampleRate));
+      if (offset + n > samples.length) break;
+      samples.set(chunk.subarray(0, n), offset);
+      written = Math.max(written, offset + n);
+    }
+
+    const perFrame = Math.max(1, Math.floor(sampleRate / fps));
+    const frameBands = Array.from({ length: frames }, () => new Float32Array(BARS));
+    let highestPeak = 0;
+
+    for (let i = 0; i < frames; i++) {
+      const start = i * perFrame;
+      const end = Math.min(written, start + perFrame);
+      const windowSize = end - start;
+      if (windowSize <= 0) continue;
+
+      const subChunkSize = Math.max(1, Math.floor(windowSize / BARS));
+      for (let j = 0; j < BARS; j++) {
+        const subStart = start + j * subChunkSize;
+        const subEnd = Math.min(end, subStart + subChunkSize);
+        if (subEnd <= subStart) continue;
+        let sum = 0;
+        for (let s = subStart; s < subEnd; s++) sum += samples[s] * samples[s];
+        const rms = Math.sqrt(sum / (subEnd - subStart));
+        frameBands[i][j] = rms;
+        if (rms > highestPeak) highestPeak = rms;
+      }
+    }
+    const gain = highestPeak > 0 ? 1 / highestPeak : 1;
+
     const canvas = typeof OffscreenCanvas !== "undefined"
       ? new OffscreenCanvas(width, height)
       : Object.assign(document.createElement("canvas"), { width, height });
     const ctx = canvas.getContext("2d");
-    const sink = new mediabunny.BufferTarget();
-    output = new mediabunny.Output({format: make(),target: sink});
+    const sinkTarget = new mediabunny.BufferTarget();
+    output = new mediabunny.Output({ format: make(), target: sinkTarget });
 
     const videoSource = new mediabunny.CanvasSource(canvas, {
       codec: codecs.video,
-      quality: asQuality(options.video?.bitrate ?? p.video?.bitrate,"medium"),
+      bitrate: options.video?.bitrate ?? p.video?.bitrate ?? mediabunny.QUALITY_MEDIUM,
     });
-    output.addVideoTrack(videoSource,{frameRate:fps});
+    output.addVideoTrack(videoSource, { frameRate: fps });
 
-    const audioSource = new mediabunny.AudioBufferSource({
+    const audioSource = new mediabunny.AudioSampleSource({
       codec: codecs.audio,
-      quality: asQuality(options.audio?.bitrate ?? p.audio?.bitrate,"high"),
+      bitrate: options.audio?.bitrate ?? p.audio?.bitrate ?? mediabunny.QUALITY_HIGH,
     });
     output.addAudioTrack(audioSource);
 
     await output.start();
-    const audioDone = audioSource.add(audioBuffer).then(()=>audioSource.close());
+
+    const audioDone = (async () => {
+      for await (const sample of sink.samples()) {
+        if (options.signal?.aborted) { sample.close(); break; }
+        await audioSource.add(sample);
+        sample.close();
+      }
+      audioSource.close();
+    })();
+
     const barWidth = width / BARS;
     const currentHeights = new Float32Array(BARS).fill(2);
     const smoothing = 0.35;
-    const centerY = height/2;
+    const centerY = height / 2;
 
     for (let i = 0; i < frames; i++) {
       if (options.signal?.aborted) throw cancelled();
@@ -286,15 +322,9 @@ export async function convert_audio_to_video(inputdata, target, options = {}) {
       for (let j = 0; j < BARS; j++) {
         const level = Math.min(1, (frameBands[i]?.[j] ?? 0) * gain);
         const targetHalfHeight = Math.max(2, level * height * 0.35);
-        
         currentHeights[j] += (targetHalfHeight - currentHeights[j]) * smoothing;
-        
-        ctx.fillRect(
-          j * barWidth + 2,
-          centerY - currentHeights[j],
-          Math.max(1, barWidth - 4),
-          currentHeights[j]*2
-        );
+        ctx.fillRect(j * barWidth + 2, centerY - currentHeights[j],
+                     Math.max(1, barWidth - 4), currentHeights[j] * 2);
       }
 
       await videoSource.add(i / fps, 1 / fps);
@@ -303,7 +333,7 @@ export async function convert_audio_to_video(inputdata, target, options = {}) {
     videoSource.close();
     await audioDone;
     await output.finalize();
-    return new Uint8Array(sink.buffer);
+    return new Uint8Array(sinkTarget.buffer);
   } catch (error) {
     try { await output?.cancel?.(); } catch {}
     if (options.signal?.aborted) throw cancelled(error);
