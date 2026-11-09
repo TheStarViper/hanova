@@ -240,9 +240,10 @@ Week 6:
 Week 7:
 
 - [x] Quality setting uses presets instead of raw numbers
-- [ ] Island editor dev tool
-- [ ] More island sprites
-- [ ] Pirates if you try to convert incompatible formats
+- [x] Made frontend disallow conversion between incompatible media types (e.g. 3d model -> audio)
+- [x] Island editor dev tool
+- [x] Wrote tooltips for 75 new formats
+- [x] Arranged 75 new islands (using island editor dev tool :D)
 
 ## Compiling yourself
 
