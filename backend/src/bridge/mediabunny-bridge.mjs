@@ -196,7 +196,7 @@ const asQuality = (value,fallback)=>
   : new mediabunny.Quality(fallback);
 
 export async function convert_audio_to_video(inputdata, target, options = {}) {
-    const codecs = AV_CODECS[target];
+  const codecs = AV_CODECS[target];
   const make = OUTPUT_FORMATS[target];
   if (!codecs || !make) {
     throw new ConvertError(ErrorCode.UnsupportedOutput, `Can't make a "${target}" video from audio`);
@@ -213,7 +213,7 @@ export async function convert_audio_to_video(inputdata, target, options = {}) {
   const fps = options.fps ?? 30;
   const background = options.backgroundColor ?? "#000000";
   const waveColor = options.waveColor ?? "#00ffcc";
-  const BARS = 100;
+  const BARS = 32;
 
   let output;
   try {
@@ -224,64 +224,56 @@ export async function convert_audio_to_video(inputdata, target, options = {}) {
     const frames = Math.max(1, Math.ceil(audioBuffer.duration * fps));
 
     const perFrame = Math.max(1, Math.floor(audioBuffer.sampleRate / fps));
-    const loudness = new Float32Array(frames);
-    let loudest = 0;
-    for (let i = 0; i < frames; i++) {
-      const start = i * perFrame;
-      const end = Math.min(samples.length, start + perFrame);
-      let sum = 0;
-      for (let s = start; s < end; s++) sum += samples[s] * samples[s];
-      loudness[i] = end > start ? Math.sqrt(sum / (end - start)) : 0;
-      if (loudness[i] > loudest) loudest = loudness[i];
-    }
-    const gain = loudest > 0 ? 1 / loudest : 1;
+    const frameBands = Array.from({length: frames},()=>new Float32Array(BARS));
+    let highestPeak = 0;
 
+    for (let i = 0;i<frames;i++){
+      const start = i*perFrame;
+      const end = Math.min(samples.length,start+perFrame);
+      const windowSize = end-start;
+
+      if (windowSize>0){
+        const subChunkSize = Math.max(1,Math.floor(windowSize/BARS));
+        for (let j = 0; j<BARS;j++){
+          const subStart = start + j*subChunkSize;
+          const subEnd = Math.min(end,subStart+subChunkSize);
+          
+          let sum = 0;
+          for (let s = subStart;s<subEnd;s++){
+            sum+=samples[s]*samples[s];
+          }
+          const rms = Math.sqrt(sum/(subEnd-subStart));
+          frameBands[i][j]=rms;
+          if (rms>highestPeak) {highestPeak=rms;}
+        }
+      }
+    }
+
+    const gain =highestPeak>0?1/highestPeak:1;
     const canvas = typeof OffscreenCanvas !== "undefined"
       ? new OffscreenCanvas(width, height)
       : Object.assign(document.createElement("canvas"), { width, height });
     const ctx = canvas.getContext("2d");
-
     const sink = new mediabunny.BufferTarget();
-    output = new mediabunny.Output({ format: make(), target: sink });
+    output = new mediabunny.Output({format: make(),target: sink});
 
     const videoSource = new mediabunny.CanvasSource(canvas, {
       codec: codecs.video,
-      quality: asQuality(options.video?.bitrate ?? p.video?.bitrate, "medium"),
+      quality: asQuality(options.video?.bitrate ?? p.video?.bitrate,"medium"),
     });
-    output.addVideoTrack(videoSource, { frameRate: fps });
+    output.addVideoTrack(videoSource,{frameRate:fps});
 
     const audioSource = new mediabunny.AudioBufferSource({
       codec: codecs.audio,
-      quality: asQuality(options.audio?.bitrate ?? p.audio?.bitrate, "high"),
+      quality: asQuality(options.audio?.bitrate ?? p.audio?.bitrate,"high"),
     });
     output.addAudioTrack(audioSource);
 
     await output.start();
+    const audioDone = audioSource.add(audioBuffer).then(()=>audioSource.close());
+    const barWidth = width/BARS;
 
-    const audioDone = audioSource.add(audioBuffer).then(() => audioSource.close());
-
-    const barWidth = width / BARS;
-    for (let i = 0; i < frames; i++) {
-      if (options.signal?.aborted) throw cancelled();
-
-      ctx.fillStyle = background;
-      ctx.fillRect(0, 0, width, height);
-      ctx.fillStyle = waveColor;
-      for (let j = 0; j < BARS; j++) {
-        const level = Math.min(1, (loudness[i + j - BARS / 2] ?? 0) * gain)
-        const barHeight = Math.max(2, level * height * 0.9);
-        ctx.fillRect(j * barWidth + 1, (height - barHeight) / 2, Math.max(1, barWidth - 2), barHeight);
-      }
-
-      await videoSource.add(i / fps, 1 / fps);
-      options.onProgress?.(i / frames);
-    }
-    videoSource.close();
-    await audioDone;
-    await output.finalize();
-
-    return new Uint8Array(sink.buffer);
-
+    for()
   } catch (error) {
     try { await output?.cancel?.(); } catch {}
     if (options.signal?.aborted) throw cancelled(error);
