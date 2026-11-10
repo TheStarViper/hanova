@@ -94,7 +94,8 @@ $effect(() => {
     <p>Images: {@html mediaTypeList("image")}</p>
     <p>Audio: {@html mediaTypeList("audio")}</p>
     <p>Videos: {@html mediaTypeList("video")}</p>
-    <p>Documents: (coming soon!)</p>
+    <p>Documents: {@html mediaTypeList("document")}</p>
+    <p>3D Models: {@html mediaTypeList("model")}</p>
   </section>
 
   <section id="history">
